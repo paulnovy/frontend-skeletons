@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Pulse Telemedicine is a premium telemedicine homepage skeleton with appointment booking, insurance coverage, doctors, testimonials, pricing, and emergency guidance.">
+  <title>Pulse Telemedicine Landing</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{ --warm-white:#FFFDF8; --medical-blue:#2563EB; --medical-blue-dark:#1647B8; --medical-blue-soft:#EAF1FF; --aqua:#41D6C3; --aqua-soft:#E7FBF8; --leaf:#7BC67E; --leaf-soft:#EEF9EF; --graphite:#1E293B; --graphite-soft:#526176; --blush:#FFE1E1; --blush-strong:#C24141; --white:#FFFFFF; --line:rgba(30,41,59,0.13); --line-strong:rgba(30,41,59,0.22); --shadow-soft:0 26px 70px rgba(30,41,59,0.10); --shadow-card:0 16px 38px rgba(30,41,59,0.08); --font-heading:"Plus Jakarta Sans",system-ui,sans-serif; --font-body:"DM Sans",system-ui,sans-serif; --radius-xs:6px; --radius-sm:8px; --radius-md:16px; --radius-lg:24px; --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-5:20px; --space-6:24px; --space-8:32px; --space-10:40px; --space-12:48px; --max:1180px; --motion-fast:160ms ease; --motion-med:260ms ease; --z-nav:30; --z-overlay:60; }
+    *{ box-sizing:border-box; }
+    html{ color-scheme:light; scroll-behavior:smooth; }
+    body{ margin:0; min-height:100vh; background:var(--warm-white); color:var(--graphite); font-family:var(--font-body); line-height:1.55; overflow-x:hidden; }
+    body.nav-open{ overflow:hidden; }
+    img{ display:block; max-width:100%; }
+    a{ color:inherit; text-decoration:none; }
+    button, input, select,
+    textarea{ font:inherit; }
+    button{ border:0; cursor:pointer; }
+    :focus-visible{ outline:3px solid var(--aqua); outline-offset:3px; border-radius:var(--radius-xs); }
+    .skip-link{ position:fixed; left:var(--space-4); top:var(--space-4); z-index:90; transform:translateY(-160%); padding:var(--space-3) var(--space-4); border-radius:var(--radius-sm); background:var(--graphite); color:var(--white); font-weight:700; transition:transform var(--motion-fast); }
+    .skip-link:focus{ transform:translateY(0); }
+    .site-header{ position:sticky; top:0; z-index:var(--z-nav); border-bottom:1px solid rgba(30,41,59,0.08); background:rgba(255,253,248,0.92); backdrop-filter:blur(18px); }
+    .nav-shell{ width:min(100% - 32px,var(--max)); margin:0 auto; min-height:76px; display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:var(--space-5); }
+    .brand{ display:flex; align-items:center; gap:var(--space-3); min-width:220px; font-family:var(--font-heading); font-weight:800; }
+    .brand-mark{ width:44px; height:44px; display:grid; place-items:center; border-radius:14px; background:linear-gradient(135deg,var(--medical-blue),var(--aqua)); color:var(--white); box-shadow:0 12px 24px rgba(37,99,235,0.22); }
+    .brand-mark svg{ width:25px; height:25px; }
+    .brand small{ display:block; margin-top:1px; color:var(--graphite-soft); font-family:var(--font-body); font-size:0.78rem; font-weight:700; }
+    .nav{ justify-self:center; }
+    .nav-list{ display:flex; align-items:center; gap:var(--space-2); margin:0; padding:0; list-style:none; }
+    .nav-link{ min-height:42px; display:inline-flex; align-items:center; padding:0 var(--space-4); border-radius:999px; color:var(--graphite-soft); font-weight:700; transition:background var(--motion-fast),color var(--motion-fast); }
+    .nav-link:hover,
+    .nav-link.active{ background:var(--medical-blue-soft); color:var(--medical-blue); }
+    .nav-actions{ display:flex; justify-content:flex-end; align-items:center; gap:var(--space-2); }
+    .hamburger{ display:none; position:relative; width:46px; height:46px; border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--white); color:var(--medical-blue); }
+    .hamburger span, .hamburger::before,
+    .hamburger::after{ content:""; position:absolute; left:13px; width:20px; height:2px; border-radius:999px; background:currentColor; transition:transform var(--motion-fast),opacity var(--motion-fast); }
+    .hamburger span{ top:22px; }
+    .hamburger::before{ top:15px; }
+    .hamburger::after{ top:29px; }
+    .nav-open .hamburger span{ opacity:0; }
+    .nav-open .hamburger::before{ transform:translateY(7px) rotate(45deg); }
+    .nav-open .hamburger::after{ transform:translateY(-7px) rotate(-45deg); }
+    .button{ min-height:46px; display:inline-flex; align-items:center; justify-content:center; gap:var(--space-2); padding:0 var(--space-5); border-radius:999px; font-weight:800; transition:transform var(--motion-fast),box-shadow var(--motion-fast),background var(--motion-fast); }
+    .button svg{ width:18px; height:18px; }
+    .button:hover{ transform:translateY(-1px); }
+    .button-primary{ background:var(--medical-blue); color:var(--white); box-shadow:0 14px 28px rgba(37,99,235,0.24); }
+    .button-primary:hover{ background:var(--medical-blue-dark); }
+    .button-secondary{ background:var(--white); color:var(--medical-blue); border:1px solid rgba(37,99,235,0.24); }
+    .button-soft{ background:var(--aqua-soft); color:#09645B; border:1px solid rgba(65,214,195,0.3); }
+    .hero{ position:relative; overflow:hidden; background: radial-gradient(circle at top left,rgba(65,214,195,0.24),transparent 30%), radial-gradient(circle at 90% 12%,rgba(255,225,225,0.72),transparent 28%), linear-gradient(180deg,#FFFFFF 0%,var(--warm-white) 100%); border-bottom:1px solid rgba(30,41,59,0.08); }
+    .hero::after{ content:""; position:absolute; inset:auto 0 0; height:160px; background:linear-gradient(180deg,transparent,var(--warm-white)); pointer-events:none; }
+    .hero-shell{ position:relative; z-index:1; width:min(100% - 32px,var(--max)); margin:0 auto; padding:var(--space-12) 0 var(--space-10); display:grid; grid-template-columns:minmax(0,1.02fr) minmax(360px,0.98fr); gap:var(--space-8); align-items:center; }
+    .hero-copy{ display:grid; gap:var(--space-6); min-width:0; }
+    .eyebrow{ margin:0; color:var(--medical-blue); font-weight:800; letter-spacing:0.08em; text-transform:uppercase; font-size:0.78rem; }
+    h1, h2,
+    h3{ margin:0; font-family:var(--font-heading); line-height:1.05; letter-spacing:0; }
+    h1{ max-width:760px; font-size:clamp(2.7rem,6.4vw,5.9rem); font-weight:800; }
+    h2{ font-size:clamp(2rem,3.8vw,3.55rem); font-weight:800; }
+    h3{ font-size:1.08rem; font-weight:800; }
+    p{ margin:0; }
+    .lead{ max-width:660px; color:var(--graphite-soft); font-size:clamp(1.05rem,1.7vw,1.28rem); }
+    .hero-actions{ display:flex; flex-wrap:wrap; gap:var(--space-3); align-items:center; }
+    .hero-note{ display:flex; flex-wrap:wrap; gap:var(--space-3); color:var(--graphite-soft); font-weight:700; font-size:0.94rem; }
+    .hero-note span{ display:inline-flex; align-items:center; gap:var(--space-2); }
+    .check-dot{ width:10px; height:10px; border-radius:999px; background:var(--leaf); box-shadow:0 0 0 5px rgba(123,198,126,0.18); }
+    .hero-panel{ display:grid; gap:var(--space-4); min-width:0; }
+    .split-cards{ display:grid; grid-template-columns:1fr 1fr; gap:var(--space-4); }
+    .people-card{ min-height:270px; position:relative; overflow:hidden; border:1px solid var(--line); border-radius:var(--radius-lg); background:var(--white); box-shadow:var(--shadow-card); }
+    .people-card img{ width:100%; height:100%; min-height:270px; object-fit:cover; filter:saturate(1.03); }
+    .people-card::after{ content:""; position:absolute; inset:0; background:linear-gradient(180deg,transparent 42%,rgba(30,41,59,0.78)); }
+    .people-caption{ position:absolute; left:var(--space-4); right:var(--space-4); bottom:var(--space-4); z-index:1; color:var(--white); }
+    .people-caption strong{ display:block; font-family:var(--font-heading); font-size:1.02rem; }
+    .people-caption span{ display:block; margin-top:2px; color:rgba(255,255,255,0.86); font-size:0.9rem; }
+    .booking-card{ position:relative; z-index:2; margin-top:-74px; margin-left:var(--space-6); border:1px solid rgba(37,99,235,0.16); border-radius:var(--radius-lg); background:rgba(255,255,255,0.94); box-shadow:var(--shadow-soft); backdrop-filter:blur(16px); }
+    .booking-inner{ padding:var(--space-5); display:grid; gap:var(--space-4); }
+    .booking-head{ display:flex; justify-content:space-between; gap:var(--space-4); align-items:flex-start; }
+    .booking-head p{ color:var(--graphite-soft); font-size:0.92rem; }
+    .availability{ display:inline-flex; align-items:center; gap:var(--space-2); min-height:32px; padding:0 var(--space-3); border-radius:999px; background:var(--leaf-soft); color:#246B2A; font-weight:800; white-space:nowrap; font-size:0.83rem; }
+    .booking-progress{ display:none; grid-template-columns:repeat(3,1fr); gap:var(--space-2); }
+    .progress-step{ min-height:36px; border-radius:999px; background:var(--medical-blue-soft); color:var(--medical-blue); font-weight:800; font-size:0.78rem; }
+    .progress-step.is-active{ background:var(--medical-blue); color:var(--white); }
+    .booking-form{ display:grid; gap:var(--space-3); }
+    .booking-grid{ display:grid; grid-template-columns:1.1fr 0.9fr 0.9fr; gap:var(--space-3); }
+    .field{ display:grid; gap:var(--space-2); }
+    .field label{ color:var(--graphite); font-weight:800; font-size:0.86rem; }
+    .field select,
+    .field input{ width:100%; min-height:50px; border:1px solid var(--line); border-radius:var(--radius-sm); background:var(--warm-white); color:var(--graphite); padding:0 var(--space-3); outline:none; }
+    .field select:focus,
+    .field input:focus{ border-color:var(--medical-blue); box-shadow:0 0 0 4px rgba(37,99,235,0.12); }
+    .booking-actions{ display:flex; align-items:center; justify-content:space-between; gap:var(--space-3); }
+    .booking-copy{ color:var(--graphite-soft); font-size:0.9rem; }
+    .mobile-step-controls{ display:none; grid-template-columns:1fr 1fr; gap:var(--space-3); }
+    .trust-strip{ width:min(100% - 32px,var(--max)); margin:0 auto; padding:var(--space-8) 0; display:grid; gap:var(--space-4); }
+    .trust-label{ display:flex; align-items:center; justify-content:space-between; gap:var(--space-4); color:var(--graphite-soft); font-weight:700; }
+    .badge-grid{ display:grid; grid-template-columns:repeat(6,1fr); gap:var(--space-3); }
+    .insurance-badge{ min-height:82px; display:grid; place-items:center; gap:var(--space-1); padding:var(--space-4); border:1px solid var(--line); border-radius:var(--radius-md); background:var(--white); box-shadow:0 10px 24px rgba(30,41,59,0.05); text-align:center; }
+    .insurance-badge strong{ font-family:var(--font-heading); color:var(--graphite); font-size:0.95rem; }
+    .insurance-badge span{ color:var(--graphite-soft); font-size:0.78rem; font-weight:700; }
+    .section{ width:min(100% - 32px,var(--max)); margin:0 auto; padding:var(--space-12) 0; }
+    .section-head{ display:flex; justify-content:space-between; gap:var(--space-6); align-items:end; margin-bottom:var(--space-8); }
+    .section-head p{ max-width:540px; color:var(--graphite-soft); font-size:1.04rem; }
+    .service-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:var(--space-4); }
+    .service-card{ min-height:220px; display:grid; align-content:space-between; gap:var(--space-5); padding:var(--space-5); border:1px solid var(--line); border-radius:var(--radius-lg); background:var(--white); box-shadow:var(--shadow-card); }
+    .service-icon{ width:52px; height:52px; display:grid; place-items:center; border-radius:16px; background:var(--medical-blue-soft); color:var(--medical-blue); }
+    .service-icon svg{ width:26px; height:26px; }
+    .service-card p{ color:var(--graphite-soft); margin-top:var(--space-2); }
+    .service-meta{ display:flex; justify-content:space-between; gap:var(--space-3); color:var(--graphite-soft); font-weight:800; font-size:0.84rem; }
+    .doctors-band{ background:linear-gradient(180deg,#F4FAFF 0%,var(--warm-white) 100%); border-block:1px solid rgba(30,41,59,0.08); }
+    .carousel-shell{ display:grid; gap:var(--space-4); }
+    .carousel-top{ display:flex; justify-content:flex-end; gap:var(--space-2); }
+    .carousel-button{ width:46px; height:46px; display:grid; place-items:center; border:1px solid var(--line); border-radius:999px; background:var(--white); color:var(--medical-blue); }
+    .doctor-track{ display:grid; grid-auto-flow:column; grid-auto-columns:calc((100% - 48px) / 3); gap:var(--space-6); overflow-x:auto; scroll-snap-type:x mandatory; scrollbar-width:none; padding:var(--space-1) var(--space-1) var(--space-4); }
+    .doctor-track::-webkit-scrollbar{ display:none; }
+    .doctor-card{ scroll-snap-align:start; overflow:hidden; border:1px solid var(--line); border-radius:var(--radius-lg); background:var(--white); box-shadow:var(--shadow-card); }
+    .doctor-photo{ aspect-ratio:1.38/1; background:var(--medical-blue-soft); overflow:hidden; }
+    .doctor-photo img{ width:100%; height:100%; object-fit:cover; }
+    .doctor-info{ padding:var(--space-5); display:grid; gap:var(--space-3); }
+    .doctor-meta{ display:flex; flex-wrap:wrap; gap:var(--space-2); }
+    .pill{ display:inline-flex; align-items:center; min-height:30px; padding:0 var(--space-3); border-radius:999px; background:var(--medical-blue-soft); color:var(--medical-blue); font-weight:800; font-size:0.78rem; }
+    .pill.aqua{ background:var(--aqua-soft); color:#09645B; }
+    .pill.leaf{ background:var(--leaf-soft); color:#246B2A; }
+    .doctor-info p{ color:var(--graphite-soft); }
+    .social-proof{ display:grid; grid-template-columns:1fr 1fr; gap:var(--space-6); align-items:start; }
+    .testimonial-stack{ display:grid; gap:var(--space-4); }
+    .testimonial{ padding:var(--space-5); border:1px solid var(--line); border-radius:var(--radius-lg); background:var(--white); box-shadow:var(--shadow-card); }
+    .testimonial blockquote{ margin:0; color:var(--graphite); font-size:1.06rem; font-weight:700; }
+    .testimonial footer{ margin-top:var(--space-4); color:var(--graphite-soft); font-weight:700; }
+    .stats-card{ position:sticky; top:100px; padding:var(--space-6); border:1px solid rgba(37,99,235,0.16); border-radius:var(--radius-lg); background:linear-gradient(135deg,var(--medical-blue),#103D9E); color:var(--white); box-shadow:var(--shadow-soft); }
+    .stats-card h2{ max-width:500px; }
+    .stats-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:var(--space-3); margin-top:var(--space-6); }
+    .stat{ padding:var(--space-4); border:1px solid rgba(255,255,255,0.2); border-radius:var(--radius-md); background:rgba(255,255,255,0.1); }
+    .stat strong{ display:block; font-family:var(--font-heading); font-size:2rem; line-height:1; }
+    .stat span{ display:block; margin-top:var(--space-2); color:rgba(255,255,255,0.8); font-weight:700; }
+    .pricing-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:var(--space-5); }
+    .price-card{ display:grid; gap:var(--space-5); padding:var(--space-6); border:1px solid var(--line); border-radius:var(--radius-lg); background:var(--white); box-shadow:var(--shadow-card); }
+    .price-card.featured{ border-color:rgba(37,99,235,0.34); box-shadow:0 26px 66px rgba(37,99,235,0.14); }
+    .price{ display:flex; align-items:end; gap:var(--space-2); }
+    .price strong{ font-family:var(--font-heading); font-size:2.5rem; line-height:1; }
+    .price span{ color:var(--graphite-soft); font-weight:700; }
+    .feature-list{ display:grid; gap:var(--space-3); margin:0; padding:0; list-style:none; }
+    .feature-list li{ display:flex; gap:var(--space-2); color:var(--graphite-soft); font-weight:700; }
+    .feature-list li::before{ content:""; flex:0 0 10px; width:10px; height:10px; margin-top:0.48em; border-radius:999px; background:var(--leaf); }
+    .disclaimer{ padding:var(--space-6); border:1px solid rgba(194,65,65,0.2); border-radius:var(--radius-lg); background:linear-gradient(135deg,var(--blush),#FFF6F4); display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:var(--space-5); align-items:center; }
+    .disclaimer-icon{ width:54px; height:54px; display:grid; place-items:center; border-radius:16px; background:var(--white); color:var(--blush-strong); }
+    .disclaimer p{ color:#6F2E2E; font-weight:700; }
+    .site-footer{ border-top:1px solid rgba(30,41,59,0.1); background:#F8FAFF; }
+    .footer-shell{ width:min(100% - 32px,var(--max)); margin:0 auto; padding:var(--space-8) 0; display:grid; grid-template-columns:1fr auto; gap:var(--space-6); align-items:center; color:var(--graphite-soft); font-weight:700; }
+    .footer-links{ display:flex; flex-wrap:wrap; gap:var(--space-4); }
+    .toast{ position:fixed; right:var(--space-5); bottom:var(--space-5); z-index:80; max-width:340px; padding:var(--space-4) var(--space-5); border-radius:var(--radius-md); background:var(--graphite); color:var(--white); box-shadow:var(--shadow-soft); transform:translateY(140%); transition:transform var(--motion-med); font-weight:700; }
+    .toast.show{ transform:translateY(0); }
+    @media (max-width:980px){
+    .nav{ position:fixed; inset:76px 16px auto 16px; z-index:var(--z-overlay); border:1px solid var(--line); border-radius:var(--radius-lg); background:var(--white); box-shadow:var(--shadow-soft); transform:translateY(-18px); opacity:0; pointer-events:none; transition:opacity var(--motion-fast),transform var(--motion-fast); }
+    .nav-open .nav{ opacity:1; transform:translateY(0); pointer-events:auto; }
+    .nav-list{ display:grid; padding:var(--space-3); }
+    .nav-link{ border-radius:var(--radius-sm); }
+    .hamburger{ display:block; }
+    .nav-actions .button-secondary{ display:none; }
+    .hero-shell{ grid-template-columns:1fr; }
+    .booking-card{ margin:0; }
+    .booking-progress{ display:grid; }
+    .booking-grid{ grid-template-columns:1fr; }
+    .booking-step{ display:none; }
+    .booking-step.is-active{ display:grid; }
+    .mobile-step-controls{ display:grid; }
+    .mobile-step-controls .button{ width:100%; }
+    .badge-grid, .service-grid,
+    .pricing-grid{ grid-template-columns:repeat(2,1fr); }
+    .social-proof{ grid-template-columns:1fr; }
+    .stats-card{ position:static; }
+    .doctor-track{ grid-auto-columns:calc((100% - 24px) / 2); }
+    }
+    @media (max-width:680px){
+    .nav-shell{ width:min(100% - 24px,var(--max)); min-height:70px; }
+    .brand{ min-width:0; }
+    .brand small{ display:none; }
+    .nav-actions .button-primary{ display:none; }
+    .hero-shell, .section, .trust-strip,
+    .footer-shell{ width:min(100% - 24px,var(--max)); }
+    .hero-shell{ padding:var(--space-8) 0; }
+    .split-cards{ grid-template-columns:1fr; }
+    .people-card{ min-height:230px; }
+    .people-card img{ min-height:230px; }
+    .booking-actions{ display:grid; }
+    .booking-actions .button{ width:100%; }
+    .trust-label, .section-head, .footer-shell,
+    .disclaimer{ display:grid; grid-template-columns:1fr; }
+    .badge-grid, .service-grid, .pricing-grid,
+    .stats-grid{ grid-template-columns:1fr; }
+    .doctor-track{ grid-auto-columns:88%; }
+    .toast{ left:var(--space-3); right:var(--space-3); bottom:var(--space-3); }
+    }
+    @media (prefers-reduced-motion:reduce){
+    *, *::before,
+    *::after{ animation-duration:0.001ms !important; animation-iteration-count:1 !important; scroll-behavior:auto !important; transition-duration:0.001ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#booking">Skip to booking</a>
+  <header class="site-header">
+    <div class="nav-shell">
+      <a class="brand" href="#" aria-label="Pulse Telemedicine home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M3 12h4l2-5 5 10 3-5h4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </span>
+        <span>
+          Pulse Telemedicine
+          <small>Care when your day needs it</small>
+        </span>
+      </a>
+      <nav class="nav" id="primary-navigation" aria-label="Primary navigation">
+        <ul class="nav-list">
+          <li><a class="nav-link active" href="#services">Services</a></li>
+          <li><a class="nav-link" href="#doctors">Doctors</a></li>
+          <li><a class="nav-link" href="#coverage">Coverage</a></li>
+          <li><a class="nav-link" href="#pricing">Pricing</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <a class="button button-secondary" href="#coverage">Check coverage</a>
+        <a class="button button-primary" href="#booking">Book a visit</a>
+        <button class="hamburger" type="button" aria-label="Open menu" aria-controls="primary-navigation" aria-expanded="false">
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-shell">
+        <div class="hero-copy">
+          <p class="eyebrow">Board-certified virtual care in 15 minutes</p>
+          <h1 id="hero-title">Talk to a clinician before symptoms take over your day.</h1>
+          <p class="lead">Pulse connects adults and families with urgent care, primary care, dermatology, therapy, and prescription support from licensed clinicians who explain the next step clearly.</p>
+          <div class="hero-actions" aria-label="Primary actions">
+            <a class="button button-primary" href="#booking">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M8 2v4M16 2v4M4 9h16M7 13h5M7 17h8M5 5h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Book a visit
+            </a>
+            <a class="button button-secondary" href="#coverage">Check coverage</a>
+          </div>
+          <div class="hero-note" aria-label="Care reassurance">
+            <span><i class="check-dot" aria-hidden="true"></i> Average wait today: 9 minutes</span>
+            <span><i class="check-dot" aria-hidden="true"></i> Prescriptions sent when clinically appropriate</span>
+            <span><i class="check-dot" aria-hidden="true"></i> HSA and FSA eligible</span>
+          </div>
+        </div>
+        <div class="hero-panel" aria-label="Care preview">
+          <div class="split-cards">
+            <article class="people-card">
+              <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=760&q=80" alt="Clinician in a virtual care room">
+              <div class="people-caption">
+                <strong>Dr. Lena Ortiz</strong>
+                <span>Family medicine, 12 years</span>
+              </div>
+            </article>
+            <article class="people-card">
+              <img src="https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&w=760&q=80" alt="Patient smiling during a video consultation">
+              <div class="people-caption">
+                <strong>Maya, Pulse member</strong>
+                <span>Same-day sinus care</span>
+              </div>
+            </article>
+          </div>
+          <section class="booking-card" id="booking" aria-labelledby="booking-title">
+            <div class="booking-inner">
+              <div class="booking-head">
+                <div>
+                  <p class="eyebrow">Secure appointment booking</p>
+                  <h2 id="booking-title">Find the right visit.</h2>
+                  <p>Choose symptoms, time, and provider. You can edit everything before checkout.</p>
+                </div>
+                <span class="availability">18 clinicians online</span>
+              </div>
+              <div class="booking-progress" role="tablist" aria-label="Mobile booking steps">
+                <button class="progress-step is-active" type="button" data-step-target="symptoms" role="tab" aria-selected="true">1 Symptoms</button>
+                <button class="progress-step" type="button" data-step-target="time" role="tab" aria-selected="false">2 Time</button>
+                <button class="progress-step" type="button" data-step-target="provider" role="tab" aria-selected="false">3 Provider</button>
+              </div>
+              <form class="booking-form" aria-label="Book a telemedicine appointment">
+                <div class="booking-grid">
+                  <div class="field booking-step is-active" data-booking-step="symptoms">
+                    <label for="symptom">What do you need help with?</label>
+                    <select id="symptom" name="symptom">
+                      <option>Cold, flu, or sinus symptoms</option>
+                      <option>Skin rash or acne concern</option>
+                      <option>Anxiety or stress support</option>
+                      <option>Medication refill review</option>
+                    </select>
+                  </div>
+                  <div class="field booking-step" data-booking-step="time">
+                    <label for="time">Preferred time</label>
+                    <select id="time" name="time">
+                      <option>Today, 3:20 PM</option>
+                      <option>Today, 4:10 PM</option>
+                      <option>Tomorrow, 8:40 AM</option>
+                      <option>Tomorrow, 12:30 PM</option>
+                    </select>
+                  </div>
+                  <div class="field booking-step" data-booking-step="provider">
+                    <label for="provider">Provider type</label>
+                    <select id="provider" name="provider">
+                      <option>First available clinician</option>
+                      <option>Family medicine physician</option>
+                      <option>Nurse practitioner</option>
+                      <option>Licensed therapist</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="mobile-step-controls" aria-label="Mobile booking controls">
+                  <button class="button button-secondary" type="button" data-booking-prev>Back</button>
+                  <button class="button button-soft" type="button" data-booking-next>Next step</button>
+                </div>
+                <div class="booking-actions">
+                  <p class="booking-copy">No charge until coverage and visit price are shown.</p>
+                  <button class="button button-primary" type="submit">Book a visit</button>
+                </div>
+              </form>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+    <section class="trust-strip" id="coverage" aria-labelledby="coverage-title">
+      <div class="trust-label">
+        <h2 id="coverage-title">Coverage that feels less mysterious.</h2>
+        <p>Pulse checks eligibility before your visit and shows the estimated cost in plain language.</p>
+      </div>
+      <div class="badge-grid" aria-label="Insurance providers">
+        <div class="insurance-badge"><strong>Aetna</strong><span>Most PPO plans</span></div>
+        <div class="insurance-badge"><strong>BlueCross</strong><span>Virtual primary care</span></div>
+        <div class="insurance-badge"><strong>Cigna</strong><span>Urgent care visits</span></div>
+        <div class="insurance-badge"><strong>UnitedCare</strong><span>Employer benefits</span></div>
+        <div class="insurance-badge"><strong>Kaiser Select</strong><span>Regional networks</span></div>
+        <div class="insurance-badge"><strong>Self-pay</strong><span>Transparent pricing</span></div>
+      </div>
+    </section>
+    <section class="section" id="services" aria-labelledby="services-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Service categories</p>
+          <h2 id="services-title">Care for the questions that cannot wait three weeks.</h2>
+        </div>
+        <p>Every visit includes a written care plan, secure follow-up messages, and coordination notes you can share with your usual doctor.</p>
+      </div>
+      <div class="service-grid">
+        <article class="service-card">
+          <div>
+            <span class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg></span>
+            <h3>Urgent care</h3>
+            <p>Cough, sinus pressure, pink eye, UTI symptoms, stomach issues, and minor injuries.</p>
+          </div>
+          <div class="service-meta"><span>From $49</span><span>9 min avg wait</span></div>
+        </article>
+        <article class="service-card">
+          <div>
+            <span class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M8 19c5-1 8-5 9-12-7 1-11 4-12 9 1 2 2 3 3 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span>
+            <h3>Everyday primary care</h3>
+            <p>Blood pressure check-ins, lab review, medication questions, and prevention planning.</p>
+          </div>
+          <div class="service-meta"><span>Membership</span><span>Same week</span></div>
+        </article>
+        <article class="service-card">
+          <div>
+            <span class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M7 20c1-5 3-8 5-8s4 3 5 8M8 7a4 4 0 1 0 8 0 4 4 0 0 0-8 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+            <h3>Mental health</h3>
+            <p>Therapy consults for anxiety, stress, sleep, grief, and practical coping support.</p>
+          </div>
+          <div class="service-meta"><span>From $89</span><span>Evenings</span></div>
+        </article>
+        <article class="service-card">
+          <div>
+            <span class="service-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M7 11h10M9 7h6M9 15h6M6 3h12v18H6z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span>
+            <h3>Dermatology</h3>
+            <p>Upload photos for rashes, acne, eczema flares, bites, and changing skin concerns.</p>
+          </div>
+          <div class="service-meta"><span>Photo review</span><span>24 hours</span></div>
+        </article>
+      </div>
+    </section>
+    <section class="doctors-band" id="doctors" aria-labelledby="doctors-title">
+      <div class="section">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Clinicians you can choose</p>
+            <h2 id="doctors-title">Meet the doctors behind the visit button.</h2>
+          </div>
+          <p>Each clinician is licensed in your state, trained for virtual care, and rated on clarity, follow-through, and bedside manner.</p>
+        </div>
+        <div class="carousel-shell">
+          <div class="carousel-top" aria-label="Doctor carousel controls">
+            <button class="carousel-button" type="button" data-carousel="prev" aria-label="Previous doctor">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+                <path d="M15 18 9 12l6-6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <button class="carousel-button" type="button" data-carousel="next" aria-label="Next doctor">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" aria-hidden="true">
+                <path d="m9 6 6 6-6 6" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+          </div>
+          <div class="doctor-track" tabindex="0" aria-label="Doctor carousel">
+            <article class="doctor-card">
+              <div class="doctor-photo"><img src="https://images.unsplash.com/photo-1582750433449-648ed127bb54?auto=format&fit=crop&w=720&q=80" alt="Dr. Amara Singh"></div>
+              <div class="doctor-info">
+                <h3>Dr. Amara Singh</h3>
+                <div class="doctor-meta"><span class="pill">Internal medicine</span><span class="pill aqua">4.9 rating</span></div>
+                <p>Known for clear medication reviews and calm next-step plans for complex symptoms.</p>
+              </div>
+            </article>
+            <article class="doctor-card">
+              <div class="doctor-photo"><img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=720&q=80" alt="Dr. Marcus Reid"></div>
+              <div class="doctor-info">
+                <h3>Dr. Marcus Reid</h3>
+                <div class="doctor-meta"><span class="pill">Family medicine</span><span class="pill leaf">Tonight</span></div>
+                <p>Helps families handle coughs, fevers, sore throats, and school-day surprises.</p>
+              </div>
+            </article>
+            <article class="doctor-card">
+              <div class="doctor-photo"><img src="https://images.unsplash.com/photo-1550831107-1553da8c8464?auto=format&fit=crop&w=720&q=80" alt="Dr. Evelyn Chen"></div>
+              <div class="doctor-info">
+                <h3>Dr. Evelyn Chen</h3>
+                <div class="doctor-meta"><span class="pill">Dermatology</span><span class="pill aqua">Photo review</span></div>
+                <p>Reviews skin concerns with practical care instructions and follow-up timing.</p>
+              </div>
+            </article>
+            <article class="doctor-card">
+              <div class="doctor-photo"><img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=720&q=80" alt="Nurse practitioner Nadia Brooks"></div>
+              <div class="doctor-info">
+                <h3>Nadia Brooks, NP</h3>
+                <div class="doctor-meta"><span class="pill">Urgent care</span><span class="pill leaf">Online now</span></div>
+                <p>Specializes in fast, thorough visits for infections, allergies, and refill checks.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" aria-labelledby="proof-title">
+      <div class="social-proof">
+        <div class="stats-card">
+          <p class="eyebrow" style="color:#BDEBFF">Patient confidence</p>
+          <h2 id="proof-title">More than quick care. Care that is easy to understand.</h2>
+          <div class="stats-grid">
+            <div class="stat"><strong>92%</strong><span>say the plan felt clear</span></div>
+            <div class="stat"><strong>4.8</strong><span>average visit rating</span></div>
+            <div class="stat"><strong>31K</strong><span>visits completed this year</span></div>
+            <div class="stat"><strong>50</strong><span>states with licensed clinicians</span></div>
+          </div>
+        </div>
+        <div class="testimonial-stack">
+          <article class="testimonial">
+            <blockquote>"The doctor explained why antibiotics were not the right call and gave me a plan that actually helped by morning."</blockquote>
+            <footer>Rachel M., sinus and cough visit</footer>
+          </article>
+          <article class="testimonial">
+            <blockquote>"I checked coverage, saw the price, and talked to a provider before my lunch break was over."</blockquote>
+            <footer>Jon Bell, employer plan member</footer>
+          </article>
+          <article class="testimonial">
+            <blockquote>"The dermatologist reviewed my photos, sent treatment steps, and told me exactly what would mean I should come in person."</blockquote>
+            <footer>Ari Kim, dermatology consult</footer>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="pricing" aria-labelledby="pricing-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Transparent pricing</p>
+          <h2 id="pricing-title">Choose the care path that fits today.</h2>
+        </div>
+        <p>Insurance can lower these prices. Pulse shows the final estimate before you confirm a visit.</p>
+      </div>
+      <div class="pricing-grid">
+        <article class="price-card">
+          <div>
+            <span class="pill">Single visit</span>
+            <h3>Quick Care</h3>
+          </div>
+          <div class="price"><strong>$49</strong><span>per urgent visit</span></div>
+          <ul class="feature-list">
+            <li>One video or chat visit</li>
+            <li>Written care plan</li>
+            <li>Prescription routing when appropriate</li>
+          </ul>
+          <a class="button button-secondary" href="#booking">Book a visit</a>
+        </article>
+        <article class="price-card featured">
+          <div>
+            <span class="pill aqua">Most flexible</span>
+            <h3>Pulse Plus</h3>
+          </div>
+          <div class="price"><strong>$24</strong><span>per month</span></div>
+          <ul class="feature-list">
+            <li>Reduced urgent care visit price</li>
+            <li>Primary care follow-up messages</li>
+            <li>Annual prevention checklist</li>
+          </ul>
+          <a class="button button-primary" href="#booking">Book a visit</a>
+        </article>
+        <article class="price-card">
+          <div>
+            <span class="pill leaf">For teams</span>
+            <h3>Employer Care</h3>
+          </div>
+          <div class="price"><strong>Custom</strong><span>per employee</span></div>
+          <ul class="feature-list">
+            <li>Coverage integration</li>
+            <li>Family access options</li>
+            <li>Utilization reporting without PHI exposure</li>
+          </ul>
+          <a class="button button-secondary" href="#coverage">Check coverage</a>
+        </article>
+      </div>
+    </section>
+    <section class="section" aria-labelledby="emergency-title">
+      <div class="disclaimer">
+        <div class="disclaimer-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
+            <path d="M12 8v5M12 17h.01M10.3 3.8 2.5 18a2 2 0 0 0 1.7 3h15.6a2 2 0 0 0 1.7-3L13.7 3.8a2 2 0 0 0-3.4 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div>
+          <h2 id="emergency-title">Not for emergencies.</h2>
+          <p>If you have chest pain, trouble breathing, signs of stroke, severe allergic reaction, major injury, suicidal thoughts, or any life-threatening symptom, call emergency services or go to the nearest emergency department now.</p>
+        </div>
+        <a class="button button-secondary" href="#services">Review routine care</a>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="footer-shell">
+      <div>
+        <strong>Pulse Telemedicine</strong>
+        <p>Built with Frontend Skeletons</p>
+      </div>
+      <div class="footer-links" aria-label="Footer links">
+        <a href="#booking">Book</a>
+        <a href="#coverage">Coverage</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#emergency-title">Safety</a>
+      </div>
+    </div>
+  </footer>
+  <div class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+  <script>
+    const body = document.body;
+    const hamburger = document.querySelector(".hamburger");
+    const nav = document.querySelector(".nav");
+    const navLinks = document.querySelectorAll(".nav-link");
+    const toast = document.querySelector(".toast");
+    const track = document.querySelector(".doctor-track");
+    const carouselButtons = document.querySelectorAll("[data-carousel]");
+    const bookingSteps = Array.from(document.querySelectorAll("[data-booking-step]"));
+    const progressSteps = Array.from(document.querySelectorAll("[data-step-target]"));
+    const nextButton = document.querySelector("[data-booking-next]");
+    const prevButton = document.querySelector("[data-booking-prev]");
+    let activeStep = 0;
+    let toastTimer;
+    function showToast(message){
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => toast.classList.remove("show"), 3600);
+    }
+    function closeNav(){
+      body.classList.remove("nav-open");
+      hamburger.setAttribute("aria-expanded","false");
+      hamburger.setAttribute("aria-label","Open menu");
+    }
+    hamburger.addEventListener("click", () => {
+      const isOpen = body.classList.toggle("nav-open");
+      hamburger.setAttribute("aria-expanded", String(isOpen));
+      hamburger.setAttribute("aria-label", isOpen ? "Close menu" : "Open menu");
+    });
+    navLinks.forEach(link => {
+      link.addEventListener("click", () => {
+        navLinks.forEach(item => item.classList.remove("active"));
+        link.classList.add("active");
+        closeNav();
+      });
+    });
+    document.addEventListener("keydown", event => {
+      if(event.key === "Escape"){
+        closeNav();
+      }
+      if(document.activeElement === track && (event.key === "ArrowRight" || event.key === "ArrowLeft")){
+        event.preventDefault();
+        const direction = event.key === "ArrowRight" ? 1 : -1;
+        track.scrollBy({ left: direction * track.clientWidth * 0.72, behavior: "smooth" });
+      }
+    });
+    carouselButtons.forEach(button => {
+      button.addEventListener("click", () => {
+        const direction = button.dataset.carousel === "next" ? 1 : -1;
+        track.scrollBy({ left: direction * track.clientWidth * 0.86, behavior: "smooth" });
+      });
+    });
+    function setBookingStep(index){
+      activeStep = Math.max(0, Math.min(index, bookingSteps.length - 1));
+      bookingSteps.forEach((step, stepIndex) => {
+        step.classList.toggle("is-active", stepIndex === activeStep);
+      });
+      progressSteps.forEach((step, stepIndex) => {
+        step.classList.toggle("is-active", stepIndex === activeStep);
+        step.setAttribute("aria-selected", String(stepIndex === activeStep));
+      });
+      prevButton.disabled = activeStep === 0;
+      nextButton.textContent = activeStep === bookingSteps.length - 1 ? "Review visit" : "Next step";
+    }
+    progressSteps.forEach((button, index) => {
+      button.addEventListener("click", () => setBookingStep(index));
+    });
+    nextButton.addEventListener("click", () => {
+      if(activeStep === bookingSteps.length - 1){
+        showToast("Visit details are ready. Confirming will show coverage and price first.");
+      }else{
+        setBookingStep(activeStep + 1);
+      }
+    });
+    prevButton.addEventListener("click", () => setBookingStep(activeStep - 1));
+    document.querySelector(".booking-form").addEventListener("submit", event => {
+      event.preventDefault();
+      showToast("Visit held for 10 minutes. Coverage estimate appears before checkout.");
+    });
+    document.querySelectorAll(".button").forEach(button => {
+      if(button.closest(".booking-form")){
+        return;
+      }
+      button.addEventListener("click", () => {
+        const label = button.textContent.trim();
+        if(label === "Check coverage"){
+          showToast("Coverage check opens with plan name, member ID, and date of birth.");
+        }
+      });
+    });
+    setBookingStep(0);
+  </script>
+</body>
+</html>
