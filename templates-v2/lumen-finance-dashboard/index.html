@@ -1,0 +1,961 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Lumen Finance Dashboard is a premium personal finance and wealth dashboard skeleton for clear, calm money decisions.">
+  <title>Lumen Finance Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --color-ivory: #FBF7EE; --color-ivory-2: #FFFDF7; --color-forest: #12372A;
+      --color-forest-2: #1B4C3A; --color-mint: #B8F2D0; --color-mint-2: #E5F9ED;
+      --color-gold: #D6A84F; --color-gold-2: #F1DCA4; --color-ink: #17201B;
+      --color-ink-soft: #4D5B52; --color-clay: #C9704A; --color-clay-2: #F3D0BE;
+      --color-white: #FFFFFF; --color-line: rgba(23, 32, 27, 0.13); --color-line-soft: rgba(23, 32, 27, 0.08);
+      --font-ui: "IBM Plex Sans", system-ui, sans-serif; --font-editorial: "Fraunces", Georgia, serif; --font-mono: "IBM Plex Mono", monospace;
+      --space-1: 4px; --space-2: 8px; --space-3: 12px;
+      --space-4: 16px; --space-5: 20px; --space-6: 24px;
+      --space-8: 32px; --space-10: 40px; --space-12: 48px;
+      --space-16: 64px; --radius-xs: 6px; --radius-sm: 8px;
+      --radius-md: 14px; --radius-lg: 20px; --radius-xl: 28px;
+      --shadow-soft: 0 22px 70px rgba(18, 55, 42, 0.11); --shadow-card: 0 18px 45px rgba(18, 55, 42, 0.08); --motion-fast: 150ms ease;
+      --motion-med: 240ms ease; --content-max: 1540px; --z-nav: 30;
+      --z-overlay: 50; --z-modal: 60;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html {
+      color-scheme: light; scroll-behavior: smooth;
+    }
+    body {
+      margin: 0; min-height: 100vh; background:
+      linear-gradient(120deg, rgba(184, 242, 208, 0.36), transparent 30%), linear-gradient(180deg, var(--color-ivory), #F6EFE0 100%); color: var(--color-ink);
+      font-family: var(--font-ui); line-height: 1.5; overflow-x: hidden;
+    }
+    body.nav-open {
+      overflow: hidden;
+    }
+    a {
+      color: inherit; text-decoration: none;
+    }
+    button, input, select {
+      font: inherit;
+    }
+    button {
+      border: 0; cursor: pointer;
+    }
+    :focus-visible {
+      outline: 3px solid var(--color-clay); outline-offset: 3px; border-radius: var(--radius-xs);
+    }
+    .skip-link {
+      position: fixed; left: var(--space-4); top: var(--space-4);
+      z-index: var(--z-modal); transform: translateY(-160%); background: var(--color-forest);
+      color: var(--color-ivory); padding: var(--space-3) var(--space-4); border-radius: var(--radius-sm);
+      font-weight: 800; transition: transform var(--motion-fast);
+    }
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+    .app-shell {
+      width: min(100%, var(--content-max)); margin: 0 auto; padding: var(--space-5);
+    }
+    .topbar {
+      position: sticky; top: var(--space-4); z-index: var(--z-nav);
+      display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center;
+      gap: var(--space-5); padding: var(--space-3); border: 1px solid var(--color-line);
+      border-radius: var(--radius-lg); background: rgba(255, 253, 247, 0.86); box-shadow: var(--shadow-card);
+      backdrop-filter: blur(18px);
+    }
+    .brand {
+      display: flex; align-items: center; gap: var(--space-3);
+      min-width: 215px; padding-left: var(--space-2);
+    }
+    .brand-mark {
+      width: 42px; height: 42px; display: grid;
+      place-items: center; border-radius: var(--radius-md); background: var(--color-forest);
+      color: var(--color-mint); font-family: var(--font-editorial); font-size: 1.3rem;
+      font-weight: 700;
+    }
+    .brand-title {
+      display: block; font-weight: 800; letter-spacing: 0;
+    }
+    .brand-subtitle {
+      display: block; color: var(--color-ink-soft); font-size: 0.78rem;
+      margin-top: 1px;
+    }
+    .nav {
+      justify-self: center;
+    }
+    .nav-list {
+      display: flex; align-items: center; gap: var(--space-2);
+      list-style: none; margin: 0; padding: 0;
+    }
+    .nav-link {
+      display: inline-flex; align-items: center; min-height: 40px;
+      padding: var(--space-2) var(--space-4); border-radius: 999px; color: var(--color-ink-soft);
+      font-weight: 700; transition: background var(--motion-fast), color var(--motion-fast);
+    }
+    .nav-link:hover, .nav-link.active {
+      background: var(--color-mint-2); color: var(--color-forest);
+    }
+    .top-actions {
+      display: flex; align-items: center; gap: var(--space-2);
+    }
+    .icon-button, .hamburger {
+      width: 42px; height: 42px; display: grid;
+      place-items: center; border-radius: var(--radius-sm); background: var(--color-white);
+      color: var(--color-forest); border: 1px solid var(--color-line); font-weight: 800;
+    }
+    .hamburger {
+      display: none; position: relative;
+    }
+    .hamburger span, .hamburger::before, .hamburger::after {
+      content: ""; width: 18px; height: 2px;
+      border-radius: 999px; background: currentColor; transition: transform var(--motion-fast), opacity var(--motion-fast);
+    }
+    .hamburger::before {
+      position: absolute; transform: translateY(-7px);
+    }
+    .hamburger::after {
+      position: absolute; transform: translateY(7px);
+    }
+    .nav-open .hamburger span {
+      opacity: 0;
+    }
+    .nav-open .hamburger::before {
+      transform: rotate(45deg);
+    }
+    .nav-open .hamburger::after {
+      transform: rotate(-45deg);
+    }
+    .primary-button, .secondary-button {
+      min-height: 42px; display: inline-flex; align-items: center;
+      justify-content: center; gap: var(--space-2); padding: 0 var(--space-4);
+      border-radius: 999px; font-weight: 800;
+    }
+    .primary-button {
+      background: var(--color-forest); color: var(--color-ivory); box-shadow: 0 12px 24px rgba(18, 55, 42, 0.18);
+    }
+    .secondary-button {
+      background: var(--color-mint-2); color: var(--color-forest); border: 1px solid rgba(18, 55, 42, 0.12);
+    }
+    .page {
+      display: grid; gap: var(--space-5); padding-top: var(--space-6);
+    }
+    .snapshot {
+      display: grid; grid-template-columns: minmax(0, 1.2fr) repeat(3, minmax(190px, 0.45fr)); gap: var(--space-4);
+      align-items: stretch;
+    }
+    .card {
+      border: 1px solid var(--color-line); border-radius: var(--radius-lg); background: rgba(255, 253, 247, 0.82);
+      box-shadow: var(--shadow-card); overflow: hidden;
+    }
+    .card-pad {
+      padding: var(--space-5);
+    }
+    .hero-card {
+      display: grid; gap: var(--space-5); background:
+      linear-gradient(135deg, rgba(18, 55, 42, 0.98), rgba(27, 76, 58, 0.93)), var(--color-forest); color: var(--color-ivory);
+    }
+    .eyebrow {
+      margin: 0 0 var(--space-2); color: var(--color-clay); font-size: 0.75rem;
+      font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .hero-card .eyebrow {
+      color: var(--color-mint);
+    }
+    h1, h2, h3 {
+      margin: 0; line-height: 1.06; letter-spacing: 0;
+    }
+    h1 {
+      max-width: 760px; font-family: var(--font-editorial); font-size: clamp(2.35rem, 5vw, 5.9rem);
+      font-weight: 700;
+    }
+    h2 {
+      font-family: var(--font-editorial); font-size: clamp(1.7rem, 3vw, 3rem); font-weight: 700;
+    }
+    h3 {
+      font-size: 1rem; font-weight: 800;
+    }
+    .plain-copy {
+      max-width: 690px; margin: 0; color: rgba(251, 247, 238, 0.78);
+      font-size: 1.03rem;
+    }
+    .hero-footer {
+      display: flex; flex-wrap: wrap; gap: var(--space-3);
+      align-items: center; justify-content: space-between;
+    }
+    .cash-pill {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      padding: var(--space-2) var(--space-3); border-radius: 999px; background: rgba(184, 242, 208, 0.14);
+      color: var(--color-mint); font-weight: 800;
+    }
+    .money {
+      font-family: var(--font-mono); letter-spacing: 0; white-space: nowrap;
+    }
+    .metric-card {
+      display: grid; align-content: space-between; min-height: 220px;
+    }
+    .metric-label {
+      margin: 0; color: var(--color-ink-soft); font-weight: 700;
+    }
+    .metric-value {
+      display: block; margin-top: var(--space-5); font-family: var(--font-mono);
+      font-size: clamp(1.75rem, 3vw, 2.45rem); font-weight: 700; color: var(--color-forest);
+    }
+    .metric-note {
+      margin: var(--space-3) 0 0; color: var(--color-ink-soft); font-size: 0.92rem;
+    }
+    .trend {
+      color: var(--color-forest); font-weight: 800;
+    }
+    .dashboard-grid {
+      display: grid; grid-template-columns: minmax(260px, 0.8fr) minmax(0, 1.45fr) minmax(280px, 0.9fr); gap: var(--space-5);
+      align-items: start;
+    }
+    .stack {
+      display: grid; gap: var(--space-5);
+    }
+    .section-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      gap: var(--space-4); margin-bottom: var(--space-5);
+    }
+    .section-copy {
+      margin: var(--space-2) 0 0; color: var(--color-ink-soft);
+    }
+    .score-card {
+      background: var(--color-forest); color: var(--color-ivory);
+    }
+    .score-ring {
+      --score: 78%; width: min(240px, 70vw); aspect-ratio: 1;
+      margin: var(--space-2) auto var(--space-5); border-radius: 50%; display: grid;
+      place-items: center; background: conic-gradient(var(--color-mint) var(--score), rgba(251, 247, 238, 0.18) 0); position: relative;
+    }
+    .score-ring::after {
+      content: ""; position: absolute; inset: 18px;
+      border-radius: inherit; background: var(--color-forest); border: 1px solid rgba(251, 247, 238, 0.16);
+    }
+    .score-inner {
+      position: relative; z-index: 1; text-align: center;
+    }
+    .score-number {
+      display: block; font-family: var(--font-mono); font-size: 3.4rem;
+      font-weight: 700; line-height: 1;
+    }
+    .score-label {
+      color: rgba(251, 247, 238, 0.72); font-weight: 700;
+    }
+    .score-list {
+      display: grid; gap: var(--space-3); margin: 0;
+      padding: 0; list-style: none;
+    }
+    .score-item {
+      display: grid; gap: var(--space-2);
+    }
+    .score-row {
+      display: flex; justify-content: space-between; gap: var(--space-3);
+      color: rgba(251, 247, 238, 0.86); font-weight: 700;
+    }
+    .bar {
+      height: 10px; border-radius: 999px; background: rgba(251, 247, 238, 0.14);
+      overflow: hidden;
+    }
+    .bar span {
+      display: block; height: 100%; border-radius: inherit;
+      background: var(--color-mint);
+    }
+    .account-list, .transaction-list, .goal-list {
+      display: grid; gap: var(--space-3); margin: 0;
+      padding: 0; list-style: none;
+    }
+    .account-item, .transaction-item, .goal-item {
+      display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-3);
+      align-items: center; padding: var(--space-3); border: 1px solid var(--color-line-soft);
+      border-radius: var(--radius-md); background: rgba(255, 255, 255, 0.46);
+    }
+    .item-title {
+      display: block; font-weight: 800;
+    }
+    .item-meta {
+      display: block; margin-top: 2px; color: var(--color-ink-soft);
+      font-size: 0.9rem;
+    }
+    .tag {
+      display: inline-flex; align-items: center; min-height: 30px;
+      padding: 0 var(--space-3); border-radius: 999px; background: var(--color-mint-2);
+      color: var(--color-forest); font-size: 0.8rem; font-weight: 800;
+    }
+    .tag.gold {
+      background: var(--color-gold-2); color: #51370A;
+    }
+    .tag.clay {
+      background: var(--color-clay-2); color: #6E2E16;
+    }
+    .cashflow-card {
+      min-height: 560px;
+    }
+    .chart-tabs {
+      display: flex; gap: var(--space-2); padding: var(--space-1);
+      border: 1px solid var(--color-line); border-radius: 999px; background: rgba(255, 255, 255, 0.46);
+    }
+    .chart-tab {
+      min-height: 36px; padding: 0 var(--space-3); border-radius: 999px;
+      background: transparent; color: var(--color-ink-soft); font-weight: 800;
+    }
+    .chart-tab[aria-selected="true"] {
+      background: var(--color-forest); color: var(--color-ivory);
+    }
+    .chart-panels {
+      display: grid; gap: var(--space-5);
+    }
+    .chart-panel {
+      display: none;
+    }
+    .chart-panel.active {
+      display: block;
+    }
+    .chart-summary {
+      margin: 0 0 var(--space-4); padding: var(--space-4); border-radius: var(--radius-md);
+      background: var(--color-mint-2); color: var(--color-forest); font-weight: 700;
+    }
+    .bar-chart {
+      height: 310px; display: grid; grid-template-columns: repeat(6, minmax(74px, 1fr));
+      gap: var(--space-3); align-items: end; padding: var(--space-4);
+      border: 1px solid var(--color-line-soft); border-radius: var(--radius-lg); background:
+      linear-gradient(rgba(23, 32, 27, 0.06) 1px, transparent 1px) 0 0 / 100% 25%, rgba(255, 255, 255, 0.4); overflow-x: auto;
+      scrollbar-color: var(--color-gold) transparent;
+    }
+    .month-column {
+      min-width: 74px; display: grid; gap: var(--space-2);
+      align-items: end; height: 100%;
+    }
+    .bar-pair {
+      height: 230px; display: flex; align-items: end;
+      justify-content: center; gap: var(--space-1);
+    }
+    .income-bar, .spend-bar {
+      width: 26px; border-radius: 999px 999px 6px 6px;
+    }
+    .income-bar {
+      height: var(--income); background: var(--color-forest);
+    }
+    .spend-bar {
+      height: var(--spend); background: var(--color-clay);
+    }
+    .month-label {
+      text-align: center; font-family: var(--font-mono); font-size: 0.78rem;
+      font-weight: 700; color: var(--color-ink-soft);
+    }
+    .legend {
+      display: flex; flex-wrap: wrap; gap: var(--space-3);
+      margin-top: var(--space-4); color: var(--color-ink-soft); font-weight: 700;
+    }
+    .legend span {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+    }
+    .legend i {
+      width: 12px; height: 12px; border-radius: 50%;
+      display: inline-block;
+    }
+    .timeline {
+      display: grid; grid-auto-flow: column; grid-auto-columns: minmax(180px, 1fr);
+      gap: var(--space-3); overflow-x: auto; padding-bottom: var(--space-2);
+      scroll-snap-type: x mandatory;
+    }
+    .timeline-card {
+      scroll-snap-align: start; padding: var(--space-4); border: 1px solid var(--color-line-soft);
+      border-radius: var(--radius-md); background: rgba(255, 255, 255, 0.5);
+    }
+    .timeline-date {
+      font-family: var(--font-mono); color: var(--color-clay); font-weight: 800;
+      font-size: 0.82rem;
+    }
+    .timeline-card strong {
+      display: block; margin-top: var(--space-2);
+    }
+    .timeline-card p {
+      margin: var(--space-2) 0 0; color: var(--color-ink-soft); font-size: 0.92rem;
+    }
+    .donut-wrap {
+      display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: var(--space-5);
+      align-items: center;
+    }
+    .donut {
+      width: 180px; aspect-ratio: 1; border-radius: 50%;
+      background: conic-gradient( var(--color-forest) 0 34%, var(--color-gold) 34% 57%,
+      var(--color-clay) 57% 78%, var(--color-mint) 78% 100% );
+      position: relative;
+    }
+    .donut::after {
+      content: "$8,430"; position: absolute; inset: 34px;
+      display: grid; place-items: center; border-radius: inherit;
+      background: var(--color-ivory-2); color: var(--color-forest); font-family: var(--font-mono);
+      font-weight: 800;
+    }
+    .category-list {
+      display: grid; gap: var(--space-2); margin: 0;
+      padding: 0; list-style: none;
+    }
+    .category-list li {
+      display: flex; justify-content: space-between; gap: var(--space-3);
+      padding: var(--space-2) 0; border-bottom: 1px solid var(--color-line-soft);
+    }
+    .goal-card {
+      background: linear-gradient(180deg, rgba(255, 253, 247, 0.95), rgba(255, 253, 247, 0.74));
+    }
+    .goal-item {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .goal-top {
+      display: flex; justify-content: space-between; gap: var(--space-3);
+      align-items: flex-start;
+    }
+    .goal-progress {
+      display: grid; gap: var(--space-2);
+    }
+    .goal-progress .bar span {
+      background: var(--color-gold);
+    }
+    .insight-card {
+      background: var(--color-ink); color: var(--color-ivory);
+    }
+    .insight-card h2 {
+      color: var(--color-gold-2);
+    }
+    .insight-card p {
+      color: rgba(251, 247, 238, 0.78);
+    }
+    .plain-explainer {
+      margin: var(--space-4) 0 0; padding: var(--space-4); border-radius: var(--radius-md);
+      background: rgba(214, 168, 79, 0.12); color: var(--color-gold-2); font-weight: 700;
+    }
+    .transactions-card {
+      min-height: 100%;
+    }
+    .transaction-item {
+      grid-template-columns: 42px minmax(0, 1fr) auto;
+    }
+    .transaction-icon {
+      width: 42px; height: 42px; display: grid;
+      place-items: center; border-radius: 50%; background: var(--color-mint-2);
+      color: var(--color-forest); font-weight: 900;
+    }
+    .negative {
+      color: var(--color-clay);
+    }
+    .positive {
+      color: var(--color-forest);
+    }
+    .drawer-overlay {
+      position: fixed; inset: 0; z-index: var(--z-overlay);
+      background: rgba(23, 32, 27, 0.4); opacity: 0; pointer-events: none;
+      transition: opacity var(--motion-fast);
+    }
+    .nav-open .drawer-overlay {
+      opacity: 1; pointer-events: auto;
+    }
+    .footer {
+      display: flex; flex-wrap: wrap; justify-content: space-between;
+      gap: var(--space-3); padding: var(--space-8) var(--space-2) var(--space-4); color: var(--color-ink-soft);
+      font-weight: 700;
+    }
+    .reveal {
+      opacity: 0; transform: translateY(16px); transition: opacity var(--motion-med), transform var(--motion-med);
+    }
+    .reveal.visible {
+      opacity: 1; transform: translateY(0);
+    }
+    @media (max-width: 1180px) {
+    .snapshot {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .hero-card {
+      grid-column: 1 / -1;
+    }
+    .dashboard-grid {
+      grid-template-columns: minmax(250px, 0.85fr) minmax(0, 1.15fr);
+    }
+    .right-rail {
+      grid-column: 1 / -1; grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    }
+    @media (max-width: 880px) {
+    .app-shell {
+      padding: var(--space-3);
+    }
+    .topbar {
+      top: var(--space-2); grid-template-columns: auto auto;
+    }
+    .brand {
+      min-width: 0;
+    }
+    .hamburger {
+      display: grid;
+    }
+    .top-actions .primary-button, .top-actions .icon-button {
+      display: none;
+    }
+    .nav {
+      position: fixed; inset: 80px var(--space-3) auto var(--space-3); z-index: var(--z-modal);
+      padding: var(--space-4); border: 1px solid var(--color-line); border-radius: var(--radius-lg);
+      background: var(--color-ivory-2); box-shadow: var(--shadow-soft); transform: translateY(-18px);
+      opacity: 0; pointer-events: none; transition: transform var(--motion-fast), opacity var(--motion-fast);
+    }
+    .nav-open .nav {
+      transform: translateY(0); opacity: 1; pointer-events: auto;
+    }
+    .nav-list {
+      display: grid;
+    }
+    .nav-link {
+      border-radius: var(--radius-md); justify-content: center;
+    }
+    .snapshot, .dashboard-grid, .right-rail, .donut-wrap {
+      grid-template-columns: 1fr;
+    }
+    .snapshot {
+      order: 1;
+    }
+    .right-rail {
+      order: 2;
+    }
+    .cashflow-column {
+      order: 3;
+    }
+    .health-column {
+      order: 4;
+    }
+    .bar-chart {
+      grid-template-columns: repeat(6, 96px); scroll-snap-type: x mandatory;
+    }
+    .month-column {
+      scroll-snap-align: start;
+    }
+    }
+    @media (max-width: 560px) {
+    .metric-card {
+      min-height: 176px;
+    }
+    .hero-footer, .section-header, .goal-top {
+      display: grid;
+    }
+    .card-pad {
+      padding: var(--space-4);
+    }
+    .transaction-item {
+      grid-template-columns: 38px minmax(0, 1fr);
+    }
+    .transaction-item .money {
+      grid-column: 2;
+    }
+    .footer {
+      padding-bottom: var(--space-8);
+    }
+    }
+    @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      scroll-behavior: auto !important; transition-duration: 1ms !important; animation-duration: 1ms !important;
+    }
+    .reveal {
+      opacity: 1; transform: none;
+    }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to money snapshot</a>
+  <div class="drawer-overlay" data-close-nav aria-hidden="true"></div>
+  <div class="app-shell">
+    <header class="topbar" aria-label="Primary navigation">
+      <a class="brand" href="#" aria-label="Lumen Finance home">
+        <span class="brand-mark" aria-hidden="true">L</span>
+        <span>
+          <span class="brand-title">Lumen Finance</span>
+          <span class="brand-subtitle">Personal wealth dashboard</span>
+        </span>
+      </a>
+      <nav class="nav" id="site-nav" aria-label="Dashboard sections">
+        <ul class="nav-list">
+          <li><a class="nav-link active" href="#snapshot">Snapshot</a></li>
+          <li><a class="nav-link" href="#cashflow">Cashflow</a></li>
+          <li><a class="nav-link" href="#goals">Goals</a></li>
+          <li><a class="nav-link" href="#timeline">Timeline</a></li>
+          <li><a class="nav-link" href="#transactions">Transactions</a></li>
+        </ul>
+      </nav>
+      <div class="top-actions">
+        <button class="icon-button" type="button" aria-label="Open account alerts">$</button>
+        <button class="primary-button" type="button">Move $650</button>
+        <button class="hamburger" type="button" aria-label="Open menu" aria-controls="site-nav" aria-expanded="false">
+          <span aria-hidden="true"></span>
+        </button>
+      </div>
+    </header>
+
+    <main class="page" id="main">
+      <section class="snapshot reveal" id="snapshot" aria-labelledby="snapshot-title">
+        <article class="card hero-card card-pad">
+          <div>
+            <p class="eyebrow">Today's money snapshot</p>
+            <h1 id="snapshot-title">You are ahead this month by <span class="money">$1,246</span>.</h1>
+          </div>
+          <p class="plain-copy">Bills are covered, groceries are tracking normally, and the Hawaii fund can receive an extra transfer without squeezing the checking account.</p>
+          <div class="hero-footer">
+            <span class="cash-pill"><span aria-hidden="true">+</span> Safe-to-save today: <span class="money">$420</span></span>
+            <button class="secondary-button" type="button">Review plan</button>
+          </div>
+        </article>
+
+        <article class="card metric-card card-pad" aria-label="Total net worth">
+          <div>
+            <p class="metric-label">Net worth</p>
+            <span class="metric-value">$184,920</span>
+          </div>
+          <p class="metric-note"><span class="trend">Up $3,480</span> since April, mostly from retirement contributions and market growth.</p>
+        </article>
+
+        <article class="card metric-card card-pad" aria-label="Available cash">
+          <div>
+            <p class="metric-label">Available cash</p>
+            <span class="metric-value">$12,840</span>
+          </div>
+          <p class="metric-note">Enough for 4.8 months of essential spending at your current baseline.</p>
+        </article>
+
+        <article class="card metric-card card-pad" aria-label="Monthly spending">
+          <div>
+            <p class="metric-label">May spending</p>
+            <span class="metric-value">$4,186</span>
+          </div>
+          <p class="metric-note"><span class="trend">$314 under plan</span> with six days left in the month.</p>
+        </article>
+      </section>
+
+      <section class="dashboard-grid" aria-label="Finance dashboard details">
+        <div class="stack health-column">
+          <article class="card score-card card-pad reveal" aria-labelledby="health-title">
+            <div class="section-header">
+              <div>
+                <p class="eyebrow">Financial health</p>
+                <h2 id="health-title">Stable and improving.</h2>
+              </div>
+              <span class="tag">Low stress</span>
+            </div>
+            <div class="score-ring" role="img" aria-label="Financial health score 78 out of 100">
+              <div class="score-inner">
+                <span class="score-number">78</span>
+                <span class="score-label">of 100</span>
+              </div>
+            </div>
+            <ul class="score-list">
+              <li class="score-item">
+                <div class="score-row"><span>Emergency cushion</span><span>86%</span></div>
+                <div class="bar"><span style="width: 86%"></span></div>
+              </li>
+              <li class="score-item">
+                <div class="score-row"><span>Debt comfort</span><span>72%</span></div>
+                <div class="bar"><span style="width: 72%"></span></div>
+              </li>
+              <li class="score-item">
+                <div class="score-row"><span>Goal momentum</span><span>76%</span></div>
+                <div class="bar"><span style="width: 76%"></span></div>
+              </li>
+            </ul>
+          </article>
+
+          <article class="card card-pad reveal" aria-labelledby="accounts-title">
+            <div class="section-header">
+              <div>
+                <p class="eyebrow">Accounts</p>
+                <h2 id="accounts-title">Where the money sits</h2>
+              </div>
+            </div>
+            <ul class="account-list">
+              <li class="account-item">
+                <span><span class="item-title">Northstar Checking</span><span class="item-meta">Paycheck and bills</span></span>
+                <span class="money">$6,420</span>
+              </li>
+              <li class="account-item">
+                <span><span class="item-title">Oakline High Yield</span><span class="item-meta">Emergency reserve</span></span>
+                <span class="money">$18,300</span>
+              </li>
+              <li class="account-item">
+                <span><span class="item-title">Vanguard Roth IRA</span><span class="item-meta">Long-term investing</span></span>
+                <span class="money">$42,880</span>
+              </li>
+              <li class="account-item">
+                <span><span class="item-title">Bluebird Rewards Card</span><span class="item-meta">Paid in full June 3</span></span>
+                <span class="money negative">-$1,284</span>
+              </li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="stack cashflow-column">
+          <article class="card cashflow-card card-pad reveal" id="cashflow" aria-labelledby="cashflow-title">
+            <div class="section-header">
+              <div>
+                <p class="eyebrow">Cashflow</p>
+                <h2 id="cashflow-title">Money in, money out</h2>
+                <p class="section-copy">Swipe the monthly chart on mobile. Every chart includes a plain-language summary before the visual.</p>
+              </div>
+              <div class="chart-tabs" role="tablist" aria-label="Cashflow charts">
+                <button class="chart-tab" id="tab-flow" role="tab" type="button" aria-selected="true" aria-controls="panel-flow" data-chart="flow">Flow</button>
+                <button class="chart-tab" id="tab-spend" role="tab" type="button" aria-selected="false" aria-controls="panel-spend" data-chart="spend">Spend</button>
+              </div>
+            </div>
+
+            <div class="chart-panels">
+              <div class="chart-panel active" id="panel-flow" role="tabpanel" aria-labelledby="tab-flow">
+                <p class="chart-summary">Income has stayed steady near <span class="money">$7,900</span>. Spending rose in March for car repairs, then settled back under plan in April and May.</p>
+                <div class="bar-chart" role="img" aria-label="Six month cashflow chart comparing income and spending from December through May">
+                  <div class="month-column" style="--income: 82%; --spend: 61%">
+                    <div class="bar-pair"><span class="income-bar"></span><span class="spend-bar"></span></div>
+                    <span class="month-label">Dec</span>
+                  </div>
+                  <div class="month-column" style="--income: 79%; --spend: 58%">
+                    <div class="bar-pair"><span class="income-bar"></span><span class="spend-bar"></span></div>
+                    <span class="month-label">Jan</span>
+                  </div>
+                  <div class="month-column" style="--income: 80%; --spend: 63%">
+                    <div class="bar-pair"><span class="income-bar"></span><span class="spend-bar"></span></div>
+                    <span class="month-label">Feb</span>
+                  </div>
+                  <div class="month-column" style="--income: 83%; --spend: 78%">
+                    <div class="bar-pair"><span class="income-bar"></span><span class="spend-bar"></span></div>
+                    <span class="month-label">Mar</span>
+                  </div>
+                  <div class="month-column" style="--income: 81%; --spend: 57%">
+                    <div class="bar-pair"><span class="income-bar"></span><span class="spend-bar"></span></div>
+                    <span class="month-label">Apr</span>
+                  </div>
+                  <div class="month-column" style="--income: 84%; --spend: 53%">
+                    <div class="bar-pair"><span class="income-bar"></span><span class="spend-bar"></span></div>
+                    <span class="month-label">May</span>
+                  </div>
+                </div>
+                <div class="legend" aria-hidden="true">
+                  <span><i style="background: var(--color-forest)"></i>Income</span>
+                  <span><i style="background: var(--color-clay)"></i>Spending</span>
+                </div>
+              </div>
+
+              <div class="chart-panel" id="panel-spend" role="tabpanel" aria-labelledby="tab-spend">
+                <p class="chart-summary">Housing is predictable, food is slightly under its usual range, and travel is the only category running warm this month.</p>
+                <div class="donut-wrap">
+                  <div class="donut" role="img" aria-label="Spending categories total 8430 dollars across housing, food, travel, and savings"></div>
+                  <ul class="category-list">
+                    <li><span>Housing and utilities</span><strong class="money">$2,880</strong></li>
+                    <li><span>Groceries and dining</span><strong class="money">$1,960</strong></li>
+                    <li><span>Travel and weekends</span><strong class="money">$1,780</strong></li>
+                    <li><span>Automatic savings</span><strong class="money">$1,810</strong></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="card card-pad reveal" id="timeline" aria-labelledby="timeline-title">
+            <div class="section-header">
+              <div>
+                <p class="eyebrow">Monthly timeline</p>
+                <h2 id="timeline-title">What happens next</h2>
+              </div>
+              <span class="tag gold">May cycle</span>
+            </div>
+            <div class="timeline" aria-label="Upcoming monthly money timeline">
+              <article class="timeline-card">
+                <span class="timeline-date">May 27</span>
+                <strong>Rent buffer check</strong>
+                <p>Keep <span class="money">$2,950</span> untouched in checking for June housing.</p>
+              </article>
+              <article class="timeline-card">
+                <span class="timeline-date">May 31</span>
+                <strong>Paycheck lands</strong>
+                <p>Expected direct deposit from Brightfield Studio: <span class="money">$3,920</span>.</p>
+              </article>
+              <article class="timeline-card">
+                <span class="timeline-date">Jun 03</span>
+                <strong>Card payment</strong>
+                <p>Bluebird Rewards statement auto-pays in full: <span class="money">$1,284</span>.</p>
+              </article>
+              <article class="timeline-card">
+                <span class="timeline-date">Jun 05</span>
+                <strong>Investing day</strong>
+                <p>Scheduled Roth IRA transfer: <span class="money">$583</span>.</p>
+              </article>
+            </div>
+          </article>
+        </div>
+
+        <aside class="stack right-rail" id="goals" aria-label="Goals and insights">
+          <article class="card goal-card card-pad reveal" aria-labelledby="goals-title">
+            <div class="section-header">
+              <div>
+                <p class="eyebrow">Goals</p>
+                <h2 id="goals-title">Fund the life plans</h2>
+              </div>
+              <button class="secondary-button" type="button" data-boost-goals>Add $420</button>
+            </div>
+            <ul class="goal-list">
+              <li class="goal-item">
+                <div class="goal-top">
+                  <span><span class="item-title">Hawaii anniversary trip</span><span class="item-meta">Target: September 12</span></span>
+                  <span class="money">$4,860</span>
+                </div>
+                <div class="goal-progress">
+                  <div class="bar"><span style="width: 68%"></span></div>
+                  <span class="item-meta">68% funded. Extra transfer moves the date 11 days earlier.</span>
+                </div>
+              </li>
+              <li class="goal-item">
+                <div class="goal-top">
+                  <span><span class="item-title">Emergency fund</span><span class="item-meta">Six-month target</span></span>
+                  <span class="money">$18,300</span>
+                </div>
+                <div class="goal-progress">
+                  <div class="bar"><span style="width: 81%"></span></div>
+                  <span class="item-meta">Already strong. No urgent action needed.</span>
+                </div>
+              </li>
+              <li class="goal-item">
+                <div class="goal-top">
+                  <span><span class="item-title">Kitchen refresh</span><span class="item-meta">Cash-only project</span></span>
+                  <span class="money">$2,140</span>
+                </div>
+                <div class="goal-progress">
+                  <div class="bar"><span style="width: 43%"></span></div>
+                  <span class="item-meta">Keep current pace to avoid using credit.</span>
+                </div>
+              </li>
+            </ul>
+          </article>
+
+          <article class="card insight-card card-pad reveal" aria-labelledby="insight-title">
+            <p class="eyebrow">Plain-language insight</p>
+            <h2 id="insight-title">Your budget is not tight. It is just lumpy.</h2>
+            <p>March looked uncomfortable because car repairs and insurance hit together. When those one-time costs are separated, your everyday spending is still inside the normal range.</p>
+            <div class="plain-explainer">Translation: do not cut groceries. Keep the repair fund topped up so the next surprise has a place to land.</div>
+          </article>
+
+          <article class="card transactions-card card-pad reveal" id="transactions" aria-labelledby="transactions-title">
+            <div class="section-header">
+              <div>
+                <p class="eyebrow">Recent activity</p>
+                <h2 id="transactions-title">Clean transactions</h2>
+              </div>
+              <span class="tag clay">5 new</span>
+            </div>
+            <ul class="transaction-list">
+              <li class="transaction-item">
+                <span class="transaction-icon" aria-hidden="true">G</span>
+                <span><span class="item-title">Greenleaf Market</span><span class="item-meta">Groceries, today</span></span>
+                <span class="money negative">-$84.20</span>
+              </li>
+              <li class="transaction-item">
+                <span class="transaction-icon" aria-hidden="true">B</span>
+                <span><span class="item-title">Brightfield Studio</span><span class="item-meta">Payroll deposit</span></span>
+                <span class="money positive">+$3,920.00</span>
+              </li>
+              <li class="transaction-item">
+                <span class="transaction-icon" aria-hidden="true">M</span>
+                <span><span class="item-title">Maple Dental</span><span class="item-meta">Health sinking fund</span></span>
+                <span class="money negative">-$126.40</span>
+              </li>
+              <li class="transaction-item">
+                <span class="transaction-icon" aria-hidden="true">O</span>
+                <span><span class="item-title">Oakline Savings</span><span class="item-meta">Automatic transfer</span></span>
+                <span class="money positive">+$650.00</span>
+              </li>
+            </ul>
+          </article>
+        </aside>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>Lumen Finance Dashboard</span>
+      <span>Built with Frontend Skeletons</span>
+    </footer>
+  </div>
+
+  <script>
+    const body = document.body;
+    const menuButton = document.querySelector(".hamburger");
+    const closeTargets = document.querySelectorAll("[data-close-nav], .nav-link");
+    const tabs = Array.from(document.querySelectorAll(".chart-tab"));
+    const panels = Array.from(document.querySelectorAll(".chart-panel"));
+    const revealItems = document.querySelectorAll(".reveal");
+    const goalButton = document.querySelector("[data-boost-goals]");
+
+    function setNav(open) {
+      body.classList.toggle("nav-open", open);
+      menuButton.setAttribute("aria-expanded", String(open));
+      menuButton.setAttribute("aria-label", open ? "Close menu" : "Open menu");
+    }
+
+    menuButton.addEventListener("click", () => {
+      setNav(!body.classList.contains("nav-open"));
+    });
+
+    closeTargets.forEach((target) => {
+      target.addEventListener("click", () => setNav(false));
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        setNav(false);
+      }
+    });
+
+    function activateChart(selectedTab) {
+      tabs.forEach((tab) => {
+        const active = tab === selectedTab;
+        tab.setAttribute("aria-selected", String(active));
+        tab.tabIndex = active ? 0 : -1;
+      });
+
+      panels.forEach((panel) => {
+        panel.classList.toggle("active", panel.id === selectedTab.getAttribute("aria-controls"));
+      });
+    }
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => activateChart(tab));
+      tab.addEventListener("keydown", (event) => {
+        const direction = event.key === "ArrowRight" ? 1 : event.key === "ArrowLeft" ? -1 : 0;
+        if (!direction) return;
+        event.preventDefault();
+        const next = tabs[(index + direction + tabs.length) % tabs.length];
+        activateChart(next);
+        next.focus();
+      });
+    });
+
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12 });
+
+      revealItems.forEach((item) => observer.observe(item));
+    } else {
+      revealItems.forEach((item) => item.classList.add("visible"));
+    }
+
+    goalButton.addEventListener("click", () => {
+      goalButton.textContent = "Transfer queued";
+      goalButton.disabled = true;
+      goalButton.setAttribute("aria-label", "Extra savings transfer has been queued");
+    });
+  </script>
+</body>
+</html>
