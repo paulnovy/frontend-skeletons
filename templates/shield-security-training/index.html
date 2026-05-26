@@ -1,0 +1,980 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A security training portal for phishing simulations, compliance courses, and workforce progress.">
+  <title>Shield Security Training</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&family=JetBrains+Mono:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+
+    :root {
+      --bg: #fffafa;
+      --surface: #ffffff;
+      --surface-soft: #fee2e2;
+      --text: #341919;
+      --muted: #7a6666;
+      --accent: #dc2626;
+      --accent-2: #f97316;
+      --line: color-mix(in srgb, var(--muted) 22%, transparent);
+      --shadow: 0 24px 80px rgba(15, 23, 42, 0.12);
+      --shadow-soft: 0 16px 40px rgba(15, 23, 42, 0.08);
+      --radius: 8px;
+      --max: 1180px;
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 10%, transparent), transparent 34rem),
+        linear-gradient(180deg, var(--bg), color-mix(in srgb, var(--bg) 82%, var(--surface-soft)));
+      line-height: 1.5;
+    }
+
+    body.template-dark {
+      --line: rgba(134, 239, 172, 0.18);
+      --shadow: 0 30px 90px rgba(0, 0, 0, 0.36);
+      --shadow-soft: 0 18px 50px rgba(0, 0, 0, 0.26);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(34, 197, 94, 0.20), transparent 30rem),
+        radial-gradient(circle at 88% 16%, rgba(134, 239, 172, 0.12), transparent 28rem),
+        #07110d;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    .skip-link {
+      position: fixed;
+      left: 1rem;
+      top: 1rem;
+      z-index: 20;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius);
+      background: var(--text);
+      color: var(--bg);
+      transform: translateY(-140%);
+      transition: transform 180ms ease;
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    .page-shell {
+      width: min(100%, var(--max));
+      margin: 0 auto;
+      padding: 0 1.25rem 3rem;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      margin: 0 -1.25rem;
+      padding: 1rem 1.25rem;
+      backdrop-filter: blur(18px);
+      background: color-mix(in srgb, var(--bg) 82%, transparent);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: min(100%, var(--max));
+      margin: 0 auto;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 2.6rem;
+      height: 2.6rem;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: white;
+      box-shadow: var(--shadow-soft);
+      font-weight: 900;
+    }
+
+    .brand small {
+      display: block;
+      color: var(--muted);
+      font-weight: 650;
+      margin-top: 0.1rem;
+    }
+
+    .menu-toggle {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.7rem;
+      height: 2.7rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--text);
+      cursor: pointer;
+      transition: transform 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .menu-toggle:hover,
+    .menu-toggle:focus-visible {
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      outline: none;
+    }
+
+    .hamburger,
+    .hamburger::before,
+    .hamburger::after {
+      display: block;
+      width: 1.15rem;
+      height: 2px;
+      border-radius: 999px;
+      background: currentColor;
+      transition: transform 180ms ease, opacity 180ms ease;
+      content: "";
+    }
+
+    .hamburger::before {
+      transform: translateY(-0.42rem);
+    }
+
+    .hamburger::after {
+      transform: translateY(0.32rem);
+    }
+
+    .nav-open .hamburger {
+      transform: rotate(45deg);
+    }
+
+    .nav-open .hamburger::before {
+      opacity: 0;
+    }
+
+    .nav-open .hamburger::after {
+      transform: translateY(-2px) rotate(-90deg);
+    }
+
+    .primary-nav {
+      position: absolute;
+      left: 1.25rem;
+      right: 1.25rem;
+      top: calc(100% + 0.4rem);
+      display: grid;
+      gap: 0.3rem;
+      padding: 0.6rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: var(--shadow);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-0.6rem);
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .nav-open .primary-nav {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .primary-nav a {
+      padding: 0.75rem 0.9rem;
+      border-radius: 6px;
+      color: var(--muted);
+      font-weight: 700;
+      transition: color 180ms ease, background 180ms ease;
+    }
+
+    .primary-nav a:hover,
+    .primary-nav a:focus-visible {
+      color: var(--text);
+      background: var(--surface-soft);
+      outline: none;
+    }
+
+    .header-actions {
+      display: none;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      min-height: 2.75rem;
+      padding: 0.78rem 1rem;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-weight: 800;
+      transition: transform 180ms ease, box-shadow 180ms ease, border-color 180ms ease, background 180ms ease;
+    }
+
+    .button.primary {
+      background: var(--accent);
+      color: white;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .button.secondary {
+      background: var(--surface);
+      color: var(--text);
+      border-color: var(--line);
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-soft);
+      outline: none;
+    }
+
+    main {
+      display: grid;
+      gap: 4rem;
+    }
+
+    .hero {
+      display: grid;
+      gap: 2rem;
+      align-items: center;
+      padding: 4rem 0 1rem;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      width: fit-content;
+      padding: 0.35rem 0.65rem;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--accent);
+      background: color-mix(in srgb, var(--surface) 78%, transparent);
+      font-size: 0.78rem;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      max-width: 12ch;
+      margin: 1rem 0;
+      font-size: clamp(3.2rem, 10vw, 7.8rem);
+      line-height: 0.89;
+      letter-spacing: 0;
+    }
+
+    .hero-copy {
+      max-width: 42rem;
+      margin: 0;
+      color: var(--muted);
+      font-size: clamp(1.05rem, 2vw, 1.28rem);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-top: 1.5rem;
+    }
+
+    .hero-panel {
+      display: grid;
+      gap: 1rem;
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--surface) 86%, transparent);
+      box-shadow: var(--shadow);
+    }
+
+    .preview-stage {
+      position: relative;
+      min-height: 26rem;
+      overflow: hidden;
+      border-radius: var(--radius);
+      background:
+        linear-gradient(135deg, color-mix(in srgb, var(--accent) 16%, transparent), transparent),
+        var(--surface-soft);
+      border: 1px solid var(--line);
+    }
+
+    .grid-rules {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--line) 1px, transparent 1px);
+      background-size: 42px 42px;
+      mask-image: linear-gradient(180deg, black, transparent 88%);
+      opacity: 0.58;
+    }
+
+    .floating-window {
+      position: absolute;
+      left: 7%;
+      right: 7%;
+      top: 11%;
+      display: grid;
+      gap: 1rem;
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .window-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .dots {
+      display: flex;
+      gap: 0.35rem;
+    }
+
+    .dots i {
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.6;
+    }
+
+    .visual-stack {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .visual-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1rem;
+      align-items: center;
+      padding: 0.85rem;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: color-mix(in srgb, var(--bg) 55%, var(--surface));
+    }
+
+    .visual-row strong {
+      display: block;
+      margin-bottom: 0.2rem;
+    }
+
+    .visual-row span {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .status-pill {
+      padding: 0.35rem 0.55rem;
+      border-radius: 999px;
+      color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 12%, transparent);
+      font-size: 0.78rem;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .metric {
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      transition: transform 180ms ease, border-color 180ms ease;
+    }
+
+    .metric:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.8rem;
+      line-height: 1;
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 0.45rem;
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    .section-head {
+      display: grid;
+      gap: 0.7rem;
+      max-width: 48rem;
+    }
+
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 0.98;
+      letter-spacing: 0;
+    }
+
+    .section-head p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .feature-grid,
+    .card-grid {
+      display: grid;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+
+    .feature,
+    .work-card,
+    .activity-panel,
+    .insight-panel,
+    .quote-panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .feature {
+      padding: 1.2rem;
+      transition: transform 180ms ease, border-color 180ms ease;
+    }
+
+    .feature:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+    }
+
+    .feature-number {
+      display: grid;
+      place-items: center;
+      width: 2.4rem;
+      height: 2.4rem;
+      margin-bottom: 1rem;
+      border-radius: 6px;
+      background: var(--surface-soft);
+      color: var(--accent);
+      font-family: "JetBrains Mono", monospace;
+      font-weight: 800;
+    }
+
+    .feature h3,
+    .work-card h3,
+    .activity-panel h3,
+    .insight-panel h3 {
+      margin: 0 0 0.5rem;
+      font-size: 1.1rem;
+    }
+
+    .feature p,
+    .work-card p {
+      margin: 0;
+      color: var(--muted);
+    }
+
+    .work-card {
+      display: grid;
+      gap: 1rem;
+      padding: 1rem;
+      transition: transform 180ms ease, border-color 180ms ease;
+    }
+
+    .work-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--accent);
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .progress-track {
+      height: 0.6rem;
+      overflow: hidden;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--muted) 13%, transparent);
+    }
+
+    .progress-track span {
+      display: block;
+      height: 100%;
+      width: var(--value);
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    }
+
+    .workspace {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .activity-panel,
+    .insight-panel {
+      padding: 1.2rem;
+    }
+
+    .activity-list {
+      display: grid;
+      gap: 0.75rem;
+      margin: 1rem 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .activity-list li {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.75rem;
+      align-items: start;
+      padding: 0.85rem;
+      border-radius: 6px;
+      background: color-mix(in srgb, var(--surface-soft) 66%, transparent);
+      color: var(--muted);
+    }
+
+    .activity-list li::before {
+      content: "";
+      width: 0.7rem;
+      height: 0.7rem;
+      margin-top: 0.45rem;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 0 0.35rem color-mix(in srgb, var(--accent) 13%, transparent);
+    }
+
+    .bars {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: end;
+      gap: 0.7rem;
+      height: 15rem;
+      margin-top: 1.2rem;
+      padding: 1rem;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--bg) 58%, var(--surface));
+    }
+
+    .bar {
+      display: grid;
+      align-items: end;
+      height: 100%;
+      min-width: 0;
+    }
+
+    .bar span {
+      display: block;
+      min-height: 22%;
+      height: var(--height);
+      border-radius: 6px 6px 2px 2px;
+      background: linear-gradient(180deg, var(--accent-2), var(--accent));
+    }
+
+    .bar small {
+      margin-top: 0.5rem;
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-align: center;
+      overflow-wrap: anywhere;
+    }
+
+    .quote-panel {
+      margin: 2rem 0 0;
+      padding: 1.4rem;
+    }
+
+    .quote-panel p {
+      margin: 0;
+      font-size: clamp(1.25rem, 3vw, 2rem);
+      line-height: 1.15;
+    }
+
+    .quote-panel cite {
+      display: block;
+      margin-top: 1rem;
+      color: var(--muted);
+      font-style: normal;
+      font-weight: 800;
+    }
+
+    .footer {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 2rem 0 0;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer a:hover,
+    .footer a:focus-visible {
+      color: var(--accent);
+      outline: none;
+    }
+
+    @media (min-width: 760px) {
+      .metric-grid,
+      .feature-grid,
+      .card-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .workspace {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .footer {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    @media (min-width: 980px) {
+      .menu-toggle {
+        display: none;
+      }
+
+      .primary-nav {
+        position: static;
+        display: flex;
+        align-items: center;
+        width: auto;
+        padding: 0;
+        border: 0;
+        background: transparent;
+        box-shadow: none;
+        opacity: 1;
+        pointer-events: auto;
+        transform: none;
+      }
+
+      .header-actions {
+        display: flex;
+      }
+
+      .hero {
+        grid-template-columns: minmax(0, 0.92fr) minmax(24rem, 1fr);
+        padding-top: 6rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+      }
+    }
+
+  </style>
+</head>
+<body class="">
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header">
+    <div class="nav-wrap">
+      <a class="brand" href="#top" aria-label="Shield Security Training home">
+        <span class="brand-mark">SS</span>
+        <span>Shield Security Training<small>Security Awareness</small></span>
+      </a>
+      <nav class="primary-nav" aria-label="Primary navigation">
+          <a href="#campaigns">Campaigns</a>
+          <a href="#courses">Courses</a>
+          <a href="#phishing">Phishing</a>
+          <a href="#progress">Progress</a>
+      </nav>
+      <div class="header-actions">
+        <a class="button secondary" href="#insight">View demo</a>
+        <a class="button primary" href="#contact">Start review</a>
+      </div>
+      <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false">
+        <span class="hamburger" aria-hidden="true"></span>
+      </button>
+    </div>
+  </header>
+  <div class="page-shell" id="top">
+    <main id="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <div>
+          <span class="eyebrow">White/red accent interface system</span>
+          <h1 id="hero-title">Shield Security Training</h1>
+          <p class="hero-copy">A security training portal for phishing simulations, compliance courses, and workforce progress.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#work">Explore workflow</a>
+            <a class="button secondary" href="#principles">Read principles</a>
+          </div>
+        </div>
+        <aside class="hero-panel" aria-label="Live product preview">
+          <div class="preview-stage">
+            <div class="grid-rules" aria-hidden="true"></div>
+            <div class="floating-window">
+              <div class="window-bar">
+                <span>Operational preview</span>
+                <span class="dots" aria-hidden="true"><i></i><i></i><i></i></span>
+              </div>
+              <div class="visual-stack">
+              <article class="visual-row">
+                <div>
+                  <strong>Invoice spoof campaign</strong>
+                  <span>Finance cohort showed elevated attachment-open rate.</span>
+                </div>
+                <span class="status-pill">Coaching queued</span>
+              </article>
+              <article class="visual-row">
+                <div>
+                  <strong>Annual security basics</strong>
+                  <span>Course completion above target with managers notified on overdue seats.</span>
+                </div>
+                <span class="status-pill">On track</span>
+              </article>
+              <article class="visual-row">
+                <div>
+                  <strong>Executive travel module</strong>
+                  <span>High-risk travelers assigned mobile device and Wi-Fi safety training.</span>
+                </div>
+                <span class="status-pill">Assigned</span>
+              </article>
+              </div>
+            </div>
+          </div>
+          <div class="metric-grid" aria-label="Key metrics">
+          <article class="metric">
+            <strong>84%</strong>
+            <span>course completion</span>
+          </article>
+          <article class="metric">
+            <strong>3.1%</strong>
+            <span>phish click rate</span>
+          </article>
+          <article class="metric">
+            <strong>42</strong>
+            <span>teams enrolled</span>
+          </article>
+          <article class="metric">
+            <strong>19</strong>
+            <span>risk alerts</span>
+          </article>
+          </div>
+        </aside>
+      </section>
+      <section id="campaigns" aria-labelledby="features-title">
+        <div class="section-head">
+          <span class="eyebrow">System capabilities</span>
+          <h2 id="features-title">Designed around the work users actually need to finish.</h2>
+          <p>Turns training status, simulation results, and risk behavior into a practical manager-facing dashboard.</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature">
+            <div class="feature-number">01</div>
+            <h3>Phishing sims</h3>
+            <p>Scenario library, targeting rules, landing page outcomes, and coaching follow-up.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-number">02</div>
+            <h3>Compliance courses</h3>
+            <p>Assigned modules for SOC 2, HIPAA, PCI, and annual policy acknowledgment.</p>
+          </article>
+          <article class="feature">
+            <div class="feature-number">03</div>
+            <h3>Progress tracking</h3>
+            <p>Completion, risk trend, overdue learners, and department comparisons.</p>
+          </article>
+        </div>
+      </section>
+      <section id="work" aria-labelledby="work-title">
+        <div class="section-head">
+          <span class="eyebrow">Current workspace</span>
+          <h2 id="work-title">Realistic cards, statuses, and progress signals for product demos.</h2>
+          <p>Every module uses concrete language, measured status, and enough operational detail to feel credible without needing a backend.</p>
+        </div>
+        <div class="card-grid">
+          <article class="work-card">
+            <div class="card-top">
+              <div>
+                <h3>Invoice spoof campaign</h3>
+                <p>Finance cohort showed elevated attachment-open rate.</p>
+              </div>
+              <span class="status-pill">Coaching queued</span>
+            </div>
+            <div class="progress-track" aria-label="Progress 57%">
+              <span style="--value: 57%;"></span>
+            </div>
+          </article>
+          <article class="work-card">
+            <div class="card-top">
+              <div>
+                <h3>Annual security basics</h3>
+                <p>Course completion above target with managers notified on overdue seats.</p>
+              </div>
+              <span class="status-pill">On track</span>
+            </div>
+            <div class="progress-track" aria-label="Progress 84%">
+              <span style="--value: 84%;"></span>
+            </div>
+          </article>
+          <article class="work-card">
+            <div class="card-top">
+              <div>
+                <h3>Executive travel module</h3>
+                <p>High-risk travelers assigned mobile device and Wi-Fi safety training.</p>
+              </div>
+              <span class="status-pill">Assigned</span>
+            </div>
+            <div class="progress-track" aria-label="Progress 39%">
+              <span style="--value: 39%;"></span>
+            </div>
+          </article>
+        </div>
+      </section>
+      <section class="workspace" id="insight" aria-label="Insight workspace">
+        <article class="activity-panel">
+          <span class="eyebrow">Audit trail</span>
+          <h3>Recent decisions and system events</h3>
+          <ul class="activity-list">
+            <li>New phishing landing page approved by legal</li>
+            <li>Managers received overdue learner digest</li>
+            <li>Course quiz improved after password manager lesson update</li>
+          </ul>
+        </article>
+        <article class="insight-panel">
+          <span class="eyebrow">Flow health</span>
+          <h3>Security training and phishing simulation portal</h3>
+          <div class="bars" aria-label="Workflow distribution chart">
+              <div class="bar">
+                <span style="--height: 72%;"></span>
+                <small>Enroll</small>
+              </div>
+              <div class="bar">
+                <span style="--height: 54%;"></span>
+                <small>Train</small>
+              </div>
+              <div class="bar">
+                <span style="--height: 86%;"></span>
+                <small>Simulate</small>
+              </div>
+              <div class="bar">
+                <span style="--height: 63%;"></span>
+                <small>Coach</small>
+              </div>
+              <div class="bar">
+                <span style="--height: 78%;"></span>
+                <small>Measure</small>
+              </div>
+          </div>
+        </article>
+      </section>
+      <section id="principles" aria-labelledby="principles-title">
+        <div class="section-head">
+          <span class="eyebrow">Design philosophy</span>
+          <h2 id="principles-title">Premium does not mean decorative. It means legible, fast, and trusted.</h2>
+          <p>Security awareness teams, HR enablement, compliance managers, and department leads.</p>
+        </div>
+        <blockquote class="quote-panel">
+          <p>Security training lands when it respects attention and changes behavior.</p>
+          <cite>Shield Security Training design note</cite>
+        </blockquote>
+      </section>
+    </main>
+    <footer class="footer" id="contact">
+      <div>Built with Frontend Skeletons</div>
+      <div class="footer-links">
+        <a href="#top">Top</a>
+        <a href="#work">Workflow</a>
+        <a href="#insight">Insights</a>
+      </div>
+    </footer>
+  </div>
+  <script>
+    const toggle = document.querySelector('.menu-toggle');
+    const nav = document.querySelector('.primary-nav');
+
+    toggle.addEventListener('click', () => {
+      const isOpen = document.body.classList.toggle('nav-open');
+      toggle.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    nav.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => {
+        document.body.classList.remove('nav-open');
+        toggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    window.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        document.body.classList.remove('nav-open');
+        toggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  </script>
+</body>
+</html>

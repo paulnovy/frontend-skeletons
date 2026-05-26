@@ -1,0 +1,776 @@
+// Skeleton catalog — auto-generated from manifest
+const skeletons = [
+  {
+    "slug": "aurora-ai-command-center",
+    "name": "Aurora AI Command Center",
+    "category": "AI & ML",
+    "description": "AI operations command center with real-time model monitoring, prompt management, and inference analytics",
+    "useCase": "AI platform dashboard"
+  },
+  {
+    "slug": "lumen-finance-dashboard",
+    "name": "Lumen Finance Dashboard",
+    "category": "Fintech",
+    "description": "Personal finance management with spending insights, budget tracking, and investment portfolio visualization",
+    "useCase": "Fintech consumer app"
+  },
+  {
+    "slug": "velvet-commerce-studio",
+    "name": "Velvet Commerce Studio",
+    "category": "E-commerce",
+    "description": "Premium e-commerce management hub with inventory, orders, and customer analytics",
+    "useCase": "E-commerce admin"
+  },
+  {
+    "slug": "nexus-saas-landing",
+    "name": "Nexus SaaS Landing",
+    "category": "SaaS",
+    "description": "High-conversion SaaS product landing page with feature showcase, pricing, and social proof",
+    "useCase": "SaaS marketing site"
+  },
+  {
+    "slug": "prism-healthtech-portal",
+    "name": "Prism Healthtech Portal",
+    "category": "Healthtech",
+    "description": "Patient management portal with appointment scheduling, medical records, and telehealth integration",
+    "useCase": "Healthcare platform"
+  },
+  {
+    "slug": "cipher-devtools-hub",
+    "name": "Cipher DevTools Hub",
+    "category": "Developer Tools",
+    "description": "Developer tools marketplace with API documentation, SDK downloads, and usage analytics",
+    "useCase": "Developer platform"
+  },
+  {
+    "slug": "terra-climate-dashboard",
+    "name": "Terra Climate Dashboard",
+    "category": "Climate Tech",
+    "description": "Carbon footprint tracking, emissions monitoring, and sustainability reporting for enterprises",
+    "useCase": "ESG reporting"
+  },
+  {
+    "slug": "orbit-edtech-campus",
+    "name": "Orbit EdTech Campus",
+    "category": "Edtech",
+    "description": "Online learning platform with course catalog, progress tracking, and interactive lessons",
+    "useCase": "Education platform"
+  },
+  {
+    "slug": "pulse-health-fitness",
+    "name": "Pulse Health & Fitness",
+    "category": "Health & Fitness",
+    "description": "Fitness tracking app with workout plans, nutrition logging, and progress visualization",
+    "useCase": "Consumer fitness app"
+  },
+  {
+    "slug": "atlas-travel-planner",
+    "name": "Atlas Travel Planner",
+    "category": "Travel",
+    "description": "Trip planning tool with itinerary builder, destination discovery, and booking management",
+    "useCase": "Travel planning"
+  },
+  {
+    "slug": "forge-startup-studio",
+    "name": "Forge Startup Studio",
+    "category": "Startup",
+    "description": "Startup accelerator portal with program overview, portfolio showcase, and application flow",
+    "useCase": "Accelerator/incubator"
+  },
+  {
+    "slug": "haven-real-estate",
+    "name": "Haven Real Estate",
+    "category": "Real Estate",
+    "description": "Property listing platform with virtual tours, neighborhood insights, and mortgage calculator",
+    "useCase": "Real estate marketplace"
+  },
+  {
+    "slug": "spark-creator-economy",
+    "name": "Spark Creator Economy",
+    "category": "Creator Economy",
+    "description": "Creator monetization platform with audience analytics, content scheduling, and revenue tracking",
+    "useCase": "Creator tools"
+  },
+  {
+    "slug": "nova-fintech-banking",
+    "name": "Nova Fintech Banking",
+    "category": "Fintech",
+    "description": "Neobanking interface with account overview, transaction history, and money transfer flows",
+    "useCase": "Digital banking"
+  },
+  {
+    "slug": "zen-wellness-retreat",
+    "name": "Zen Wellness Retreat",
+    "category": "Health & Wellness",
+    "description": "Wellness retreat booking with program exploration, practitioner profiles, and meditation guides",
+    "useCase": "Wellness business"
+  },
+  {
+    "slug": "quant-analytics-lab",
+    "name": "Quant Analytics Lab",
+    "category": "Analytics",
+    "description": "Advanced analytics workspace with data visualization, query builder, and report generation",
+    "useCase": "Data analytics platform"
+  },
+  {
+    "slug": "hive-community-hub",
+    "name": "Hive Community Hub",
+    "category": "Community",
+    "description": "Online community platform with forums, member directories, and event management",
+    "useCase": "Community platform"
+  },
+  {
+    "slug": "bolt-booking-engine",
+    "name": "Bolt Booking Engine",
+    "category": "Booking",
+    "description": "Service booking system with calendar management, provider profiles, and appointment flows",
+    "useCase": "Booking system"
+  },
+  {
+    "slug": "cortex-knowledge-base",
+    "name": "Cortex Knowledge Base",
+    "category": "Knowledge Base",
+    "description": "Enterprise knowledge management with searchable docs, wikis, and team collaboration",
+    "useCase": "Internal docs"
+  },
+  {
+    "slug": "pinnacle-portfolio",
+    "name": "Pinnacle Portfolio",
+    "category": "Portfolio",
+    "description": "Creative portfolio showcase with project galleries, case studies, and client testimonials",
+    "useCase": "Personal portfolio"
+  },
+  {
+    "slug": "summit-enterprise-crm",
+    "name": "Summit Enterprise CRM",
+    "category": "Enterprise",
+    "description": "Customer relationship management with pipeline visualization, contact management, and deal tracking",
+    "useCase": "Enterprise CRM"
+  },
+  {
+    "slug": "echo-media-platform",
+    "name": "Echo Media Platform",
+    "category": "Media",
+    "description": "Digital media publication with article layouts, podcast integration, and newsletter signup",
+    "useCase": "Media/publishing"
+  },
+  {
+    "slug": "flux-marketplace",
+    "name": "Flux Marketplace",
+    "category": "Marketplace",
+    "description": "Digital goods marketplace with product listings, seller profiles, and review system",
+    "useCase": "Digital marketplace"
+  },
+  {
+    "glyph": "shield-cybersecurity",
+    "slug": "shield-cybersecurity",
+    "name": "Shield Cybersecurity",
+    "category": "Security",
+    "description": "Cybersecurity dashboard with threat monitoring, vulnerability scanning, and incident response",
+    "useCase": "Security operations"
+  },
+  {
+    "slug": "muse-design-system",
+    "name": "Muse Design System",
+    "category": "Design",
+    "description": "Design system documentation with component library, tokens, and usage guidelines",
+    "useCase": "Design system docs"
+  },
+  {
+    "slug": "wave-social-platform",
+    "name": "Wave Social Platform",
+    "category": "Social",
+    "description": "Social networking feed with profile pages, content sharing, and messaging",
+    "useCase": "Social network"
+  },
+  {
+    "slug": "pilot-saas-onboarding",
+    "name": "Pilot SaaS Onboarding",
+    "category": "SaaS",
+    "description": "Multi-step SaaS onboarding flow with progress tracking, setup wizard, and feature introduction",
+    "useCase": "User onboarding"
+  },
+  {
+    "slug": "grid-admin-panel",
+    "name": "Grid Admin Panel",
+    "category": "Admin",
+    "description": "System administration panel with user management, permissions, and system configuration",
+    "useCase": "Admin dashboard"
+  },
+  {
+    "slug": "beacon-waitlist",
+    "name": "Beacon Waitlist",
+    "category": "Startup",
+    "description": "Product waitlist page with referral system, countdown, and early access signup",
+    "useCase": "Pre-launch"
+  },
+  {
+    "slug": "arch-agency-site",
+    "name": "Arch Agency Site",
+    "category": "Agency",
+    "description": "Digital agency website with service showcase, team profiles, and case study presentations",
+    "useCase": "Agency website"
+  },
+  {
+    "slug": "sage-docs-portal",
+    "name": "Sage Docs Portal",
+    "category": "Developer Tools",
+    "description": "API documentation portal with interactive examples, SDK guides, and changelog",
+    "useCase": "API docs"
+  },
+  {
+    "slug": "horizon-investor-relations",
+    "name": "Horizon Investor Relations",
+    "category": "Fintech",
+    "description": "Investor relations page with financial reports, governance info, and shareholder resources",
+    "useCase": "Corporate IR"
+  },
+  {
+    "slug": "craft-careers-page",
+    "name": "Craft Careers Page",
+    "category": "HR",
+    "description": "Company careers page with job listings, culture showcase, and application flow",
+    "useCase": "Recruitment"
+  },
+  {
+    "slug": "matrix-comparison",
+    "name": "Matrix Comparison",
+    "category": "SaaS",
+    "description": "Product comparison tool with feature matrices, pricing tables, and recommendation engine",
+    "useCase": "Product comparison"
+  },
+  {
+    "slug": "haven-support-portal",
+    "name": "Haven Support Portal",
+    "category": "Support",
+    "description": "Customer support portal with ticket system, knowledge base, and live chat integration",
+    "useCase": "Customer support"
+  },
+  {
+    "slug": "nova-pricing-page",
+    "name": "Nova Pricing Page",
+    "category": "SaaS",
+    "description": "Tiered pricing page with plan comparison, feature toggles, and FAQ section",
+    "useCase": "Pricing page"
+  },
+  {
+    "slug": "zen-hr-platform",
+    "name": "Zen HR Platform",
+    "category": "HR",
+    "description": "HR management platform with employee directory, leave management, and performance reviews",
+    "useCase": "HR software"
+  },
+  {
+    "slug": "bolt-logistics-dashboard",
+    "name": "Bolt Logistics Dashboard",
+    "category": "Logistics",
+    "description": "Supply chain dashboard with shipment tracking, warehouse overview, and delivery analytics",
+    "useCase": "Logistics management"
+  },
+  {
+    "slug": "spark-event-platform",
+    "name": "Spark Event Platform",
+    "category": "Events",
+    "description": "Event management with ticket sales, speaker lineup, and venue mapping",
+    "useCase": "Event management"
+  },
+  {
+    "slug": "aurora-product-showcase",
+    "name": "Aurora Product Showcase",
+    "category": "Product",
+    "description": "Single product showcase page with feature deep-dives, specs, and purchase flow",
+    "useCase": "Product marketing"
+  },
+  {
+    "slug": "cortex-ai-chat",
+    "name": "Cortex AI Chat",
+    "category": "AI & ML",
+    "description": "AI chat interface with conversation history, model selection, and prompt templates",
+    "useCase": "AI chatbot UI"
+  },
+  {
+    "slug": "forge-dev-portal",
+    "name": "Forge Dev Portal",
+    "category": "Developer Tools",
+    "description": "Developer portal with playground, webhooks management, and API key administration",
+    "useCase": "Developer portal"
+  },
+  {
+    "slug": "lumen-crypto-exchange",
+    "name": "Lumen Crypto Exchange",
+    "category": "Fintech",
+    "description": "Cryptocurrency exchange with trading pairs, order book, and portfolio management",
+    "useCase": "Crypto trading"
+  },
+  {
+    "slug": "pulse-telemedicine",
+    "name": "Pulse Telemedicine",
+    "category": "Healthtech",
+    "description": "Telemedicine platform with video consultation scheduling, patient intake, and prescription management",
+    "useCase": "Telehealth"
+  },
+  {
+    "slug": "atlas-weather-app",
+    "name": "Atlas Weather App",
+    "category": "Utility",
+    "description": "Weather application with forecasts, radar maps, and severe weather alerts",
+    "useCase": "Weather app"
+  },
+  {
+    "slug": "orbit-research-lab",
+    "name": "Orbit Research Lab",
+    "category": "Science",
+    "description": "Research collaboration platform with paper management, peer review, and data sharing",
+    "useCase": "Academic research"
+  },
+  {
+    "slug": "terra-sustainability-hub",
+    "name": "Terra Sustainability Hub",
+    "category": "Climate Tech",
+    "description": "Corporate sustainability hub with ESG metrics, green initiatives tracking, and reporting",
+    "useCase": "Corporate sustainability"
+  },
+  {
+    "slug": "echo-podcast-studio",
+    "name": "Echo Podcast Studio",
+    "category": "Media",
+    "description": "Podcast management platform with episode scheduling, analytics, and distribution",
+    "useCase": "Podcast management"
+  },
+  {
+    "slug": "hive-forum-classic",
+    "name": "Hive Forum Classic",
+    "category": "Community",
+    "description": "Classic forum layout with threaded discussions, user reputation, and topic organization",
+    "useCase": "Discussion forum"
+  },
+  {
+    "slug": "prism-legal-tech",
+    "name": "Prism Legal Tech",
+    "category": "Legal",
+    "description": "Legal practice management with case tracking, document assembly, and client portal",
+    "useCase": "Legal software"
+  },
+  {
+    "slug": "shield-privacy-dashboard",
+    "name": "Shield Privacy Dashboard",
+    "category": "Security",
+    "description": "Privacy management dashboard with consent tracking, data mapping, and compliance reporting",
+    "useCase": "Privacy/GDPR"
+  },
+  {
+    "slug": "muse-creative-suite",
+    "name": "Muse Creative Suite",
+    "category": "Design",
+    "description": "Creative workspace with project boards, asset library, and team collaboration tools",
+    "useCase": "Creative tools"
+  },
+  {
+    "slug": "wave-neighborhood-app",
+    "name": "Wave Neighborhood App",
+    "category": "Community",
+    "description": "Hyperlocal community app with neighbor connections, local business directory, and event board",
+    "useCase": "Local community"
+  },
+  {
+    "glyph": "bolt-scheduler-pro",
+    "slug": "bolt-scheduler-pro",
+    "name": "Bolt Scheduler Pro",
+    "category": "Productivity",
+    "description": "Advanced scheduling tool with multi-calendar sync, meeting polls, and availability sharing",
+    "useCase": "Calendar/scheduling"
+  },
+  {
+    "slug": "cortex-search-engine",
+    "name": "Cortex Search Engine",
+    "category": "Utility",
+    "description": "Enterprise search interface with filters, facets, and intelligent result ranking",
+    "useCase": "Search UI"
+  },
+  {
+    "slug": "pinnacle-agency-portfolio",
+    "name": "Pinnacle Agency Portfolio",
+    "category": "Agency",
+    "description": "Creative agency portfolio with interactive case studies and client results showcase",
+    "useCase": "Agency showcase"
+  },
+  {
+    "slug": "summit-erp-dashboard",
+    "name": "Summit ERP Dashboard",
+    "category": "Enterprise",
+    "description": "Enterprise resource planning with modules for finance, inventory, and operations",
+    "useCase": "ERP system"
+  },
+  {
+    "slug": "nova-mobile-banking",
+    "name": "Nova Mobile Banking",
+    "category": "Fintech",
+    "description": "Mobile-first banking interface optimized for touch with quick actions and biometric auth",
+    "useCase": "Mobile banking"
+  },
+  {
+    "zen-meditation-app": "zen-meditation-app",
+    "slug": "zen-meditation-app",
+    "name": "Zen Meditation App",
+    "category": "Health & Wellness",
+    "description": "Meditation and mindfulness app with guided sessions, breathing exercises, and progress tracking",
+    "useCase": "Wellness app"
+  },
+  {
+    "slug": "quant-data-pipeline",
+    "name": "Quant Data Pipeline",
+    "category": "Analytics",
+    "description": "Data pipeline monitoring with DAG visualization, job status, and error tracking",
+    "useCase": "Data engineering"
+  },
+  {
+    "slug": "hive-open-source-hub",
+    "name": "Hive Open Source Hub",
+    "category": "Developer Tools",
+    "description": "Open source project hub with contribution guides, issue boards, and release management",
+    "useCase": "OSS community"
+  },
+  {
+    "slug": "bolt-crm-lite",
+    "name": "Bolt CRM Lite",
+    "category": "SaaS",
+    "description": "Lightweight CRM with contact management, deal pipeline, and email integration",
+    "useCase": "Small business CRM"
+  },
+  {
+    "slug": "forge-venture-capital",
+    "name": "Forge Venture Capital",
+    "category": "Fintech",
+    "description": "VC fund website with portfolio companies, investment thesis, and team information",
+    "useCase": "VC fund"
+  },
+  {
+    "slug": "lumen-insurance-tech",
+    "name": "Lumen Insurance Tech",
+    "category": "Fintech",
+    "description": "Insurance platform with policy management, claims processing, and risk assessment",
+    "useCase": "Insurtech"
+  },
+  {
+    "slug": "aurora-robotics-control",
+    "name": "Aurora Robotics Control",
+    "category": "AI & ML",
+    "description": "Robotics fleet management with device status, task assignment, and telemetry visualization",
+    "useCase": "Robotics ops"
+  },
+  {
+    "slug": "pulse-mental-health",
+    "name": "Pulse Mental Health",
+    "category": "Healthtech",
+    "description": "Mental health platform with mood tracking, therapist matching, and journaling features",
+    "useCase": "Mental health"
+  },
+  {
+    "slug": "atlas-food-delivery",
+    "name": "Atlas Food Delivery",
+    "category": "E-commerce",
+    "description": "Food delivery platform with restaurant listings, menu browsing, and order tracking",
+    "useCase": "Food delivery"
+  },
+  {
+    "slug": "orbit-certification-platform",
+    "name": "Orbit Certification Platform",
+    "category": "Edtech",
+    "description": "Professional certification platform with exam prep, practice tests, and credential management",
+    "useCase": "Certification/edtech"
+  },
+  {
+    "slug": "terra-renewable-energy",
+    "name": "Terra Renewable Energy",
+    "category": "Climate Tech",
+    "description": "Renewable energy monitoring with solar/wind production metrics and grid integration",
+    "useCase": "Energy management"
+  },
+  {
+    "slug": "echo-newsletter-platform",
+    "name": "Echo Newsletter Platform",
+    "category": "Media",
+    "description": "Newsletter publishing platform with subscriber management, template builder, and analytics",
+    "useCase": "Newsletter tool"
+  },
+  {
+    "slug": "hive-slack-alternative",
+    "name": "Hive Slack Alternative",
+    "category": "Communication",
+    "description": "Team messaging app with channels, direct messages, and integration hub",
+    "useCase": "Team chat"
+  },
+  {
+    "slug": "prism-contract-management",
+    "name": "Prism Contract Management",
+    "category": "Legal",
+    "description": "Contract lifecycle management with drafting, review workflows, and e-signatures",
+    "useCase": "Contract management"
+  },
+  {
+    "slug": "shield-access-management",
+    "name": "Shield Access Management",
+    "category": "Security",
+    "description": "Identity and access management with SSO, MFA, and role-based permissions",
+    "useCase": "IAM/SSO"
+  },
+  {
+    "slug": "muse-font-library",
+    "name": "Muse Font Library",
+    "category": "Design",
+    "description": "Typography showcase with font specimens, pairing suggestions, and webfont generator",
+    "useCase": "Typography tool"
+  },
+  {
+    "slug": "wave-dating-app",
+    "name": "Wave Dating App",
+    "category": "Social",
+    "description": "Dating app with profile discovery, matching algorithm, and conversation interface",
+    "useCase": "Dating platform"
+  },
+  {
+    "bolt-invoice-generator": "bolt-invoice-generator",
+    "slug": "bolt-invoice-generator",
+    "name": "Bolt Invoice Generator",
+    "category": "Productivity",
+    "description": "Invoice creation tool with templates, recurring billing, and payment tracking",
+    "useCase": "Invoicing"
+  },
+  {
+    "slug": "cortex-ai-model-marketplace",
+    "name": "Cortex AI Model Marketplace",
+    "category": "AI & ML",
+    "description": "Marketplace for pre-trained AI models with demos, benchmarks, and deployment options",
+    "useCase": "AI marketplace"
+  },
+  {
+    "slug": "pinnacle-architecture-studio",
+    "name": "Pinnacle Architecture Studio",
+    "category": "Portfolio",
+    "description": "Architecture firm portfolio with project walkthroughs, 3D previews, and design philosophy",
+    "useCase": "Architecture firm"
+  },
+  {
+    "slug": "summit-government-portal",
+    "name": "Summit Government Portal",
+    "category": "Government",
+    "description": "Government services portal with permit applications, service directory, and citizen accounts",
+    "useCase": "Gov services"
+  },
+  {
+    "slug": "nova-payment-gateway",
+    "name": "Nova Payment Gateway",
+    "category": "Fintech",
+    "description": "Payment processing dashboard with transaction monitoring, merchant management, and fraud detection",
+    "useCase": "Payments"
+  },
+  {
+    "zen-sleep-tracker": "zen-sleep-tracker",
+    "slug": "zen-sleep-tracker",
+    "name": "Zen Sleep Tracker",
+    "category": "Health & Wellness",
+    "description": "Sleep monitoring app with sleep stage analysis, smart alarms, and sleep quality trends",
+    "useCase": "Sleep app"
+  },
+  {
+    "slug": "quant-business-intelligence",
+    "name": "Quant Business Intelligence",
+    "category": "Analytics",
+    "description": "BI dashboard with drag-and-drop report builder, data connectors, and scheduled reports",
+    "useCase": "BI tool"
+  },
+  {
+    "slug": "hive-discord-alternative",
+    "name": "Hive Discord Alternative",
+    "category": "Communication",
+    "description": "Community voice and text platform with server organization, roles, and streaming",
+    "useCase": "Community chat"
+  },
+  {
+    "slug": "bolt-project-management",
+    "name": "Bolt Project Management",
+    "category": "Productivity",
+    "description": "Project management with Kanban boards, Gantt charts, and team workload views",
+    "useCase": "PM tool"
+  },
+  {
+    "slug": "forge-hackathon-platform",
+    "name": "Forge Hackathon Platform",
+    "category": "Events",
+    "description": "Hackathon management with team formation, project submission, and judging workflow",
+    "useCase": "Hackathon"
+  },
+  {
+    "slug": "lumen-neobank-business",
+    "name": "Lumen Neobank Business",
+    "category": "Fintech",
+    "description": "Business banking with multi-user accounts, expense management, and accounting integration",
+    "useCase": "Business banking"
+  },
+  {
+    "slug": "aurora-generative-art",
+    "name": "Aurora Generative Art",
+    "category": "AI & ML",
+    "description": "AI art generation tool with style controls, gallery, and print-on-demand integration",
+    "useCase": "AI art tool"
+  },
+  {
+    "slug": "pulse-pharmacy-platform",
+    "name": "Pulse Pharmacy Platform",
+    "category": "Healthtech",
+    "description": "Online pharmacy with prescription upload, medication reminders, and delivery tracking",
+    "useCase": "Pharmacy"
+  },
+  {
+    "slug": "atlas-car-rental",
+    "name": "Atlas Car Rental",
+    "category": "Travel",
+    "description": "Car rental platform with vehicle selection, location-based pickup, and rental management",
+    "useCase": "Car rental"
+  },
+  {
+    "slug": "orbit-tutoring-marketplace",
+    "name": "Orbit Tutoring Marketplace",
+    "category": "Edtech",
+    "description": "Tutoring marketplace with tutor profiles, session booking, and progress tracking",
+    "useCase": "Tutoring platform"
+  },
+  {
+    "slug": "terra-carbon-offset-market",
+    "name": "Terra Carbon Offset Market",
+    "category": "Climate Tech",
+    "description": "Carbon credit marketplace with project verification, offset purchasing, and impact reporting",
+    "useCase": "Carbon market"
+  },
+  {
+    "slug": "echo-video-platform",
+    "name": "Echo Video Platform",
+    "category": "Media",
+    "description": "Video hosting platform with channel management, live streaming, and audience analytics",
+    "useCase": "Video platform"
+  },
+  {
+    "slug": "hive-fan-community",
+    "name": "Hive Fan Community",
+    "category": "Community",
+    "description": "Fan community platform with exclusive content, merch store, and fan interactions",
+    "useCase": "Fan community"
+  },
+  {
+    "slug": "prism-compliance-hub",
+    "name": "Prism Compliance Hub",
+    "category": "Legal",
+    "description": "Regulatory compliance management with audit trails, policy management, and risk scoring",
+    "useCase": "Compliance"
+  },
+  {
+    "slug": "shield-security-training",
+    "name": "Shield Security Training",
+    "category": "Security",
+    "description": "Security awareness training platform with phishing simulations and compliance courses",
+    "useCase": "Security training"
+  },
+  {
+    "slug": "muse-3d-viewer",
+    "name": "Muse 3D Viewer",
+    "category": "Design",
+    "description": "3D model viewer with annotations, measurements, and collaborative review features",
+    "useCase": "3D visualization"
+  },
+  {
+    "slug": "wave-professional-network",
+    "name": "Wave Professional Network",
+    "category": "Social",
+    "description": "Professional networking with industry groups, mentorship matching, and job referrals",
+    "useCase": "Professional network"
+  },
+  {
+    "slug": "grid-micro-saas-dashboard",
+    "name": "Grid Micro-SaaS Dashboard",
+    "category": "SaaS",
+    "description": "Minimal micro-SaaS metrics dashboard with MRR tracking, churn analysis, and subscriber growth",
+    "useCase": "Micro-SaaS analytics"
+  },
+  {
+    "slug": "bolt-reservation-system",
+    "name": "Bolt Reservation System",
+    "category": "Booking",
+    "description": "Restaurant reservation system with table management, waitlist, and guest preferences",
+    "useCase": "Restaurant booking"
+  },
+  {
+    "slug": "forge-ipo-roadshow",
+    "name": "Forge IPO Roadshow",
+    "category": "Fintech",
+    "description": "IPO roadshow presentation site with company overview, financial highlights, and management team",
+    "useCase": "IPO/investor presentation"
+  }
+];
+
+const grid = document.getElementById('grid');
+const search = document.getElementById('search');
+const noResults = document.getElementById('no-results');
+const categories = new Set(skeletons.map(s => s.category));
+
+// Generate filter buttons
+const controls = document.querySelector('.controls');
+[...categories].sort().forEach(cat => {
+  const btn = document.createElement('button');
+  btn.className = 'filter-btn';
+  btn.dataset.cat = cat;
+  btn.textContent = cat;
+  controls.appendChild(btn);
+});
+
+function render(list) {
+  grid.querySelectorAll('.card').forEach(c => c.remove());
+  if (list.length === 0) {
+    noResults.style.display = 'block';
+    return;
+  }
+  noResults.style.display = 'none';
+  list.forEach(s => {
+    const a = document.createElement('a');
+    a.className = 'card';
+    a.href = `./templates/${s.slug}/index.html`;
+    a.innerHTML = `
+      <img class="card-img" src="./templates/${s.slug}/screenshot.png" alt="${s.name}" loading="lazy" onerror="this.style.background='#1a1a1f';this.alt='Screenshot pending'">
+      <div class="card-body">
+        <div class="card-category">${s.category}</div>
+        <div class="card-title">${s.name}</div>
+        <div class="card-desc">${s.description}</div>
+      </div>
+    `;
+    grid.appendChild(a);
+  });
+}
+
+render(skeletons);
+
+// Search
+search.addEventListener('input', () => {
+  const q = search.value.toLowerCase();
+  const active = document.querySelector('.filter-btn.active');
+  const cat = active?.dataset.cat || 'all';
+  const filtered = skeletons.filter(s => {
+    const matchCat = cat === 'all' || s.category === cat;
+    const matchQ = !q || s.name.toLowerCase().includes(q) || s.description.toLowerCase().includes(q) || s.category.toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+  render(filtered);
+});
+
+// Category filters
+controls.addEventListener('click', (e) => {
+  if (!e.target.classList.contains('filter-btn')) return;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  e.target.classList.add('active');
+  const cat = e.target.dataset.cat;
+  const q = search.value.toLowerCase();
+  const filtered = skeletons.filter(s => {
+    const matchCat = cat === 'all' || s.category === cat;
+    const matchQ = !q || s.name.toLowerCase().includes(q) || s.description.toLowerCase().includes(q);
+    return matchCat && matchQ;
+  });
+  render(filtered);
+});

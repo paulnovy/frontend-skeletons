@@ -1,0 +1,1087 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lumen Insurance Tech</title>
+  <meta name="description" content="Lumen gives underwriters and claims leads a shared operating layer with policy health, loss signals, SLA pressure, and broker context visible before every decision.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f6fbfb;
+      --surface: #ffffff;
+      --ink: #102a2c;
+      --muted: #6b7d80;
+      --line: #d8eceb;
+      --accent: #0f9f94;
+      --accent-2: #044f54;
+      --danger: #e05252;
+      --shadow: 0 24px 70px rgba(19, 45, 60, .12);
+      --radius: 8px;
+      --font: "Inter", system-ui, sans-serif;
+      --mono: "IBM Plex Mono", ui-monospace, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 18% 0%, color-mix(in srgb, var(--accent) 14%, transparent), transparent 28rem),
+        linear-gradient(180deg, color-mix(in srgb, var(--bg) 92%, white), var(--bg));
+      color: var(--ink);
+      font-family: var(--font);
+      min-height: 100vh;
+    }
+
+    body.menu-open {
+      overflow: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .skip-link {
+      position: fixed;
+      left: 1rem;
+      top: -4rem;
+      z-index: 10;
+      background: var(--accent);
+      color: #ffffff;
+      padding: .75rem 1rem;
+      border-radius: var(--radius);
+      transition: top .2s ease;
+    }
+
+    .skip-link:focus {
+      top: 1rem;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 9;
+      border-bottom: 1px solid color-mix(in srgb, var(--line) 82%, transparent);
+      backdrop-filter: blur(18px);
+      background: color-mix(in srgb, var(--bg) 78%, transparent);
+    }
+
+    .nav-shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: .7rem;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      color: #ffffff;
+      box-shadow: 0 12px 30px color-mix(in srgb, var(--accent) 32%, transparent);
+    }
+
+    .desktop-nav {
+      display: flex;
+      align-items: center;
+      gap: .3rem;
+    }
+
+    .desktop-nav a {
+      color: var(--muted);
+      font-size: .94rem;
+      padding: .7rem .85rem;
+      border-radius: 999px;
+      transition: color .2s ease, background .2s ease;
+    }
+
+    .desktop-nav a:hover,
+    .desktop-nav a:focus-visible {
+      color: var(--ink);
+      background: color-mix(in srgb, var(--accent) 10%, transparent);
+      outline: none;
+    }
+
+    .nav-action {
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--surface) 88%, transparent);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: .72rem 1rem;
+      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .nav-action:hover,
+    .nav-action:focus-visible {
+      transform: translateY(-1px);
+      border-color: var(--accent);
+      box-shadow: 0 12px 28px color-mix(in srgb, var(--accent) 14%, transparent);
+      outline: none;
+    }
+
+    .menu-toggle {
+      display: none;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--surface);
+      color: var(--ink);
+      place-items: center;
+    }
+
+    .menu-toggle span {
+      width: 18px;
+      height: 2px;
+      background: currentColor;
+      display: block;
+      position: relative;
+      transition: transform .2s ease;
+    }
+
+    .menu-toggle span::before,
+    .menu-toggle span::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      width: 18px;
+      height: 2px;
+      background: currentColor;
+      transition: transform .2s ease, top .2s ease;
+    }
+
+    .menu-toggle span::before {
+      top: -6px;
+    }
+
+    .menu-toggle span::after {
+      top: 6px;
+    }
+
+    .menu-open .menu-toggle span {
+      transform: rotate(45deg);
+    }
+
+    .menu-open .menu-toggle span::before {
+      top: 0;
+      transform: rotate(90deg);
+    }
+
+    .menu-open .menu-toggle span::after {
+      top: 0;
+      transform: rotate(90deg);
+    }
+
+    .mobile-panel {
+      display: none;
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto 1rem;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .mobile-panel a {
+      display: block;
+      padding: 1rem;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+    }
+
+    .mobile-panel a:last-child {
+      border-bottom: 0;
+    }
+
+    main {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      min-height: 620px;
+      padding: 72px 0 48px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(340px, .86fr);
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .hero-copy {
+      display: grid;
+      gap: 1.25rem;
+      align-content: center;
+    }
+
+    .eyebrow {
+      margin: 0;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      font-size: .75rem;
+      font-weight: 800;
+    }
+
+    h1,
+    h2,
+    h3,
+    p {
+      margin-top: 0;
+    }
+
+    h1 {
+      margin-bottom: 0;
+      font-size: clamp(3.25rem, 8vw, 5.7rem);
+      line-height: .96;
+      letter-spacing: 0;
+      max-width: 950px;
+    }
+
+    .hero-copy > p:not(.eyebrow) {
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.22rem);
+      line-height: 1.75;
+      max-width: 690px;
+      margin-bottom: 0;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+    }
+
+    .button {
+      min-height: 46px;
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: .86rem 1.1rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: .55rem;
+      font-weight: 800;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease, background .2s ease;
+    }
+
+    .button.primary {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 18px 36px color-mix(in srgb, var(--accent) 28%, transparent);
+    }
+
+    .button.secondary {
+      background: color-mix(in srgb, var(--surface) 88%, transparent);
+      color: var(--ink);
+      border-color: var(--line);
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      transform: translateY(-2px);
+      box-shadow: 0 16px 34px color-mix(in srgb, var(--accent) 20%, transparent);
+      outline: none;
+    }
+
+    .visual-shell {
+      border: 1px solid color-mix(in srgb, var(--line) 88%, transparent);
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      min-height: 430px;
+      position: relative;
+    }
+
+    .visual-topbar {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 1rem;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: .78rem;
+    }
+
+    .dots {
+      display: flex;
+      gap: .4rem;
+    }
+
+    .dots span {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--accent);
+      opacity: .8;
+    }
+
+    .screen {
+      padding: 1.2rem;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .balance-card {
+      border-radius: var(--radius);
+      padding: 1.1rem;
+      color: #ffffff;
+      background:
+        linear-gradient(135deg, var(--accent-2), var(--accent)),
+        radial-gradient(circle at 80% 0%, rgba(255,255,255,.26), transparent 16rem);
+      min-height: 150px;
+      display: grid;
+      align-content: space-between;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .balance-card::after {
+      content: "";
+      position: absolute;
+      right: -60px;
+      bottom: -80px;
+      width: 210px;
+      height: 210px;
+      border: 1px solid rgba(255,255,255,.24);
+      border-radius: 50%;
+    }
+
+    .balance-card small {
+      position: relative;
+      z-index: 1;
+      font-family: var(--mono);
+      opacity: .78;
+    }
+
+    .balance-card strong {
+      position: relative;
+      z-index: 1;
+      display: block;
+      font-size: 2rem;
+      line-height: 1;
+      margin-top: .55rem;
+    }
+
+    .mini-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .8rem;
+    }
+
+    .mini-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--surface) 94%, transparent);
+      padding: 1rem;
+      min-height: 104px;
+      transition: transform .2s ease, border-color .2s ease;
+    }
+
+    .mini-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+    }
+
+    .mini-card span {
+      display: block;
+      color: var(--muted);
+      font-size: .8rem;
+      margin-bottom: .55rem;
+    }
+
+    .mini-card strong {
+      font-size: 1.35rem;
+    }
+
+    .chart {
+      height: 150px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: .8rem;
+      display: flex;
+      align-items: end;
+      gap: .45rem;
+      background: color-mix(in srgb, var(--bg) 45%, var(--surface));
+    }
+
+    .bar {
+      flex: 1;
+      min-width: 14px;
+      border-radius: 6px 6px 2px 2px;
+      background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent-2) 82%, black));
+      transform-origin: bottom;
+      animation: rise .8s ease both;
+    }
+
+    .bar:nth-child(1) { height: 42%; animation-delay: .05s; }
+    .bar:nth-child(2) { height: 68%; animation-delay: .1s; }
+    .bar:nth-child(3) { height: 53%; animation-delay: .15s; }
+    .bar:nth-child(4) { height: 84%; animation-delay: .2s; }
+    .bar:nth-child(5) { height: 73%; animation-delay: .25s; }
+    .bar:nth-child(6) { height: 92%; animation-delay: .3s; }
+    .bar:nth-child(7) { height: 61%; animation-delay: .35s; }
+
+    @keyframes rise {
+      from { transform: scaleY(.25); opacity: .35; }
+      to { transform: scaleY(1); opacity: 1; }
+    }
+
+    .section {
+      padding: 58px 0;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 1rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .section-head h2 {
+      margin-bottom: 0;
+      font-size: clamp(1.65rem, 4vw, 2.7rem);
+      letter-spacing: 0;
+    }
+
+    .section-head p {
+      color: var(--muted);
+      margin-bottom: 0;
+      max-width: 420px;
+      line-height: 1.6;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: .9rem;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--surface) 92%, transparent);
+      border-radius: var(--radius);
+      padding: 1.1rem;
+      min-height: 118px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.65rem;
+      margin-bottom: .45rem;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .work-card {
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--surface) 94%, transparent);
+      border-radius: var(--radius);
+      padding: 1.1rem;
+      display: grid;
+      gap: 1rem;
+      min-height: 230px;
+      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .work-card:hover {
+      transform: translateY(-5px);
+      border-color: var(--accent);
+      box-shadow: 0 18px 44px color-mix(in srgb, var(--accent) 14%, transparent);
+    }
+
+    .work-card h3 {
+      margin-bottom: .3rem;
+      font-size: 1.15rem;
+    }
+
+    .work-card p {
+      color: var(--muted);
+      line-height: 1.55;
+      margin-bottom: 0;
+    }
+
+    .progress {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--line) 75%, transparent);
+    }
+
+    .progress span {
+      display: block;
+      width: var(--value);
+      height: 100%;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .45rem;
+    }
+
+    .tag {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      padding: .38rem .58rem;
+      font-size: .78rem;
+    }
+
+    .operations {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(300px, .75fr);
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .activity-list,
+    .insight-panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--surface) 94%, transparent);
+      overflow: hidden;
+    }
+
+    .activity-row {
+      display: grid;
+      grid-template-columns: 96px minmax(0, 1fr) 126px 120px;
+      gap: 1rem;
+      align-items: center;
+      padding: 1rem;
+      border-bottom: 1px solid var(--line);
+      transition: background .2s ease;
+    }
+
+    .activity-row:hover {
+      background: color-mix(in srgb, var(--accent) 8%, transparent);
+    }
+
+    .activity-row:last-child {
+      border-bottom: 0;
+    }
+
+    .code {
+      font-family: var(--mono);
+      color: var(--accent);
+      font-size: .82rem;
+    }
+
+    .activity-row strong {
+      display: block;
+      margin-bottom: .2rem;
+    }
+
+    .activity-row span,
+    .activity-row em {
+      color: var(--muted);
+      font-style: normal;
+      font-size: .88rem;
+    }
+
+    .status-pill {
+      justify-self: end;
+      border: 1px solid color-mix(in srgb, var(--accent) 34%, var(--line));
+      background: color-mix(in srgb, var(--accent) 10%, transparent);
+      color: var(--accent);
+      border-radius: 999px;
+      padding: .4rem .65rem;
+      font-size: .78rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .insight-panel {
+      padding: 1.1rem;
+    }
+
+    .insight-panel h3 {
+      margin-bottom: .9rem;
+    }
+
+    .check-list {
+      display: grid;
+      gap: .75rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .check-list li {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: .7rem;
+      align-items: start;
+      color: var(--muted);
+      line-height: 1.45;
+    }
+
+    .check-list li::before {
+      content: "";
+      width: 18px;
+      height: 18px;
+      margin-top: .1rem;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: inset 0 0 0 5px color-mix(in srgb, var(--surface) 82%, transparent);
+    }
+
+    .toolbelt {
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .7rem;
+    }
+
+    .tool {
+      border: 1px solid var(--line);
+      background: color-mix(in srgb, var(--bg) 44%, var(--surface));
+      border-radius: var(--radius);
+      padding: .75rem;
+      text-align: center;
+      font-family: var(--mono);
+      color: var(--muted);
+      font-size: .75rem;
+    }
+
+    .proof-band {
+      border: 1px solid var(--line);
+      background: linear-gradient(135deg, color-mix(in srgb, var(--surface) 94%, transparent), color-mix(in srgb, var(--accent) 10%, var(--surface)));
+      border-radius: var(--radius);
+      min-height: 280px;
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+      overflow: hidden;
+    }
+
+    .proof-copy {
+      padding: 1.4rem;
+      display: grid;
+      align-content: center;
+    }
+
+    .proof-copy h2 {
+      font-size: clamp(1.8rem, 4vw, 3.5rem);
+      margin-bottom: .7rem;
+    }
+
+    .proof-copy p {
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 0;
+    }
+
+    .proof-visual {
+      min-height: 280px;
+      display: grid;
+      place-items: center;
+      background:
+        linear-gradient(135deg, transparent 0 38%, color-mix(in srgb, var(--accent) 26%, transparent) 38% 39%, transparent 39%),
+        repeating-linear-gradient(90deg, color-mix(in srgb, var(--line) 42%, transparent) 0 1px, transparent 1px 42px);
+      position: relative;
+    }
+
+    .orbital {
+      width: min(280px, 70%);
+      aspect-ratio: 1;
+      border: 1px solid color-mix(in srgb, var(--accent) 68%, var(--line));
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      animation: turn 9s linear infinite;
+    }
+
+    .orbital::before,
+    .orbital::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      border: 1px solid color-mix(in srgb, var(--accent) 36%, transparent);
+    }
+
+    .orbital::before {
+      width: 58%;
+      height: 58%;
+    }
+
+    .orbital::after {
+      width: 24%;
+      height: 24%;
+      background: var(--accent);
+      box-shadow: 0 0 40px color-mix(in srgb, var(--accent) 38%, transparent);
+    }
+
+    @keyframes turn {
+      to { transform: rotate(360deg); }
+    }
+
+    .site-footer {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 42px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      border-top: 1px solid var(--line);
+      flex-wrap: wrap;
+    }
+
+    .site-footer strong {
+      color: var(--ink);
+    }
+
+    @media (max-width: 920px) {
+      .desktop-nav,
+      .nav-action {
+        display: none;
+      }
+
+      .menu-toggle {
+        display: grid;
+      }
+
+      .menu-open .mobile-panel {
+        display: block;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        padding-top: 44px;
+      }
+
+      .visual-shell {
+        min-height: 400px;
+      }
+
+      .stat-grid,
+      .card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .operations,
+      .proof-band {
+        grid-template-columns: 1fr;
+      }
+
+      .activity-row {
+        grid-template-columns: 86px minmax(0, 1fr);
+      }
+
+      .activity-row em,
+      .status-pill {
+        justify-self: start;
+      }
+    }
+
+    @media (max-width: 620px) {
+      main,
+      .site-footer,
+      .nav-shell,
+      .mobile-panel {
+        width: min(100%, calc(100% - 24px));
+      }
+
+      .stat-grid,
+      .card-grid,
+      .mini-grid,
+      .toolbelt {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        display: grid;
+      }
+
+      .hero-actions .button {
+        width: 100%;
+      }
+
+      .activity-row {
+        grid-template-columns: 1fr;
+      }
+
+      .visual-shell {
+        min-height: 360px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .001ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <div class="nav-shell">
+      <a class="brand" href="#" aria-label="Lumen Insurance Tech home">
+        <span class="brand-mark" aria-hidden="true">LI</span>
+        <span>Lumen Insurance Tech</span>
+      </a>
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="#policies">Policies</a>
+        <a href="#claims">Claims</a>
+        <a href="#risk">Risk</a>
+        <a href="#brokers">Brokers</a>
+      </nav>
+      <button class="nav-action" type="button">Review risk queue</button>
+      <button class="menu-toggle" type="button" aria-label="Toggle menu" aria-expanded="false">
+        <span aria-hidden="true"></span>
+      </button>
+    </div>
+    <nav class="mobile-panel" aria-label="Mobile navigation">
+      <a href="#policies">Policies</a>
+      <a href="#claims">Claims</a>
+      <a href="#risk">Risk</a>
+      <a href="#brokers">Brokers</a>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-copy">
+        <p class="eyebrow">Policy operations cockpit</p>
+        <h1 id="page-title">Bind policies, score risk, and resolve claims from one calm workspace.</h1>
+        <p>Lumen gives underwriters and claims leads a shared operating layer with policy health, loss signals, SLA pressure, and broker context visible before every decision.</p>
+        <div class="hero-actions" aria-label="Primary actions">
+          <a class="button primary" href="#policies">Review risk queue</a>
+          <a class="button secondary" href="#claims">Open claims desk</a>
+        </div>
+      </div>
+
+      <aside class="visual-shell" aria-label="Insurance Platform interface preview">
+        <div class="visual-topbar">
+          <div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>
+          <span>Insurance Platform</span>
+        </div>
+        <div class="screen">
+          <div class="balance-card">
+            <small>Policy operations cockpit</small>
+            <strong>$84.2M</strong>
+            <small>active premium · live workspace</small>
+          </div>
+          <div class="mini-grid">
+            <div class="mini-card"><span>median claim triage</span><strong>12 min</strong></div>
+            <div class="mini-card"><span>renewal retention</span><strong>96.8%</strong></div>
+            <div class="mini-card"><span>high-risk renewals</span><strong>31</strong></div>
+            <div class="mini-card"><span>Active workflow</span><strong>Mariner</strong></div>
+          </div>
+          <div class="chart" aria-label="Seven period activity chart">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section" id="policies" aria-labelledby="metrics-title">
+      <div class="section-head">
+        <h2 id="metrics-title">Lumen Insurance Tech command layer</h2>
+        <p>Executive numbers stay visible before the user drills into records, approvals, reviews, or operational queues.</p>
+      </div>
+      <div class="stat-grid">
+        <article class="stat"><strong>$84.2M</strong><span>active premium</span></article>
+        <article class="stat"><strong>12 min</strong><span>median claim triage</span></article>
+        <article class="stat"><strong>96.8%</strong><span>renewal retention</span></article>
+        <article class="stat"><strong>31</strong><span>high-risk renewals</span></article>
+      </div>
+    </section>
+
+    <section class="section" id="claims" aria-labelledby="cards-title">
+      <div class="section-head">
+        <h2 id="cards-title">Policy cards</h2>
+        <p>Cards use compact hierarchy, hard-working metadata, and progress indicators that communicate state without extra explanation.</p>
+      </div>
+      <div class="card-grid">
+        <article class="work-card">
+          <div>
+            <h3>Mariner Logistics</h3>
+            <p>Commercial fleet · Renewal in 18 days</p>
+          </div>
+          <div class="tag-row">
+            <span class="tag">Risk score 72</span>
+            <span class="tag">78% complete</span>
+          </div>
+          <div class="progress" aria-label="Mariner Logistics progress"><span style="--value: 78%"></span></div>
+        </article>
+        <article class="work-card">
+          <div>
+            <h3>Northline Dental Group</h3>
+            <p>Professional liability · Evidence received</p>
+          </div>
+          <div class="tag-row">
+            <span class="tag">Risk score 41</span>
+            <span class="tag">43% complete</span>
+          </div>
+          <div class="progress" aria-label="Northline Dental Group progress"><span style="--value: 43%"></span></div>
+        </article>
+        <article class="work-card">
+          <div>
+            <h3>Solace Hotel Partners</h3>
+            <p>Property package · Inspection flagged</p>
+          </div>
+          <div class="tag-row">
+            <span class="tag">Risk score 86</span>
+            <span class="tag">88% complete</span>
+          </div>
+          <div class="progress" aria-label="Solace Hotel Partners progress"><span style="--value: 88%"></span></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="risk" aria-labelledby="activity-title">
+      <div class="section-head">
+        <h2 id="activity-title">Claims list</h2>
+        <p>Dense rows support scanning, keyboard focus, and realistic operational copy instead of generic filler.</p>
+      </div>
+      <div class="operations">
+        <div class="activity-list">
+          <article class="activity-row" tabindex="0">
+            <span class="code">CLM-4082</span>
+            <div><strong>Water damage, Solace Hotel Partners</strong><span>$148,400 reserve</span></div>
+            <em>Adjuster assigned</em>
+            <span class="status-pill">Adjuster assigned</span>
+          </article>
+          <article class="activity-row" tabindex="0">
+            <span class="code">CLM-4077</span>
+            <div><strong>Fleet collision, Mariner Logistics</strong><span>$32,900 reserve</span></div>
+            <em>Awaiting police report</em>
+            <span class="status-pill">Awaiting police report</span>
+          </article>
+          <article class="activity-row" tabindex="0">
+            <span class="code">CLM-4069</span>
+            <div><strong>Data incident, Northline Dental</strong><span>$71,200 reserve</span></div>
+            <em>Counsel review</em>
+            <span class="status-pill">Counsel review</span>
+          </article>
+          <article class="activity-row" tabindex="0">
+            <span class="code">CLM-4058</span>
+            <div><strong>Roof inspection supplement</strong><span>$18,600 reserve</span></div>
+            <em>Ready to close</em>
+            <span class="status-pill">Ready to close</span>
+          </article>
+        </div>
+        <aside class="insight-panel">
+          <h3>Risk assessment</h3>
+          <ul class="check-list">
+            <li>Loss ratio drift detected in hospitality properties</li>
+            <li>Broker notes mention two vacant floors</li>
+            <li>Satellite roof imagery is older than 120 days</li>
+            <li>Recommended: bind with inspection contingency</li>
+          </ul>
+          <div class="toolbelt" aria-label="Quick tools">
+            <div class="tool">Policies</div>
+            <div class="tool">Risk</div>
+            <div class="tool">Brokers</div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="brokers" aria-labelledby="proof-title">
+      <div class="proof-band">
+        <div class="proof-copy">
+          <p class="eyebrow">White and teal</p>
+          <h2 id="proof-title">Operational clarity scales across teams.</h2>
+          <p>Loss ratio drift detected in hospitality properties Broker notes mention two vacant floors Satellite roof imagery is older than 120 days Recommended: bind with inspection contingency The layout is intentionally complete enough for a sales demo, product sprint, or agency presentation.</p>
+        </div>
+        <div class="proof-visual" aria-hidden="true">
+          <div class="orbital"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span><strong>Lumen Insurance Tech</strong> · Built with Frontend Skeletons for insurance technology teams.</span>
+    <span>Footer credit: Built with Frontend Skeletons</span>
+  </footer>
+
+  <script>
+    const toggle = document.querySelector(".menu-toggle");
+    const panel = document.querySelector(".mobile-panel");
+    toggle.addEventListener("click", () => {
+      const open = document.body.classList.toggle("menu-open");
+      toggle.setAttribute("aria-expanded", String(open));
+    });
+
+    panel.addEventListener("click", (event) => {
+      if (event.target.matches("a")) {
+        document.body.classList.remove("menu-open");
+        toggle.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    document.querySelectorAll(".activity-row").forEach((row) => {
+      row.addEventListener("keydown", (event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          row.classList.toggle("is-selected");
+        }
+      });
+    });
+  </script>
+</body>
+</html>

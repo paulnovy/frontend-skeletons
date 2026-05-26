@@ -1,0 +1,549 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cortex Knowledge Base</title>
+  <meta name="description" content="A clean enterprise knowledge base with powerful search, structured categories, article previews, breadcrumbs, and update signals.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#f3f5f8;--surface:#ffffff;--surface-2:#e7ecf3;--text:#182235;--muted:#667085;--accent:#48678f;--accent-2:#22a6b3;--border:rgba(72,103,143,.16);--shadow:0 24px 80px rgba(0,0,0,.12);--soft-shadow:0 18px 50px rgba(0,0,0,.08);--radius-sm:8px;--radius-md:18px;--radius-lg:28px;--max:1180px;--font:'Inter',sans-serif;--display:'Inter',sans-serif;--mono:'Inter',sans-serif}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;font-family:var(--font);color:var(--text);background:radial-gradient(circle at 12% 8%,color-mix(in srgb,var(--accent) 20%,transparent),transparent 30%),radial-gradient(circle at 92% 18%,color-mix(in srgb,var(--accent-2) 18%,transparent),transparent 30%),var(--bg);min-height:100vh;line-height:1.5}
+    body.menu-open{overflow:hidden}
+    a{color:inherit;text-decoration:none}
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    img,svg{display:block;max-width:100%}
+    .site-shell{min-height:100vh;overflow:hidden}
+    .container{width:min(100% - 32px,var(--max));margin-inline:auto}
+    .skip-link{position:absolute;left:16px;top:-80px;z-index:100;padding:12px 16px;background:var(--accent);color:#ffffff;border-radius:var(--radius-sm);transition:top .2s ease}
+    .skip-link:focus{top:16px}
+    .site-header{position:sticky;top:0;z-index:50;backdrop-filter:blur(18px);background:color-mix(in srgb,var(--bg) 82%,transparent);border-bottom:1px solid var(--border)}
+    .nav-wrap{min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+    .brand{display:inline-flex;align-items:center;gap:12px;font-weight:800;letter-spacing:0}
+    .brand-mark{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#ffffff;box-shadow:0 12px 28px color-mix(in srgb,var(--accent) 30%,transparent)}
+    .nav-links{display:none;align-items:center;gap:6px;padding:6px;border:1px solid var(--border);border-radius:999px;background:color-mix(in srgb,var(--surface) 72%,transparent)}
+    .nav-links a{color:var(--muted);padding:10px 14px;border-radius:999px;transition:color .2s ease,background .2s ease,transform .2s ease}
+    .nav-links a:hover,.nav-links a:focus-visible{color:var(--text);background:color-mix(in srgb,var(--accent) 14%,transparent);outline:none;transform:translateY(-1px)}
+    .nav-cta{display:none;align-items:center;gap:10px}
+    .menu-button{width:44px;height:44px;border:1px solid var(--border);border-radius:12px;background:var(--surface);color:var(--text);display:grid;place-items:center;transition:transform .2s ease,border-color .2s ease,background .2s ease}
+    .menu-button:hover,.menu-button:focus-visible{transform:translateY(-1px);border-color:color-mix(in srgb,var(--accent) 50%,var(--border));outline:none}
+    .menu-lines,.menu-lines::before,.menu-lines::after{width:18px;height:2px;display:block;border-radius:999px;background:currentColor;transition:transform .25s ease,opacity .25s ease;content:""}
+    .menu-lines::before{transform:translateY(-6px)}
+    .menu-lines::after{transform:translateY(4px)}
+    .menu-open .menu-lines{transform:rotate(45deg)}
+    .menu-open .menu-lines::before{transform:translateY(0) rotate(90deg)}
+    .menu-open .menu-lines::after{opacity:0}
+    .mobile-panel{position:fixed;inset:76px 16px auto 16px;z-index:40;padding:18px;border:1px solid var(--border);border-radius:20px;background:var(--surface);box-shadow:var(--shadow);display:grid;gap:8px;opacity:0;pointer-events:none;transform:translateY(-12px);transition:opacity .2s ease,transform .2s ease}
+    .menu-open .mobile-panel{opacity:1;pointer-events:auto;transform:translateY(0)}
+    .mobile-panel a{padding:14px 12px;border-radius:12px;color:var(--muted);transition:background .2s ease,color .2s ease}
+    .mobile-panel a:hover,.mobile-panel a:focus-visible{background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--text);outline:none}
+    .button{min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:12px 18px;border-radius:999px;border:1px solid transparent;font-weight:800;transition:transform .2s ease,box-shadow .2s ease,background .2s ease,border-color .2s ease}
+    .button.primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#ffffff;box-shadow:0 16px 34px color-mix(in srgb,var(--accent) 28%,transparent)}
+    .button.secondary{background:color-mix(in srgb,var(--surface) 78%,transparent);color:var(--text);border-color:var(--border)}
+    .button:hover,.button:focus-visible{transform:translateY(-2px);box-shadow:0 18px 40px color-mix(in srgb,var(--accent) 24%,transparent);outline:none}
+    main{display:grid;gap:84px}
+    .hero{padding:72px 0 28px}
+    .hero-grid{display:grid;gap:32px;align-items:center}
+    .eyebrow{display:inline-flex;align-items:center;gap:10px;width:fit-content;margin:0 0 18px;padding:8px 12px;border:1px solid var(--border);border-radius:999px;color:var(--muted);background:color-mix(in srgb,var(--surface) 72%,transparent);font-size:14px;font-weight:700}
+    .eyebrow::before{content:"";width:8px;height:8px;border-radius:999px;background:var(--accent);box-shadow:0 0 0 6px color-mix(in srgb,var(--accent) 16%,transparent)}
+    h1,h2,h3,p{margin-top:0}
+    h1{max-width:860px;margin-bottom:18px;font-family:var(--display);font-size:clamp(46px,8vw,96px);line-height:.92;letter-spacing:0}
+    .hero-copy{max-width:720px;color:var(--muted);font-size:clamp(18px,2vw,22px)}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+    .hero-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:32px}
+    .hero-stats div{padding:18px;border:1px solid var(--border);border-radius:var(--radius-md);background:color-mix(in srgb,var(--surface) 78%,transparent);box-shadow:var(--soft-shadow)}
+    .hero-stats strong{display:block;font-size:clamp(22px,4vw,36px);line-height:1}
+    .hero-stats span{display:block;margin-top:8px;color:var(--muted);font-size:14px}
+    .hero-visual{position:relative;min-height:420px;border:1px solid var(--border);border-radius:var(--radius-lg);background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 26%,transparent),transparent 42%),linear-gradient(315deg,color-mix(in srgb,var(--accent-2) 22%,transparent),transparent 50%),var(--surface);overflow:hidden;box-shadow:var(--shadow)}
+    .hero-visual::before{content:"";position:absolute;inset:18px;border:1px solid var(--border);border-radius:22px;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,black,transparent 88%)}
+    .floating-panel{position:absolute;left:24px;right:24px;bottom:24px;display:grid;gap:14px;padding:18px;border:1px solid var(--border);border-radius:20px;background:color-mix(in srgb,var(--surface) 86%,transparent);backdrop-filter:blur(18px)}
+    .panel-row{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}
+    .panel-row span{color:var(--muted);font-size:13px;font-weight:700;text-transform:uppercase}
+    .panel-row strong{font-size:18px}
+    .progress-track{height:10px;overflow:hidden;border-radius:999px;background:color-mix(in srgb,var(--text) 10%,transparent)}
+    .progress-track i{display:block;width:72%;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),var(--accent-2));animation:grow 1.2s ease both}
+    .section{padding:0 0 6px}
+    .section-heading{display:grid;gap:14px;margin-bottom:28px}
+    .section-heading h2{margin-bottom:0;font-family:var(--display);font-size:clamp(34px,5vw,62px);line-height:1;letter-spacing:0}
+    .section-heading p{max-width:660px;margin-bottom:0;color:var(--muted);font-size:17px}
+    .feature-grid{display:grid;gap:16px}
+    .feature-card,.showcase-card,.dashboard-card,.person-card,.cta-card{border:1px solid var(--border);background:color-mix(in srgb,var(--surface) 88%,transparent);box-shadow:var(--soft-shadow)}
+    .feature-card{min-height:250px;padding:24px;border-radius:var(--radius-md);transition:transform .25s ease,border-color .25s ease,background .25s ease}
+    .feature-card:hover{transform:translateY(-6px);border-color:color-mix(in srgb,var(--accent) 46%,var(--border));background:color-mix(in srgb,var(--surface) 94%,var(--accent) 6%)}
+    .feature-index{display:inline-flex;align-items:center;justify-content:center;width:44px;height:44px;margin-bottom:52px;border-radius:14px;background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent);font-family:var(--mono);font-weight:800}
+    .feature-card h3,.showcase-card h3,.person-card h3{margin-bottom:10px;font-size:22px;letter-spacing:0}
+    .feature-card p,.person-card p{margin-bottom:0;color:var(--muted)}
+    .showcase-grid{display:grid;gap:18px}
+    .showcase-card{display:grid;min-height:330px;overflow:hidden;border-radius:var(--radius-md);transition:transform .25s ease,box-shadow .25s ease}
+    .showcase-card:hover{transform:translateY(-6px) scale(1.01);box-shadow:0 28px 70px color-mix(in srgb,var(--accent) 18%,transparent)}
+    .visual-frame{position:relative;min-height:160px;overflow:hidden;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 28%,transparent),transparent 58%),linear-gradient(315deg,color-mix(in srgb,var(--accent-2) 22%,transparent),transparent 60%),var(--surface-2)}
+    .visual-frame span{position:absolute;border-radius:999px;background:color-mix(in srgb,var(--surface) 82%,transparent);border:1px solid var(--border)}
+    .visual-frame span:nth-child(1){width:120px;height:120px;left:24px;top:24px}
+    .visual-frame span:nth-child(2){width:180px;height:52px;right:24px;top:46px}
+    .visual-frame span:nth-child(3){width:52px;height:52px;right:54px;bottom:26px}
+    .card-copy{padding:22px}
+    .card-copy p,.card-copy span{color:var(--muted)}
+    .card-copy p{margin-bottom:10px;font-weight:700;text-transform:uppercase;font-size:12px;letter-spacing:.08em}
+    .showcase-card>a{width:fit-content;margin:0 22px 22px;padding:10px 14px;border-radius:999px;border:1px solid var(--border);color:var(--text);transition:background .2s ease,border-color .2s ease}
+    .showcase-card>a:hover,.showcase-card>a:focus-visible{background:var(--accent);color:#ffffff;border-color:transparent;outline:none}
+    .workbench{display:grid;gap:18px}
+    .dashboard-card{padding:20px;border-radius:var(--radius-md);overflow:hidden}
+    .dashboard-top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+    .dashboard-top h3{margin-bottom:0;font-size:20px}
+    .status-pill{padding:7px 10px;border-radius:999px;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);font-weight:800;font-size:12px}
+    .metric-table{width:100%;border-collapse:collapse}
+    .metric-table tr{border-top:1px solid var(--border)}
+    .metric-table th,.metric-table td{padding:16px 10px;text-align:left;vertical-align:middle}
+    .metric-table th{color:var(--text);font-weight:800}
+    .metric-table td{color:var(--muted)}
+    .metric-table td:nth-child(2){color:var(--accent);font-weight:900}
+    .insight-panel{min-height:100%;padding:22px;border:1px solid var(--border);border-radius:var(--radius-md);background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 16%,transparent),var(--surface))}
+    .chart-bars{display:flex;align-items:end;gap:12px;height:220px;margin-top:30px;padding:16px;border-radius:18px;background:color-mix(in srgb,var(--bg) 44%,transparent);border:1px solid var(--border)}
+    .chart-bars i{flex:1;min-width:18px;border-radius:999px 999px 8px 8px;background:linear-gradient(to top,var(--accent),var(--accent-2));transform-origin:bottom;animation:rise .9s ease both}
+    .chart-bars i:nth-child(1){height:35%}
+    .chart-bars i:nth-child(2){height:62%;animation-delay:.05s}
+    .chart-bars i:nth-child(3){height:48%;animation-delay:.1s}
+    .chart-bars i:nth-child(4){height:78%;animation-delay:.15s}
+    .chart-bars i:nth-child(5){height:56%;animation-delay:.2s}
+    .chart-bars i:nth-child(6){height:88%;animation-delay:.25s}
+    .people-grid{display:grid;gap:16px}
+    .person-card{display:flex;align-items:flex-start;gap:16px;padding:20px;border-radius:var(--radius-md);transition:transform .25s ease,border-color .25s ease}
+    .person-card:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--accent) 48%,var(--border))}
+    .avatar-mark{flex:0 0 54px;width:54px;height:54px;display:grid;place-items:center;border-radius:18px;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#ffffff;font-weight:900}
+    .person-card strong{display:block;margin-bottom:8px;color:var(--accent)}
+    .timeline-list{display:grid;gap:14px;padding:0;margin:0;list-style:none}
+    .timeline-list li{display:grid;grid-template-columns:76px 1fr;gap:16px;align-items:center;padding:18px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface)}
+    .timeline-list span{display:grid;place-items:center;min-height:44px;border-radius:14px;background:color-mix(in srgb,var(--accent) 14%,transparent);color:var(--accent);font-family:var(--mono);font-weight:900}
+    .timeline-list p{margin-bottom:0;color:var(--muted);font-weight:700}
+    .search-strip{display:grid;gap:12px;padding:16px;border:1px solid var(--border);border-radius:var(--radius-md);background:var(--surface);box-shadow:var(--soft-shadow)}
+    .search-strip input,.search-strip select{width:100%;min-height:50px;padding:0 14px;border:1px solid var(--border);border-radius:14px;color:var(--text);background:color-mix(in srgb,var(--surface-2) 62%,transparent);transition:border-color .2s ease,box-shadow .2s ease}
+    .search-strip input:focus,.search-strip select:focus{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 16%,transparent);outline:none}
+    .cta-card{position:relative;overflow:hidden;padding:32px;border-radius:var(--radius-lg);background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 22%,transparent),transparent 56%),var(--surface)}
+    .cta-card::after{content:"";position:absolute;width:240px;height:240px;right:-80px;top:-80px;border-radius:50%;border:46px solid color-mix(in srgb,var(--accent) 18%,transparent)}
+    .cta-content{position:relative;z-index:1;display:grid;gap:18px;max-width:720px}
+    .cta-content h2{margin-bottom:0;font-family:var(--display);font-size:clamp(34px,5vw,64px);line-height:1}
+    .cta-content p{margin-bottom:0;color:var(--muted);font-size:18px}
+    .site-footer{margin-top:84px;padding:30px 0;border-top:1px solid var(--border);color:var(--muted)}
+    .footer-inner{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+    .footer-inner strong{color:var(--text)}
+    .footer-links{display:flex;gap:14px;flex-wrap:wrap}
+    .footer-links a{transition:color .2s ease}
+    .footer-links a:hover,.footer-links a:focus-visible{color:var(--accent);outline:none}
+    .reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease var(--delay,0ms),transform .6s ease var(--delay,0ms)}
+    .reveal.is-visible{opacity:1;transform:translateY(0)}
+    @keyframes grow{from{width:0}
+    to{width:72%}
+    }
+    @keyframes rise{from{transform:scaleY(.2);opacity:.4}
+    to{transform:scaleY(1);opacity:1}
+    }
+    @media (min-width:640px){.search-strip{grid-template-columns:1.4fr .8fr .8fr auto;align-items:center}
+    .feature-grid,.people-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+    .showcase-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media (min-width:900px){.hero{padding-top:104px}
+    .hero-grid{grid-template-columns:1.05fr .95fr}
+    .nav-links,.nav-cta{display:flex}
+    .menu-button,.mobile-panel{display:none}
+    .workbench{grid-template-columns:1.25fr .75fr}
+    .section-heading{grid-template-columns:.9fr 1fr;align-items:end}
+    }
+    @media (max-width:720px){.container{width:min(100% - 24px,var(--max))}
+    main{gap:58px}
+    .hero-stats{grid-template-columns:1fr}
+    .hero-visual{min-height:360px}
+    .metric-table,.metric-table tbody,.metric-table tr,.metric-table th,.metric-table td{display:block;width:100%}
+    .metric-table tr{padding:12px 0}
+    .metric-table th,.metric-table td{padding:4px 0}
+    .timeline-list li{grid-template-columns:1fr}
+    }
+    @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms !important;animation-iteration-count:1 !important;scroll-behavior:auto !important;transition-duration:.01ms !important}
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="site-shell">
+    <header class="site-header" aria-label="Primary navigation">
+      <div class="container nav-wrap">
+        <a class="brand" href="#" aria-label="Cortex Knowledge Base home">
+          <span class="brand-mark">CK</span>
+          <span>Cortex Knowledge Base</span>
+        </a>
+        <nav class="nav-links" aria-label="Desktop navigation">
+            <a href="#search">Search</a>
+            <a href="#categories">Categories</a>
+            <a href="#articles">Articles</a>
+            <a href="#updates">Updates</a>
+        </nav>
+        <div class="nav-cta">
+          <a class="button secondary" href="#category-grid">Explore</a>
+          <a class="button primary" href="#contact">Start</a>
+        </div>
+        <button class="menu-button" type="button" aria-label="Open menu" aria-expanded="false" data-menu-button>
+          <span class="menu-lines" aria-hidden="true"></span>
+        </button>
+      </div>
+      <nav class="mobile-panel" aria-label="Mobile navigation" data-mobile-panel>
+            <a href="#search">Search</a>
+            <a href="#categories">Categories</a>
+            <a href="#articles">Articles</a>
+            <a href="#updates">Updates</a>
+        <a href="#contact">Start</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section class="hero container" aria-labelledby="hero-title">
+        <div class="hero-grid">
+          <div>
+            <p class="eyebrow">Enterprise knowledge management</p>
+            <h1 id="hero-title">Cortex Knowledge Base</h1>
+            <p class="hero-copy">A clean enterprise knowledge base with powerful search, structured categories, article previews, breadcrumbs, and update signals.</p>
+            <div class="hero-actions" aria-label="Hero actions">
+              <a class="button primary" href="#contact">Search docs</a>
+              <a class="button secondary" href="#category-grid">Browse categories</a>
+            </div>
+            <div class="hero-stats" aria-label="Key metrics">
+
+            <div>
+              <strong>12.8K</strong>
+              <span>indexed articles</span>
+            </div>
+
+            <div>
+              <strong>94%</strong>
+              <span>answer success</span>
+            </div>
+
+            <div>
+              <strong>6 min</strong>
+              <span>median update time</span>
+            </div>
+            </div>
+          </div>
+          <aside class="hero-visual" aria-label="Product preview">
+            <div class="floating-panel">
+              <div class="panel-row">
+                <div>
+                  <span>Current focus</span>
+                  <strong>Popular articles</strong>
+                </div>
+                <strong>12.8K</strong>
+              </div>
+              <div class="progress-track" aria-hidden="true"><i></i></div>
+              <div class="panel-row">
+                <div>
+                  <span>Next step</span>
+                  <strong>Company systems</strong>
+                </div>
+                <a class="button secondary" href="#search">Open</a>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section container" id="search" aria-labelledby="overview-title">
+        <div class="section-heading">
+          <h2 id="overview-title">Knowledge that stays findable</h2>
+          <p>Natural language search, scoped filters, team ownership, and recently viewed docs sit above the fold. Organize onboarding, security, finance, product, engineering, and customer operations cl.</p>
+        </div>
+        <div class="feature-grid">
+
+          <article class="feature-card reveal" style="--delay: 0ms">
+            <span class="feature-index">01</span>
+            <h3>Search hero</h3>
+            <p>Natural language search, scoped filters, team ownership, and recently viewed docs sit above the fold.</p>
+          </article>
+
+          <article class="feature-card reveal" style="--delay: 80ms">
+            <span class="feature-index">02</span>
+            <h3>Category grid</h3>
+            <p>Organize onboarding, security, finance, product, engineering, and customer operations cleanly.</p>
+          </article>
+
+          <article class="feature-card reveal" style="--delay: 160ms">
+            <span class="feature-index">03</span>
+            <h3>Article previews</h3>
+            <p>Show owners, freshness, estimated read time, tags, and related documents before opening.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section container" id="category-grid" aria-labelledby="cards-title">
+        <div class="section-heading">
+          <h2 id="cards-title">Category grid</h2>
+          <p>Realistic interface modules with editorial spacing, crisp labels, and interaction states ready for product adaptation.</p>
+        </div>
+        <form class="search-strip" aria-label="Search and filter controls">
+          <input type="search" placeholder="Search Cortex Knowledge Base" aria-label="Search">
+          <select aria-label="Category">
+            <option>All categories</option>
+            <option>Featured</option>
+            <option>Recent</option>
+          </select>
+          <select aria-label="Sort order">
+            <option>Recommended</option>
+            <option>Newest first</option>
+            <option>Highest rated</option>
+          </select>
+          <button class="button primary" type="submit">Filter</button>
+        </form>
+        <div class="showcase-grid" style="margin-top: 18px;">
+
+          <article class="showcase-card reveal tone-1" style="--delay: 0ms">
+            <div class="visual-frame" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="card-copy">
+              <p>214 articles</p>
+              <h3>Employee onboarding</h3>
+              <span>People operations</span>
+            </div>
+            <a href="#" aria-label="Open Employee onboarding">View</a>
+          </article>
+
+          <article class="showcase-card reveal tone-2" style="--delay: 80ms">
+            <div class="visual-frame" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="card-copy">
+              <p>98 articles</p>
+              <h3>Security playbooks</h3>
+              <span>Risk and compliance</span>
+            </div>
+            <a href="#" aria-label="Open Security playbooks">View</a>
+          </article>
+
+          <article class="showcase-card reveal tone-3" style="--delay: 160ms">
+            <div class="visual-frame" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="card-copy">
+              <p>486 articles</p>
+              <h3>Product releases</h3>
+              <span>Roadmap and GTM</span>
+            </div>
+            <a href="#" aria-label="Open Product releases">View</a>
+          </article>
+
+          <article class="showcase-card reveal tone-4" style="--delay: 240ms">
+            <div class="visual-frame" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <div class="card-copy">
+              <p>1,240 articles</p>
+              <h3>Customer support</h3>
+              <span>Macros and policies</span>
+            </div>
+            <a href="#" aria-label="Open Customer support">View</a>
+          </article>
+        </div>
+      </section>
+
+      <section class="section container" id="categories" aria-labelledby="dashboard-title">
+        <div class="section-heading">
+          <h2 id="dashboard-title">Popular articles</h2>
+          <p>A dense but readable workspace section using data cards, tables, and compact visualization patterns.</p>
+        </div>
+        <div class="workbench">
+          <article class="dashboard-card reveal">
+            <div class="dashboard-top">
+              <h3>Live overview</h3>
+              <span class="status-pill">Updated now</span>
+            </div>
+            <table class="metric-table">
+              <tbody>
+
+              <tr>
+                <th>VPN setup guide</th>
+                <td>18k views</td>
+                <td>updated</td>
+              </tr>
+
+              <tr>
+                <th>SOC2 evidence map</th>
+                <td>9k views</td>
+                <td>verified</td>
+              </tr>
+
+              <tr>
+                <th>Incident response</th>
+                <td>7k views</td>
+                <td>owner review</td>
+              </tr>
+
+              <tr>
+                <th>Expense policy</th>
+                <td>6k views</td>
+                <td>current</td>
+              </tr>
+              </tbody>
+            </table>
+          </article>
+          <aside class="insight-panel reveal" style="--delay: 90ms">
+            <div class="dashboard-top">
+              <h3>Signal trend</h3>
+              <span class="status-pill">Healthy</span>
+            </div>
+            <p style="color: var(--muted); margin-bottom: 0;">A compact chart area communicates momentum without relying on external libraries.</p>
+            <div class="chart-bars" aria-label="Bar chart preview">
+              <i></i>
+              <i></i>
+              <i></i>
+              <i></i>
+              <i></i>
+              <i></i>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section container" id="articles" aria-labelledby="people-title">
+        <div class="section-heading">
+          <h2 id="people-title">Recent updates</h2>
+          <p>Human-centered cards keep the experience grounded with names, context, and concrete supporting details.</p>
+        </div>
+        <div class="people-grid">
+
+          <article class="person-card reveal" style="--delay: 0ms">
+            <div class="avatar-mark">Mr</div>
+            <div>
+              <h3>May release notes</h3>
+              <strong>Product ops</strong>
+              <p>Published today at 08:40</p>
+            </div>
+          </article>
+
+          <article class="person-card reveal" style="--delay: 90ms">
+            <div class="avatar-mark">Ca</div>
+            <div>
+              <h3>Contract approval path</h3>
+              <strong>Legal</strong>
+              <p>Updated yesterday</p>
+            </div>
+          </article>
+
+          <article class="person-card reveal" style="--delay: 180ms">
+            <div class="avatar-mark">Dr</div>
+            <div>
+              <h3>Data retention table</h3>
+              <strong>Security</strong>
+              <p>Reviewed this week</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section container" id="updates" aria-labelledby="timeline-title">
+        <div class="section-heading">
+          <h2 id="timeline-title">Breadcrumb nav</h2>
+          <p>The timeline pattern is built for quick scanning on desktop and comfortable stacking on mobile.</p>
+        </div>
+        <ol class="timeline-list">
+
+          <li class="reveal" style="--delay: 0ms">
+            <span>Home</span>
+            <p>All workspaces</p>
+          </li>
+
+          <li class="reveal" style="--delay: 70ms">
+            <span>Operations</span>
+            <p>Company systems</p>
+          </li>
+
+          <li class="reveal" style="--delay: 140ms">
+            <span>Security</span>
+            <p>Access control</p>
+          </li>
+
+          <li class="reveal" style="--delay: 210ms">
+            <span>Article</span>
+            <p>SSO setup</p>
+          </li>
+        </ol>
+      </section>
+
+      <section class="section container" id="contact" aria-labelledby="cta-title">
+        <article class="cta-card reveal">
+          <div class="cta-content">
+            <p class="eyebrow">Ready for production adaptation</p>
+            <h2 id="cta-title">Make the right answer the easiest answer.</h2>
+            <p>Cortex helps large teams find, trust, and improve knowledge before stale docs slow them down.</p>
+            <div class="hero-actions">
+              <a class="button primary" href="#">Start a project</a>
+              <a class="button secondary" href="#main">Back to top</a>
+            </div>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p><strong>Cortex Knowledge Base</strong> - Built with Frontend Skeletons</p>
+        <nav class="footer-links" aria-label="Footer navigation">
+          <a href="#search">Search</a>
+          <a href="#categories">Categories</a>
+          <a href="#contact">Contact</a>
+        </nav>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const menuButton = document.querySelector('[data-menu-button]');
+    const mobilePanel = document.querySelector('[data-mobile-panel]');
+
+    function setMenu(open) {
+      document.body.classList.toggle('menu-open', open);
+      menuButton.setAttribute('aria-expanded', String(open));
+      menuButton.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    }
+
+    menuButton.addEventListener('click', () => {
+      setMenu(!document.body.classList.contains('menu-open'));
+    });
+
+    mobilePanel.addEventListener('click', (event) => {
+      if (event.target.matches('a')) setMenu(false);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') setMenu(false);
+    });
+
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.14 });
+
+    document.querySelectorAll('.reveal').forEach((element) => revealObserver.observe(element));
+
+    document.querySelector('.search-strip').addEventListener('submit', (event) => {
+      event.preventDefault();
+      const button = event.currentTarget.querySelector('button');
+      button.textContent = 'Applied';
+      window.setTimeout(() => { button.textContent = 'Filter'; }, 1400);
+    });
+  </script>
+</body>
+</html>

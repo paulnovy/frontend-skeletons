@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Echo Podcast Studio premium standalone frontend skeleton.">
+    <title>Echo Podcast Studio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+    :root {
+      color-scheme: var(--scheme); --bg: #130b1f;
+      --surface: rgba(30, 18, 48, .86); --surface-2: rgba(56, 35, 82, .66);
+      --text: #fff7ed; --muted: #c8adc7;
+      --line: rgba(255, 237, 213, .16); --accent: #f97316;
+      --accent-2: #a855f7; --accent-3: #facc15;
+      --shadow: 0 24px 80px rgba(0, 0, 0, .22); --radius: 8px;
+      --radius-lg: 16px; --max: 1440px;
+      --font: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; --mono: 'JetBrains Mono', 'SFMono-Regular', Consolas, monospace;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0; min-height: 100vh;
+      font-family: var(--font); color: var(--text);
+      background: var(--page-bg); line-height: 1.5;
+      text-rendering: optimizeLegibility;
+    }
+    body[data-theme="dark"] {
+      --scheme: dark;
+      --page-bg:
+        radial-gradient(circle at 14% -8%, color-mix(in srgb, var(--accent) 24%, transparent), transparent 30rem),
+        radial-gradient(circle at 88% 2%, color-mix(in srgb, var(--accent-2) 18%, transparent), transparent 28rem),
+        linear-gradient(135deg, color-mix(in srgb, var(--bg) 94%, black), var(--bg) 55%, color-mix(in srgb, var(--accent) 7%, var(--bg)));
+    }
+    body[data-theme="light"],
+    body[data-theme="cream"],
+    body[data-theme="forum"] {
+      --scheme: light;
+      --page-bg:
+        radial-gradient(circle at 12% -12%, color-mix(in srgb, var(--accent) 11%, transparent), transparent 30rem),
+        linear-gradient(180deg, color-mix(in srgb, var(--bg) 92%, white), var(--bg));
+    }
+    body[data-theme="weather"] {
+      --scheme: dark;
+      --page-bg:
+        linear-gradient(135deg, #0f4c81 0%, #3b82f6 42%, #f59e0b 100%);
+    }
+    a {
+      color: inherit; text-decoration: none;
+    }
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+    button,
+    a,
+    input,
+    select,
+    textarea {
+      -webkit-tap-highlight-color: transparent;
+    }
+    .skip-link {
+      position: absolute; left: 1rem;
+      top: -4rem; z-index: 200;
+      padding: .7rem 1rem; color: var(--bg);
+      background: var(--accent); border-radius: var(--radius);
+      transition: top .2s ease;
+    }
+    .skip-link:focus {
+      top: 1rem; outline: 3px solid color-mix(in srgb, var(--accent) 35%, white);
+    }
+    .app-shell {
+      width: min(100%, var(--max)); margin: 0 auto;
+      padding: 1rem;
+    }
+    .mobile-bar {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 1rem;
+      position: sticky; top: 0;
+      z-index: 60; padding: .9rem 0;
+      backdrop-filter: blur(18px);
+    }
+    .brand {
+      display: inline-flex; align-items: center;
+      gap: .75rem; min-width: 0;
+      font-weight: 800; letter-spacing: 0;
+    }
+    .brand-mark {
+      width: 2.35rem; height: 2.35rem;
+      display: grid; place-items: center;
+      border-radius: .7rem; color: white;
+      background:
+        linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 16px 40px color-mix(in srgb, var(--accent) 28%, transparent); flex: 0 0 auto;
+    }
+    .brand small {
+      display: block; margin-top: .05rem;
+      color: var(--muted); font-size: .72rem;
+      font-weight: 700; text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .hamburger {
+      width: 2.6rem; height: 2.6rem;
+      display: none; place-items: center;
+      border: 1px solid var(--line); border-radius: var(--radius);
+      color: var(--text); background: var(--surface);
+      cursor: pointer; transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+    .hamburger:hover,
+    .hamburger:focus-visible {
+      transform: translateY(-1px); border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+      outline: none;
+    }
+    .hamburger svg {
+      width: 1.25rem; height: 1.25rem;
+    }
+    .layout {
+      display: grid; grid-template-columns: 17rem minmax(0, 1fr) 20rem;
+      gap: 1rem; align-items: start;
+    }
+    .sidebar,
+    .rail,
+    .panel,
+    .hero,
+    .card,
+    .data-table,
+    .composer {
+      border: 1px solid var(--line); background: var(--surface);
+      box-shadow: var(--shadow); backdrop-filter: blur(22px);
+      border-radius: var(--radius-lg);
+    }
+    .sidebar,
+    .rail {
+      position: sticky; top: 5.4rem;
+      padding: 1rem;
+    }
+    .sidebar h2,
+    .rail h2,
+    .panel h2,
+    .data-table h2 {
+      margin: 0; font-size: .86rem;
+      text-transform: uppercase; letter-spacing: .08em;
+      color: var(--muted);
+    }
+    .nav-list,
+    .stack-list,
+    .rail-list,
+    .metric-list {
+      display: grid; gap: .55rem;
+      margin: 1rem 0 0; padding: 0;
+      list-style: none;
+    }
+    .nav-link,
+    .stack-item,
+    .rail-item {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: .75rem;
+      padding: .75rem .8rem; border: 1px solid transparent;
+      border-radius: var(--radius); color: var(--text);
+      background: color-mix(in srgb, var(--surface-2) 72%, transparent); transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+    .nav-link:hover,
+    .nav-link:focus-visible,
+    .stack-item:hover,
+    .rail-item:hover {
+      transform: translateX(2px); border-color: color-mix(in srgb, var(--accent) 38%, var(--line));
+      background: color-mix(in srgb, var(--accent) 10%, var(--surface-2)); outline: none;
+    }
+    .nav-link.is-active {
+      color: white; border-color: color-mix(in srgb, var(--accent) 58%, transparent);
+      background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 72%, transparent), color-mix(in srgb, var(--accent-2) 42%, transparent));
+    }
+    .nav-link span:last-child,
+    .stack-item span:last-child,
+    .rail-item span:last-child {
+      color: var(--muted); font-family: var(--mono);
+      font-size: .72rem;
+    }
+    .content {
+      display: grid; gap: 1rem;
+      min-width: 0;
+    }
+    .hero {
+      overflow: hidden; position: relative;
+      padding: clamp(1.4rem, 3vw, 2rem);
+    }
+    .hero::before {
+      content: ""; position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(120deg, color-mix(in srgb, var(--accent) 16%, transparent), transparent 45%),
+        radial-gradient(circle at 84% 18%, color-mix(in srgb, var(--accent-2) 20%, transparent), transparent 18rem);
+      pointer-events: none;
+    }
+    .hero-content {
+      position: relative; z-index: 1;
+      display: grid; gap: 1.2rem;
+    }
+    .eyebrow {
+      display: inline-flex; width: fit-content;
+      align-items: center; gap: .45rem;
+      padding: .35rem .6rem; color: var(--text);
+      border: 1px solid var(--line); border-radius: 999px;
+      background: color-mix(in srgb, var(--surface-2) 65%, transparent); font-size: .76rem;
+      font-weight: 800; text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .eyebrow::before {
+      content: ""; width: .45rem;
+      height: .45rem; border-radius: 999px;
+      background: var(--accent); box-shadow: 0 0 0 .28rem color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+    .hero h1 {
+      margin: 0; max-width: 13ch;
+      font-size: clamp(2.4rem, 6vw, 5.6rem); line-height: .95;
+      letter-spacing: 0;
+    }
+    .hero p {
+      margin: 0; max-width: 58rem;
+      color: var(--muted); font-size: clamp(1rem, 2vw, 1.18rem);
+    }
+    .hero-actions {
+      display: flex; flex-wrap: wrap;
+      gap: .75rem;
+    }
+    .button {
+      display: inline-flex; align-items: center;
+      justify-content: center; gap: .55rem;
+      min-height: 2.85rem; padding: .78rem 1rem;
+      border: 1px solid var(--line); border-radius: var(--radius);
+      color: var(--text); background: color-mix(in srgb, var(--surface-2) 78%, transparent);
+      font-weight: 800; cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+    }
+    .button.primary {
+      color: white; border-color: transparent;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2)); box-shadow: 0 18px 44px color-mix(in srgb, var(--accent) 28%, transparent);
+    }
+    .button:hover,
+    .button:focus-visible {
+      transform: translateY(-2px); border-color: color-mix(in srgb, var(--accent) 42%, var(--line));
+      outline: none;
+    }
+    .metrics {
+      display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: .75rem;
+    }
+    .metric {
+      min-width: 0; padding: .9rem;
+      border: 1px solid var(--line); border-radius: var(--radius);
+      background: color-mix(in srgb, var(--surface-2) 70%, transparent);
+    }
+    .metric strong {
+      display: block; color: var(--text);
+      font-size: 1.15rem; line-height: 1.1;
+    }
+    .metric span {
+      display: block; margin-top: .35rem;
+      color: var(--muted); font-size: .78rem;
+      font-weight: 800; text-transform: uppercase;
+      letter-spacing: .07em;
+    }
+    .panel {
+      padding: 1rem;
+    }
+    .panel-header,
+    .table-header,
+    .composer-header {
+      display: flex; align-items: center;
+      justify-content: space-between; gap: 1rem;
+      margin-bottom: 1rem;
+    }
+    .selector,
+    .field,
+    .input {
+      width: 100%; border: 1px solid var(--line);
+      border-radius: var(--radius); color: var(--text);
+      background: color-mix(in srgb, var(--surface-2) 74%, transparent); transition: border-color .2s ease, box-shadow .2s ease;
+    }
+    .selector {
+      max-width: 11rem; padding: .62rem .7rem;
+    }
+    .selector:focus,
+    .field:focus,
+    .input:focus {
+      border-color: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 16%, transparent);
+      outline: none;
+    }
+    .workspace-grid {
+      display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(18rem, .8fr);
+      gap: 1rem;
+    }
+    .thread,
+    .visual-stage {
+      display: grid; gap: .75rem;
+    }
+    .message {
+      max-width: 88%; padding: .9rem 1rem;
+      border: 1px solid var(--line); border-radius: var(--radius-lg);
+      background: color-mix(in srgb, var(--surface-2) 68%, transparent); animation: rise .52s ease both;
+    }
+    .message:nth-child(even) {
+      justify-self: end; background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 30%, var(--surface-2)), color-mix(in srgb, var(--accent-2) 20%, var(--surface-2)));
+    }
+    .message strong {
+      display: block; margin-bottom: .35rem;
+      font-size: .8rem; text-transform: uppercase;
+      letter-spacing: .07em;
+    }
+    .message p {
+      margin: 0; color: var(--text);
+    }
+    .visual-stage {
+      min-height: 19rem; padding: 1rem;
+      border: 1px solid var(--line); border-radius: var(--radius-lg);
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--accent) 11%, transparent), transparent),
+        color-mix(in srgb, var(--surface-2) 80%, transparent);
+      overflow: hidden;
+    }
+    .bars {
+      display: grid; grid-template-columns: repeat(18, minmax(.4rem, 1fr));
+      align-items: end; gap: .35rem;
+      min-height: 13rem;
+    }
+    .bar {
+      min-height: 1.4rem; border-radius: 999px 999px 3px 3px;
+      background: linear-gradient(180deg, var(--accent), color-mix(in srgb, var(--accent-2) 72%, transparent)); opacity: .82;
+      transform-origin: bottom; animation: pulseBar 2.8s ease-in-out infinite;
+    }
+    .bar:nth-child(3n) {
+      background: linear-gradient(180deg, var(--accent-2), color-mix(in srgb, var(--accent) 62%, transparent)); animation-delay: -.7s;
+    }
+    .bar:nth-child(4n) {
+      background: linear-gradient(180deg, var(--accent-3), color-mix(in srgb, var(--accent) 48%, transparent)); animation-delay: -1.4s;
+    }
+    .cards {
+      display: grid; grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      position: relative; overflow: hidden;
+      padding: 1rem; transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+    }
+    .card::after {
+      content: ""; position: absolute;
+      inset: auto 1rem 1rem 1rem; height: 3px;
+      border-radius: 999px; background: linear-gradient(90deg, var(--accent), var(--accent-2), transparent);
+      opacity: .78;
+    }
+    .card:hover {
+      transform: translateY(-4px); border-color: color-mix(in srgb, var(--accent) 42%, var(--line));
+      box-shadow: 0 28px 72px color-mix(in srgb, var(--accent) 18%, transparent);
+    }
+    .card h3 {
+      margin: 0; font-size: 1rem;
+    }
+    .card strong {
+      display: block; margin-top: .85rem;
+      font-size: 1.45rem; line-height: 1.1;
+    }
+    .card p {
+      margin: .7rem 0 1.1rem; color: var(--muted);
+      font-size: .92rem;
+    }
+    .data-table {
+      overflow: hidden;
+    }
+    .data-table .table-header {
+      padding: 1rem 1rem 0;
+    }
+    table {
+      width: 100%; border-collapse: collapse;
+      font-size: .92rem;
+    }
+    th,
+    td {
+      padding: .82rem 1rem; text-align: left;
+      border-top: 1px solid var(--line); white-space: nowrap;
+    }
+    th {
+      color: var(--muted); font-size: .74rem;
+      text-transform: uppercase; letter-spacing: .08em;
+    }
+    td:last-child {
+      color: var(--accent); font-weight: 800;
+    }
+    .composer {
+      padding: 1rem;
+    }
+    .composer-form {
+      display: grid; grid-template-columns: minmax(0, 1fr) auto;
+      gap: .75rem;
+    }
+    .input {
+      min-height: 3rem; padding: .82rem .9rem;
+    }
+    .status-strip {
+      display: flex; flex-wrap: wrap;
+      gap: .55rem; margin-top: .85rem;
+    }
+    .pill {
+      display: inline-flex; align-items: center;
+      gap: .4rem; padding: .36rem .55rem;
+      border: 1px solid var(--line); border-radius: 999px;
+      color: var(--muted); background: color-mix(in srgb, var(--surface-2) 62%, transparent);
+      font-size: .76rem; font-weight: 800;
+    }
+    .pill::before {
+      content: ""; width: .4rem;
+      height: .4rem; border-radius: 999px;
+      background: var(--accent);
+    }
+    .footer {
+      margin-top: 1rem; padding: 1rem;
+      color: var(--muted); text-align: center;
+      font-size: .85rem;
+    }
+    .footer strong {
+      color: var(--text);
+    }
+    @keyframes rise {
+      from {
+        opacity: 0; transform: translateY(10px);
+      }
+      to {
+        opacity: 1; transform: translateY(0);
+      }
+    }
+    @keyframes pulseBar {
+      0%, 100% {
+        transform: scaleY(.86); opacity: .72;
+      }
+      50% {
+        transform: scaleY(1.04); opacity: 1;
+      }
+    }
+    @media (max-width: 1180px) {
+      .layout {
+        grid-template-columns: 15rem minmax(0, 1fr);
+      }
+      .rail {
+        position: static; grid-column: 1 / -1;
+      }
+      .cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 860px) {
+      .app-shell {
+        padding: .75rem;
+      }
+      .hamburger {
+        display: grid;
+      }
+      .layout {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        display: none; position: static;
+      }
+      body.menu-open .sidebar {
+        display: block;
+      }
+      .metrics,
+      .workspace-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero h1 {
+        max-width: 11ch;
+      }
+      .composer-form {
+        grid-template-columns: 1fr;
+      }
+      table {
+        display: block; overflow-x: auto;
+      }
+    }
+    @media (max-width: 560px) {
+      .cards {
+        grid-template-columns: 1fr;
+      }
+      .hero-actions,
+      .panel-header,
+      .table-header,
+      .composer-header {
+        align-items: stretch; flex-direction: column;
+      }
+      .button,
+      .selector {
+        width: 100%; max-width: none;
+      }
+      .message {
+        max-width: 100%;
+      }
+    }
+    </style>
+  </head>
+  <body data-theme="dark">
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="app-shell">
+      <header class="mobile-bar" aria-label="Primary">
+        <a class="brand" href="#">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 3L20 7.5V16.5L12 21L4 16.5V7.5L12 3Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M12 8L16 10.25V14.75L12 17L8 14.75V10.25L12 8Z" fill="currentColor"/>
+            </svg>
+          </span>
+          <span>
+            Echo Podcast Studio
+            <small>Podcast management platform</small>
+          </span>
+        </a>
+        <button class="hamburger" type="button" aria-label="Toggle navigation" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </header>
+      <div class="layout">
+        <aside class="sidebar" aria-label="Navigation and quick links">
+          <h2>Navigation</h2>
+          <nav>
+            <ul class="nav-list">
+              <li><a class="nav-link is-active" href="#section-1"><span>Episodes</span><span>01</span></a></li>
+              <li><a class="nav-link" href="#section-2"><span>Record</span><span>02</span></a></li>
+              <li><a class="nav-link" href="#section-3"><span>Guests</span><span>03</span></a></li>
+              <li><a class="nav-link" href="#section-4"><span>Analytics</span><span>04</span></a></li>
+              <li><a class="nav-link" href="#section-5"><span>Distribution</span><span>05</span></a></li>
+            </ul>
+          </nav>
+          <h2 style="margin-top:1rem">Episode list</h2>
+          <ul class="stack-list">
+            <li class="stack-item"><span>128 • Founder stories • Edited</span><span>01</span></li>
+            <li class="stack-item"><span>127 • AI agents roundtable • Review</span><span>02</span></li>
+            <li class="stack-item"><span>126 • Climate tech finance • Live</span><span>03</span></li>
+            <li class="stack-item"><span>125 • Design systems • Scheduled</span><span>04</span></li>
+            <li class="stack-item"><span>124 • Security week • Draft</span><span>05</span></li>
+            <li class="stack-item"><span>123 • Listener mailbag • Published</span><span>06</span></li>
+          </ul>
+        </aside>
+        <main class="content" id="main">
+          <section class="hero" id="section-1">
+            <div class="hero-content">
+              <span class="eyebrow">Creative, audio-focused, modern</span>
+              <h1>Echo Podcast Studio</h1>
+              <p>A production studio for planning episodes, tracking guests, reviewing waveforms, and shipping to every channel.</p>
+              <div class="hero-actions">
+                <button class="button primary" type="button">Schedule recording</button>
+                <button class="button" type="button">View dashboard</button>
+              </div>
+              <div class="metrics" aria-label="Key metrics">
+                <div class="metric">
+                  <strong>128</strong>
+                  <span>Episodes</span>
+                </div>
+                <div class="metric">
+                  <strong>842k</strong>
+                  <span>Downloads</span>
+                </div>
+                <div class="metric">
+                  <strong>46</strong>
+                  <span>Guests</span>
+                </div>
+                <div class="metric">
+                  <strong>11</strong>
+                  <span>Channels</span>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="panel" id="section-2">
+            <div class="panel-header">
+              <h2>Production console</h2>
+              <select class="selector" aria-label="Mode selector">
+                <option>Production</option>
+                <option>Sandbox</option>
+                <option>Review</option>
+              </select>
+            </div>
+            <div class="workspace-grid">
+              <div class="thread" aria-label="Activity narrative">
+                <article class="message">
+                  <strong>System</strong>
+                  <p>Waveform cards make edits, ad markers, chapters, and transcripts easy to scan.</p>
+                </article>
+                <article class="message">
+                  <strong>Workspace</strong>
+                  <p>Analytics chart highlights retention, downloads, attribution, and subscriber lift.</p>
+                </article>
+                <article class="message">
+                  <strong>System</strong>
+                  <p>Distribution channels show Spotify, Apple, YouTube, RSS, and newsletter state.</p>
+                </article>
+                <article class="message">
+                  <strong>Workspace</strong>
+                  <p>Recording scheduler coordinates studio time, remote guests, and prep assets.</p>
+                </article>
+              </div>
+              <div class="visual-stage" aria-label="Live visual surface">
+                <div class="bars" aria-hidden="true">
+                  <span class="bar" style="height:42%"></span>
+                  <span class="bar" style="height:68%"></span>
+                  <span class="bar" style="height:56%"></span>
+                  <span class="bar" style="height:92%"></span>
+                  <span class="bar" style="height:74%"></span>
+                  <span class="bar" style="height:38%"></span>
+                  <span class="bar" style="height:88%"></span>
+                  <span class="bar" style="height:62%"></span>
+                  <span class="bar" style="height:49%"></span>
+                  <span class="bar" style="height:97%"></span>
+                  <span class="bar" style="height:71%"></span>
+                  <span class="bar" style="height:54%"></span>
+                  <span class="bar" style="height:83%"></span>
+                  <span class="bar" style="height:44%"></span>
+                  <span class="bar" style="height:76%"></span>
+                  <span class="bar" style="height:59%"></span>
+                  <span class="bar" style="height:91%"></span>
+                  <span class="bar" style="height:66%"></span>
+                </div>
+                <div class="status-strip">
+                  <span class="pill">Live data</span>
+                  <span class="pill">Responsive grid</span>
+                  <span class="pill">Secure session</span>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="cards" id="section-3" aria-label="Feature cards">
+            <article class="card">
+              <h3>Waveform editor</h3>
+              <strong>42:18 runtime</strong>
+              <p>Chapter markers, ads, transcript confidence, and loudness.</p>
+            </article>
+            <article class="card">
+              <h3>Analytics chart</h3>
+              <strong>+18% WoW</strong>
+              <p>Retention curve, source attribution, and episode cohorts.</p>
+            </article>
+            <article class="card">
+              <h3>Recording scheduler</h3>
+              <strong>3 sessions</strong>
+              <p>Remote links, prep notes, and studio checklist.</p>
+            </article>
+            <article class="card">
+              <h3>Guest management</h3>
+              <strong>46 contacts</strong>
+              <p>Bio, release form, talking points, and follow-up queue.</p>
+            </article>
+          </section>
+          <section class="data-table" id="section-4">
+            <div class="table-header">
+              <h2>Distribution</h2>
+              <button class="button" type="button">Export</button>
+            </div>
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Channel</th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Reach</th>
+                  <th scope="col">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Spotify</td>
+                  <td>Published</td>
+                  <td>312k</td>
+                  <td>Live</td>
+                </tr>
+                <tr>
+                  <td>Apple</td>
+                  <td>Published</td>
+                  <td>204k</td>
+                  <td>Live</td>
+                </tr>
+                <tr>
+                  <td>YouTube</td>
+                  <td>Rendering</td>
+                  <td>88k</td>
+                  <td>Soon</td>
+                </tr>
+                <tr>
+                  <td>Newsletter</td>
+                  <td>Queued</td>
+                  <td>41k</td>
+                  <td>Send</td>
+                </tr>
+              </tbody>
+            </table>
+          </section>
+          <section class="composer" id="section-5">
+            <div class="composer-header">
+              <h2>Command center</h2>
+              <div class="status-strip" aria-label="Session status">
+                <span class="pill">Synced</span>
+                <span class="pill">Keyboard ready</span>
+              </div>
+            </div>
+            <form class="composer-form">
+              <input class="input" type="text" value="Search episode, guest, transcript, or sponsor" aria-label="Command input">
+              <button class="button primary" type="submit">Schedule recording</button>
+            </form>
+          </section>
+        </main>
+        <aside class="rail" aria-label="Context rail">
+          <h2>Studio notes</h2>
+          <ul class="rail-list">
+            <li class="rail-item"><span>Mic check complete</span><span>01</span></li>
+            <li class="rail-item"><span>Intro music approved</span><span>02</span></li>
+            <li class="rail-item"><span>Transcript confidence 96%</span><span>03</span></li>
+            <li class="rail-item"><span>Sponsor slot at 18:30</span><span>04</span></li>
+            <li class="rail-item"><span>Guest release signed</span><span>05</span></li>
+          </ul>
+          <div class="status-strip">
+            <span class="pill">Premium skeleton</span>
+            <span class="pill">Inline CSS</span>
+            <span class="pill">Inline JS</span>
+          </div>
+        </aside>
+      </div>
+      <footer class="footer">Built with care for <strong>Echo Podcast Studio</strong>. Standalone premium frontend skeleton.</footer>
+    </div>
+    <script>
+      const body = document.body;
+      const menuButton = document.querySelector('.hamburger');
+      const navLinks = [...document.querySelectorAll('.nav-link')];
+      const form = document.querySelector('.composer-form');
+      const input = document.querySelector('.input');
+      const cards = [...document.querySelectorAll('.card')];
+
+      menuButton?.addEventListener('click', () => {
+        const open = body.classList.toggle('menu-open');
+        menuButton.setAttribute('aria-expanded', String(open));
+      });
+
+      navLinks.forEach((link) => {
+        link.addEventListener('click', () => {
+          navLinks.forEach((item) => item.classList.remove('is-active'));
+          link.classList.add('is-active');
+          body.classList.remove('menu-open');
+          menuButton?.setAttribute('aria-expanded', 'false');
+        });
+      });
+
+      cards.forEach((card, index) => {
+        card.style.animation = `rise .5s ease ${index * 70}ms both`;
+        card.addEventListener('pointermove', (event) => {
+          const rect = card.getBoundingClientRect();
+          const x = ((event.clientX - rect.left) / rect.width - .5) * 6;
+          const y = ((event.clientY - rect.top) / rect.height - .5) * -6;
+          card.style.transform = `translateY(-4px) rotateX(${y}deg) rotateY(${x}deg)`;
+        });
+        card.addEventListener('pointerleave', () => {
+          card.style.transform = '';
+        });
+      });
+
+      form?.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const value = input.value.trim();
+        if (!value) return;
+        const composer = document.querySelector('.composer-header .status-strip');
+        const pill = document.createElement('span');
+        pill.className = 'pill';
+        pill.textContent = 'Queued';
+        composer?.appendChild(pill);
+        window.setTimeout(() => pill.remove(), 2200);
+      });
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const id = entry.target.id;
+          navLinks.forEach((link) => {
+            link.classList.toggle('is-active', link.getAttribute('href') === `#${id}`);
+          });
+        });
+      }, { threshold: .45 });
+
+      document.querySelectorAll('main > section[id]').forEach((section) => observer.observe(section));
+    
+    </script>
+  </body>
+</html>

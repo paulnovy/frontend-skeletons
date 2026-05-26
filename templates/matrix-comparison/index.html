@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Product comparison tool skeleton for premium frontend implementation.">
+  <title>Matrix Comparison</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--bg:#ffffff;--surface:#f5f7fb;--surface-strong:#ffffff;--text:#172033;--muted:#667085;--accent:#2f6fed;--accent-2:#60a5fa;--dark:#111827;--line:rgba(15,23,42,.10);--soft-line:rgba(15,23,42,.07);--shadow:0 24px 70px rgba(15,23,42,.10);--shadow-soft:0 12px 36px rgba(15,23,42,.08);--radius:8px;--radius-lg:14px;--max:1180px;--font:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:var(--font);color:var(--text);background:var(--bg);min-height:100vh;line-height:1.5}body.light-shell{background:radial-gradient(circle at 12% 5%,color-mix(in srgb,var(--accent) 16%,transparent),transparent 28rem),radial-gradient(circle at 86% 12%,color-mix(in srgb,var(--accent-2) 14%,transparent),transparent 30rem),var(--bg)}a{color:inherit;text-decoration:none}button,input,select{font:inherit}button{cursor:pointer}.page-shell{min-height:100vh;overflow:hidden}.topbar{position:sticky;top:0;z-index:50;backdrop-filter:blur(18px);background:color-mix(in srgb,var(--bg) 88%,transparent);border-bottom:1px solid var(--soft-line)}.nav-wrap{width:min(100% - 32px,var(--max));margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:20px;min-height:74px}.brand{display:inline-flex;align-items:center;gap:12px;font-weight:800;letter-spacing:0}.brand-mark{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;color:white;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 10px 28px color-mix(in srgb,var(--accent) 35%,transparent)}.brand span:last-child{white-space:nowrap}.nav-links{display:flex;align-items:center;gap:4px}.nav-links a{padding:10px 12px;color:var(--muted);border-radius:8px;font-size:14px;font-weight:650;transition:color .2s ease,background .2s ease,transform .2s ease}.nav-links a:hover,.nav-links a:focus-visible,.nav-links a.active{color:var(--text);background:color-mix(in srgb,var(--accent) 10%,transparent);outline:none}.nav-actions{display:flex;align-items:center;gap:10px}.version-select{min-width:120px;border:1px solid var(--line);border-radius:8px;color:var(--text);background:var(--surface-strong);padding:10px 12px;outline:none}.version-select:focus{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 16%,transparent)}.menu-button{display:none;width:42px;height:42px;border:1px solid var(--line);border-radius:8px;color:var(--text);background:var(--surface-strong)}.menu-button span{display:block;width:18px;height:2px;margin:4px auto;background:currentColor;transition:transform .2s ease,opacity .2s ease}.menu-button[aria-expanded="true"] span:nth-child(1){transform:translateY(6px) rotate(45deg)}.menu-button[aria-expanded="true"] span:nth-child(2){opacity:0}.menu-button[aria-expanded="true"] span:nth-child(3){transform:translateY(-6px) rotate(-45deg)}.mobile-panel{display:none;border-top:1px solid var(--soft-line);background:var(--surface-strong)}.mobile-panel.open{display:block}.mobile-panel a{display:block;padding:14px 24px;border-bottom:1px solid var(--soft-line);color:var(--muted);font-weight:650}.hero{width:min(100% - 32px,var(--max));margin:0 auto;padding:72px 0 42px;display:grid;grid-template-columns:minmax(0,1.02fr) minmax(320px,.98fr);gap:38px;align-items:center}.eyebrow{margin:0 0 14px;color:var(--accent);text-transform:uppercase;font-size:12px;font-weight:800;letter-spacing:.12em}h1,h2,h3,p{margin-top:0}h1{margin-bottom:18px;max-width:780px;font-size:clamp(42px,7vw,74px);line-height:.96;letter-spacing:0}.hero-copy p{max-width:650px;color:var(--muted);font-size:18px}.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}.button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:46px;padding:0 18px;border-radius:8px;border:1px solid transparent;font-weight:750;transition:transform .2s ease,box-shadow .2s ease,background .2s ease,border-color .2s ease}.button.primary{color:#ffffff;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 18px 38px color-mix(in srgb,var(--accent) 30%,transparent)}.button.secondary{color:var(--text);background:var(--surface-strong);border-color:var(--line)}.button:hover,.button:focus-visible{transform:translateY(-2px);box-shadow:var(--shadow-soft);outline:none}.hero-visual{position:relative;min-height:410px;border:1px solid var(--line);border-radius:var(--radius-lg);background:linear-gradient(145deg,color-mix(in srgb,var(--surface-strong) 92%,var(--accent) 8%),var(--surface-strong));box-shadow:var(--shadow);padding:24px;overflow:hidden}.hero-visual::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 14%,transparent),transparent 40%,color-mix(in srgb,var(--accent-2) 12%,transparent));pointer-events:none}.visual-inner{position:relative;height:100%;min-height:360px;display:grid;place-items:center}.stat-strip{width:min(100% - 32px,var(--max));margin:0 auto;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:10px 0 48px}.stat-card,.feature-card,.domain-card,.endpoint-card,.panel,.timeline-item,.faq-item{border:1px solid var(--line);background:var(--surface-strong);border-radius:var(--radius);box-shadow:var(--shadow-soft)}.stat-card{padding:18px}.stat-card strong{display:block;font-size:28px;line-height:1;margin-bottom:8px}.stat-card span{color:var(--muted);font-weight:650}.layout{width:min(100% - 32px,var(--max));margin:0 auto;display:grid;grid-template-columns:260px minmax(0,1fr);gap:26px;align-items:start;padding-bottom:60px}.sidebar{position:sticky;top:96px;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface-strong);box-shadow:var(--shadow-soft);overflow:hidden}.search-box{padding:14px;border-bottom:1px solid var(--soft-line)}.search-box input{width:100%;border:1px solid var(--line);border-radius:8px;padding:12px 12px;color:var(--text);background:color-mix(in srgb,var(--surface) 80%,var(--surface-strong));outline:none}.search-box input:focus{border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 16%,transparent)}.side-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;border:0;border-bottom:1px solid var(--soft-line);padding:14px 16px;color:var(--text);background:transparent;font-weight:750;text-align:left}.side-toggle svg{width:18px;height:18px;stroke:currentColor;stroke-width:2;fill:none;transition:transform .2s ease}.side-toggle.open svg{transform:rotate(180deg)}.side-panel{display:none;padding:8px 16px 14px;border-bottom:1px solid var(--soft-line)}.side-panel.visible{display:grid;gap:7px}.side-panel a{color:var(--muted);font-size:14px;padding:5px 0}.content-stack{display:grid;gap:28px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:18px}.section-head h2{margin:0;font-size:clamp(28px,4vw,42px);line-height:1.05}.section-head p{margin:0;color:var(--muted);max-width:520px}.feature-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.feature-card,.domain-card,.endpoint-card{padding:22px;transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease}.feature-card:hover,.domain-card:hover,.endpoint-card:hover{transform:translateY(-4px);border-color:color-mix(in srgb,var(--accent) 45%,var(--line));box-shadow:var(--shadow)}.feature-icon{width:42px;height:42px;display:grid;place-items:center;margin-bottom:18px;border-radius:8px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);font-weight:850}.feature-card h3,.domain-card h3,.endpoint-card h3{margin-bottom:8px;font-size:19px}.feature-card p,.domain-card p,.endpoint-card p{color:var(--muted);margin-bottom:18px}.feature-card a{color:var(--accent);font-weight:750}.card-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.card-topline{display:flex;justify-content:space-between;gap:12px;margin-bottom:14px;color:var(--muted);font-size:13px;font-weight:750}.card-topline em{color:var(--accent);font-style:normal}.domain-card button,.endpoint-card button,.filter-bar button,.faq-question{border:1px solid var(--line);border-radius:8px;padding:10px 12px;color:var(--text);background:color-mix(in srgb,var(--surface) 82%,var(--surface-strong));font-weight:750;transition:background .2s ease,border-color .2s ease,color .2s ease}.domain-card button:hover,.endpoint-card button:hover,.filter-bar button:hover,.filter-bar button.active{color:#ffffff;border-color:transparent;background:var(--accent)}.method{display:inline-flex;align-items:center;min-height:28px;padding:0 10px;margin-bottom:14px;border-radius:999px;font-size:12px;font-weight:850;letter-spacing:.04em}.method.get{color:#1d4ed8;background:#dbeafe}.method.post{color:#047857;background:#d1fae5}.method.put{color:#92400e;background:#fef3c7}.method.delete{color:#b91c1c;background:#fee2e2}.filter-bar{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}.data-panel{overflow:hidden}.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:720px}th,td{padding:16px;text-align:left;border-bottom:1px solid var(--soft-line);vertical-align:middle}th{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em;background:color-mix(in srgb,var(--surface) 70%,var(--surface-strong))}td:first-child{font-weight:750}.status-pill{display:inline-flex;padding:5px 9px;border-radius:999px;color:var(--accent);background:color-mix(in srgb,var(--accent) 12%,transparent);font-weight:800;font-size:12px}.split-section{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:18px}.panel{padding:24px}.panel p{color:var(--muted)}.timeline{display:grid;gap:12px}.timeline-item{display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;padding:18px}.timeline-item>span{width:38px;height:38px;display:grid;place-items:center;border-radius:8px;color:#ffffff;background:var(--accent);font-weight:850}.timeline-item h3{margin-bottom:4px;font-size:17px}.timeline-item p{margin-bottom:0;color:var(--muted)}.code-lab{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:18px;align-items:stretch;padding:24px;border-radius:var(--radius);background:var(--dark);color:white;box-shadow:var(--shadow)}.code-lab p{color:#a8b3cf}pre{margin:0;overflow-x:auto;border-radius:8px;padding:20px;background:#070b14;color:#d6e2ff;font-size:14px;line-height:1.65}.tok-comment{color:#7c8aa5}.tok-key{color:#93c5fd}.tok-prop{color:#c4b5fd}.tok-str{color:#86efac}.tok-num{color:#fcd34d}.terminal-card,.market-card,.score-card,.support-window,.stage-card,.org-panel,.route-map,.product-render,.pricing-stack,.gallery-grid{width:100%;min-height:300px;border:1px solid var(--line);border-radius:var(--radius-lg);background:color-mix(in srgb,var(--surface-strong) 88%,var(--accent) 12%);box-shadow:var(--shadow-soft);padding:22px}.terminal-top{display:flex;align-items:center;gap:7px;margin-bottom:22px;color:var(--muted)}.terminal-top span{width:11px;height:11px;border-radius:50%;background:var(--accent)}.terminal-top strong{margin-left:auto;font-size:13px}.code-row{display:grid;grid-template-columns:40px 1fr;gap:10px;padding:13px 0;color:var(--muted);border-bottom:1px solid var(--soft-line);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}.code-row b,.code-row.success{color:var(--accent)}.num{color:color-mix(in srgb,var(--muted) 70%,transparent)}.ticker{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:24px}.ticker strong{font-size:38px}.ticker em{color:var(--accent);font-style:normal;font-weight:800}.chart-bars,.sound-bars{height:190px;display:flex;align-items:end;gap:9px}.chart-bars i,.sound-bars i{flex:1;min-width:8px;border-radius:5px 5px 0 0;background:linear-gradient(180deg,var(--accent),var(--accent-2))}.market-note,.chat-bubble{margin-top:18px;color:var(--muted);font-weight:650}.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.gallery-grid span{display:grid;place-items:end start;min-height:120px;padding:14px;border-radius:8px;color:white;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent-2))}.score-ring{width:132px;height:132px;margin:10px auto 22px;display:grid;place-items:center;border-radius:50%;color:var(--accent);font-size:44px;font-weight:850;background:conic-gradient(var(--accent) 94%,color-mix(in srgb,var(--accent) 14%,transparent) 0)}.mini-matrix{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:20px}.mini-matrix span{height:42px;border-radius:8px;background:color-mix(in srgb,var(--accent) 15%,transparent)}.support-window,.pricing-stack,.org-panel,.stage-card,.product-render{display:grid;align-content:center;gap:18px}.search-pill,.ticket-card,.price-card,.node,.device{border:1px solid var(--line);border-radius:8px;background:var(--surface-strong);padding:18px;box-shadow:var(--shadow-soft)}progress{width:100%;height:9px;accent-color:var(--accent)}.pricing-stack{grid-template-columns:1fr 1.15fr 1fr;align-items:center}.price-card strong{display:block;margin-top:8px;font-size:34px}.price-card.featured{color:white;background:linear-gradient(145deg,var(--accent),var(--accent-2));transform:translateY(-12px)}.price-card em{display:inline-flex;margin-top:12px;font-style:normal;font-weight:800}.org-panel{justify-items:center}.org-line{width:2px;height:42px;background:var(--accent)}.org-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%}.org-row span{padding:14px;border-radius:8px;background:color-mix(in srgb,var(--accent) 12%,transparent);text-align:center;font-weight:800}.route-map svg{width:100%;height:230px}.route-map path{fill:none;stroke:var(--accent);stroke-width:6;stroke-linecap:round;opacity:.85}.route-map circle{fill:var(--accent-2);stroke:var(--surface-strong);stroke-width:4}.alert-chip{display:inline-flex;padding:9px 12px;border-radius:999px;color:#111318;background:var(--accent);font-weight:850}.stage-light{height:120px;border-radius:50%;background:radial-gradient(circle,var(--accent),transparent 68%);filter:blur(8px)}.device{position:relative;width:min(100%,330px);min-height:220px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);align-items:end;gap:18px;background:linear-gradient(145deg,#1f232b,#07080b)}.device span{height:82px;border-radius:999px;background:linear-gradient(180deg,var(--accent),#ffffff)}.render-shadow{width:260px;height:22px;margin:-8px auto 0;border-radius:50%;background:color-mix(in srgb,var(--accent) 28%,transparent);filter:blur(12px)}.accent-orbit{position:absolute;width:120px;height:120px;right:28px;top:28px;border:2px solid color-mix(in srgb,var(--accent) 45%,transparent);border-radius:50%}.faq-grid{display:grid;gap:12px}.faq-item{overflow:hidden}.faq-question{width:100%;display:flex;justify-content:space-between;border:0;border-radius:0;background:transparent;text-align:left;padding:18px}.faq-answer{display:none;padding:0 18px 18px;color:var(--muted)}.faq-item.open .faq-answer{display:block}.reveal{opacity:0;transform:translateY(16px);transition:opacity .55s ease,transform .55s ease}.reveal.visible{opacity:1;transform:translateY(0)}.site-footer{border-top:1px solid var(--soft-line);background:color-mix(in srgb,var(--surface-strong) 92%,transparent)}.footer-wrap{width:min(100% - 32px,var(--max));margin:0 auto;padding:34px 0;display:flex;align-items:center;justify-content:space-between;gap:20px;color:var(--muted);font-size:14px}.footer-links{display:flex;flex-wrap:wrap;gap:14px}.footer-links a:hover{color:var(--accent)}@media (max-width:980px){.nav-links,.version-select{display:none}.menu-button{display:inline-block}.hero,.layout,.split-section,.code-lab{grid-template-columns:1fr}.sidebar{position:static}.card-grid,.stat-strip{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (max-width:680px){.nav-wrap,.hero,.layout,.stat-strip,.footer-wrap{width:min(100% - 22px,var(--max))}.hero{padding-top:44px}h1{font-size:clamp(38px,16vw,52px)}.hero-copy p{font-size:16px}.feature-grid,.card-grid,.stat-strip,.pricing-stack,.gallery-grid{grid-template-columns:1fr}.hero-visual{min-height:320px;padding:16px}.section-head,.footer-wrap{align-items:start;flex-direction:column}.button{width:100%}.org-row{grid-template-columns:1fr}}
+  </style>
+</head>
+<body class="light-shell">
+  <div class="page-shell">
+    <header class="topbar">
+      <div class="nav-wrap">
+        <a class="brand" href="#top" aria-label="Matrix Comparison home">
+          <span class="brand-mark">MC</span>
+          <span>Matrix Comparison</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary navigation">
+            <a href="#products" class="active">Products</a>
+            <a href="#use-cases" class="">Use Cases</a>
+            <a href="#matrix" class="">Matrix</a>
+            <a href="#recommendations" class="">Recommendations</a>
+            <a href="#reviews" class="">Reviews</a>
+            <a href="#faq" class="">FAQ</a>
+        </nav>
+        <div class="nav-actions">
+          <select class="version-select" aria-label="Version selector">
+            <option>2026.5</option>
+            <option>2026.4</option>
+            <option>2025 LTS</option>
+          </select>
+          <button class="menu-button" type="button" aria-label="Open navigation" aria-controls="mobile-panel" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+      <nav class="mobile-panel" id="mobile-panel" aria-label="Mobile navigation">
+        <a href="#products">Products</a>
+        <a href="#use-cases">Use Cases</a>
+        <a href="#matrix">Matrix</a>
+        <a href="#recommendations">Recommendations</a>
+        <a href="#reviews">Reviews</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+    </header>
+
+    <main id="top">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Decision Engine</p>
+          <h1 id="hero-title">Compare products side by side and find the strongest fit in minutes.</h1>
+          <p>Matrix turns scattered feature claims into a structured product comparison with filters, recommendation badges, evidence notes, and clear tradeoffs.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#details">Compare plans</a>
+            <a class="button secondary" href="#matrix">Filter by use case</a>
+          </div>
+        </div>
+        <div class="hero-visual" aria-label="Product comparison tool visual summary">
+          <div class="visual-inner">
+
+              <div class="score-card"><div class="score-ring">94</div><h3>Atlas Pro</h3><p>Best fit for scaleups needing automation, governance, and analytics.</p><div class="mini-matrix"><span></span><span></span><span></span><span></span><span></span><span></span></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="stat-strip" aria-label="Key metrics">
+            <article class="stat-card">
+              <strong>24</strong>
+              <span>Products tracked</span>
+            </article>
+            <article class="stat-card">
+              <strong>180+</strong>
+              <span>Criteria scored</span>
+            </article>
+            <article class="stat-card">
+              <strong>6</strong>
+              <span>Use cases</span>
+            </article>
+            <article class="stat-card">
+              <strong>92%</strong>
+              <span>Buyer clarity</span>
+            </article>
+      </section>
+
+      <section class="layout" id="details">
+        <aside class="sidebar" aria-label="Section navigation">
+          <div class="search-box">
+            <input type="search" aria-label="Search content">
+          </div>
+              <button class="side-toggle open" type="button" aria-expanded="true">
+                <span>Products</span>
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 8l4 4 4-4"/></svg>
+              </button>
+              <div class="side-panel visible">
+                <a href="#products-guide">Products guide</a>
+                <a href="#products-examples">Examples</a>
+                <a href="#products-reference">Reference</a>
+              </div>
+              <button class="side-toggle " type="button" aria-expanded="false">
+                <span>Use Cases</span>
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 8l4 4 4-4"/></svg>
+              </button>
+              <div class="side-panel ">
+                <a href="#use-cases-guide">Use Cases guide</a>
+                <a href="#use-cases-examples">Examples</a>
+                <a href="#use-cases-reference">Reference</a>
+              </div>
+              <button class="side-toggle " type="button" aria-expanded="false">
+                <span>Matrix</span>
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 8l4 4 4-4"/></svg>
+              </button>
+              <div class="side-panel ">
+                <a href="#matrix-guide">Matrix guide</a>
+                <a href="#matrix-examples">Examples</a>
+                <a href="#matrix-reference">Reference</a>
+              </div>
+              <button class="side-toggle " type="button" aria-expanded="false">
+                <span>Recommendations</span>
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 8l4 4 4-4"/></svg>
+              </button>
+              <div class="side-panel ">
+                <a href="#recommendations-guide">Recommendations guide</a>
+                <a href="#recommendations-examples">Examples</a>
+                <a href="#recommendations-reference">Reference</a>
+              </div>
+              <button class="side-toggle " type="button" aria-expanded="false">
+                <span>Reviews</span>
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 8l4 4 4-4"/></svg>
+              </button>
+              <div class="side-panel ">
+                <a href="#reviews-guide">Reviews guide</a>
+                <a href="#reviews-examples">Examples</a>
+                <a href="#reviews-reference">Reference</a>
+              </div>
+              <button class="side-toggle " type="button" aria-expanded="false">
+                <span>FAQ</span>
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 8l4 4 4-4"/></svg>
+              </button>
+              <div class="side-panel ">
+                <a href="#faq-guide">FAQ guide</a>
+                <a href="#faq-examples">Examples</a>
+                <a href="#faq-reference">Reference</a>
+              </div>
+        </aside>
+
+        <div class="content-stack">
+          <section id="products" aria-labelledby="feature-heading">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Core experience</p>
+                <h2 id="feature-heading">Comparison Without Vendor Fog</h2>
+              </div>
+              <p>The interface highlights winners while keeping the data visible. Buyers can switch views, filter needs, and verify why a product earns a recommendation.</p>
+            </div>
+            <div class="feature-grid">
+            <article class="feature-card reveal" id="products-guide">
+              <div class="feature-icon">01</div>
+              <h3>Product Cards</h3>
+              <p>Compact product summaries with strength signals and fit badges.</p>
+              <a href="#details">Explore product cards</a>
+            </article>
+            <article class="feature-card reveal" id="use-cases-guide">
+              <div class="feature-icon">02</div>
+              <h3>Use Case Filter</h3>
+              <p>Prioritize startup, enterprise, regulated, creator, or internal tooling needs.</p>
+              <a href="#details">Explore use case filter</a>
+            </article>
+            <article class="feature-card reveal" id="matrix-guide">
+              <div class="feature-icon">03</div>
+              <h3>Side-by-Side View</h3>
+              <p>Feature rows, evidence notes, and verified capability indicators.</p>
+              <a href="#details">Explore side-by-side view</a>
+            </article>
+            <article class="feature-card reveal" id="recommendations-guide">
+              <div class="feature-icon">04</div>
+              <h3>Recommendation Logic</h3>
+              <p>Transparent scoring so the suggested option is easy to challenge.</p>
+              <a href="#details">Explore recommendation logic</a>
+            </article>
+            </div>
+          </section>
+
+          <section id="use-cases" aria-labelledby="cards-heading">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Highlights</p>
+                <h2 id="cards-heading">Practical modules with realistic content</h2>
+              </div>
+              <p>Each card is tuned for quick scanning, strong hierarchy, and clear next actions.</p>
+            </div>
+            <div class="filter-bar" aria-label="Use case filters">
+              <button type="button" class="active" data-filter="all">All</button>
+              <button type="button" data-filter="startup">Startup</button>
+              <button type="button" data-filter="enterprise">Enterprise</button>
+              <button type="button" data-filter="teams">Teams</button>
+              <button type="button" data-filter="growth">Growth</button>
+            </div>
+            <div class="card-grid" id="cards-grid">
+            <article class="domain-card" data-use="startup">
+              <div class="card-topline"><span>Atlas Pro</span><em>Strong automation, governance, and analytics.</em></div>
+              <h3>Best overall</h3>
+              <p>Compact product summaries with strength signals and fit badges.</p>
+              <button type="button">View details</button>
+            </article>
+            <article class="domain-card" data-use="enterprise">
+              <div class="card-topline"><span>Nova Lite</span><em>Clean core workflow for lean teams.</em></div>
+              <h3>Best value</h3>
+              <p>Prioritize startup, enterprise, regulated, creator, or internal tooling needs.</p>
+              <button type="button">View details</button>
+            </article>
+            <article class="domain-card" data-use="startup">
+              <div class="card-topline"><span>Orbit Enterprise</span><em>Advanced compliance and admin depth.</em></div>
+              <h3>Best control</h3>
+              <p>Feature rows, evidence notes, and verified capability indicators.</p>
+              <button type="button">View details</button>
+            </article>
+            <article class="domain-card" data-use="enterprise">
+              <div class="card-topline"><span>Pulse Studio</span><em>Media workflows with publishing integrations.</em></div>
+              <h3>Best creators</h3>
+              <p>Transparent scoring so the suggested option is easy to challenge.</p>
+              <button type="button">View details</button>
+            </article>
+            </div>
+          </section>
+
+          <section id="matrix" aria-labelledby="matrix-heading" class="panel data-panel">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Structured data</p>
+                <h2 id="matrix-heading">Information designed for comparison</h2>
+              </div>
+              <p>Dense rows stay readable through restrained borders, clear labels, and responsive horizontal overflow.</p>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                <th>Capability</th>
+                <th>Atlas Pro</th>
+                <th>Nova Lite</th>
+                <th>Orbit Enterprise</th>
+                <th>Pulse Studio</th>
+                  </tr>
+                </thead>
+                <tbody>
+              <tr>
+                <td>SSO / SAML</td>
+                <td><span class="status-pill">Yes</span></td>
+                <td>Add-on</td>
+                <td><span class="status-pill">Yes</span></td>
+                <td>No</td>
+              </tr>
+              <tr>
+                <td>Workflow builder</td>
+                <td>Advanced</td>
+                <td>Basic</td>
+                <td>Advanced</td>
+                <td>Advanced</td>
+              </tr>
+              <tr>
+                <td>Audit logs</td>
+                <td><span class="status-pill">Yes</span></td>
+                <td><span class="status-pill">Limited</span></td>
+                <td><span class="status-pill">Yes</span></td>
+                <td><span class="status-pill">Limited</span></td>
+              </tr>
+              <tr>
+                <td>Recommended for</td>
+                <td>Scaleups</td>
+                <td>Startups</td>
+                <td>Enterprise</td>
+                <td>Creators</td>
+              </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section id="matrix" class="split-section" aria-labelledby="timeline-heading">
+            <article class="panel">
+              <p class="eyebrow">Workflow</p>
+              <h2 id="timeline-heading">A page that supports the next decision</h2>
+              <p>Every block has a clear job: orient the visitor, show proof, reveal useful detail, and keep the next action close without crowding the interface.</p>
+              <a class="button primary" href="#contact">Continue</a>
+            </article>
+            <div class="timeline">
+            <article class="timeline-item reveal">
+              <span>01</span>
+              <div>
+                <h3>Choose Use Case</h3>
+                <p>Select the buying context that matters most.</p>
+              </div>
+            </article>
+            <article class="timeline-item reveal">
+              <span>02</span>
+              <div>
+                <h3>Review Winners</h3>
+                <p>Scan badges and summarized tradeoffs.</p>
+              </div>
+            </article>
+            <article class="timeline-item reveal">
+              <span>03</span>
+              <div>
+                <h3>Open Matrix</h3>
+                <p>Compare exact capabilities side by side.</p>
+              </div>
+            </article>
+            </div>
+          </section>
+
+          <section id="recommendations" aria-labelledby="faq-heading">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Questions</p>
+                <h2 id="faq-heading">Details buyers and users ask for</h2>
+              </div>
+              <p>The accordion pattern keeps important supporting information close without overwhelming the main page.</p>
+            </div>
+            <div class="faq-grid">
+              <article class="faq-item open">
+                <button class="faq-question" type="button"><span>How should this skeleton be adapted?</span><strong>−</strong></button>
+                <div class="faq-answer">Replace the mock content with real data, keep the component hierarchy, and tune the CSS custom properties to match the final brand.</div>
+              </article>
+              <article class="faq-item">
+                <button class="faq-question" type="button"><span>Is the layout mobile responsive?</span><strong>+</strong></button>
+                <div class="faq-answer">Yes. Navigation collapses, grids stack, hero content reflows, and tables preserve readability through horizontal scrolling.</div>
+              </article>
+              <article class="faq-item">
+                <button class="faq-question" type="button"><span>What dependencies are included?</span><strong>+</strong></button>
+                <div class="faq-answer">Only a Google Fonts stylesheet is loaded externally. Styling and behavior are embedded directly in this single HTML file.</div>
+              </article>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer" id="contact">
+      <div class="footer-wrap">
+        <div>
+          <strong>Matrix Comparison</strong>
+          <div>Premium frontend skeleton · Built for OpenClaw</div>
+        </div>
+        <nav class="footer-links" aria-label="Footer navigation">
+              <a href="#products">Products</a>
+              <a href="#use-cases">Use Cases</a>
+              <a href="#matrix">Matrix</a>
+              <a href="#recommendations">Recommendations</a>
+              <a href="#reviews">Reviews</a>
+        </nav>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const menuButton = document.querySelector('.menu-button');
+    const mobilePanel = document.querySelector('#mobile-panel');
+    menuButton.addEventListener('click', () => {
+      const isOpen = menuButton.getAttribute('aria-expanded') === 'true';
+      menuButton.setAttribute('aria-expanded', String(!isOpen));
+      mobilePanel.classList.toggle('open', !isOpen);
+    });
+
+    document.querySelectorAll('.mobile-panel a').forEach((link) => {
+      link.addEventListener('click', () => {
+        menuButton.setAttribute('aria-expanded', 'false');
+        mobilePanel.classList.remove('open');
+      });
+    });
+
+    document.querySelectorAll('.side-toggle').forEach((button) => {
+      button.addEventListener('click', () => {
+        const panel = button.nextElementSibling;
+        const open = button.classList.toggle('open');
+        button.setAttribute('aria-expanded', String(open));
+        panel.classList.toggle('visible', open);
+      });
+    });
+
+    document.querySelectorAll('.filter-bar button').forEach((button) => {
+      button.addEventListener('click', () => {
+        const filter = button.dataset.filter;
+        document.querySelectorAll('.filter-bar button').forEach((item) => item.classList.remove('active'));
+        button.classList.add('active');
+        document.querySelectorAll('#cards-grid > article').forEach((card) => {
+          const show = filter === 'all' || card.dataset.use === filter;
+          card.style.display = show ? '' : 'none';
+        });
+      });
+    });
+
+    document.querySelectorAll('.faq-question').forEach((button) => {
+      button.addEventListener('click', () => {
+        const item = button.closest('.faq-item');
+        const open = item.classList.toggle('open');
+        button.querySelector('strong').textContent = open ? '−' : '+';
+      });
+    });
+
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.16 });
+
+    reveals.forEach((item) => observer.observe(item));
+
+    document.querySelectorAll('.nav-links a').forEach((link) => {
+      link.addEventListener('click', () => {
+        document.querySelectorAll('.nav-links a').forEach((item) => item.classList.remove('active'));
+        link.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
