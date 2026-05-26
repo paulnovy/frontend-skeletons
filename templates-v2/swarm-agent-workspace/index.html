@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
-    :root { --color-black: #050505; --color-panel: #0B0D10; --color-panel-2: #111419; --color-panel-3: #171B22; --color-line: rgba(250, 250, 250, 0.1); --color-line-strong: rgba(250, 250, 250, 0.18); --color-text: #FAFAFA; --color-muted: #A6ADBA; --color-dim: #717986; --agent-cyan: #22D3EE; --planner-violet: #8B5CF6; --reviewer-amber: #F59E0B; --success-green: #22C55E; --danger-red: #EF4444; --research-blue: #38BDF8; --coder-mint: #34D399; --analyst-pink: #F472B6; --font-ui: "Inter", system-ui, sans-serif; --font-heading: "Space Grotesk", system-ui, sans-serif; --font-mono: "JetBrains Mono", ui-monospace, monospace; --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px; --radius-xs: 6px; --radius-sm: 8px; --radius-md: 12px; --radius-lg: 18px; --shadow-panel: 0 24px 80px rgba(0, 0, 0, 0.42); --shadow-cyan: 0 0 44px rgba(34, 211, 238, 0.2); --motion-fast: 140ms ease; --motion-med: 220ms ease; --sidebar-width: 284px; --rail-width: 372px; --z-nav: 20; --z-drawer: 40; --z-modal: 60; }
+    :root { --color-black: #050505; --color-panel: #0B0D10; --color-panel-2: #111419; --color-panel-3: #171B22; --color-line: rgba(250, 250, 250, 0.1); --color-line-strong: rgba(250, 250, 250, 0.18); --color-text: #FAFAFA; --color-muted: #A6ADBA; --color-dim: #717986; --agent-cyan: #22D3EE; --planner-violet: #8B5CF6; --reviewer-amber: #F59E0B; --success-green: #22C55E; --danger-red: #EF4444; --analyst-white: #FAFAFA; --font-ui: "Inter", system-ui, sans-serif; --font-heading: "Space Grotesk", system-ui, sans-serif; --font-mono: "JetBrains Mono", ui-monospace, monospace; --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 20px; --space-6: 24px; --space-8: 32px; --space-10: 40px; --radius-xs: 6px; --radius-sm: 8px; --radius-md: 12px; --radius-lg: 18px; --shadow-panel: 0 24px 80px rgba(0, 0, 0, 0.42); --shadow-cyan: 0 0 44px rgba(34, 211, 238, 0.2); --motion-fast: 140ms ease; --motion-med: 220ms ease; --sidebar-width: 284px; --rail-width: 372px; --z-nav: 20; --z-drawer: 40; --z-modal: 60; }
     * { box-sizing: border-box; }
     html { color-scheme: dark; scroll-behavior: smooth; }
     body { margin: 0; min-height: 100vh; background: radial-gradient(circle at 15% 5%, rgba(34, 211, 238, 0.16), transparent 26%), radial-gradient(circle at 78% 12%, rgba(139, 92, 246, 0.16), transparent 30%), linear-gradient(135deg, var(--color-black), #08090C 52%, #0D0B12); color: var(--color-text); font-family: var(--font-ui); line-height: 1.5; overflow-x: hidden; }
@@ -266,10 +266,10 @@
           <button type="button" data-agent-tab="analyst">Analyst</button>
         </div>
         <div class="swarm-grid" role="list">
-          <article class="agent-card active" id="researcher" role="listitem" style="--agent-color: var(--research-blue);">
+          <article class="agent-card active" id="researcher" role="listitem" style="--agent-color: var(--agent-cyan);">
             <button class="agent-button" type="button" data-agent="researcher" aria-label="Inspect researcher agent">
               <div class="agent-head"><span class="agent-avatar">RS</span><span class="agent-state">collecting</span></div>
-              <h3>Researcher</h3>
+              <h3>Mira Chen · Researcher</h3>
               <p>Validated procurement notes, Slack exports, CRM history, and competitor mentions for renewal leverage.</p>
               <div class="agent-progress"><div class="progress-meta"><span>evidence map</span><span>84%</span></div><div class="bar"><span style="--value: 84%;"></span></div></div>
             </button>
@@ -277,15 +277,15 @@
           <article class="agent-card" id="planner" role="listitem" style="--agent-color: var(--planner-violet);">
             <button class="agent-button" type="button" data-agent="planner" aria-label="Inspect planner agent">
               <div class="agent-head"><span class="agent-avatar">PL</span><span class="agent-state">sequencing</span></div>
-              <h3>Planner</h3>
+              <h3>Oskar Novak · Planner</h3>
               <p>Turns research into milestones, owner assignments, guardrails, and approval gates for the renewal package.</p>
               <div class="agent-progress"><div class="progress-meta"><span>plan draft</span><span>76%</span></div><div class="bar"><span style="--value: 76%;"></span></div></div>
             </button>
           </article>
-          <article class="agent-card" id="coder" role="listitem" style="--agent-color: var(--coder-mint);">
+          <article class="agent-card" id="coder" role="listitem" style="--agent-color: var(--success-green);">
             <button class="agent-button" type="button" data-agent="coder" aria-label="Inspect coder agent">
               <div class="agent-head"><span class="agent-avatar">CD</span><span class="agent-state">building</span></div>
-              <h3>Coder</h3>
+              <h3>Nadia Ito · Coder</h3>
               <p>Generates the private data-room index, validates links, and prepares a pricing-model notebook for review.</p>
               <div class="agent-progress"><div class="progress-meta"><span>artifact build</span><span>62%</span></div><div class="bar"><span style="--value: 62%;"></span></div></div>
             </button>
@@ -293,15 +293,15 @@
           <article class="agent-card" id="reviewer" role="listitem" style="--agent-color: var(--reviewer-amber);">
             <button class="agent-button" type="button" data-agent="reviewer" aria-label="Inspect reviewer agent">
               <div class="agent-head"><span class="agent-avatar">RV</span><span class="agent-state">holding</span></div>
-              <h3>Reviewer</h3>
+              <h3>Elias Stone · Reviewer</h3>
               <p>Checks claims, sensitive wording, escalation risk, and whether source evidence supports each recommendation.</p>
               <div class="agent-progress"><div class="progress-meta"><span>risk review</span><span>48%</span></div><div class="bar"><span style="--value: 48%;"></span></div></div>
             </button>
           </article>
-          <article class="agent-card" id="analyst" role="listitem" style="--agent-color: var(--analyst-pink);">
+          <article class="agent-card" id="analyst" role="listitem" style="--agent-color: var(--analyst-white);">
             <button class="agent-button" type="button" data-agent="analyst" aria-label="Inspect analyst agent">
               <div class="agent-head"><span class="agent-avatar">AN</span><span class="agent-state">modeling</span></div>
-              <h3>Analyst</h3>
+              <h3>Priya Raman · Analyst</h3>
               <p>Models renewal scenarios, margin sensitivity, adoption variance, and confidence bands for the executive memo.</p>
               <div class="agent-progress"><div class="progress-meta"><span>scenario model</span><span>69%</span></div><div class="bar"><span style="--value: 69%;"></span></div></div>
             </button>
@@ -310,7 +310,7 @@
       </section>
       <section class="inspect-layout" id="inspect" aria-labelledby="inspect-title">
         <article class="artifact-card">
-          <h2 id="inspect-title">Reasoning summary: <span data-active-name>Researcher</span></h2>
+          <h2 id="inspect-title">Reasoning summary: <span data-active-name>Mira Chen · Researcher</span></h2>
           <p class="artifact-lede" data-active-summary>The researcher found that the customer expanded usage in two regions but is challenging audit-log retention language. The strongest renewal path is a security-led package with clear implementation commitments.</p>
           <ul class="reason-list">
             <li class="reason-item"><strong>Why this matters</strong><span data-reason-one>Three stakeholders repeated the same procurement objection, making it a blocker rather than background noise.</span></li>
@@ -453,11 +453,11 @@ Recommended handoff: planner should put audit-log retention before pricing conce
         <button class="icon-button" type="button" data-drawer-close aria-label="Close swarm overview">×</button>
       </div>
       <ul class="queue-list">
-        <li class="queue-item"><strong>Researcher · 84%</strong><span>Security evidence clustered; waiting on reviewer validation.</span></li>
-        <li class="queue-item"><strong>Planner · 76%</strong><span>Delivery sequence drafted with three approval gates.</span></li>
-        <li class="queue-item"><strong>Coder · 62%</strong><span>Data-room index and pricing notebook in progress.</span></li>
-        <li class="queue-item"><strong>Reviewer · 48%</strong><span>Retention language held until contract exhibit is verified.</span></li>
-        <li class="queue-item"><strong>Analyst · 69%</strong><span>Scenario model recalculating margin and adoption ranges.</span></li>
+        <li class="queue-item"><strong>Mira Chen · Researcher · 84%</strong><span>Security evidence clustered; waiting on reviewer validation.</span></li>
+        <li class="queue-item"><strong>Oskar Novak · Planner · 76%</strong><span>Delivery sequence drafted with three approval gates.</span></li>
+        <li class="queue-item"><strong>Nadia Ito · Coder · 62%</strong><span>Data-room index and pricing notebook in progress.</span></li>
+        <li class="queue-item"><strong>Elias Stone · Reviewer · 48%</strong><span>Retention language held until contract exhibit is verified.</span></li>
+        <li class="queue-item"><strong>Priya Raman · Analyst · 69%</strong><span>Scenario model recalculating margin and adoption ranges.</span></li>
       </ul>
     </div>
   </div>
@@ -479,7 +479,7 @@ Recommended handoff: planner should put audit-log retention before pricing conce
     const previewBody = document.querySelector("[data-preview-body]");
     const agentCopy = {
       researcher: {
-        name: "Researcher",
+        name: "Mira Chen · Researcher",
         summary: "The researcher found that the customer expanded usage in two regions but is challenging audit-log retention language. The strongest renewal path is a security-led package with clear implementation commitments.",
         one: "Three stakeholders repeated the same procurement objection, making it a blocker rather than background noise.",
         two: "Seven primary records matched: CRM notes, QBR deck, support tickets, renewal spreadsheet, and two account Slack threads.",
@@ -488,7 +488,7 @@ Recommended handoff: planner should put audit-log retention before pricing conce
         body: "Finding: security assurance is the renewal wedge.\nSource cluster: 2026 QBR notes, procurement call 04, support escalations 1182 and 1197.\nRecommended handoff: planner should put audit-log retention before pricing concessions."
       },
       planner: {
-        name: "Planner",
+        name: "Oskar Novak · Planner",
         summary: "The planner converted raw findings into a gated delivery plan with legal review before external communication and a backup offer if the margin floor is challenged.",
         one: "The path reduces parallel rework by forcing security wording, price modeling, and implementation commitments into separate checkpoints.",
         two: "Plan confidence is high because all blockers map to named owners and dated artifacts.",
@@ -497,7 +497,7 @@ Recommended handoff: planner should put audit-log retention before pricing conce
         body: "Gate 1: reviewer validates retention language.\nGate 2: analyst confirms margin floor.\nGate 3: human approves external executive memo.\nRollback anchor: plan-v6-before-delivery-sequence."
       },
       coder: {
-        name: "Coder",
+        name: "Nadia Ito · Coder",
         summary: "The coder is building a data-room index and pricing notebook in a sandboxed workspace branch with no merge permission.",
         one: "The index removes dead links and flags documents that should not leave the internal workspace.",
         two: "Build confidence is medium because the sanitized usage export is still waiting for approval.",
@@ -506,7 +506,7 @@ Recommended handoff: planner should put audit-log retention before pricing conce
         body: "Created: data-room/index.md\nUpdated: pricing/notebook.ipynb\nBlocked: sanitized_usage_export.csv requires approval\nTests: link checker passed 38/41, remaining three are restricted docs."
       },
       reviewer: {
-        name: "Reviewer",
+        name: "Elias Stone · Reviewer",
         summary: "The reviewer is holding one claim about audit-log retention because the cited exhibit may describe roadmap intent rather than a contractual guarantee.",
         one: "A weak claim in the executive memo could create commercial and legal exposure during procurement review.",
         two: "Review confidence is medium until the final contract exhibit and security addendum are compared side by side.",
@@ -515,7 +515,7 @@ Recommended handoff: planner should put audit-log retention before pricing conce
         body: "Hold: 'retention controls are available immediately' lacks direct support.\nSafe wording: 'implementation plan includes retention-control validation during week one.'\nRequired source: security addendum section 4.2."
       },
       analyst: {
-        name: "Analyst",
+        name: "Priya Raman · Analyst",
         summary: "The analyst modeled three renewal scenarios and found that a modest services credit preserves margin better than a license discount.",
         one: "Services credit answers the customer's implementation concern while protecting recurring revenue.",
         two: "Scenario confidence is high for current usage and medium for expansion because APAC adoption is uneven.",
