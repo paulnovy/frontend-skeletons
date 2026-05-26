@@ -3,34 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Summit ERP Dashboard | Frontend Skeletons</title>
-  <meta name="description" content="Summit gives leadership a readable operating layer with module health, approval queues, stock exposure, workforce exceptions, and plant-level alerts arranged for fast decisions.">
+  <title>Bolt Scheduler Pro | Frontend Skeletons</title>
+  <meta name="description" content="A premium scheduling workspace for assistants, revenue teams, and distributed operators who need time zones, holds, conflicts, and responses visible before sending an invite.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #f4f6f9;
+      --bg: #f6f9ff;
       --surface: #ffffff;
-      --ink: #132236;
-      --muted: #65748a;
-      --line: #dbe2ea;
-      --accent: #1f5fbf;
-      --accent-2: #63a4ff;
-      --soft: #e9f1fb;
-      --good: #2f9b72;
+      --ink: #10213a;
+      --muted: #65738a;
+      --line: #dbe7f6;
+      --accent: #1f6feb;
+      --accent-2: #60a5fa;
+      --soft: #eaf3ff;
+      --good: #11a076;
       --radius: 8px;
       --radius-lg: 14px;
       --shadow: 0 24px 80px rgba(0, 0, 0, .16);
       --font: "Inter", system-ui, sans-serif;
       --mono: "IBM Plex Mono", ui-monospace, monospace;
     }
-    * {
-      box-sizing: border-box;
-    }
-    html {
-      scroll-behavior: smooth;
-    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
       margin: 0;
       min-height: 100vh;
@@ -39,31 +35,11 @@
       font-family: var(--font);
       line-height: 1.5;
     }
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-    button {
-      font: inherit;
-    }
-    .shell {
-      width: min(1180px, calc(100% - 32px));
-      margin: 0 auto;
-    }
-    .skip-link {
-      position: absolute;
-      left: 16px;
-      top: -48px;
-      z-index: 40;
-      padding: 10px 14px;
-      border-radius: var(--radius);
-      background: var(--accent);
-      color: white;
-      transition: top .2s ease;
-    }
-    .skip-link:focus {
-      top: 16px;
-    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    .shell { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    .skip-link { position: absolute; left: 16px; top: -48px; z-index: 40; padding: 10px 14px; border-radius: var(--radius); background: var(--accent); color: white; transition: top .2s ease; }
+    .skip-link:focus { top: 16px; }
     .site-header {
       position: sticky;
       top: 0;
@@ -174,9 +150,7 @@
       box-shadow: 0 18px 42px color-mix(in srgb, var(--accent) 22%, transparent);
       outline: none;
     }
-    .button:active {
-      transform: translateY(0);
-    }
+    .button:active { transform: translateY(0); }
     .hero {
       padding: 72px 0 42px;
     }
@@ -198,12 +172,7 @@
       font-size: 13px;
       font-weight: 800;
     }
-    h1,
-    h2,
-    h3,
-    p {
-      margin-top: 0;
-    }
+    h1, h2, h3, p { margin-top: 0; }
     h1 {
       margin-bottom: 20px;
       font-size: clamp(42px, 6vw, 76px);
@@ -229,13 +198,6 @@
       background: color-mix(in srgb, var(--surface) 90%, transparent);
       padding: 18px;
       box-shadow: var(--shadow);
-    }
-    .preview::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 14%, transparent), transparent 48%);
-      pointer-events: none;
     }
     .preview-top {
       position: relative;
@@ -591,28 +553,13 @@
         background: var(--surface);
         box-shadow: var(--shadow);
       }
-      .nav-links.open {
-        display: flex;
-      }
-      .menu-button {
-        display: block;
-      }
-      .nav-action .button {
-        display: none;
-      }
-      .hero {
-        padding-top: 44px;
-      }
-      .metrics-grid {
-        grid-template-columns: 1fr;
-      }
-      .bar-grid {
-        height: 180px;
-      }
-      .cta-panel {
-        align-items: flex-start;
-        flex-direction: column;
-      }
+      .nav-links.open { display: flex; }
+      .menu-button { display: block; }
+      .nav-action .button { display: none; }
+      .hero { padding-top: 44px; }
+      .metrics-grid { grid-template-columns: 1fr; }
+      .bar-grid { height: 180px; }
+      .cta-panel { align-items: flex-start; flex-direction: column; }
     }
   </style>
 </head>
@@ -620,15 +567,15 @@
   <a class="skip-link" href="#main">Skip to main content</a>
   <header class="site-header">
     <div class="shell nav-wrap">
-      <a class="brand" href="#top" aria-label="Summit ERP Dashboard home">
-        <span class="brand-mark">SE</span>
-        <span>Summit ERP Dashboard</span>
+      <a class="brand" href="#top" aria-label="Bolt Scheduler Pro home">
+        <span class="brand-mark">BS</span>
+        <span>Bolt Scheduler Pro</span>
       </a>
       <nav class="nav-links" id="navLinks" aria-label="Primary navigation">
-          <a href="#finance">Finance</a>
-          <a href="#inventory">Inventory</a>
-          <a href="#hr">HR</a>
-          <a href="#operations">Operations</a>
+          <a href="#calendars">Calendars</a>
+          <a href="#polls">Polls</a>
+          <a href="#availability">Availability</a>
+          <a href="#rooms">Rooms</a>
       </nav>
       <div class="nav-action">
         <button class="button secondary" type="button">Sign in</button>
@@ -644,27 +591,27 @@
     <section class="hero" id="top">
       <div class="shell hero-grid">
         <div>
-          <span class="eyebrow">Enterprise command center</span>
-          <h1>Unify finance, inventory, people, and operations signals in one disciplined ERP view.</h1>
-          <p class="hero-copy">Summit gives leadership a readable operating layer with module health, approval queues, stock exposure, workforce exceptions, and plant-level alerts arranged for fast decisions.</p>
+          <span class="eyebrow">Scheduling operations</span>
+          <h1>Coordinate calendars, polls, rooms, and team availability without losing the week.</h1>
+          <p class="hero-copy">A premium scheduling workspace for assistants, revenue teams, and distributed operators who need time zones, holds, conflicts, and responses visible before sending an invite.</p>
           <div class="hero-actions" aria-label="Primary actions">
-            <button class="button primary" type="button">Review approvals</button>
-            <button class="button secondary" type="button">Open module map</button>
+            <button class="button primary" type="button">Create meeting poll</button>
+            <button class="button secondary" type="button">Open availability grid</button>
           </div>
         </div>
         <aside class="preview" aria-label="Product preview">
           <div class="preview-top">
-            <strong>Enterprise resource planning</strong>
+            <strong>Advanced scheduling tool</strong>
             <span class="status-pill">Live preview</span>
           </div>
           <div class="bar-grid" role="img" aria-label="Seven-day product trend">
-              <span style="--h:84%" aria-label="Day 1: 84%"></span>
-              <span style="--h:68%" aria-label="Day 2: 68%"></span>
-              <span style="--h:91%" aria-label="Day 3: 91%"></span>
-              <span style="--h:73%" aria-label="Day 4: 73%"></span>
-              <span style="--h:58%" aria-label="Day 5: 58%"></span>
-              <span style="--h:86%" aria-label="Day 6: 86%"></span>
-              <span style="--h:79%" aria-label="Day 7: 79%"></span>
+              <span style="--h:72%" aria-label="Day 1: 72%"></span>
+              <span style="--h:44%" aria-label="Day 2: 44%"></span>
+              <span style="--h:88%" aria-label="Day 3: 88%"></span>
+              <span style="--h:61%" aria-label="Day 4: 61%"></span>
+              <span style="--h:35%" aria-label="Day 5: 35%"></span>
+              <span style="--h:94%" aria-label="Day 6: 94%"></span>
+              <span style="--h:76%" aria-label="Day 7: 76%"></span>
           </div>
         </aside>
       </div>
@@ -672,105 +619,105 @@
     <section class="metrics" aria-label="Key performance indicators">
       <div class="shell metrics-grid">
           <article class="metric" tabindex="0">
-            <strong>$18.4M</strong>
-            <span>month revenue</span>
+            <strong>42</strong>
+            <span>calendar connections</span>
           </article>
           <article class="metric" tabindex="0">
-            <strong>97.2%</strong>
-            <span>inventory accuracy</span>
+            <strong>18</strong>
+            <span>poll responses due</span>
           </article>
           <article class="metric" tabindex="0">
-            <strong>1,284</strong>
-            <span>active employees</span>
+            <strong>93%</strong>
+            <span>availability confidence</span>
           </article>
           <article class="metric" tabindex="0">
-            <strong>23</strong>
-            <span>priority alerts</span>
+            <strong>7</strong>
+            <span>room conflicts solved</span>
           </article>
       </div>
     </section>
-    <section class="workspace" id="finance">
+    <section class="workspace" id="calendars">
       <div class="shell">
         <div class="section-heading">
-          <h2>Finance close status workspace</h2>
+          <h2>Executive weekly review workspace</h2>
           <p>Every card is designed for real workflows: clear hierarchy, fast scanning, visible status, and calm handoff between teams.</p>
         </div>
         <div class="workspace-grid">
-          <div class="module-stack" id="inventory">
+          <div class="module-stack" id="polls">
             <article class="module selected" tabindex="0">
               <b>01</b>
               <div>
-                <h3>Finance close status</h3>
+                <h3>Executive weekly review</h3>
                 <p>Live status, owners, and next decisions in one compact view.</p>
               </div>
             </article>
             <article class="module " tabindex="0">
               <b>02</b>
               <div>
-                <h3>Inventory network</h3>
+                <h3>Investor check-in poll</h3>
                 <p>Structured records that keep the operational path visible.</p>
               </div>
             </article>
             <article class="module " tabindex="0">
               <b>03</b>
               <div>
-                <h3>HR workforce view</h3>
+                <h3>Design critique room</h3>
                 <p>Priority context appears before users open detailed records.</p>
               </div>
             </article>
             <article class="module " tabindex="0">
               <b>04</b>
               <div>
-                <h3>Operations throughput</h3>
+                <h3>Customer onboarding sequence</h3>
                 <p>Responsive controls preserve the workflow on small screens.</p>
               </div>
             </article>
           </div>
-          <article class="work-panel" id="hr">
+          <article class="work-panel" id="availability">
             <div class="panel-header">
-              <h3>Alert Center</h3>
+              <h3>Meeting Polls</h3>
               <span>Updated 10:42</span>
             </div>
             <ul class="data-list">
               <li>
-                <span class="code">INV-2048</span>
-                <span>Valve stock below safety threshold</span>
-                <strong>Plant 4</strong>
-                <em>Buyer assigned</em>
+                <span class="code">Board sync</span>
+                <span>12 voters</span>
+                <strong>Two slots leading</strong>
+                <em>Responses close 4 PM</em>
               </li>
               <li>
-                <span class="code">FIN-8812</span>
-                <span>Capex approval exceeds variance policy</span>
-                <strong>Group finance</strong>
-                <em>CFO review</em>
+                <span class="code">Partner kickoff</span>
+                <span>8 voters</span>
+                <strong>London overlap found</strong>
+                <em>Room requested</em>
               </li>
               <li>
-                <span class="code">HR-3321</span>
-                <span>Shift coverage gap for Saturday line</span>
-                <strong>Workforce planning</strong>
-                <em>Backfill open</em>
+                <span class="code">Hiring panel</span>
+                <span>5 interviewers</span>
+                <strong>Candidate confirmed</strong>
+                <em>Prep packet ready</em>
               </li>
               <li>
-                <span class="code">OPS-7190</span>
-                <span>Packaging cell below target</span>
-                <strong>Manufacturing</strong>
-                <em>Maintenance queued</em>
+                <span class="code">Renewal review</span>
+                <span>6 stakeholders</span>
+                <strong>Sales hold active</strong>
+                <em>Awaiting legal</em>
               </li>
             </ul>
           </article>
         </div>
       </div>
     </section>
-    <section class="insights" id="operations">
+    <section class="insights" id="rooms">
       <div class="shell insight-grid">
         <article class="insight-panel">
           <span class="eyebrow">Design system</span>
-          <h2>Module Grid</h2>
+          <h2>Availability Grid</h2>
           <ul>
-              <li>Finance exposes cash, close, approvals, and variance flags</li>
-              <li>Inventory shows stock health, aging, and transfer pressure</li>
-              <li>HR tracks coverage, compliance training, and hiring requisitions</li>
-              <li>Operations measures throughput, downtime, and late-order risk</li>
+              <li>Time-zone normalized rows for Warsaw, London, New York, and San Francisco</li>
+              <li>Smart holds expire automatically when poll consensus is reached</li>
+              <li>Room inventory highlights video equipment and visitor access</li>
+              <li>Calendar accents separate focus blocks, travel buffers, and tentative holds</li>
           </ul>
         </article>
         <article class="insight-panel trend-card">
@@ -779,13 +726,13 @@
             <h2>Operating rhythm</h2>
           </div>
           <div class="trend-line" aria-label="Trend chart">
-              <span style="--h:84%" aria-label="Day 1: 84%"></span>
-              <span style="--h:68%" aria-label="Day 2: 68%"></span>
-              <span style="--h:91%" aria-label="Day 3: 91%"></span>
-              <span style="--h:73%" aria-label="Day 4: 73%"></span>
-              <span style="--h:58%" aria-label="Day 5: 58%"></span>
-              <span style="--h:86%" aria-label="Day 6: 86%"></span>
-              <span style="--h:79%" aria-label="Day 7: 79%"></span>
+              <span style="--h:72%" aria-label="Day 1: 72%"></span>
+              <span style="--h:44%" aria-label="Day 2: 44%"></span>
+              <span style="--h:88%" aria-label="Day 3: 88%"></span>
+              <span style="--h:61%" aria-label="Day 4: 61%"></span>
+              <span style="--h:35%" aria-label="Day 5: 35%"></span>
+              <span style="--h:94%" aria-label="Day 6: 94%"></span>
+              <span style="--h:76%" aria-label="Day 7: 76%"></span>
           </div>
           <p>Chart elements use CSS variables, transitions, and accessible labels so teams can replace mock values with live product data.</p>
         </article>
@@ -803,7 +750,7 @@
   </main>
   <footer>
     <div class="shell footer-grid">
-      <strong>Summit ERP Dashboard</strong>
+      <strong>Bolt Scheduler Pro</strong>
       <span>Built with Frontend Skeletons</span>
     </div>
   </footer>
@@ -821,11 +768,6 @@
         menuButton.setAttribute('aria-expanded', 'false');
         navLinks.classList.remove('open');
       });
-    });
-    document.querySelectorAll('.metric, .module').forEach((card) => {
-      card.addEventListener('pointerdown', () => card.style.transform = 'translateY(1px)');
-      card.addEventListener('pointerup', () => card.style.transform = '');
-      card.addEventListener('pointerleave', () => card.style.transform = '');
     });
   </script>
 </body>

@@ -3,34 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Wave Professional Network | Frontend Skeletons</title>
-  <meta name="description" content="Wave helps professionals find signal in their network with member-rich groups, structured mentorship, warm referral workflows, and job opportunities connected to trusted context.">
+  <title>Wave Dating App | Frontend Skeletons</title>
+  <meta name="description" content="Wave is a premium social product surface with thoughtful profile cards, compatibility context, verified prompts, safety signals, and a conversation UI that feels alive without feeling noisy.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #f7faff;
+      --bg: #fff6fb;
       --surface: #ffffff;
-      --ink: #10213a;
-      --muted: #65738a;
-      --line: #dbe7f6;
-      --accent: #1a63d9;
-      --accent-2: #6ab4ff;
-      --soft: #eaf3ff;
-      --good: #1d9670;
+      --ink: #2c1020;
+      --muted: #86677a;
+      --line: #f2d8e7;
+      --accent: #e43f8d;
+      --accent-2: #ff9dc9;
+      --soft: #ffe8f3;
+      --good: #22a77a;
       --radius: 8px;
       --radius-lg: 14px;
       --shadow: 0 24px 80px rgba(0, 0, 0, .16);
       --font: "Inter", system-ui, sans-serif;
       --mono: "IBM Plex Mono", ui-monospace, monospace;
     }
-    * {
-      box-sizing: border-box;
-    }
-    html {
-      scroll-behavior: smooth;
-    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
       margin: 0;
       min-height: 100vh;
@@ -39,31 +35,11 @@
       font-family: var(--font);
       line-height: 1.5;
     }
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-    button {
-      font: inherit;
-    }
-    .shell {
-      width: min(1180px, calc(100% - 32px));
-      margin: 0 auto;
-    }
-    .skip-link {
-      position: absolute;
-      left: 16px;
-      top: -48px;
-      z-index: 40;
-      padding: 10px 14px;
-      border-radius: var(--radius);
-      background: var(--accent);
-      color: white;
-      transition: top .2s ease;
-    }
-    .skip-link:focus {
-      top: 16px;
-    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    .shell { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    .skip-link { position: absolute; left: 16px; top: -48px; z-index: 40; padding: 10px 14px; border-radius: var(--radius); background: var(--accent); color: white; transition: top .2s ease; }
+    .skip-link:focus { top: 16px; }
     .site-header {
       position: sticky;
       top: 0;
@@ -174,9 +150,7 @@
       box-shadow: 0 18px 42px color-mix(in srgb, var(--accent) 22%, transparent);
       outline: none;
     }
-    .button:active {
-      transform: translateY(0);
-    }
+    .button:active { transform: translateY(0); }
     .hero {
       padding: 72px 0 42px;
     }
@@ -198,12 +172,7 @@
       font-size: 13px;
       font-weight: 800;
     }
-    h1,
-    h2,
-    h3,
-    p {
-      margin-top: 0;
-    }
+    h1, h2, h3, p { margin-top: 0; }
     h1 {
       margin-bottom: 20px;
       font-size: clamp(42px, 6vw, 76px);
@@ -229,13 +198,6 @@
       background: color-mix(in srgb, var(--surface) 90%, transparent);
       padding: 18px;
       box-shadow: var(--shadow);
-    }
-    .preview::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 14%, transparent), transparent 48%);
-      pointer-events: none;
     }
     .preview-top {
       position: relative;
@@ -591,28 +553,13 @@
         background: var(--surface);
         box-shadow: var(--shadow);
       }
-      .nav-links.open {
-        display: flex;
-      }
-      .menu-button {
-        display: block;
-      }
-      .nav-action .button {
-        display: none;
-      }
-      .hero {
-        padding-top: 44px;
-      }
-      .metrics-grid {
-        grid-template-columns: 1fr;
-      }
-      .bar-grid {
-        height: 180px;
-      }
-      .cta-panel {
-        align-items: flex-start;
-        flex-direction: column;
-      }
+      .nav-links.open { display: flex; }
+      .menu-button { display: block; }
+      .nav-action .button { display: none; }
+      .hero { padding-top: 44px; }
+      .metrics-grid { grid-template-columns: 1fr; }
+      .bar-grid { height: 180px; }
+      .cta-panel { align-items: flex-start; flex-direction: column; }
     }
   </style>
 </head>
@@ -620,15 +567,15 @@
   <a class="skip-link" href="#main">Skip to main content</a>
   <header class="site-header">
     <div class="shell nav-wrap">
-      <a class="brand" href="#top" aria-label="Wave Professional Network home">
-        <span class="brand-mark">WP</span>
-        <span>Wave Professional Network</span>
+      <a class="brand" href="#top" aria-label="Wave Dating App home">
+        <span class="brand-mark">WD</span>
+        <span>Wave Dating App</span>
       </a>
       <nav class="nav-links" id="navLinks" aria-label="Primary navigation">
-          <a href="#groups">Groups</a>
-          <a href="#mentors">Mentors</a>
-          <a href="#referrals">Referrals</a>
-          <a href="#jobs">Jobs</a>
+          <a href="#discover">Discover</a>
+          <a href="#matches">Matches</a>
+          <a href="#chats">Chats</a>
+          <a href="#events">Events</a>
       </nav>
       <div class="nav-action">
         <button class="button secondary" type="button">Sign in</button>
@@ -644,27 +591,27 @@
     <section class="hero" id="top">
       <div class="shell hero-grid">
         <div>
-          <span class="eyebrow">Career relationship platform</span>
-          <h1>Connect industry groups, mentorship matches, and referral loops in one professional network.</h1>
-          <p class="hero-copy">Wave helps professionals find signal in their network with member-rich groups, structured mentorship, warm referral workflows, and job opportunities connected to trusted context.</p>
+          <span class="eyebrow">Relationship discovery</span>
+          <h1>Make profile discovery, match intent, and conversation flow feel warm and deliberate.</h1>
+          <p class="hero-copy">Wave is a premium social product surface with thoughtful profile cards, compatibility context, verified prompts, safety signals, and a conversation UI that feels alive without feeling noisy.</p>
           <div class="hero-actions" aria-label="Primary actions">
-            <button class="button primary" type="button">Find mentor</button>
-            <button class="button secondary" type="button">Browse groups</button>
+            <button class="button primary" type="button">Start discovery</button>
+            <button class="button secondary" type="button">Open matches</button>
           </div>
         </div>
         <aside class="preview" aria-label="Product preview">
           <div class="preview-top">
-            <strong>Professional networking</strong>
+            <strong>Dating platform</strong>
             <span class="status-pill">Live preview</span>
           </div>
           <div class="bar-grid" role="img" aria-label="Seven-day product trend">
-              <span style="--h:73%" aria-label="Day 1: 73%"></span>
-              <span style="--h:69%" aria-label="Day 2: 69%"></span>
-              <span style="--h:84%" aria-label="Day 3: 84%"></span>
-              <span style="--h:57%" aria-label="Day 4: 57%"></span>
-              <span style="--h:91%" aria-label="Day 5: 91%"></span>
-              <span style="--h:62%" aria-label="Day 6: 62%"></span>
-              <span style="--h:77%" aria-label="Day 7: 77%"></span>
+              <span style="--h:58%" aria-label="Day 1: 58%"></span>
+              <span style="--h:81%" aria-label="Day 2: 81%"></span>
+              <span style="--h:66%" aria-label="Day 3: 66%"></span>
+              <span style="--h:92%" aria-label="Day 4: 92%"></span>
+              <span style="--h:49%" aria-label="Day 5: 49%"></span>
+              <span style="--h:74%" aria-label="Day 6: 74%"></span>
+              <span style="--h:88%" aria-label="Day 7: 88%"></span>
           </div>
         </aside>
       </div>
@@ -672,105 +619,105 @@
     <section class="metrics" aria-label="Key performance indicators">
       <div class="shell metrics-grid">
           <article class="metric" tabindex="0">
-            <strong>128K</strong>
-            <span>members</span>
+            <strong>86%</strong>
+            <span>profile completion</span>
           </article>
           <article class="metric" tabindex="0">
-            <strong>3,420</strong>
-            <span>mentorship matches</span>
+            <strong>14</strong>
+            <span>new matches</span>
           </article>
           <article class="metric" tabindex="0">
-            <strong>812</strong>
-            <span>open referrals</span>
+            <strong>5</strong>
+            <span>active chats</span>
           </article>
           <article class="metric" tabindex="0">
-            <strong>64%</strong>
-            <span>reply rate</span>
+            <strong>3</strong>
+            <span>events nearby</span>
           </article>
       </div>
     </section>
-    <section class="workspace" id="groups">
+    <section class="workspace" id="discover">
       <div class="shell">
         <div class="section-heading">
-          <h2>Industry groups workspace</h2>
+          <h2>Profile discovery workspace</h2>
           <p>Every card is designed for real workflows: clear hierarchy, fast scanning, visible status, and calm handoff between teams.</p>
         </div>
         <div class="workspace-grid">
-          <div class="module-stack" id="mentors">
+          <div class="module-stack" id="matches">
             <article class="module selected" tabindex="0">
               <b>01</b>
               <div>
-                <h3>Industry groups</h3>
+                <h3>Profile discovery</h3>
                 <p>Live status, owners, and next decisions in one compact view.</p>
               </div>
             </article>
             <article class="module " tabindex="0">
               <b>02</b>
               <div>
-                <h3>Mentorship matching</h3>
+                <h3>Compatibility signals</h3>
                 <p>Structured records that keep the operational path visible.</p>
               </div>
             </article>
             <article class="module " tabindex="0">
               <b>03</b>
               <div>
-                <h3>Job referrals</h3>
+                <h3>Conversation queue</h3>
                 <p>Priority context appears before users open detailed records.</p>
               </div>
             </article>
             <article class="module " tabindex="0">
               <b>04</b>
               <div>
-                <h3>Member profile</h3>
+                <h3>Date ideas nearby</h3>
                 <p>Responsive controls preserve the workflow on small screens.</p>
               </div>
             </article>
           </div>
-          <article class="work-panel" id="referrals">
+          <article class="work-panel" id="chats">
             <div class="panel-header">
-              <h3>Mentorship Matches</h3>
+              <h3>Conversation UI</h3>
               <span>Updated 10:42</span>
             </div>
             <ul class="data-list">
               <li>
-                <span class="code">Kasia Nowak</span>
-                <span>Fintech product leader</span>
-                <strong>Available Friday</strong>
-                <em>Strong match</em>
+                <span class="code">Maya</span>
+                <span>Asked about the ceramics studio prompt</span>
+                <strong>Typing now</strong>
+                <em>High intent</em>
               </li>
               <li>
-                <span class="code">Mateusz Zielinski</span>
-                <span>Security engineering manager</span>
-                <strong>Async review</strong>
-                <em>Referral path</em>
+                <span class="code">Jonas</span>
+                <span>Suggested Saturday coffee in Powisle</span>
+                <strong>Unread</strong>
+                <em>Verified profile</em>
               </li>
               <li>
-                <span class="code">Amina Clarke</span>
-                <span>Healthcare operations VP</span>
-                <strong>Intro requested</strong>
-                <em>Shared group</em>
+                <span class="code">Elena</span>
+                <span>Shared two travel photos</span>
+                <strong>Reply drafted</strong>
+                <em>Common friends</em>
               </li>
               <li>
-                <span class="code">Daniel Cho</span>
-                <span>Climate marketplace founder</span>
-                <strong>Office hours</strong>
-                <em>High response</em>
+                <span class="code">Tomek</span>
+                <span>Matched after gallery event</span>
+                <strong>New today</strong>
+                <em>Safety check passed</em>
               </li>
             </ul>
           </article>
         </div>
       </div>
     </section>
-    <section class="insights" id="jobs">
+    <section class="insights" id="events">
       <div class="shell insight-grid">
         <article class="insight-panel">
           <span class="eyebrow">Design system</span>
-          <h2>Job Referrals</h2>
+          <h2>Match Cards</h2>
           <ul>
-              <li>Referral cards show relationship distance, role fit, mutual context, and response history</li>
-              <li>Mentorship matching balances goals, industry experience, location, and availability</li>
-              <li>Group feeds prioritize substantial posts, events, and member-led discussions</li>
-              <li>Professional blue palette keeps the interface calm, credible, and commercially flexible</li>
+              <li>Profile cards emphasize prompts, values, availability, and conversation starters</li>
+              <li>Mutual interests are shown as subtle chips rather than noisy badges</li>
+              <li>Safety affordances include verification, reporting, and boundary-respecting controls</li>
+              <li>Responsive phone-first layout keeps discovery and chat reachable with thumb-friendly actions</li>
           </ul>
         </article>
         <article class="insight-panel trend-card">
@@ -779,13 +726,13 @@
             <h2>Operating rhythm</h2>
           </div>
           <div class="trend-line" aria-label="Trend chart">
-              <span style="--h:73%" aria-label="Day 1: 73%"></span>
-              <span style="--h:69%" aria-label="Day 2: 69%"></span>
-              <span style="--h:84%" aria-label="Day 3: 84%"></span>
-              <span style="--h:57%" aria-label="Day 4: 57%"></span>
-              <span style="--h:91%" aria-label="Day 5: 91%"></span>
-              <span style="--h:62%" aria-label="Day 6: 62%"></span>
-              <span style="--h:77%" aria-label="Day 7: 77%"></span>
+              <span style="--h:58%" aria-label="Day 1: 58%"></span>
+              <span style="--h:81%" aria-label="Day 2: 81%"></span>
+              <span style="--h:66%" aria-label="Day 3: 66%"></span>
+              <span style="--h:92%" aria-label="Day 4: 92%"></span>
+              <span style="--h:49%" aria-label="Day 5: 49%"></span>
+              <span style="--h:74%" aria-label="Day 6: 74%"></span>
+              <span style="--h:88%" aria-label="Day 7: 88%"></span>
           </div>
           <p>Chart elements use CSS variables, transitions, and accessible labels so teams can replace mock values with live product data.</p>
         </article>
@@ -803,7 +750,7 @@
   </main>
   <footer>
     <div class="shell footer-grid">
-      <strong>Wave Professional Network</strong>
+      <strong>Wave Dating App</strong>
       <span>Built with Frontend Skeletons</span>
     </div>
   </footer>
@@ -821,11 +768,6 @@
         menuButton.setAttribute('aria-expanded', 'false');
         navLinks.classList.remove('open');
       });
-    });
-    document.querySelectorAll('.metric, .module').forEach((card) => {
-      card.addEventListener('pointerdown', () => card.style.transform = 'translateY(1px)');
-      card.addEventListener('pointerup', () => card.style.transform = '');
-      card.addEventListener('pointerleave', () => card.style.transform = '');
     });
   </script>
 </body>

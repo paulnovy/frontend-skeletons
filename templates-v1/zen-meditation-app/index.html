@@ -3,34 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Summit Government Portal | Frontend Skeletons</title>
-  <meta name="description" content="A civic portal interface for agencies modernizing permits, payments, document requests, appointments, and resident accounts without sacrificing accessibility or trust.">
+  <title>Zen Meditation App | Frontend Skeletons</title>
+  <meta name="description" content="Zen is a dark meditation product interface for members who want session discovery, breath pacing, streak awareness, and quiet progress tracking without loud gamification.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #f7fbff;
-      --surface: #ffffff;
-      --ink: #10233f;
-      --muted: #66758b;
-      --line: #dce8f5;
-      --accent: #155bb5;
-      --accent-2: #52a7ff;
-      --soft: #eaf4ff;
-      --good: #237c65;
+      --bg: #100d1f;
+      --surface: #1b1730;
+      --ink: #f8f5ff;
+      --muted: #b7accd;
+      --line: #342c52;
+      --accent: #a78bfa;
+      --accent-2: #f4d7ff;
+      --soft: #2a2246;
+      --good: #8bd8b7;
       --radius: 8px;
       --radius-lg: 14px;
       --shadow: 0 24px 80px rgba(0, 0, 0, .16);
       --font: "Inter", system-ui, sans-serif;
       --mono: "IBM Plex Mono", ui-monospace, monospace;
     }
-    * {
-      box-sizing: border-box;
-    }
-    html {
-      scroll-behavior: smooth;
-    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
       margin: 0;
       min-height: 100vh;
@@ -39,31 +35,11 @@
       font-family: var(--font);
       line-height: 1.5;
     }
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-    button {
-      font: inherit;
-    }
-    .shell {
-      width: min(1180px, calc(100% - 32px));
-      margin: 0 auto;
-    }
-    .skip-link {
-      position: absolute;
-      left: 16px;
-      top: -48px;
-      z-index: 40;
-      padding: 10px 14px;
-      border-radius: var(--radius);
-      background: var(--accent);
-      color: white;
-      transition: top .2s ease;
-    }
-    .skip-link:focus {
-      top: 16px;
-    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    .shell { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    .skip-link { position: absolute; left: 16px; top: -48px; z-index: 40; padding: 10px 14px; border-radius: var(--radius); background: var(--accent); color: white; transition: top .2s ease; }
+    .skip-link:focus { top: 16px; }
     .site-header {
       position: sticky;
       top: 0;
@@ -174,9 +150,7 @@
       box-shadow: 0 18px 42px color-mix(in srgb, var(--accent) 22%, transparent);
       outline: none;
     }
-    .button:active {
-      transform: translateY(0);
-    }
+    .button:active { transform: translateY(0); }
     .hero {
       padding: 72px 0 42px;
     }
@@ -198,12 +172,7 @@
       font-size: 13px;
       font-weight: 800;
     }
-    h1,
-    h2,
-    h3,
-    p {
-      margin-top: 0;
-    }
+    h1, h2, h3, p { margin-top: 0; }
     h1 {
       margin-bottom: 20px;
       font-size: clamp(42px, 6vw, 76px);
@@ -229,13 +198,6 @@
       background: color-mix(in srgb, var(--surface) 90%, transparent);
       padding: 18px;
       box-shadow: var(--shadow);
-    }
-    .preview::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 14%, transparent), transparent 48%);
-      pointer-events: none;
     }
     .preview-top {
       position: relative;
@@ -591,28 +553,13 @@
         background: var(--surface);
         box-shadow: var(--shadow);
       }
-      .nav-links.open {
-        display: flex;
-      }
-      .menu-button {
-        display: block;
-      }
-      .nav-action .button {
-        display: none;
-      }
-      .hero {
-        padding-top: 44px;
-      }
-      .metrics-grid {
-        grid-template-columns: 1fr;
-      }
-      .bar-grid {
-        height: 180px;
-      }
-      .cta-panel {
-        align-items: flex-start;
-        flex-direction: column;
-      }
+      .nav-links.open { display: flex; }
+      .menu-button { display: block; }
+      .nav-action .button { display: none; }
+      .hero { padding-top: 44px; }
+      .metrics-grid { grid-template-columns: 1fr; }
+      .bar-grid { height: 180px; }
+      .cta-panel { align-items: flex-start; flex-direction: column; }
     }
   </style>
 </head>
@@ -620,15 +567,15 @@
   <a class="skip-link" href="#main">Skip to main content</a>
   <header class="site-header">
     <div class="shell nav-wrap">
-      <a class="brand" href="#top" aria-label="Summit Government Portal home">
-        <span class="brand-mark">SG</span>
-        <span>Summit Government Portal</span>
+      <a class="brand" href="#top" aria-label="Zen Meditation App home">
+        <span class="brand-mark">ZM</span>
+        <span>Zen Meditation App</span>
       </a>
       <nav class="nav-links" id="navLinks" aria-label="Primary navigation">
-          <a href="#services">Services</a>
-          <a href="#permits">Permits</a>
-          <a href="#accounts">Accounts</a>
-          <a href="#help-desk">Help Desk</a>
+          <a href="#sessions">Sessions</a>
+          <a href="#breath">Breath</a>
+          <a href="#progress">Progress</a>
+          <a href="#sleep">Sleep</a>
       </nav>
       <div class="nav-action">
         <button class="button secondary" type="button">Sign in</button>
@@ -644,133 +591,134 @@
     <section class="hero" id="top">
       <div class="shell hero-grid">
         <div>
-          <span class="eyebrow">Digital public services</span>
-          <h1>Give residents a clear path from service discovery to submitted permit and account status.</h1>
-          <p class="hero-copy">A civic portal interface for agencies modernizing permits, payments, document requests, appointments, and resident accounts without sacrificing accessibility or trust.</p>
+          <span class="eyebrow">Calm practice space</span>
+          <h1>Choose guided sessions, breathe with a living rhythm, and keep progress visible without pressure.</h1>
+          <p class="hero-copy">Zen is a dark meditation product interface for members who want session discovery, breath pacing, streak awareness, and quiet progress tracking without loud gamification.</p>
           <div class="hero-actions" aria-label="Primary actions">
-            <button class="button primary" type="button">Start permit</button>
-            <button class="button secondary" type="button">Browse services</button>
+            <button class="button primary" type="button">Begin session</button>
+            <button class="button secondary" type="button">Set intention</button>
           </div>
         </div>
         <aside class="preview" aria-label="Product preview">
           <div class="preview-top">
-            <strong>Government services portal</strong>
+            <strong>Meditation app</strong>
             <span class="status-pill">Live preview</span>
           </div>
           <div class="bar-grid" role="img" aria-label="Seven-day product trend">
-              <span style="--h:66%" aria-label="Day 1: 66%"></span>
-              <span style="--h:74%" aria-label="Day 2: 74%"></span>
-              <span style="--h:52%" aria-label="Day 3: 52%"></span>
-              <span style="--h:88%" aria-label="Day 4: 88%"></span>
-              <span style="--h:61%" aria-label="Day 5: 61%"></span>
-              <span style="--h:79%" aria-label="Day 6: 79%"></span>
-              <span style="--h:70%" aria-label="Day 7: 70%"></span>
+              <span style="--h:48%" aria-label="Day 1: 48%"></span>
+              <span style="--h:66%" aria-label="Day 2: 66%"></span>
+              <span style="--h:59%" aria-label="Day 3: 59%"></span>
+              <span style="--h:81%" aria-label="Day 4: 81%"></span>
+              <span style="--h:75%" aria-label="Day 5: 75%"></span>
+              <span style="--h:92%" aria-label="Day 6: 92%"></span>
+              <span style="--h:63%" aria-label="Day 7: 63%"></span>
           </div>
+            <div class="breath-orb" aria-label="Animated breathing guide"><span></span></div>
         </aside>
       </div>
     </section>
     <section class="metrics" aria-label="Key performance indicators">
       <div class="shell metrics-grid">
           <article class="metric" tabindex="0">
-            <strong>128</strong>
-            <span>online services</span>
+            <strong>21</strong>
+            <span>day streak</span>
           </article>
           <article class="metric" tabindex="0">
-            <strong>4.7</strong>
-            <span>days permit median</span>
+            <strong>184</strong>
+            <span>min this week</span>
           </article>
           <article class="metric" tabindex="0">
-            <strong>91%</strong>
-            <span>digital completion</span>
+            <strong>7</strong>
+            <span>saved sessions</span>
           </article>
           <article class="metric" tabindex="0">
-            <strong>312</strong>
-            <span>appointments booked</span>
+            <strong>62</strong>
+            <span>bpm resting trend</span>
           </article>
       </div>
     </section>
-    <section class="workspace" id="services">
+    <section class="workspace" id="sessions">
       <div class="shell">
         <div class="section-heading">
-          <h2>Building permits workspace</h2>
+          <h2>Morning focus workspace</h2>
           <p>Every card is designed for real workflows: clear hierarchy, fast scanning, visible status, and calm handoff between teams.</p>
         </div>
         <div class="workspace-grid">
-          <div class="module-stack" id="permits">
+          <div class="module-stack" id="breath">
             <article class="module selected" tabindex="0">
               <b>01</b>
               <div>
-                <h3>Building permits</h3>
+                <h3>Morning focus</h3>
                 <p>Live status, owners, and next decisions in one compact view.</p>
               </div>
             </article>
             <article class="module " tabindex="0">
               <b>02</b>
               <div>
-                <h3>Resident accounts</h3>
+                <h3>Breathing timer</h3>
                 <p>Structured records that keep the operational path visible.</p>
               </div>
             </article>
             <article class="module " tabindex="0">
               <b>03</b>
               <div>
-                <h3>Service directory</h3>
+                <h3>Sleep wind-down</h3>
                 <p>Priority context appears before users open detailed records.</p>
               </div>
             </article>
             <article class="module " tabindex="0">
               <b>04</b>
               <div>
-                <h3>Case support</h3>
+                <h3>Progress streak</h3>
                 <p>Responsive controls preserve the workflow on small screens.</p>
               </div>
             </article>
           </div>
-          <article class="work-panel" id="accounts">
+          <article class="work-panel" id="progress">
             <div class="panel-header">
-              <h3>Permit Applications</h3>
+              <h3>Session Selector</h3>
               <span>Updated 10:42</span>
             </div>
             <ul class="data-list">
               <li>
-                <span class="code">BPR-4021</span>
-                <span>Residential solar installation</span>
-                <strong>Plan review</strong>
-                <em>Due Thursday</em>
+                <span class="code">Soft Focus</span>
+                <span>12 minutes</span>
+                <strong>Guided attention</strong>
+                <em>Best for mornings</em>
               </li>
               <li>
-                <span class="code">ROW-1188</span>
-                <span>Sidewalk cafe renewal</span>
-                <strong>Payment pending</strong>
-                <em>Applicant notified</em>
+                <span class="code">Breath Reset</span>
+                <span>6 minutes</span>
+                <strong>Box breathing</strong>
+                <em>Quick pause</em>
               </li>
               <li>
-                <span class="code">LIC-7784</span>
-                <span>Short-term rental license</span>
-                <strong>Inspection booked</strong>
-                <em>May 29</em>
+                <span class="code">Body Scan</span>
+                <span>18 minutes</span>
+                <strong>Somatic calm</strong>
+                <em>Evening</em>
               </li>
               <li>
-                <span class="code">DOC-5532</span>
-                <span>Certified property record</span>
-                <strong>Ready to download</strong>
-                <em>Account verified</em>
+                <span class="code">Open Awareness</span>
+                <span>24 minutes</span>
+                <strong>Unguided bell</strong>
+                <em>Advanced</em>
               </li>
             </ul>
           </article>
         </div>
       </div>
     </section>
-    <section class="insights" id="help-desk">
+    <section class="insights" id="sleep">
       <div class="shell insight-grid">
         <article class="insight-panel">
           <span class="eyebrow">Design system</span>
-          <h2>Citizen Account Flow</h2>
+          <h2>Breathing Animation</h2>
           <ul>
-              <li>Plain-language steps show eligibility, fees, required documents, and expected response time</li>
-              <li>Secure inbox collects agency messages without exposing private data in email</li>
-              <li>Status cards group permits, appointments, payments, and saved drafts</li>
-              <li>Accessible service directory supports keyboard navigation and high-contrast states</li>
+              <li>CSS keyframes expand and soften the breathing orb on a six-second rhythm</li>
+              <li>Session selector separates guided, timed, sleep, and focus practices</li>
+              <li>Progress streak is present but visually quiet to reduce pressure</li>
+              <li>Dark twilight palette supports low-light use while maintaining readable contrast</li>
           </ul>
         </article>
         <article class="insight-panel trend-card">
@@ -779,13 +727,13 @@
             <h2>Operating rhythm</h2>
           </div>
           <div class="trend-line" aria-label="Trend chart">
-              <span style="--h:66%" aria-label="Day 1: 66%"></span>
-              <span style="--h:74%" aria-label="Day 2: 74%"></span>
-              <span style="--h:52%" aria-label="Day 3: 52%"></span>
-              <span style="--h:88%" aria-label="Day 4: 88%"></span>
-              <span style="--h:61%" aria-label="Day 5: 61%"></span>
-              <span style="--h:79%" aria-label="Day 6: 79%"></span>
-              <span style="--h:70%" aria-label="Day 7: 70%"></span>
+              <span style="--h:48%" aria-label="Day 1: 48%"></span>
+              <span style="--h:66%" aria-label="Day 2: 66%"></span>
+              <span style="--h:59%" aria-label="Day 3: 59%"></span>
+              <span style="--h:81%" aria-label="Day 4: 81%"></span>
+              <span style="--h:75%" aria-label="Day 5: 75%"></span>
+              <span style="--h:92%" aria-label="Day 6: 92%"></span>
+              <span style="--h:63%" aria-label="Day 7: 63%"></span>
           </div>
           <p>Chart elements use CSS variables, transitions, and accessible labels so teams can replace mock values with live product data.</p>
         </article>
@@ -803,7 +751,7 @@
   </main>
   <footer>
     <div class="shell footer-grid">
-      <strong>Summit Government Portal</strong>
+      <strong>Zen Meditation App</strong>
       <span>Built with Frontend Skeletons</span>
     </div>
   </footer>
@@ -821,11 +769,6 @@
         menuButton.setAttribute('aria-expanded', 'false');
         navLinks.classList.remove('open');
       });
-    });
-    document.querySelectorAll('.metric, .module').forEach((card) => {
-      card.addEventListener('pointerdown', () => card.style.transform = 'translateY(1px)');
-      card.addEventListener('pointerup', () => card.style.transform = '');
-      card.addEventListener('pointerleave', () => card.style.transform = '');
     });
   </script>
 </body>

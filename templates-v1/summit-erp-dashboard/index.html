@@ -3,34 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Zen Meditation App | Frontend Skeletons</title>
-  <meta name="description" content="Zen is a dark meditation product interface for members who want session discovery, breath pacing, streak awareness, and quiet progress tracking without loud gamification.">
+  <title>Summit ERP Dashboard | Frontend Skeletons</title>
+  <meta name="description" content="Summit gives leadership a readable operating layer with module health, approval queues, stock exposure, workforce exceptions, and plant-level alerts arranged for fast decisions.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #100d1f;
-      --surface: #1b1730;
-      --ink: #f8f5ff;
-      --muted: #b7accd;
-      --line: #342c52;
-      --accent: #a78bfa;
-      --accent-2: #f4d7ff;
-      --soft: #2a2246;
-      --good: #8bd8b7;
+      --bg: #f4f6f9;
+      --surface: #ffffff;
+      --ink: #132236;
+      --muted: #65748a;
+      --line: #dbe2ea;
+      --accent: #1f5fbf;
+      --accent-2: #63a4ff;
+      --soft: #e9f1fb;
+      --good: #2f9b72;
       --radius: 8px;
       --radius-lg: 14px;
       --shadow: 0 24px 80px rgba(0, 0, 0, .16);
       --font: "Inter", system-ui, sans-serif;
       --mono: "IBM Plex Mono", ui-monospace, monospace;
     }
-    * {
-      box-sizing: border-box;
-    }
-    html {
-      scroll-behavior: smooth;
-    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
       margin: 0;
       min-height: 100vh;
@@ -39,31 +35,11 @@
       font-family: var(--font);
       line-height: 1.5;
     }
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-    button {
-      font: inherit;
-    }
-    .shell {
-      width: min(1180px, calc(100% - 32px));
-      margin: 0 auto;
-    }
-    .skip-link {
-      position: absolute;
-      left: 16px;
-      top: -48px;
-      z-index: 40;
-      padding: 10px 14px;
-      border-radius: var(--radius);
-      background: var(--accent);
-      color: white;
-      transition: top .2s ease;
-    }
-    .skip-link:focus {
-      top: 16px;
-    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    .shell { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    .skip-link { position: absolute; left: 16px; top: -48px; z-index: 40; padding: 10px 14px; border-radius: var(--radius); background: var(--accent); color: white; transition: top .2s ease; }
+    .skip-link:focus { top: 16px; }
     .site-header {
       position: sticky;
       top: 0;
@@ -174,9 +150,7 @@
       box-shadow: 0 18px 42px color-mix(in srgb, var(--accent) 22%, transparent);
       outline: none;
     }
-    .button:active {
-      transform: translateY(0);
-    }
+    .button:active { transform: translateY(0); }
     .hero {
       padding: 72px 0 42px;
     }
@@ -198,12 +172,7 @@
       font-size: 13px;
       font-weight: 800;
     }
-    h1,
-    h2,
-    h3,
-    p {
-      margin-top: 0;
-    }
+    h1, h2, h3, p { margin-top: 0; }
     h1 {
       margin-bottom: 20px;
       font-size: clamp(42px, 6vw, 76px);
@@ -229,13 +198,6 @@
       background: color-mix(in srgb, var(--surface) 90%, transparent);
       padding: 18px;
       box-shadow: var(--shadow);
-    }
-    .preview::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 14%, transparent), transparent 48%);
-      pointer-events: none;
     }
     .preview-top {
       position: relative;
@@ -591,28 +553,13 @@
         background: var(--surface);
         box-shadow: var(--shadow);
       }
-      .nav-links.open {
-        display: flex;
-      }
-      .menu-button {
-        display: block;
-      }
-      .nav-action .button {
-        display: none;
-      }
-      .hero {
-        padding-top: 44px;
-      }
-      .metrics-grid {
-        grid-template-columns: 1fr;
-      }
-      .bar-grid {
-        height: 180px;
-      }
-      .cta-panel {
-        align-items: flex-start;
-        flex-direction: column;
-      }
+      .nav-links.open { display: flex; }
+      .menu-button { display: block; }
+      .nav-action .button { display: none; }
+      .hero { padding-top: 44px; }
+      .metrics-grid { grid-template-columns: 1fr; }
+      .bar-grid { height: 180px; }
+      .cta-panel { align-items: flex-start; flex-direction: column; }
     }
   </style>
 </head>
@@ -620,15 +567,15 @@
   <a class="skip-link" href="#main">Skip to main content</a>
   <header class="site-header">
     <div class="shell nav-wrap">
-      <a class="brand" href="#top" aria-label="Zen Meditation App home">
-        <span class="brand-mark">ZM</span>
-        <span>Zen Meditation App</span>
+      <a class="brand" href="#top" aria-label="Summit ERP Dashboard home">
+        <span class="brand-mark">SE</span>
+        <span>Summit ERP Dashboard</span>
       </a>
       <nav class="nav-links" id="navLinks" aria-label="Primary navigation">
-          <a href="#sessions">Sessions</a>
-          <a href="#breath">Breath</a>
-          <a href="#progress">Progress</a>
-          <a href="#sleep">Sleep</a>
+          <a href="#finance">Finance</a>
+          <a href="#inventory">Inventory</a>
+          <a href="#hr">HR</a>
+          <a href="#operations">Operations</a>
       </nav>
       <div class="nav-action">
         <button class="button secondary" type="button">Sign in</button>
@@ -644,134 +591,133 @@
     <section class="hero" id="top">
       <div class="shell hero-grid">
         <div>
-          <span class="eyebrow">Calm practice space</span>
-          <h1>Choose guided sessions, breathe with a living rhythm, and keep progress visible without pressure.</h1>
-          <p class="hero-copy">Zen is a dark meditation product interface for members who want session discovery, breath pacing, streak awareness, and quiet progress tracking without loud gamification.</p>
+          <span class="eyebrow">Enterprise command center</span>
+          <h1>Unify finance, inventory, people, and operations signals in one disciplined ERP view.</h1>
+          <p class="hero-copy">Summit gives leadership a readable operating layer with module health, approval queues, stock exposure, workforce exceptions, and plant-level alerts arranged for fast decisions.</p>
           <div class="hero-actions" aria-label="Primary actions">
-            <button class="button primary" type="button">Begin session</button>
-            <button class="button secondary" type="button">Set intention</button>
+            <button class="button primary" type="button">Review approvals</button>
+            <button class="button secondary" type="button">Open module map</button>
           </div>
         </div>
         <aside class="preview" aria-label="Product preview">
           <div class="preview-top">
-            <strong>Meditation app</strong>
+            <strong>Enterprise resource planning</strong>
             <span class="status-pill">Live preview</span>
           </div>
           <div class="bar-grid" role="img" aria-label="Seven-day product trend">
-              <span style="--h:48%" aria-label="Day 1: 48%"></span>
-              <span style="--h:66%" aria-label="Day 2: 66%"></span>
-              <span style="--h:59%" aria-label="Day 3: 59%"></span>
-              <span style="--h:81%" aria-label="Day 4: 81%"></span>
-              <span style="--h:75%" aria-label="Day 5: 75%"></span>
-              <span style="--h:92%" aria-label="Day 6: 92%"></span>
-              <span style="--h:63%" aria-label="Day 7: 63%"></span>
+              <span style="--h:84%" aria-label="Day 1: 84%"></span>
+              <span style="--h:68%" aria-label="Day 2: 68%"></span>
+              <span style="--h:91%" aria-label="Day 3: 91%"></span>
+              <span style="--h:73%" aria-label="Day 4: 73%"></span>
+              <span style="--h:58%" aria-label="Day 5: 58%"></span>
+              <span style="--h:86%" aria-label="Day 6: 86%"></span>
+              <span style="--h:79%" aria-label="Day 7: 79%"></span>
           </div>
-            <div class="breath-orb" aria-label="Animated breathing guide"><span></span></div>
         </aside>
       </div>
     </section>
     <section class="metrics" aria-label="Key performance indicators">
       <div class="shell metrics-grid">
           <article class="metric" tabindex="0">
-            <strong>21</strong>
-            <span>day streak</span>
+            <strong>$18.4M</strong>
+            <span>month revenue</span>
           </article>
           <article class="metric" tabindex="0">
-            <strong>184</strong>
-            <span>min this week</span>
+            <strong>97.2%</strong>
+            <span>inventory accuracy</span>
           </article>
           <article class="metric" tabindex="0">
-            <strong>7</strong>
-            <span>saved sessions</span>
+            <strong>1,284</strong>
+            <span>active employees</span>
           </article>
           <article class="metric" tabindex="0">
-            <strong>62</strong>
-            <span>bpm resting trend</span>
+            <strong>23</strong>
+            <span>priority alerts</span>
           </article>
       </div>
     </section>
-    <section class="workspace" id="sessions">
+    <section class="workspace" id="finance">
       <div class="shell">
         <div class="section-heading">
-          <h2>Morning focus workspace</h2>
+          <h2>Finance close status workspace</h2>
           <p>Every card is designed for real workflows: clear hierarchy, fast scanning, visible status, and calm handoff between teams.</p>
         </div>
         <div class="workspace-grid">
-          <div class="module-stack" id="breath">
+          <div class="module-stack" id="inventory">
             <article class="module selected" tabindex="0">
               <b>01</b>
               <div>
-                <h3>Morning focus</h3>
+                <h3>Finance close status</h3>
                 <p>Live status, owners, and next decisions in one compact view.</p>
               </div>
             </article>
             <article class="module " tabindex="0">
               <b>02</b>
               <div>
-                <h3>Breathing timer</h3>
+                <h3>Inventory network</h3>
                 <p>Structured records that keep the operational path visible.</p>
               </div>
             </article>
             <article class="module " tabindex="0">
               <b>03</b>
               <div>
-                <h3>Sleep wind-down</h3>
+                <h3>HR workforce view</h3>
                 <p>Priority context appears before users open detailed records.</p>
               </div>
             </article>
             <article class="module " tabindex="0">
               <b>04</b>
               <div>
-                <h3>Progress streak</h3>
+                <h3>Operations throughput</h3>
                 <p>Responsive controls preserve the workflow on small screens.</p>
               </div>
             </article>
           </div>
-          <article class="work-panel" id="progress">
+          <article class="work-panel" id="hr">
             <div class="panel-header">
-              <h3>Session Selector</h3>
+              <h3>Alert Center</h3>
               <span>Updated 10:42</span>
             </div>
             <ul class="data-list">
               <li>
-                <span class="code">Soft Focus</span>
-                <span>12 minutes</span>
-                <strong>Guided attention</strong>
-                <em>Best for mornings</em>
+                <span class="code">INV-2048</span>
+                <span>Valve stock below safety threshold</span>
+                <strong>Plant 4</strong>
+                <em>Buyer assigned</em>
               </li>
               <li>
-                <span class="code">Breath Reset</span>
-                <span>6 minutes</span>
-                <strong>Box breathing</strong>
-                <em>Quick pause</em>
+                <span class="code">FIN-8812</span>
+                <span>Capex approval exceeds variance policy</span>
+                <strong>Group finance</strong>
+                <em>CFO review</em>
               </li>
               <li>
-                <span class="code">Body Scan</span>
-                <span>18 minutes</span>
-                <strong>Somatic calm</strong>
-                <em>Evening</em>
+                <span class="code">HR-3321</span>
+                <span>Shift coverage gap for Saturday line</span>
+                <strong>Workforce planning</strong>
+                <em>Backfill open</em>
               </li>
               <li>
-                <span class="code">Open Awareness</span>
-                <span>24 minutes</span>
-                <strong>Unguided bell</strong>
-                <em>Advanced</em>
+                <span class="code">OPS-7190</span>
+                <span>Packaging cell below target</span>
+                <strong>Manufacturing</strong>
+                <em>Maintenance queued</em>
               </li>
             </ul>
           </article>
         </div>
       </div>
     </section>
-    <section class="insights" id="sleep">
+    <section class="insights" id="operations">
       <div class="shell insight-grid">
         <article class="insight-panel">
           <span class="eyebrow">Design system</span>
-          <h2>Breathing Animation</h2>
+          <h2>Module Grid</h2>
           <ul>
-              <li>CSS keyframes expand and soften the breathing orb on a six-second rhythm</li>
-              <li>Session selector separates guided, timed, sleep, and focus practices</li>
-              <li>Progress streak is present but visually quiet to reduce pressure</li>
-              <li>Dark twilight palette supports low-light use while maintaining readable contrast</li>
+              <li>Finance exposes cash, close, approvals, and variance flags</li>
+              <li>Inventory shows stock health, aging, and transfer pressure</li>
+              <li>HR tracks coverage, compliance training, and hiring requisitions</li>
+              <li>Operations measures throughput, downtime, and late-order risk</li>
           </ul>
         </article>
         <article class="insight-panel trend-card">
@@ -780,13 +726,13 @@
             <h2>Operating rhythm</h2>
           </div>
           <div class="trend-line" aria-label="Trend chart">
-              <span style="--h:48%" aria-label="Day 1: 48%"></span>
-              <span style="--h:66%" aria-label="Day 2: 66%"></span>
-              <span style="--h:59%" aria-label="Day 3: 59%"></span>
-              <span style="--h:81%" aria-label="Day 4: 81%"></span>
-              <span style="--h:75%" aria-label="Day 5: 75%"></span>
-              <span style="--h:92%" aria-label="Day 6: 92%"></span>
-              <span style="--h:63%" aria-label="Day 7: 63%"></span>
+              <span style="--h:84%" aria-label="Day 1: 84%"></span>
+              <span style="--h:68%" aria-label="Day 2: 68%"></span>
+              <span style="--h:91%" aria-label="Day 3: 91%"></span>
+              <span style="--h:73%" aria-label="Day 4: 73%"></span>
+              <span style="--h:58%" aria-label="Day 5: 58%"></span>
+              <span style="--h:86%" aria-label="Day 6: 86%"></span>
+              <span style="--h:79%" aria-label="Day 7: 79%"></span>
           </div>
           <p>Chart elements use CSS variables, transitions, and accessible labels so teams can replace mock values with live product data.</p>
         </article>
@@ -804,7 +750,7 @@
   </main>
   <footer>
     <div class="shell footer-grid">
-      <strong>Zen Meditation App</strong>
+      <strong>Summit ERP Dashboard</strong>
       <span>Built with Frontend Skeletons</span>
     </div>
   </footer>
@@ -822,11 +768,6 @@
         menuButton.setAttribute('aria-expanded', 'false');
         navLinks.classList.remove('open');
       });
-    });
-    document.querySelectorAll('.metric, .module').forEach((card) => {
-      card.addEventListener('pointerdown', () => card.style.transform = 'translateY(1px)');
-      card.addEventListener('pointerup', () => card.style.transform = '');
-      card.addEventListener('pointerleave', () => card.style.transform = '');
     });
   </script>
 </body>

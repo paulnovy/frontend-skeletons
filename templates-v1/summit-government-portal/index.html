@@ -3,34 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Bolt Scheduler Pro | Frontend Skeletons</title>
-  <meta name="description" content="A premium scheduling workspace for assistants, revenue teams, and distributed operators who need time zones, holds, conflicts, and responses visible before sending an invite.">
+  <title>Summit Government Portal | Frontend Skeletons</title>
+  <meta name="description" content="A civic portal interface for agencies modernizing permits, payments, document requests, appointments, and resident accounts without sacrificing accessibility or trust.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #f6f9ff;
+      --bg: #f7fbff;
       --surface: #ffffff;
-      --ink: #10213a;
-      --muted: #65738a;
-      --line: #dbe7f6;
-      --accent: #1f6feb;
-      --accent-2: #60a5fa;
-      --soft: #eaf3ff;
-      --good: #11a076;
+      --ink: #10233f;
+      --muted: #66758b;
+      --line: #dce8f5;
+      --accent: #155bb5;
+      --accent-2: #52a7ff;
+      --soft: #eaf4ff;
+      --good: #237c65;
       --radius: 8px;
       --radius-lg: 14px;
       --shadow: 0 24px 80px rgba(0, 0, 0, .16);
       --font: "Inter", system-ui, sans-serif;
       --mono: "IBM Plex Mono", ui-monospace, monospace;
     }
-    * {
-      box-sizing: border-box;
-    }
-    html {
-      scroll-behavior: smooth;
-    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
       margin: 0;
       min-height: 100vh;
@@ -39,31 +35,11 @@
       font-family: var(--font);
       line-height: 1.5;
     }
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-    button {
-      font: inherit;
-    }
-    .shell {
-      width: min(1180px, calc(100% - 32px));
-      margin: 0 auto;
-    }
-    .skip-link {
-      position: absolute;
-      left: 16px;
-      top: -48px;
-      z-index: 40;
-      padding: 10px 14px;
-      border-radius: var(--radius);
-      background: var(--accent);
-      color: white;
-      transition: top .2s ease;
-    }
-    .skip-link:focus {
-      top: 16px;
-    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    .shell { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    .skip-link { position: absolute; left: 16px; top: -48px; z-index: 40; padding: 10px 14px; border-radius: var(--radius); background: var(--accent); color: white; transition: top .2s ease; }
+    .skip-link:focus { top: 16px; }
     .site-header {
       position: sticky;
       top: 0;
@@ -174,9 +150,7 @@
       box-shadow: 0 18px 42px color-mix(in srgb, var(--accent) 22%, transparent);
       outline: none;
     }
-    .button:active {
-      transform: translateY(0);
-    }
+    .button:active { transform: translateY(0); }
     .hero {
       padding: 72px 0 42px;
     }
@@ -198,12 +172,7 @@
       font-size: 13px;
       font-weight: 800;
     }
-    h1,
-    h2,
-    h3,
-    p {
-      margin-top: 0;
-    }
+    h1, h2, h3, p { margin-top: 0; }
     h1 {
       margin-bottom: 20px;
       font-size: clamp(42px, 6vw, 76px);
@@ -229,13 +198,6 @@
       background: color-mix(in srgb, var(--surface) 90%, transparent);
       padding: 18px;
       box-shadow: var(--shadow);
-    }
-    .preview::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 14%, transparent), transparent 48%);
-      pointer-events: none;
     }
     .preview-top {
       position: relative;
@@ -591,28 +553,13 @@
         background: var(--surface);
         box-shadow: var(--shadow);
       }
-      .nav-links.open {
-        display: flex;
-      }
-      .menu-button {
-        display: block;
-      }
-      .nav-action .button {
-        display: none;
-      }
-      .hero {
-        padding-top: 44px;
-      }
-      .metrics-grid {
-        grid-template-columns: 1fr;
-      }
-      .bar-grid {
-        height: 180px;
-      }
-      .cta-panel {
-        align-items: flex-start;
-        flex-direction: column;
-      }
+      .nav-links.open { display: flex; }
+      .menu-button { display: block; }
+      .nav-action .button { display: none; }
+      .hero { padding-top: 44px; }
+      .metrics-grid { grid-template-columns: 1fr; }
+      .bar-grid { height: 180px; }
+      .cta-panel { align-items: flex-start; flex-direction: column; }
     }
   </style>
 </head>
@@ -620,15 +567,15 @@
   <a class="skip-link" href="#main">Skip to main content</a>
   <header class="site-header">
     <div class="shell nav-wrap">
-      <a class="brand" href="#top" aria-label="Bolt Scheduler Pro home">
-        <span class="brand-mark">BS</span>
-        <span>Bolt Scheduler Pro</span>
+      <a class="brand" href="#top" aria-label="Summit Government Portal home">
+        <span class="brand-mark">SG</span>
+        <span>Summit Government Portal</span>
       </a>
       <nav class="nav-links" id="navLinks" aria-label="Primary navigation">
-          <a href="#calendars">Calendars</a>
-          <a href="#polls">Polls</a>
-          <a href="#availability">Availability</a>
-          <a href="#rooms">Rooms</a>
+          <a href="#services">Services</a>
+          <a href="#permits">Permits</a>
+          <a href="#accounts">Accounts</a>
+          <a href="#help-desk">Help Desk</a>
       </nav>
       <div class="nav-action">
         <button class="button secondary" type="button">Sign in</button>
@@ -644,27 +591,27 @@
     <section class="hero" id="top">
       <div class="shell hero-grid">
         <div>
-          <span class="eyebrow">Scheduling operations</span>
-          <h1>Coordinate calendars, polls, rooms, and team availability without losing the week.</h1>
-          <p class="hero-copy">A premium scheduling workspace for assistants, revenue teams, and distributed operators who need time zones, holds, conflicts, and responses visible before sending an invite.</p>
+          <span class="eyebrow">Digital public services</span>
+          <h1>Give residents a clear path from service discovery to submitted permit and account status.</h1>
+          <p class="hero-copy">A civic portal interface for agencies modernizing permits, payments, document requests, appointments, and resident accounts without sacrificing accessibility or trust.</p>
           <div class="hero-actions" aria-label="Primary actions">
-            <button class="button primary" type="button">Create meeting poll</button>
-            <button class="button secondary" type="button">Open availability grid</button>
+            <button class="button primary" type="button">Start permit</button>
+            <button class="button secondary" type="button">Browse services</button>
           </div>
         </div>
         <aside class="preview" aria-label="Product preview">
           <div class="preview-top">
-            <strong>Advanced scheduling tool</strong>
+            <strong>Government services portal</strong>
             <span class="status-pill">Live preview</span>
           </div>
           <div class="bar-grid" role="img" aria-label="Seven-day product trend">
-              <span style="--h:72%" aria-label="Day 1: 72%"></span>
-              <span style="--h:44%" aria-label="Day 2: 44%"></span>
-              <span style="--h:88%" aria-label="Day 3: 88%"></span>
-              <span style="--h:61%" aria-label="Day 4: 61%"></span>
-              <span style="--h:35%" aria-label="Day 5: 35%"></span>
-              <span style="--h:94%" aria-label="Day 6: 94%"></span>
-              <span style="--h:76%" aria-label="Day 7: 76%"></span>
+              <span style="--h:66%" aria-label="Day 1: 66%"></span>
+              <span style="--h:74%" aria-label="Day 2: 74%"></span>
+              <span style="--h:52%" aria-label="Day 3: 52%"></span>
+              <span style="--h:88%" aria-label="Day 4: 88%"></span>
+              <span style="--h:61%" aria-label="Day 5: 61%"></span>
+              <span style="--h:79%" aria-label="Day 6: 79%"></span>
+              <span style="--h:70%" aria-label="Day 7: 70%"></span>
           </div>
         </aside>
       </div>
@@ -672,105 +619,105 @@
     <section class="metrics" aria-label="Key performance indicators">
       <div class="shell metrics-grid">
           <article class="metric" tabindex="0">
-            <strong>42</strong>
-            <span>calendar connections</span>
+            <strong>128</strong>
+            <span>online services</span>
           </article>
           <article class="metric" tabindex="0">
-            <strong>18</strong>
-            <span>poll responses due</span>
+            <strong>4.7</strong>
+            <span>days permit median</span>
           </article>
           <article class="metric" tabindex="0">
-            <strong>93%</strong>
-            <span>availability confidence</span>
+            <strong>91%</strong>
+            <span>digital completion</span>
           </article>
           <article class="metric" tabindex="0">
-            <strong>7</strong>
-            <span>room conflicts solved</span>
+            <strong>312</strong>
+            <span>appointments booked</span>
           </article>
       </div>
     </section>
-    <section class="workspace" id="calendars">
+    <section class="workspace" id="services">
       <div class="shell">
         <div class="section-heading">
-          <h2>Executive weekly review workspace</h2>
+          <h2>Building permits workspace</h2>
           <p>Every card is designed for real workflows: clear hierarchy, fast scanning, visible status, and calm handoff between teams.</p>
         </div>
         <div class="workspace-grid">
-          <div class="module-stack" id="polls">
+          <div class="module-stack" id="permits">
             <article class="module selected" tabindex="0">
               <b>01</b>
               <div>
-                <h3>Executive weekly review</h3>
+                <h3>Building permits</h3>
                 <p>Live status, owners, and next decisions in one compact view.</p>
               </div>
             </article>
             <article class="module " tabindex="0">
               <b>02</b>
               <div>
-                <h3>Investor check-in poll</h3>
+                <h3>Resident accounts</h3>
                 <p>Structured records that keep the operational path visible.</p>
               </div>
             </article>
             <article class="module " tabindex="0">
               <b>03</b>
               <div>
-                <h3>Design critique room</h3>
+                <h3>Service directory</h3>
                 <p>Priority context appears before users open detailed records.</p>
               </div>
             </article>
             <article class="module " tabindex="0">
               <b>04</b>
               <div>
-                <h3>Customer onboarding sequence</h3>
+                <h3>Case support</h3>
                 <p>Responsive controls preserve the workflow on small screens.</p>
               </div>
             </article>
           </div>
-          <article class="work-panel" id="availability">
+          <article class="work-panel" id="accounts">
             <div class="panel-header">
-              <h3>Meeting Polls</h3>
+              <h3>Permit Applications</h3>
               <span>Updated 10:42</span>
             </div>
             <ul class="data-list">
               <li>
-                <span class="code">Board sync</span>
-                <span>12 voters</span>
-                <strong>Two slots leading</strong>
-                <em>Responses close 4 PM</em>
+                <span class="code">BPR-4021</span>
+                <span>Residential solar installation</span>
+                <strong>Plan review</strong>
+                <em>Due Thursday</em>
               </li>
               <li>
-                <span class="code">Partner kickoff</span>
-                <span>8 voters</span>
-                <strong>London overlap found</strong>
-                <em>Room requested</em>
+                <span class="code">ROW-1188</span>
+                <span>Sidewalk cafe renewal</span>
+                <strong>Payment pending</strong>
+                <em>Applicant notified</em>
               </li>
               <li>
-                <span class="code">Hiring panel</span>
-                <span>5 interviewers</span>
-                <strong>Candidate confirmed</strong>
-                <em>Prep packet ready</em>
+                <span class="code">LIC-7784</span>
+                <span>Short-term rental license</span>
+                <strong>Inspection booked</strong>
+                <em>May 29</em>
               </li>
               <li>
-                <span class="code">Renewal review</span>
-                <span>6 stakeholders</span>
-                <strong>Sales hold active</strong>
-                <em>Awaiting legal</em>
+                <span class="code">DOC-5532</span>
+                <span>Certified property record</span>
+                <strong>Ready to download</strong>
+                <em>Account verified</em>
               </li>
             </ul>
           </article>
         </div>
       </div>
     </section>
-    <section class="insights" id="rooms">
+    <section class="insights" id="help-desk">
       <div class="shell insight-grid">
         <article class="insight-panel">
           <span class="eyebrow">Design system</span>
-          <h2>Availability Grid</h2>
+          <h2>Citizen Account Flow</h2>
           <ul>
-              <li>Time-zone normalized rows for Warsaw, London, New York, and San Francisco</li>
-              <li>Smart holds expire automatically when poll consensus is reached</li>
-              <li>Room inventory highlights video equipment and visitor access</li>
-              <li>Calendar accents separate focus blocks, travel buffers, and tentative holds</li>
+              <li>Plain-language steps show eligibility, fees, required documents, and expected response time</li>
+              <li>Secure inbox collects agency messages without exposing private data in email</li>
+              <li>Status cards group permits, appointments, payments, and saved drafts</li>
+              <li>Accessible service directory supports keyboard navigation and high-contrast states</li>
           </ul>
         </article>
         <article class="insight-panel trend-card">
@@ -779,13 +726,13 @@
             <h2>Operating rhythm</h2>
           </div>
           <div class="trend-line" aria-label="Trend chart">
-              <span style="--h:72%" aria-label="Day 1: 72%"></span>
-              <span style="--h:44%" aria-label="Day 2: 44%"></span>
-              <span style="--h:88%" aria-label="Day 3: 88%"></span>
-              <span style="--h:61%" aria-label="Day 4: 61%"></span>
-              <span style="--h:35%" aria-label="Day 5: 35%"></span>
-              <span style="--h:94%" aria-label="Day 6: 94%"></span>
-              <span style="--h:76%" aria-label="Day 7: 76%"></span>
+              <span style="--h:66%" aria-label="Day 1: 66%"></span>
+              <span style="--h:74%" aria-label="Day 2: 74%"></span>
+              <span style="--h:52%" aria-label="Day 3: 52%"></span>
+              <span style="--h:88%" aria-label="Day 4: 88%"></span>
+              <span style="--h:61%" aria-label="Day 5: 61%"></span>
+              <span style="--h:79%" aria-label="Day 6: 79%"></span>
+              <span style="--h:70%" aria-label="Day 7: 70%"></span>
           </div>
           <p>Chart elements use CSS variables, transitions, and accessible labels so teams can replace mock values with live product data.</p>
         </article>
@@ -803,7 +750,7 @@
   </main>
   <footer>
     <div class="shell footer-grid">
-      <strong>Bolt Scheduler Pro</strong>
+      <strong>Summit Government Portal</strong>
       <span>Built with Frontend Skeletons</span>
     </div>
   </footer>
@@ -821,11 +768,6 @@
         menuButton.setAttribute('aria-expanded', 'false');
         navLinks.classList.remove('open');
       });
-    });
-    document.querySelectorAll('.metric, .module').forEach((card) => {
-      card.addEventListener('pointerdown', () => card.style.transform = 'translateY(1px)');
-      card.addEventListener('pointerup', () => card.style.transform = '');
-      card.addEventListener('pointerleave', () => card.style.transform = '');
     });
   </script>
 </body>

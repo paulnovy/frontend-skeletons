@@ -3,34 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Zen Sleep Tracker | Frontend Skeletons</title>
-  <meta name="description" content="A premium sleep tracker surface for consumer wellness products showing stage analysis, readiness signals, smart alarm windows, and long-term quality trends in a dark bedside-friendly UI.">
+  <title>Terra Renewable Energy | Frontend Skeletons</title>
+  <meta name="description" content="A dark operations interface for renewable asset managers who need production, curtailment, storage, grid constraints, and weather-aware forecasts in one real-time control surface.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #07101f;
-      --surface: #101b31;
-      --ink: #f2f6ff;
-      --muted: #a8b5cf;
-      --line: #263856;
-      --accent: #6d8cff;
-      --accent-2: #9bd5ff;
-      --soft: #1a2947;
-      --good: #7fd8c2;
+      --bg: #07150f;
+      --surface: #10231a;
+      --ink: #eef8f1;
+      --muted: #9eb1a5;
+      --line: #244535;
+      --accent: #f6b544;
+      --accent-2: #42d783;
+      --soft: #183425;
+      --good: #42d783;
       --radius: 8px;
       --radius-lg: 14px;
       --shadow: 0 24px 80px rgba(0, 0, 0, .16);
       --font: "Inter", system-ui, sans-serif;
       --mono: "IBM Plex Mono", ui-monospace, monospace;
     }
-    * {
-      box-sizing: border-box;
-    }
-    html {
-      scroll-behavior: smooth;
-    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
       margin: 0;
       min-height: 100vh;
@@ -39,31 +35,11 @@
       font-family: var(--font);
       line-height: 1.5;
     }
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-    button {
-      font: inherit;
-    }
-    .shell {
-      width: min(1180px, calc(100% - 32px));
-      margin: 0 auto;
-    }
-    .skip-link {
-      position: absolute;
-      left: 16px;
-      top: -48px;
-      z-index: 40;
-      padding: 10px 14px;
-      border-radius: var(--radius);
-      background: var(--accent);
-      color: white;
-      transition: top .2s ease;
-    }
-    .skip-link:focus {
-      top: 16px;
-    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    .shell { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    .skip-link { position: absolute; left: 16px; top: -48px; z-index: 40; padding: 10px 14px; border-radius: var(--radius); background: var(--accent); color: white; transition: top .2s ease; }
+    .skip-link:focus { top: 16px; }
     .site-header {
       position: sticky;
       top: 0;
@@ -174,9 +150,7 @@
       box-shadow: 0 18px 42px color-mix(in srgb, var(--accent) 22%, transparent);
       outline: none;
     }
-    .button:active {
-      transform: translateY(0);
-    }
+    .button:active { transform: translateY(0); }
     .hero {
       padding: 72px 0 42px;
     }
@@ -198,12 +172,7 @@
       font-size: 13px;
       font-weight: 800;
     }
-    h1,
-    h2,
-    h3,
-    p {
-      margin-top: 0;
-    }
+    h1, h2, h3, p { margin-top: 0; }
     h1 {
       margin-bottom: 20px;
       font-size: clamp(42px, 6vw, 76px);
@@ -229,13 +198,6 @@
       background: color-mix(in srgb, var(--surface) 90%, transparent);
       padding: 18px;
       box-shadow: var(--shadow);
-    }
-    .preview::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 14%, transparent), transparent 48%);
-      pointer-events: none;
     }
     .preview-top {
       position: relative;
@@ -591,28 +553,13 @@
         background: var(--surface);
         box-shadow: var(--shadow);
       }
-      .nav-links.open {
-        display: flex;
-      }
-      .menu-button {
-        display: block;
-      }
-      .nav-action .button {
-        display: none;
-      }
-      .hero {
-        padding-top: 44px;
-      }
-      .metrics-grid {
-        grid-template-columns: 1fr;
-      }
-      .bar-grid {
-        height: 180px;
-      }
-      .cta-panel {
-        align-items: flex-start;
-        flex-direction: column;
-      }
+      .nav-links.open { display: flex; }
+      .menu-button { display: block; }
+      .nav-action .button { display: none; }
+      .hero { padding-top: 44px; }
+      .metrics-grid { grid-template-columns: 1fr; }
+      .bar-grid { height: 180px; }
+      .cta-panel { align-items: flex-start; flex-direction: column; }
     }
   </style>
 </head>
@@ -620,15 +567,15 @@
   <a class="skip-link" href="#main">Skip to main content</a>
   <header class="site-header">
     <div class="shell nav-wrap">
-      <a class="brand" href="#top" aria-label="Zen Sleep Tracker home">
-        <span class="brand-mark">ZS</span>
-        <span>Zen Sleep Tracker</span>
+      <a class="brand" href="#top" aria-label="Terra Renewable Energy home">
+        <span class="brand-mark">TR</span>
+        <span>Terra Renewable Energy</span>
       </a>
       <nav class="nav-links" id="navLinks" aria-label="Primary navigation">
-          <a href="#sleep">Sleep</a>
-          <a href="#stages">Stages</a>
-          <a href="#alarm">Alarm</a>
-          <a href="#trends">Trends</a>
+          <a href="#production">Production</a>
+          <a href="#grid">Grid</a>
+          <a href="#assets">Assets</a>
+          <a href="#forecast">Forecast</a>
       </nav>
       <div class="nav-action">
         <button class="button secondary" type="button">Sign in</button>
@@ -644,27 +591,27 @@
     <section class="hero" id="top">
       <div class="shell hero-grid">
         <div>
-          <span class="eyebrow">Sleep intelligence</span>
-          <h1>Analyze sleep stages, quality trends, and smart alarms with a calm overnight dashboard.</h1>
-          <p class="hero-copy">A premium sleep tracker surface for consumer wellness products showing stage analysis, readiness signals, smart alarm windows, and long-term quality trends in a dark bedside-friendly UI.</p>
+          <span class="eyebrow">Renewable operations</span>
+          <h1>Monitor solar, wind, batteries, and grid dispatch from a resilient energy cockpit.</h1>
+          <p class="hero-copy">A dark operations interface for renewable asset managers who need production, curtailment, storage, grid constraints, and weather-aware forecasts in one real-time control surface.</p>
           <div class="hero-actions" aria-label="Primary actions">
-            <button class="button primary" type="button">Review last night</button>
-            <button class="button secondary" type="button">Set smart alarm</button>
+            <button class="button primary" type="button">Dispatch battery</button>
+            <button class="button secondary" type="button">Open forecast</button>
           </div>
         </div>
         <aside class="preview" aria-label="Product preview">
           <div class="preview-top">
-            <strong>Sleep monitoring app</strong>
+            <strong>Renewable energy monitoring</strong>
             <span class="status-pill">Live preview</span>
           </div>
           <div class="bar-grid" role="img" aria-label="Seven-day product trend">
-              <span style="--h:82%" aria-label="Day 1: 82%"></span>
-              <span style="--h:74%" aria-label="Day 2: 74%"></span>
-              <span style="--h:69%" aria-label="Day 3: 69%"></span>
-              <span style="--h:88%" aria-label="Day 4: 88%"></span>
-              <span style="--h:91%" aria-label="Day 5: 91%"></span>
-              <span style="--h:76%" aria-label="Day 6: 76%"></span>
-              <span style="--h:86%" aria-label="Day 7: 86%"></span>
+              <span style="--h:31%" aria-label="Day 1: 31%"></span>
+              <span style="--h:48%" aria-label="Day 2: 48%"></span>
+              <span style="--h:72%" aria-label="Day 3: 72%"></span>
+              <span style="--h:93%" aria-label="Day 4: 93%"></span>
+              <span style="--h:86%" aria-label="Day 5: 86%"></span>
+              <span style="--h:62%" aria-label="Day 6: 62%"></span>
+              <span style="--h:44%" aria-label="Day 7: 44%"></span>
           </div>
         </aside>
       </div>
@@ -672,105 +619,105 @@
     <section class="metrics" aria-label="Key performance indicators">
       <div class="shell metrics-grid">
           <article class="metric" tabindex="0">
-            <strong>7h</strong>
-            <span>42m sleep duration</span>
+            <strong>482</strong>
+            <span>MW live production</span>
           </article>
           <article class="metric" tabindex="0">
-            <strong>86</strong>
-            <span>quality score</span>
+            <strong>91.4%</strong>
+            <span>asset availability</span>
           </article>
           <article class="metric" tabindex="0">
-            <strong>42m</strong>
-            <span>deep sleep</span>
+            <strong>38</strong>
+            <span>MWh battery reserve</span>
           </article>
           <article class="metric" tabindex="0">
-            <strong>06:40</strong>
-            <span>smart alarm</span>
+            <strong>6.2</strong>
+            <span>MW curtailment risk</span>
           </article>
       </div>
     </section>
-    <section class="workspace" id="sleep">
+    <section class="workspace" id="production">
       <div class="shell">
         <div class="section-heading">
-          <h2>Sleep stage chart workspace</h2>
+          <h2>Solar farm east workspace</h2>
           <p>Every card is designed for real workflows: clear hierarchy, fast scanning, visible status, and calm handoff between teams.</p>
         </div>
         <div class="workspace-grid">
-          <div class="module-stack" id="stages">
+          <div class="module-stack" id="grid">
             <article class="module selected" tabindex="0">
               <b>01</b>
               <div>
-                <h3>Sleep stage chart</h3>
+                <h3>Solar farm east</h3>
                 <p>Live status, owners, and next decisions in one compact view.</p>
               </div>
             </article>
             <article class="module " tabindex="0">
               <b>02</b>
               <div>
-                <h3>Quality trends</h3>
+                <h3>Wind ridge north</h3>
                 <p>Structured records that keep the operational path visible.</p>
               </div>
             </article>
             <article class="module " tabindex="0">
               <b>03</b>
               <div>
-                <h3>Smart alarm</h3>
+                <h3>Battery block 3</h3>
                 <p>Priority context appears before users open detailed records.</p>
               </div>
             </article>
             <article class="module " tabindex="0">
               <b>04</b>
               <div>
-                <h3>Recovery notes</h3>
+                <h3>Grid interconnect</h3>
                 <p>Responsive controls preserve the workflow on small screens.</p>
               </div>
             </article>
           </div>
-          <article class="work-panel" id="alarm">
+          <article class="work-panel" id="assets">
             <div class="panel-header">
-              <h3>Sleep Stage Analysis</h3>
+              <h3>Grid Integration</h3>
               <span>Updated 10:42</span>
             </div>
             <ul class="data-list">
               <li>
-                <span class="code">Deep sleep</span>
-                <span>42 minutes</span>
-                <strong>Below target</strong>
-                <em>Reduce late caffeine</em>
+                <span class="code">SCADA-204</span>
+                <span>Inverter string 7 under target</span>
+                <strong>Solar east</strong>
+                <em>Technician routed</em>
               </li>
               <li>
-                <span class="code">REM sleep</span>
-                <span>1h 48m</span>
-                <strong>Healthy range</strong>
-                <em>Dream recall noted</em>
+                <span class="code">GRID-118</span>
+                <span>Export limit active until 13:30</span>
+                <strong>Interconnect</strong>
+                <em>Battery charging</em>
               </li>
               <li>
-                <span class="code">Light sleep</span>
-                <span>4h 16m</span>
-                <strong>Stable</strong>
-                <em>Two short wakes</em>
+                <span class="code">WX-907</span>
+                <span>Wind ramp expected after 16:00</span>
+                <strong>North ridge</strong>
+                <em>Forecast updated</em>
               </li>
               <li>
-                <span class="code">Awake</span>
-                <span>16 minutes</span>
-                <strong>Improved</strong>
-                <em>Quiet interval</em>
+                <span class="code">BAT-331</span>
+                <span>Reserve bid accepted for evening peak</span>
+                <strong>Storage</strong>
+                <em>Dispatch ready</em>
               </li>
             </ul>
           </article>
         </div>
       </div>
     </section>
-    <section class="insights" id="trends">
+    <section class="insights" id="forecast">
       <div class="shell insight-grid">
         <article class="insight-panel">
           <span class="eyebrow">Design system</span>
-          <h2>Quality Trends</h2>
+          <h2>Production Metrics</h2>
           <ul>
-              <li>Stage bars compare deep, REM, light, and awake periods across the night</li>
-              <li>Smart alarm card shows wake window, vibration pattern, and next calendar pressure</li>
-              <li>Trend panel explains score changes with behavior and environment signals</li>
-              <li>Indigo dark mode keeps charts legible for bedside and morning review use</li>
+              <li>Solar and wind cards compare forecast, actual generation, and weather variance</li>
+              <li>Battery panel tracks state of charge, revenue bids, and reserve commitments</li>
+              <li>Grid view highlights curtailment, interconnect limits, and dispatch instructions</li>
+              <li>Amber focus states keep high-priority actions visible in low-light control rooms</li>
           </ul>
         </article>
         <article class="insight-panel trend-card">
@@ -779,13 +726,13 @@
             <h2>Operating rhythm</h2>
           </div>
           <div class="trend-line" aria-label="Trend chart">
-              <span style="--h:82%" aria-label="Day 1: 82%"></span>
-              <span style="--h:74%" aria-label="Day 2: 74%"></span>
-              <span style="--h:69%" aria-label="Day 3: 69%"></span>
-              <span style="--h:88%" aria-label="Day 4: 88%"></span>
-              <span style="--h:91%" aria-label="Day 5: 91%"></span>
-              <span style="--h:76%" aria-label="Day 6: 76%"></span>
-              <span style="--h:86%" aria-label="Day 7: 86%"></span>
+              <span style="--h:31%" aria-label="Day 1: 31%"></span>
+              <span style="--h:48%" aria-label="Day 2: 48%"></span>
+              <span style="--h:72%" aria-label="Day 3: 72%"></span>
+              <span style="--h:93%" aria-label="Day 4: 93%"></span>
+              <span style="--h:86%" aria-label="Day 5: 86%"></span>
+              <span style="--h:62%" aria-label="Day 6: 62%"></span>
+              <span style="--h:44%" aria-label="Day 7: 44%"></span>
           </div>
           <p>Chart elements use CSS variables, transitions, and accessible labels so teams can replace mock values with live product data.</p>
         </article>
@@ -803,7 +750,7 @@
   </main>
   <footer>
     <div class="shell footer-grid">
-      <strong>Zen Sleep Tracker</strong>
+      <strong>Terra Renewable Energy</strong>
       <span>Built with Frontend Skeletons</span>
     </div>
   </footer>
@@ -821,11 +768,6 @@
         menuButton.setAttribute('aria-expanded', 'false');
         navLinks.classList.remove('open');
       });
-    });
-    document.querySelectorAll('.metric, .module').forEach((card) => {
-      card.addEventListener('pointerdown', () => card.style.transform = 'translateY(1px)');
-      card.addEventListener('pointerup', () => card.style.transform = '');
-      card.addEventListener('pointerleave', () => card.style.transform = '');
     });
   </script>
 </body>

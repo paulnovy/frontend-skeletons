@@ -3,34 +3,30 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Wave Neighborhood App | Frontend Skeletons</title>
-  <meta name="description" content="A warm community interface for neighborhood associations, local commerce, mutual aid, and resident groups with moderation, event boards, and directory-first discovery.">
+  <title>Terra Carbon Offset Market | Frontend Skeletons</title>
+  <meta name="description" content="Terra gives sustainability teams a marketplace view of carbon projects with registry status, vintage, co-benefits, retirement workflows, and audit-ready impact reporting.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #fff8ee;
-      --surface: #fffdf8;
-      --ink: #2d1d12;
-      --muted: #7e6958;
-      --line: #efdcc3;
-      --accent: #d96b1f;
-      --accent-2: #f7b267;
-      --soft: #ffead0;
-      --good: #267a55;
+      --bg: #f4fbf6;
+      --surface: #ffffff;
+      --ink: #123123;
+      --muted: #62766a;
+      --line: #d6eadc;
+      --accent: #16834f;
+      --accent-2: #6bcf8d;
+      --soft: #e8f7ed;
+      --good: #0f8d5c;
       --radius: 8px;
       --radius-lg: 14px;
       --shadow: 0 24px 80px rgba(0, 0, 0, .16);
       --font: "Inter", system-ui, sans-serif;
       --mono: "IBM Plex Mono", ui-monospace, monospace;
     }
-    * {
-      box-sizing: border-box;
-    }
-    html {
-      scroll-behavior: smooth;
-    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
       margin: 0;
       min-height: 100vh;
@@ -39,31 +35,11 @@
       font-family: var(--font);
       line-height: 1.5;
     }
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-    button {
-      font: inherit;
-    }
-    .shell {
-      width: min(1180px, calc(100% - 32px));
-      margin: 0 auto;
-    }
-    .skip-link {
-      position: absolute;
-      left: 16px;
-      top: -48px;
-      z-index: 40;
-      padding: 10px 14px;
-      border-radius: var(--radius);
-      background: var(--accent);
-      color: white;
-      transition: top .2s ease;
-    }
-    .skip-link:focus {
-      top: 16px;
-    }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; }
+    .shell { width: min(1180px, calc(100% - 32px)); margin: 0 auto; }
+    .skip-link { position: absolute; left: 16px; top: -48px; z-index: 40; padding: 10px 14px; border-radius: var(--radius); background: var(--accent); color: white; transition: top .2s ease; }
+    .skip-link:focus { top: 16px; }
     .site-header {
       position: sticky;
       top: 0;
@@ -174,9 +150,7 @@
       box-shadow: 0 18px 42px color-mix(in srgb, var(--accent) 22%, transparent);
       outline: none;
     }
-    .button:active {
-      transform: translateY(0);
-    }
+    .button:active { transform: translateY(0); }
     .hero {
       padding: 72px 0 42px;
     }
@@ -198,12 +172,7 @@
       font-size: 13px;
       font-weight: 800;
     }
-    h1,
-    h2,
-    h3,
-    p {
-      margin-top: 0;
-    }
+    h1, h2, h3, p { margin-top: 0; }
     h1 {
       margin-bottom: 20px;
       font-size: clamp(42px, 6vw, 76px);
@@ -229,13 +198,6 @@
       background: color-mix(in srgb, var(--surface) 90%, transparent);
       padding: 18px;
       box-shadow: var(--shadow);
-    }
-    .preview::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 14%, transparent), transparent 48%);
-      pointer-events: none;
     }
     .preview-top {
       position: relative;
@@ -591,28 +553,13 @@
         background: var(--surface);
         box-shadow: var(--shadow);
       }
-      .nav-links.open {
-        display: flex;
-      }
-      .menu-button {
-        display: block;
-      }
-      .nav-action .button {
-        display: none;
-      }
-      .hero {
-        padding-top: 44px;
-      }
-      .metrics-grid {
-        grid-template-columns: 1fr;
-      }
-      .bar-grid {
-        height: 180px;
-      }
-      .cta-panel {
-        align-items: flex-start;
-        flex-direction: column;
-      }
+      .nav-links.open { display: flex; }
+      .menu-button { display: block; }
+      .nav-action .button { display: none; }
+      .hero { padding-top: 44px; }
+      .metrics-grid { grid-template-columns: 1fr; }
+      .bar-grid { height: 180px; }
+      .cta-panel { align-items: flex-start; flex-direction: column; }
     }
   </style>
 </head>
@@ -620,15 +567,15 @@
   <a class="skip-link" href="#main">Skip to main content</a>
   <header class="site-header">
     <div class="shell nav-wrap">
-      <a class="brand" href="#top" aria-label="Wave Neighborhood App home">
-        <span class="brand-mark">WN</span>
-        <span>Wave Neighborhood App</span>
+      <a class="brand" href="#top" aria-label="Terra Carbon Offset Market home">
+        <span class="brand-mark">TC</span>
+        <span>Terra Carbon Offset Market</span>
       </a>
       <nav class="nav-links" id="navLinks" aria-label="Primary navigation">
-          <a href="#feed">Feed</a>
-          <a href="#businesses">Businesses</a>
-          <a href="#events">Events</a>
-          <a href="#safety">Safety</a>
+          <a href="#projects">Projects</a>
+          <a href="#verification">Verification</a>
+          <a href="#portfolio">Portfolio</a>
+          <a href="#impact">Impact</a>
       </nav>
       <div class="nav-action">
         <button class="button secondary" type="button">Sign in</button>
@@ -644,27 +591,27 @@
     <section class="hero" id="top">
       <div class="shell hero-grid">
         <div>
-          <span class="eyebrow">Hyperlocal community</span>
-          <h1>Help neighbors discover local updates, trusted businesses, events, and practical help nearby.</h1>
-          <p class="hero-copy">A warm community interface for neighborhood associations, local commerce, mutual aid, and resident groups with moderation, event boards, and directory-first discovery.</p>
+          <span class="eyebrow">Verified climate marketplace</span>
+          <h1>Source verified offsets, compare project evidence, and report measurable climate impact.</h1>
+          <p class="hero-copy">Terra gives sustainability teams a marketplace view of carbon projects with registry status, vintage, co-benefits, retirement workflows, and audit-ready impact reporting.</p>
           <div class="hero-actions" aria-label="Primary actions">
-            <button class="button primary" type="button">Post update</button>
-            <button class="button secondary" type="button">Explore directory</button>
+            <button class="button primary" type="button">Buy offsets</button>
+            <button class="button secondary" type="button">Review verification</button>
           </div>
         </div>
         <aside class="preview" aria-label="Product preview">
           <div class="preview-top">
-            <strong>Hyperlocal community app</strong>
+            <strong>Carbon credit marketplace</strong>
             <span class="status-pill">Live preview</span>
           </div>
           <div class="bar-grid" role="img" aria-label="Seven-day product trend">
-              <span style="--h:44%" aria-label="Day 1: 44%"></span>
-              <span style="--h:61%" aria-label="Day 2: 61%"></span>
-              <span style="--h:89%" aria-label="Day 3: 89%"></span>
-              <span style="--h:73%" aria-label="Day 4: 73%"></span>
-              <span style="--h:52%" aria-label="Day 5: 52%"></span>
-              <span style="--h:80%" aria-label="Day 6: 80%"></span>
-              <span style="--h:67%" aria-label="Day 7: 67%"></span>
+              <span style="--h:78%" aria-label="Day 1: 78%"></span>
+              <span style="--h:54%" aria-label="Day 2: 54%"></span>
+              <span style="--h:68%" aria-label="Day 3: 68%"></span>
+              <span style="--h:91%" aria-label="Day 4: 91%"></span>
+              <span style="--h:45%" aria-label="Day 5: 45%"></span>
+              <span style="--h:72%" aria-label="Day 6: 72%"></span>
+              <span style="--h:84%" aria-label="Day 7: 84%"></span>
           </div>
         </aside>
       </div>
@@ -672,105 +619,105 @@
     <section class="metrics" aria-label="Key performance indicators">
       <div class="shell metrics-grid">
           <article class="metric" tabindex="0">
-            <strong>2.8K</strong>
-            <span>verified neighbors</span>
+            <strong>214K</strong>
+            <span>tCO2e listed</span>
           </article>
           <article class="metric" tabindex="0">
-            <strong>46</strong>
-            <span>local businesses</span>
+            <strong>38</strong>
+            <span>verified projects</span>
           </article>
           <article class="metric" tabindex="0">
-            <strong>18</strong>
-            <span>events this week</span>
+            <strong>$14.20</strong>
+            <span>average credit</span>
           </article>
           <article class="metric" tabindex="0">
-            <strong>9</strong>
-            <span>help requests open</span>
+            <strong>11</strong>
+            <span>impact reports due</span>
           </article>
       </div>
     </section>
-    <section class="workspace" id="feed">
+    <section class="workspace" id="projects">
       <div class="shell">
         <div class="section-heading">
-          <h2>Neighbor feed workspace</h2>
+          <h2>Forest conservation workspace</h2>
           <p>Every card is designed for real workflows: clear hierarchy, fast scanning, visible status, and calm handoff between teams.</p>
         </div>
         <div class="workspace-grid">
-          <div class="module-stack" id="businesses">
+          <div class="module-stack" id="verification">
             <article class="module selected" tabindex="0">
               <b>01</b>
               <div>
-                <h3>Neighbor feed</h3>
+                <h3>Forest conservation</h3>
                 <p>Live status, owners, and next decisions in one compact view.</p>
               </div>
             </article>
             <article class="module " tabindex="0">
               <b>02</b>
               <div>
-                <h3>Business directory</h3>
+                <h3>Biochar removal</h3>
                 <p>Structured records that keep the operational path visible.</p>
               </div>
             </article>
             <article class="module " tabindex="0">
               <b>03</b>
               <div>
-                <h3>Event board</h3>
+                <h3>Mangrove restoration</h3>
                 <p>Priority context appears before users open detailed records.</p>
               </div>
             </article>
             <article class="module " tabindex="0">
               <b>04</b>
               <div>
-                <h3>Safety notices</h3>
+                <h3>Clean cookstoves</h3>
                 <p>Responsive controls preserve the workflow on small screens.</p>
               </div>
             </article>
           </div>
-          <article class="work-panel" id="events">
+          <article class="work-panel" id="portfolio">
             <div class="panel-header">
-              <h3>Neighbor Feed</h3>
+              <h3>Project Verification</h3>
               <span>Updated 10:42</span>
             </div>
             <ul class="data-list">
               <li>
-                <span class="code">Anna from Maple Street</span>
-                <span>Shared spare moving boxes</span>
-                <strong>Pickup today</strong>
-                <em>Helpful</em>
+                <span class="code">AMZ-forest-27</span>
+                <span>Avoided deforestation in Acre</span>
+                <strong>VCS verified</strong>
+                <em>Vintage 2025</em>
               </li>
               <li>
-                <span class="code">Nowak Bakery</span>
-                <span>Morning rye batch sold out by 10:30</span>
-                <strong>Business post</strong>
-                <em>Popular</em>
+                <span class="code">BCH-oregon-12</span>
+                <span>Biochar soil storage</span>
+                <strong>Puro listed</strong>
+                <em>Durability 100y</em>
               </li>
               <li>
-                <span class="code">Community Garden</span>
-                <span>Volunteer slots opened for Sunday</span>
-                <strong>Event update</strong>
-                <em>12 going</em>
+                <span class="code">MNG-kenya-08</span>
+                <span>Mangrove blue carbon</span>
+                <strong>Gold Standard</strong>
+                <em>Community audited</em>
               </li>
               <li>
-                <span class="code">Block Captain</span>
-                <span>Water outage notice for Oak Lane</span>
-                <strong>Safety notice</strong>
-                <em>Pinned</em>
+                <span class="code">CKS-nepal-19</span>
+                <span>Clean cooking transition</span>
+                <strong>Issuance pending</strong>
+                <em>Field data uploaded</em>
               </li>
             </ul>
           </article>
         </div>
       </div>
     </section>
-    <section class="insights" id="safety">
+    <section class="insights" id="impact">
       <div class="shell insight-grid">
         <article class="insight-panel">
           <span class="eyebrow">Design system</span>
-          <h2>Local Business Directory</h2>
+          <h2>Offset Purchasing</h2>
           <ul>
-              <li>Directory cards show hours, services, neighborhood offers, and resident recommendations</li>
-              <li>Event board supports RSVP counts, host verification, and recurring community programs</li>
-              <li>Feed moderation separates urgent safety notices from casual posts</li>
-              <li>Cream and orange palette feels local and welcoming while preserving strong contrast</li>
+              <li>Portfolio basket balances removal, avoidance, region, and durability preferences</li>
+              <li>Registry links, verifier notes, and issuance documents sit beside each project</li>
+              <li>Checkout includes retirement beneficiary, certificate fields, and audit memo</li>
+              <li>Impact reports translate retired credits into scope, vintage, co-benefit, and SDG summaries</li>
           </ul>
         </article>
         <article class="insight-panel trend-card">
@@ -779,13 +726,13 @@
             <h2>Operating rhythm</h2>
           </div>
           <div class="trend-line" aria-label="Trend chart">
-              <span style="--h:44%" aria-label="Day 1: 44%"></span>
-              <span style="--h:61%" aria-label="Day 2: 61%"></span>
-              <span style="--h:89%" aria-label="Day 3: 89%"></span>
-              <span style="--h:73%" aria-label="Day 4: 73%"></span>
-              <span style="--h:52%" aria-label="Day 5: 52%"></span>
-              <span style="--h:80%" aria-label="Day 6: 80%"></span>
-              <span style="--h:67%" aria-label="Day 7: 67%"></span>
+              <span style="--h:78%" aria-label="Day 1: 78%"></span>
+              <span style="--h:54%" aria-label="Day 2: 54%"></span>
+              <span style="--h:68%" aria-label="Day 3: 68%"></span>
+              <span style="--h:91%" aria-label="Day 4: 91%"></span>
+              <span style="--h:45%" aria-label="Day 5: 45%"></span>
+              <span style="--h:72%" aria-label="Day 6: 72%"></span>
+              <span style="--h:84%" aria-label="Day 7: 84%"></span>
           </div>
           <p>Chart elements use CSS variables, transitions, and accessible labels so teams can replace mock values with live product data.</p>
         </article>
@@ -803,7 +750,7 @@
   </main>
   <footer>
     <div class="shell footer-grid">
-      <strong>Wave Neighborhood App</strong>
+      <strong>Terra Carbon Offset Market</strong>
       <span>Built with Frontend Skeletons</span>
     </div>
   </footer>
@@ -821,11 +768,6 @@
         menuButton.setAttribute('aria-expanded', 'false');
         navLinks.classList.remove('open');
       });
-    });
-    document.querySelectorAll('.metric, .module').forEach((card) => {
-      card.addEventListener('pointerdown', () => card.style.transform = 'translateY(1px)');
-      card.addEventListener('pointerup', () => card.style.transform = '');
-      card.addEventListener('pointerleave', () => card.style.transform = '');
     });
   </script>
 </body>
