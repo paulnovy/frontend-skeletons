@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Neurographic Knowledge System is a premium frontend skeleton for knowledge bases visualized as neural pathways, with route-based search and a linear article list.">
+  <title>Neurographic Knowledge System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{--brain:#0A0A0F;--brain-2:#11111A;--brain-3:#181827;--gold:#FBBF24;--gold-soft:rgba(251,191,36,0.16);--blue:#60A5FA;--blue-soft:rgba(96,165,250,0.16);--purple:#A855F7;--purple-soft:rgba(168,85,247,0.16);--white:#F8FAFC;--muted:#B9C0CC;--dim:#7B8497;--line:rgba(248,250,252,0.14);--line-strong:rgba(248,250,252,0.24);--surface:rgba(17,17,26,0.86);--surface-2:rgba(248,250,252,0.055);--surface-3:rgba(10,10,15,0.72);--shadow:0 22px 70px rgba(0,0,0,0.46);--glow-gold:0 0 0 1px rgba(251,191,36,0.42),0 0 34px rgba(251,191,36,0.2);--glow-blue:0 0 0 1px rgba(96,165,250,0.38),0 0 30px rgba(96,165,250,0.18);--glow-purple:0 0 0 1px rgba(168,85,247,0.38),0 0 30px rgba(168,85,247,0.18);--font-body:"Atkinson Hyperlegible",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;--font-mono:"IBM Plex Mono","SFMono-Regular",Consolas,monospace;--radius-xs:6px;--radius-sm:8px;--radius-md:12px;--radius-lg:18px;--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;--header:72px;--map-height:620px;--motion-fast:150ms ease;--motion-med:260ms ease;--motion-slow:680ms cubic-bezier(0.22,0.9,0.25,1)}*{box-sizing:border-box}html{scroll-behavior:smooth;background:var(--brain)}body{margin:0;min-height:100vh;color:var(--white);font-family:var(--font-body);line-height:1.55;background:radial-gradient(circle at 16% 8%,rgba(251,191,36,0.13),transparent 28%),radial-gradient(circle at 84% 14%,rgba(96,165,250,0.14),transparent 29%),radial-gradient(circle at 62% 78%,rgba(168,85,247,0.14),transparent 30%),linear-gradient(180deg,#0A0A0F 0%,#0D0D15 48%,#08080D 100%);overflow-x:hidden}body.menu-open,body.search-open{overflow:hidden}a{color:inherit;text-decoration:none}button,input{font:inherit}button{border:0;cursor:pointer}code,kbd,.node-id,.metric,.route-hop{font-family:var(--font-mono)}:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:var(--radius-xs)}.skip-link{position:fixed;top:var(--space-4);left:var(--space-4);z-index:120;transform:translateY(-180%);padding:var(--space-3) var(--space-4);border-radius:var(--radius-sm);background:var(--white);color:var(--brain);font-weight:700;transition:transform var(--motion-fast)}.skip-link:focus{transform:translateY(0)}.site-header{position:sticky;top:0;z-index:60;height:var(--header);border-bottom:1px solid var(--line);background:rgba(10,10,15,0.82);backdrop-filter:blur(18px)}.topbar{height:100%;display:grid;grid-template-columns:auto minmax(280px,620px) auto;align-items:center;gap:var(--space-5);max-width:1480px;margin:0 auto;padding:0 var(--space-6)}.brand{display:inline-flex;align-items:center;gap:var(--space-3);min-width:max-content;font-weight:700}.brand-mark{width:40px;height:40px;display:grid;place-items:center;border:1px solid rgba(251,191,36,0.42);border-radius:var(--radius-sm);background:linear-gradient(145deg,rgba(251,191,36,0.18),rgba(96,165,250,0.08));box-shadow:var(--glow-gold);color:var(--gold);font-family:var(--font-mono);font-size:0.82rem;font-weight:700}.brand-sub{display:block;color:var(--dim);font-family:var(--font-mono);font-size:0.68rem;font-weight:600;letter-spacing:0.04em;text-transform:uppercase}.search-shell{position:relative}.search-control{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:var(--space-3);width:100%;min-height:46px;padding:0 var(--space-4);border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(248,250,252,0.06);color:var(--muted);text-align:left;transition:border-color var(--motion-fast),background var(--motion-fast),box-shadow var(--motion-fast)}.search-control:hover{border-color:rgba(96,165,250,0.42);background:rgba(248,250,252,0.085);box-shadow:var(--glow-blue)}.search-dot{width:10px;height:10px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 6px rgba(96,165,250,0.14)}.shortcut{padding:3px 7px;border:1px solid var(--line);border-radius:var(--radius-xs);color:var(--dim);font-family:var(--font-mono);font-size:0.72rem;font-weight:700;background:rgba(10,10,15,0.62)}.top-actions{display:flex;align-items:center;justify-content:flex-end;gap:var(--space-3)}.top-link{color:var(--muted);font-size:0.92rem;font-weight:700}.top-link:hover{color:var(--gold)}.icon-button{width:44px;height:44px;display:none;place-items:center;border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(248,250,252,0.06);color:var(--white)}.hamburger{width:20px;height:14px;position:relative}.hamburger span{position:absolute;left:0;width:100%;height:2px;border-radius:99px;background:currentColor;transition:top var(--motion-med),transform var(--motion-med),opacity var(--motion-med)}.hamburger span:nth-child(1){top:0}.hamburger span:nth-child(2){top:6px}.hamburger span:nth-child(3){top:12px}.menu-open .hamburger span:nth-child(1){top:6px;transform:rotate(45deg)}.menu-open .hamburger span:nth-child(2){opacity:0}.menu-open .hamburger span:nth-child(3){top:6px;transform:rotate(-45deg)}.page-shell{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(360px,0.92fr);gap:var(--space-6);max-width:1480px;margin:0 auto;padding:var(--space-6)}.hero{position:relative;min-height:calc(100vh - var(--header) - 48px);display:grid;grid-template-rows:auto minmax(420px,1fr) auto;gap:var(--space-5)}.hero-panel{border:1px solid var(--line);border-radius:var(--radius-lg);padding:var(--space-8);background:linear-gradient(145deg,rgba(17,17,26,0.92),rgba(10,10,15,0.72)),radial-gradient(circle at 14% 20%,rgba(251,191,36,0.18),transparent 36%);box-shadow:var(--shadow);overflow:hidden}.eyebrow{margin:0 0 var(--space-3);color:var(--gold);font-family:var(--font-mono);font-size:0.74rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase}h1,h2,h3,p{letter-spacing:0}h1{max-width:900px;margin:0;font-size:clamp(2.3rem,5vw,5.7rem);line-height:0.96}.hero-copy{max-width:760px;margin:var(--space-5) 0 0;color:var(--muted);font-size:1.08rem}.hero-meta{display:flex;flex-wrap:wrap;gap:var(--space-3);margin-top:var(--space-6)}.pill{display:inline-flex;align-items:center;gap:var(--space-2);min-height:34px;padding:0 var(--space-3);border:1px solid var(--line);border-radius:999px;background:rgba(248,250,252,0.055);color:var(--muted);font-family:var(--font-mono);font-size:0.76rem;font-weight:600}.pill::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--blue)}.pill.gold::before{background:var(--gold)}.pill.purple::before{background:var(--purple)}.map-card{position:relative;min-height:var(--map-height);border:1px solid var(--line);border-radius:var(--radius-lg);background:linear-gradient(180deg,rgba(10,10,15,0.35),rgba(10,10,15,0.86)),repeating-linear-gradient(90deg,rgba(248,250,252,0.035) 0 1px,transparent 1px 84px),repeating-linear-gradient(0deg,rgba(248,250,252,0.03) 0 1px,transparent 1px 84px);box-shadow:var(--shadow);overflow:hidden}.map-toolbar{position:absolute;top:var(--space-4);left:var(--space-4);right:var(--space-4);z-index:8;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--space-3);pointer-events:none}.map-toolbar > *{pointer-events:auto}.map-title{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-2) var(--space-3);border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(10,10,15,0.78);backdrop-filter:blur(10px)}.map-title strong{font-size:0.9rem}.map-title span{color:var(--dim);font-family:var(--font-mono);font-size:0.72rem;font-weight:600}.filter-row{display:flex;flex-wrap:wrap;gap:var(--space-2)}.filter-chip{min-height:34px;padding:0 var(--space-3);border:1px solid var(--line);border-radius:999px;background:rgba(10,10,15,0.78);color:var(--muted);font-family:var(--font-mono);font-size:0.72rem;font-weight:700;backdrop-filter:blur(10px)}.filter-chip[aria-pressed="true"]{color:var(--brain);background:var(--gold);border-color:var(--gold)}.path-svg{position:absolute;inset:0;width:100%;height:100%}.synapse-line{stroke:rgba(96,165,250,0.24);stroke-width:2;fill:none;transition:stroke var(--motion-med),stroke-width var(--motion-med),opacity var(--motion-med)}.synapse-line.gold{stroke:rgba(251,191,36,0.32)}.synapse-line.purple{stroke:rgba(168,85,247,0.28)}.synapse-line.is-route{stroke:var(--gold);stroke-width:4;filter:drop-shadow(0 0 9px rgba(251,191,36,0.65))}.node-layer{position:absolute;inset:0}.knowledge-node{position:absolute;left:var(--x);top:var(--y);width:148px;min-height:104px;transform:translate(-50%,-50%);display:grid;align-content:start;gap:var(--space-2);padding:var(--space-3);border:1px solid var(--line-strong);border-radius:var(--radius-md);background:rgba(17,17,26,0.82);color:var(--white);text-align:left;box-shadow:0 16px 44px rgba(0,0,0,0.36);backdrop-filter:blur(12px);transition:transform var(--motion-med),border-color var(--motion-med),box-shadow var(--motion-med),opacity var(--motion-med)}.knowledge-node:hover,.knowledge-node.is-active{transform:translate(-50%,-50%) scale(1.04);border-color:rgba(251,191,36,0.72);box-shadow:var(--glow-gold),0 20px 58px rgba(0,0,0,0.44)}.knowledge-node.is-muted{opacity:0.38}.knowledge-node.is-route{border-color:rgba(251,191,36,0.78);box-shadow:var(--glow-gold)}.knowledge-node.blue.is-route{box-shadow:var(--glow-blue)}.knowledge-node.purple.is-route{box-shadow:var(--glow-purple)}.node-id{color:var(--gold);font-size:0.68rem;font-weight:700;letter-spacing:0.04em;text-transform:uppercase}.knowledge-node.blue .node-id{color:var(--blue)}.knowledge-node.purple .node-id{color:var(--purple)}.node-title{margin:0;font-size:0.92rem;line-height:1.18;font-weight:700}.node-type{display:inline-flex;width:max-content;padding:3px 7px;border-radius:999px;background:rgba(248,250,252,0.08);color:var(--muted);font-family:var(--font-mono);font-size:0.64rem;font-weight:600}.route-panel{position:absolute;left:var(--space-4);bottom:var(--space-4);right:var(--space-4);z-index:9;display:grid;grid-template-columns:1fr auto;gap:var(--space-4);align-items:end;padding:var(--space-4);border:1px solid var(--line);border-radius:var(--radius-md);background:rgba(10,10,15,0.82);backdrop-filter:blur(16px)}.route-panel p{margin:0;color:var(--muted)}.route-hops{display:flex;flex-wrap:wrap;gap:var(--space-2);margin-top:var(--space-3)}.route-hop{display:inline-flex;align-items:center;min-height:30px;padding:0 var(--space-3);border:1px solid rgba(251,191,36,0.34);border-radius:999px;background:var(--gold-soft);color:var(--white);font-size:0.72rem;font-weight:700}.mini-button,.article-action{display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);min-height:38px;padding:0 var(--space-4);border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(248,250,252,0.07);color:var(--white);font-weight:700;transition:border-color var(--motion-fast),background var(--motion-fast),color var(--motion-fast)}.mini-button:hover,.article-action:hover{border-color:rgba(251,191,36,0.5);background:rgba(251,191,36,0.12)}.side-column{display:grid;gap:var(--space-6);align-content:start}.reader-card,.linear-list,.path-cards,.insight-card{border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--surface);box-shadow:var(--shadow)}.reader-card{padding:var(--space-6)}.reader-header{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-4);padding-bottom:var(--space-5);border-bottom:1px solid var(--line)}.reader-header h2{margin:0;font-size:1.55rem;line-height:1.1}.reader-summary{margin:var(--space-4) 0 0;color:var(--muted)}.metric-row{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-3);margin:var(--space-5) 0}.metric{padding:var(--space-3);border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(248,250,252,0.045)}.metric strong{display:block;color:var(--gold);font-size:1.15rem}.metric span{color:var(--dim);font-size:0.68rem;font-weight:600;text-transform:uppercase}.reader-body h3{margin:var(--space-5) 0 var(--space-2);font-size:1.05rem}.reader-body p{margin:0 0 var(--space-4);color:var(--muted)}.concept-tags{display:flex;flex-wrap:wrap;gap:var(--space-2);margin-top:var(--space-4)}.concept-tag{padding:6px 9px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-family:var(--font-mono);font-size:0.68rem;font-weight:600;background:rgba(248,250,252,0.045)}.panel-title{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);padding:var(--space-5) var(--space-5) 0}.panel-title h2{margin:0;font-size:1.2rem}.panel-title span{color:var(--dim);font-family:var(--font-mono);font-size:0.72rem;font-weight:700}.article-list{display:grid;gap:var(--space-3);margin:0;padding:var(--space-5);list-style:none}.article-item{display:grid;grid-template-columns:auto 1fr auto;gap:var(--space-3);align-items:center;padding:var(--space-3);border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(248,250,252,0.045)}.article-item.is-route{border-color:rgba(251,191,36,0.52);background:var(--gold-soft)}.article-index{width:36px;height:36px;display:grid;place-items:center;border-radius:var(--radius-xs);background:rgba(96,165,250,0.12);color:var(--blue);font-family:var(--font-mono);font-size:0.72rem;font-weight:700}.article-item h3{margin:0;font-size:0.98rem;line-height:1.2}.article-item p{margin:3px 0 0;color:var(--dim);font-size:0.86rem}.article-action{min-height:34px;padding:0 var(--space-3);font-size:0.82rem}.path-cards{display:none;padding-bottom:var(--space-3)}.learning-card{margin:var(--space-4);border:1px solid var(--line);border-radius:var(--radius-md);background:rgba(248,250,252,0.045);overflow:hidden}.learning-trigger{width:100%;display:grid;grid-template-columns:1fr auto;align-items:center;gap:var(--space-3);padding:var(--space-4);background:transparent;color:var(--white);text-align:left}.learning-trigger strong{display:block;font-size:1rem}.learning-trigger span{display:block;color:var(--dim);font-size:0.86rem}.expand-icon{width:30px;height:30px;display:grid;place-items:center;border:1px solid var(--line);border-radius:50%;color:var(--gold);font-family:var(--font-mono);font-weight:700}.learning-body{display:none;padding:0 var(--space-4) var(--space-4)}.learning-card.is-open .learning-body{display:block}.mini-map{display:grid;gap:var(--space-2);margin-top:var(--space-3)}.mini-map span{display:flex;align-items:center;gap:var(--space-2);color:var(--muted);font-family:var(--font-mono);font-size:0.76rem;font-weight:600}.mini-map span::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 5px rgba(96,165,250,0.12)}.insight-card{padding:var(--space-5)}.insight-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:var(--space-3);margin-top:var(--space-4)}.insight{min-height:108px;padding:var(--space-4);border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(248,250,252,0.045)}.insight strong{display:block;color:var(--gold);font-family:var(--font-mono);font-size:0.76rem}.insight p{margin:var(--space-2) 0 0;color:var(--muted);font-size:0.9rem}.mobile-menu,.search-dialog{position:fixed;inset:0;z-index:90;display:none;background:rgba(4,4,7,0.76);backdrop-filter:blur(14px)}.mobile-menu.is-open,.search-dialog.is-open{display:block}.menu-panel{position:absolute;top:var(--header);right:0;bottom:0;width:min(430px,100%);padding:var(--space-5);border-left:1px solid var(--line);background:var(--brain);overflow:auto}.menu-panel nav{display:grid;gap:var(--space-3)}.menu-panel a{padding:var(--space-4);border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(248,250,252,0.05);color:var(--muted);font-weight:700}.search-panel{width:min(780px,calc(100vw - 32px));margin:9vh auto 0;border:1px solid var(--line-strong);border-radius:var(--radius-lg);background:#101019;box-shadow:var(--shadow);overflow:hidden}.search-input{width:100%;min-height:64px;padding:0 var(--space-5);border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--white);outline:0}.search-results{display:grid;gap:2px;max-height:470px;overflow:auto;padding:var(--space-3)}.search-result{display:grid;grid-template-columns:34px 1fr auto;gap:var(--space-3);align-items:center;padding:var(--space-3);border-radius:var(--radius-sm);background:transparent;color:var(--muted);text-align:left}.search-result:hover,.search-result.is-selected{background:var(--blue-soft);color:var(--white)}.search-result strong{display:block;color:var(--white)}.search-result span{color:var(--dim);font-size:0.84rem}.site-footer{grid-column:1 / -1;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--space-4);padding:var(--space-8) 0 var(--space-4);border-top:1px solid var(--line);color:var(--dim)}.site-footer strong{color:var(--white)}@media (max-width:1180px){.topbar{grid-template-columns:auto minmax(220px,1fr) auto}.page-shell{grid-template-columns:1fr}.hero{min-height:auto}.side-column{grid-template-columns:1fr 1fr}.reader-card{grid-column:1 / -1}}@media (max-width:820px){:root{--header:64px;--map-height:560px}.topbar{display:flex;padding:0 var(--space-4)}.brand-sub,.top-link,.shortcut{display:none}.icon-button{display:grid}.search-control span:nth-child(2){max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.page-shell{padding:var(--space-4)}.hero-panel{padding:var(--space-6)}.map-card{display:none}.side-column{grid-template-columns:1fr}.path-cards{display:block}.reader-header,.route-panel,.article-item,.metric-row,.insight-grid{grid-template-columns:1fr}.article-action{justify-self:start}.site-footer{display:grid}}@media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto !important;animation-duration:0.01ms !important;animation-iteration-count:1 !important;transition-duration:0.01ms !important}}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to knowledge system</a>
+  <header class="site-header">
+    <div class="topbar">
+      <a class="brand" href="#top" aria-label="Neurographic Knowledge System home">
+        <span class="brand-mark">NKS</span>
+        <span>
+          Neurographic Knowledge
+          <span class="brand-sub">concept route engine</span>
+        </span>
+      </a>
+      <div class="search-shell">
+        <button class="search-control" type="button" data-open-search aria-haspopup="dialog" aria-controls="search-dialog">
+          <span class="search-dot" aria-hidden="true"></span>
+          <span>Search concepts, then trace the path</span>
+          <kbd class="shortcut">Ctrl K</kbd>
+        </button>
+      </div>
+      <div class="top-actions">
+        <a class="top-link" href="#map">Map</a>
+        <a class="top-link" href="#articles">Articles</a>
+        <a class="top-link" href="#paths">Paths</a>
+        <button class="icon-button" type="button" aria-label="Open menu" aria-controls="mobile-menu" aria-expanded="false" data-menu-toggle>
+          <span class="hamburger" aria-hidden="true"><span></span><span></span><span></span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="page-shell" id="top">
+    <main class="hero" id="main">
+      <section class="hero-panel" aria-labelledby="hero-title">
+        <p class="eyebrow">Knowledge base visualized as neural pathways</p>
+        <h1 id="hero-title">Trace ideas through the system, not just through search results.</h1>
+        <p class="hero-copy">This skeleton turns articles into connected concept nodes. Search highlights the most useful learning route, shows neighboring dependencies, and still keeps a linear article list for readers who need a normal reference path.</p>
+        <div class="hero-meta" aria-label="System signals">
+          <span class="pill gold">12 research nodes</span>
+          <span class="pill">22 concept pathways</span>
+          <span class="pill purple">4 guided learning routes</span>
+        </div>
+      </section>
+
+      <section class="map-card" id="map" aria-labelledby="map-title">
+        <div class="map-toolbar">
+          <div class="map-title">
+            <strong id="map-title">Neural article map</strong>
+            <span id="route-status">Route: systems thinking to feedback loops</span>
+          </div>
+          <div class="filter-row" aria-label="Map focus filters">
+            <button class="filter-chip" type="button" data-route="systems" aria-pressed="true">Systems</button>
+            <button class="filter-chip" type="button" data-route="learning" aria-pressed="false">Learning</button>
+            <button class="filter-chip" type="button" data-route="governance" aria-pressed="false">Governance</button>
+            <button class="filter-chip" type="button" data-route="resilience" aria-pressed="false">Resilience</button>
+          </div>
+        </div>
+        <svg class="path-svg" viewBox="0 0 1000 620" role="img" aria-label="Concept pathways connecting article nodes">
+          <path class="synapse-line gold" data-edge="A01-A02" d="M130 165 C230 110,260 230,360 190"></path>
+          <path class="synapse-line" data-edge="A02-A03" d="M360 190 C450 140,520 160,610 118"></path>
+          <path class="synapse-line purple" data-edge="A03-A04" d="M610 118 C700 150,744 248,830 238"></path>
+          <path class="synapse-line" data-edge="A02-A05" d="M360 190 C365 286,430 350,520 322"></path>
+          <path class="synapse-line gold" data-edge="A05-A06" d="M520 322 C615 270,690 335,772 302"></path>
+          <path class="synapse-line" data-edge="A06-A07" d="M772 302 C752 416,650 462,556 490"></path>
+          <path class="synapse-line purple" data-edge="A05-A08" d="M520 322 C420 400,342 392,244 438"></path>
+          <path class="synapse-line" data-edge="A08-A01" d="M244 438 C130 360,100 270,130 165"></path>
+          <path class="synapse-line gold" data-edge="A03-A09" d="M610 118 C538 225,560 290,520 322"></path>
+          <path class="synapse-line purple" data-edge="A04-A10" d="M830 238 C875 340,846 424,792 512"></path>
+          <path class="synapse-line gold" data-edge="A04-A12" d="M830 238 C930 300,930 392,902 428"></path>
+          <path class="synapse-line" data-edge="A12-A10" d="M902 428 C884 476,848 504,792 512"></path>
+          <path class="synapse-line" data-edge="A10-A07" d="M792 512 C700 536,632 522,556 490"></path>
+          <path class="synapse-line gold" data-edge="A08-A11" d="M244 438 C180 492,168 548,128 560"></path>
+          <path class="synapse-line" data-edge="A11-A07" d="M128 560 C270 590,420 545,556 490"></path>
+        </svg>
+        <div class="node-layer" aria-label="Article nodes">
+          <button class="knowledge-node gold is-route" style="--x:13%;--y:27%;" data-node="A01" type="button">
+            <span class="node-id">A01</span>
+            <h2 class="node-title">Systems Thinking Primer</h2>
+            <span class="node-type">foundation</span>
+          </button>
+          <button class="knowledge-node blue is-route" style="--x:36%;--y:31%;" data-node="A02" type="button">
+            <span class="node-id">A02</span>
+            <h2 class="node-title">Causal Loop Diagrams</h2>
+            <span class="node-type">method</span>
+          </button>
+          <button class="knowledge-node purple" style="--x:61%;--y:19%;" data-node="A03" type="button">
+            <span class="node-id">A03</span>
+            <h2 class="node-title">Concept Drift in Teams</h2>
+            <span class="node-type">pattern</span>
+          </button>
+          <button class="knowledge-node blue" style="--x:83%;--y:38%;" data-node="A04" type="button">
+            <span class="node-id">A04</span>
+            <h2 class="node-title">Decision Records</h2>
+            <span class="node-type">governance</span>
+          </button>
+          <button class="knowledge-node gold is-route" style="--x:52%;--y:52%;" data-node="A05" type="button">
+            <span class="node-id">A05</span>
+            <h2 class="node-title">Feedback Loop Design</h2>
+            <span class="node-type">core</span>
+          </button>
+          <button class="knowledge-node blue" style="--x:77%;--y:49%;" data-node="A06" type="button">
+            <span class="node-id">A06</span>
+            <h2 class="node-title">Sensing Metrics</h2>
+            <span class="node-type">measurement</span>
+          </button>
+          <button class="knowledge-node purple" style="--x:56%;--y:79%;" data-node="A07" type="button">
+            <span class="node-id">A07</span>
+            <h2 class="node-title">Knowledge Resilience</h2>
+            <span class="node-type">resilience</span>
+          </button>
+          <button class="knowledge-node blue" style="--x:24%;--y:71%;" data-node="A08" type="button">
+            <span class="node-id">A08</span>
+            <h2 class="node-title">Mental Model Audits</h2>
+            <span class="node-type">practice</span>
+          </button>
+          <button class="knowledge-node purple" style="--x:52%;--y:35%;" data-node="A09" type="button">
+            <span class="node-id">A09</span>
+            <h2 class="node-title">Tacit Knowledge Capture</h2>
+            <span class="node-type">capture</span>
+          </button>
+          <button class="knowledge-node gold" style="--x:79%;--y:83%;" data-node="A10" type="button">
+            <span class="node-id">A10</span>
+            <h2 class="node-title">Review Cadence</h2>
+            <span class="node-type">ritual</span>
+          </button>
+          <button class="knowledge-node purple" style="--x:13%;--y:90%;" data-node="A11" type="button">
+            <span class="node-id">A11</span>
+            <h2 class="node-title">Incident Learning</h2>
+            <span class="node-type">casebook</span>
+          </button>
+          <button class="knowledge-node blue" style="--x:90%;--y:69%;" data-node="A12" type="button">
+            <span class="node-id">A12</span>
+            <h2 class="node-title">Source Reliability</h2>
+            <span class="node-type">evidence</span>
+          </button>
+        </div>
+        <aside class="route-panel" aria-live="polite">
+          <div>
+            <p id="route-copy">Search selected a route that explains why feedback loops are easier to maintain after a shared systems vocabulary is established.</p>
+            <div class="route-hops" id="route-hops">
+              <span class="route-hop">A01 Systems</span>
+              <span class="route-hop">A02 Loops</span>
+              <span class="route-hop">A05 Feedback</span>
+            </div>
+          </div>
+          <a class="mini-button" href="#articles">Open linear list</a>
+        </aside>
+      </section>
+    </main>
+
+    <aside class="side-column" aria-label="Knowledge details">
+      <article class="reader-card" aria-labelledby="reader-title">
+        <div class="reader-header">
+          <div>
+            <p class="eyebrow" id="reader-id">A05 / core article</p>
+            <h2 id="reader-title">Feedback Loop Design</h2>
+            <p class="reader-summary" id="reader-summary">Feedback loops convert passive documentation into a living knowledge system by making every assumption observable, revisable, and connected to decisions.</p>
+          </div>
+          <a class="article-action" href="#articles">All articles</a>
+        </div>
+        <div class="metric-row" aria-label="Article metadata">
+          <div class="metric"><strong id="reader-minutes">9</strong><span>minutes</span></div>
+          <div class="metric"><strong id="reader-depth">L2</strong><span>depth</span></div>
+          <div class="metric"><strong id="reader-links">6</strong><span>links</span></div>
+        </div>
+        <div class="reader-body">
+          <h3>Why it matters</h3>
+          <p id="reader-body-one">Teams often treat knowledge bases as archives. A loop-based model treats every article as a hypothesis about how work happens and gives maintainers signals when that hypothesis is no longer true.</p>
+          <h3>Connected concepts</h3>
+          <p id="reader-body-two">This article sits between causal loop diagrams, sensing metrics, tacit capture, and knowledge resilience. It is useful after readers understand stock-and-flow language but before they design governance rituals.</p>
+          <div class="concept-tags" id="reader-tags">
+            <span class="concept-tag">feedback</span>
+            <span class="concept-tag">systems</span>
+            <span class="concept-tag">maintenance</span>
+          </div>
+        </div>
+      </article>
+
+      <section class="linear-list" id="articles" aria-labelledby="articles-title">
+        <div class="panel-title">
+          <h2 id="articles-title">Linear article list</h2>
+          <span>always available</span>
+        </div>
+        <ol class="article-list" id="article-list"></ol>
+      </section>
+
+      <section class="path-cards" id="paths" aria-labelledby="paths-title">
+        <div class="panel-title">
+          <h2 id="paths-title">Learning paths</h2>
+          <span>mobile map</span>
+        </div>
+        <div id="learning-cards"></div>
+      </section>
+
+      <section class="insight-card" aria-labelledby="insight-title">
+        <p class="eyebrow">Relationship intelligence</p>
+        <h2 id="insight-title">Route search changes the reading behavior.</h2>
+        <div class="insight-grid">
+          <div class="insight">
+            <strong>Search result</strong>
+            <p>Returns an article, its prerequisite, and the next concept readers usually need.</p>
+          </div>
+          <div class="insight">
+            <strong>Map state</strong>
+            <p>Highlights route nodes and dims unrelated articles without hiding the full system.</p>
+          </div>
+          <div class="insight">
+            <strong>Reader mode</strong>
+            <p>Keeps article text legible with Atkinson Hyperlegible and compact metadata.</p>
+          </div>
+          <div class="insight">
+            <strong>Fallback path</strong>
+            <p>Provides the complete linear article list for auditing, scanning, and accessibility.</p>
+          </div>
+        </div>
+      </section>
+    </aside>
+
+    <footer class="site-footer">
+      <span><strong>Neurographic Knowledge System</strong> maps articles, concepts, and learning routes.</span>
+      <span>Built with Frontend Skeletons</span>
+    </footer>
+  </div>
+
+  <div class="mobile-menu" id="mobile-menu" role="dialog" aria-modal="true" aria-label="Mobile navigation">
+    <div class="menu-panel">
+      <nav>
+        <a href="#top" data-close-menu>Overview</a>
+        <a href="#map" data-close-menu>Neural map</a>
+        <a href="#articles" data-close-menu>Linear articles</a>
+        <a href="#paths" data-close-menu>Learning paths</a>
+      </nav>
+    </div>
+  </div>
+
+  <div class="search-dialog" id="search-dialog" role="dialog" aria-modal="true" aria-labelledby="search-title">
+    <div class="search-panel">
+      <label class="sr-only" id="search-title" for="route-search">Search the knowledge system</label>
+      <input class="search-input" id="route-search" type="search" autocomplete="off" placeholder="Try feedback loops, decision records, incident learning...">
+      <div class="search-results" id="search-results" role="listbox" aria-label="Route search results"></div>
+    </div>
+  </div>
+
+  <script>
+    const articles = [
+      {
+        id:"A01",
+        title:"Systems Thinking Primer",
+        type:"foundation",
+        minutes:7,
+        depth:"L1",
+        links:5,
+        tags:["systems","language","foundation"],
+        summary:"A concise introduction to boundaries, stocks, flows, leverage points, and the vocabulary needed to discuss complex knowledge work.",
+        bodyOne:"Systems thinking gives teams a shared way to name causes, delays, reinforcing behavior, and unintended effects without turning every disagreement into a personality debate.",
+        bodyTwo:"Read this before causal loop diagrams, feedback design, or incident learning. It reduces ambiguity by making the shape of a problem visible."
+      },
+      {
+        id:"A02",
+        title:"Causal Loop Diagrams",
+        type:"method",
+        minutes:11,
+        depth:"L2",
+        links:7,
+        tags:["loops","mapping","causality"],
+        summary:"A practical guide to drawing useful causal loop diagrams for product, operations, and research knowledge bases.",
+        bodyOne:"The article focuses on evidence-backed links, labeled polarity, and delays, which keeps diagrams from becoming decorative spaghetti.",
+        bodyTwo:"It connects systems vocabulary to feedback loop design and concept drift detection."
+      },
+      {
+        id:"A03",
+        title:"Concept Drift in Teams",
+        type:"pattern",
+        minutes:8,
+        depth:"L2",
+        links:4,
+        tags:["drift","alignment","review"],
+        summary:"How shared terms silently change meaning as teams scale, rotate ownership, and build new rituals around old documents.",
+        bodyOne:"Concept drift shows up when two teams use the same article to justify incompatible decisions.",
+        bodyTwo:"The corrective path moves through decision records, tacit knowledge capture, and periodic article audits."
+      },
+      {
+        id:"A04",
+        title:"Decision Records",
+        type:"governance",
+        minutes:10,
+        depth:"L2",
+        links:6,
+        tags:["governance","decisions","history"],
+        summary:"A decision record pattern that links rationale, alternatives, constraints, and downstream articles instead of storing isolated meeting notes.",
+        bodyOne:"Decision records preserve the reasoning behind knowledge, making future edits safer when conditions change.",
+        bodyTwo:"They bridge concept drift with review cadence and knowledge resilience."
+      },
+      {
+        id:"A05",
+        title:"Feedback Loop Design",
+        type:"core",
+        minutes:9,
+        depth:"L2",
+        links:6,
+        tags:["feedback","systems","maintenance"],
+        summary:"Feedback loops convert passive documentation into a living knowledge system by making every assumption observable, revisable, and connected to decisions.",
+        bodyOne:"Teams often treat knowledge bases as archives. A loop-based model treats every article as a hypothesis about how work happens and gives maintainers signals when that hypothesis is no longer true.",
+        bodyTwo:"This article sits between causal loop diagrams, sensing metrics, tacit capture, and knowledge resilience."
+      },
+      {
+        id:"A06",
+        title:"Sensing Metrics",
+        type:"measurement",
+        minutes:6,
+        depth:"L2",
+        links:5,
+        tags:["metrics","quality","signals"],
+        summary:"Measures that indicate whether an article is trusted, stale, overloaded, or becoming a hidden dependency for important work.",
+        bodyOne:"Useful metrics include route reuse, unresolved contradiction count, failed search refinements, and articles cited during incidents.",
+        bodyTwo:"The signals feed feedback loops and review cadence without turning documentation into vanity analytics."
+      },
+      {
+        id:"A07",
+        title:"Knowledge Resilience",
+        type:"resilience",
+        minutes:13,
+        depth:"L3",
+        links:8,
+        tags:["resilience","ownership","continuity"],
+        summary:"How knowledge systems survive staff changes, incidents, tool migrations, and strategic pivots without losing context.",
+        bodyOne:"Resilience comes from redundant context paths, clear ownership boundaries, and routes that explain why an article matters.",
+        bodyTwo:"This is an advanced article best read after sensing metrics and incident learning."
+      },
+      {
+        id:"A08",
+        title:"Mental Model Audits",
+        type:"practice",
+        minutes:12,
+        depth:"L2",
+        links:5,
+        tags:["audit","mental-models","alignment"],
+        summary:"A facilitation pattern for comparing how different specialists explain the same domain, then turning mismatches into article improvements.",
+        bodyOne:"Audits reveal where documentation describes the official process while operators rely on an unofficial workaround.",
+        bodyTwo:"They connect naturally to tacit capture, incident learning, and systems thinking."
+      },
+      {
+        id:"A09",
+        title:"Tacit Knowledge Capture",
+        type:"capture",
+        minutes:8,
+        depth:"L2",
+        links:4,
+        tags:["capture","interviews","expertise"],
+        summary:"Interview and annotation methods for extracting expert judgment without flattening it into brittle checklists.",
+        bodyOne:"Tacit capture works when the system records examples, exceptions, and judgment triggers alongside procedural steps.",
+        bodyTwo:"This article supports concept drift repair and stronger feedback loop design."
+      },
+      {
+        id:"A10",
+        title:"Review Cadence",
+        type:"ritual",
+        minutes:5,
+        depth:"L1",
+        links:4,
+        tags:["review","rhythm","maintenance"],
+        summary:"A lightweight operating rhythm for keeping high-value articles current without creating a documentation tax.",
+        bodyOne:"Cadence should be tied to real system signals, not arbitrary calendar chores.",
+        bodyTwo:"It follows decision records and sensing metrics, then reinforces knowledge resilience."
+      },
+      {
+        id:"A11",
+        title:"Incident Learning",
+        type:"casebook",
+        minutes:14,
+        depth:"L3",
+        links:6,
+        tags:["incidents","learning","casebook"],
+        summary:"A post-incident knowledge pattern that captures weak signals, decisions under pressure, and follow-up routes for future readers.",
+        bodyOne:"Incident learning is where knowledge quality becomes operationally visible. The goal is to improve future sensemaking, not assign blame.",
+        bodyTwo:"It closes the loop by updating mental models, feedback design, and resilience practices."
+      },
+      {
+        id:"A12",
+        title:"Source Reliability",
+        type:"evidence",
+        minutes:6,
+        depth:"L1",
+        links:3,
+        tags:["evidence","sources","trust"],
+        summary:"A source grading pattern for separating verified evidence, expert judgment, historical context, and assumptions that need follow-up.",
+        bodyOne:"Source reliability keeps complex knowledge bases honest by showing which claims are operational facts and which claims are provisional interpretations.",
+        bodyTwo:"It strengthens decision records and review cadence by making confidence visible at the moment readers rely on an article."
+      }
+    ];
+
+    const routes = {
+      systems:{
+        label:"systems thinking to feedback loops",
+        copy:"Search selected a route that explains why feedback loops are easier to maintain after a shared systems vocabulary is established.",
+        nodes:["A01","A02","A05"],
+        edges:["A01-A02","A02-A05"]
+      },
+      learning:{
+        label:"incident learning to resilience",
+        copy:"The learning route starts with real failure cases, extracts model gaps, and ends with resilience practices for continuity.",
+        nodes:["A11","A08","A05","A06","A07"],
+        edges:["A08-A11","A05-A08","A05-A06","A06-A07"]
+      },
+      governance:{
+        label:"concept drift to governance",
+        copy:"This route shows how ambiguous language becomes governance debt and how decision records stabilize future interpretation.",
+        nodes:["A03","A04","A12","A10","A07"],
+        edges:["A03-A04","A04-A12","A12-A10","A10-A07"]
+      },
+      resilience:{
+        label:"signals to knowledge resilience",
+        copy:"This route highlights the operational chain from sensing metrics to review rituals and long-term continuity.",
+        nodes:["A05","A06","A07"],
+        edges:["A05-A06","A06-A07"]
+      }
+    };
+
+    const articleList = document.querySelector("#article-list");
+    const learningCards = document.querySelector("#learning-cards");
+    const routeStatus = document.querySelector("#route-status");
+    const routeCopy = document.querySelector("#route-copy");
+    const routeHops = document.querySelector("#route-hops");
+    const searchDialog = document.querySelector("#search-dialog");
+    const searchInput = document.querySelector("#route-search");
+    const searchResults = document.querySelector("#search-results");
+    const menu = document.querySelector("#mobile-menu");
+    const menuToggle = document.querySelector("[data-menu-toggle]");
+    let currentRoute = "systems";
+    let selectedSearchIndex = 0;
+
+    function renderArticleList(){
+      articleList.innerHTML = articles.map((article,index) => `
+        <li class="article-item" data-article-row="${article.id}">
+          <span class="article-index">${String(index + 1).padStart(2,"0")}</span>
+          <div>
+            <h3>${article.title}</h3>
+            <p>${article.summary}</p>
+          </div>
+          <button class="article-action" type="button" data-select-article="${article.id}">Read</button>
+        </li>
+      `).join("");
+    }
+
+    function renderLearningCards(){
+      learningCards.innerHTML = Object.entries(routes).map(([key,route]) => `
+        <article class="learning-card ${key === currentRoute ? "is-open" : ""}">
+          <button class="learning-trigger" type="button" data-learning-route="${key}" aria-expanded="${key === currentRoute}">
+            <span>
+              <strong>${route.label}</strong>
+              <span>${route.copy}</span>
+            </span>
+            <span class="expand-icon" aria-hidden="true">+</span>
+          </button>
+          <div class="learning-body">
+            <div class="mini-map">
+              ${route.nodes.map(id => {
+                const article = articles.find(item => item.id === id);
+                return `<span>${article.id} ${article.title}</span>`;
+              }).join("")}
+            </div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    function setReader(articleId){
+      const article = articles.find(item => item.id === articleId);
+      if(!article) return;
+      document.querySelector("#reader-id").textContent = `${article.id} / ${article.type} article`;
+      document.querySelector("#reader-title").textContent = article.title;
+      document.querySelector("#reader-summary").textContent = article.summary;
+      document.querySelector("#reader-minutes").textContent = article.minutes;
+      document.querySelector("#reader-depth").textContent = article.depth;
+      document.querySelector("#reader-links").textContent = article.links;
+      document.querySelector("#reader-body-one").textContent = article.bodyOne;
+      document.querySelector("#reader-body-two").textContent = article.bodyTwo;
+      document.querySelector("#reader-tags").innerHTML = article.tags.map(tag => `<span class="concept-tag">${tag}</span>`).join("");
+    }
+
+    function setRoute(routeKey){
+      currentRoute = routeKey;
+      const route = routes[routeKey];
+      routeStatus.textContent = `Route: ${route.label}`;
+      routeCopy.textContent = route.copy;
+      routeHops.innerHTML = route.nodes.map(id => {
+        const article = articles.find(item => item.id === id);
+        return `<span class="route-hop">${article.id} ${article.title.split(" ")[0]}</span>`;
+      }).join("");
+      document.querySelectorAll(".filter-chip").forEach(button => {
+        button.setAttribute("aria-pressed",String(button.dataset.route === routeKey));
+      });
+      document.querySelectorAll(".knowledge-node").forEach(node => {
+        const active = route.nodes.includes(node.dataset.node);
+        node.classList.toggle("is-route",active);
+        node.classList.toggle("is-muted",!active);
+      });
+      document.querySelectorAll(".synapse-line").forEach(edge => {
+        edge.classList.toggle("is-route",route.edges.includes(edge.dataset.edge));
+      });
+      document.querySelectorAll(".article-item").forEach(row => {
+        row.classList.toggle("is-route",route.nodes.includes(row.dataset.articleRow));
+      });
+      setReader(route.nodes[route.nodes.length - 1]);
+      renderLearningCards();
+    }
+
+    function openSearch(){
+      searchDialog.classList.add("is-open");
+      document.body.classList.add("search-open");
+      renderSearchResults("");
+      requestAnimationFrame(() => searchInput.focus());
+    }
+
+    function closeSearch(){
+      searchDialog.classList.remove("is-open");
+      document.body.classList.remove("search-open");
+      searchInput.value = "";
+      selectedSearchIndex = 0;
+    }
+
+    function renderSearchResults(query){
+      const normalized = query.trim().toLowerCase();
+      const pool = articles.filter(article => {
+        const haystack = `${article.title} ${article.type} ${article.summary} ${article.tags.join(" ")}`.toLowerCase();
+        return !normalized || haystack.includes(normalized);
+      });
+      const results = pool.length ? pool : articles;
+      searchResults.innerHTML = results.map((article,index) => `
+        <button class="search-result ${index === selectedSearchIndex ? "is-selected" : ""}" type="button" role="option" data-search-article="${article.id}" aria-selected="${index === selectedSearchIndex}">
+          <span class="node-id">${article.id}</span>
+          <span><strong>${article.title}</strong><span>${article.summary}</span></span>
+          <span class="node-type">${article.type}</span>
+        </button>
+      `).join("");
+    }
+
+    function selectSearchArticle(articleId){
+      const matchedRoute = Object.entries(routes).find(([,route]) => route.nodes.includes(articleId));
+      setRoute(matchedRoute ? matchedRoute[0] : "systems");
+      setReader(articleId);
+      closeSearch();
+    }
+
+    function toggleMenu(force){
+      const open = typeof force === "boolean" ? force : !menu.classList.contains("is-open");
+      menu.classList.toggle("is-open",open);
+      document.body.classList.toggle("menu-open",open);
+      menuToggle.setAttribute("aria-expanded",String(open));
+    }
+
+    renderArticleList();
+    renderLearningCards();
+    setRoute(currentRoute);
+
+    document.querySelectorAll("[data-route]").forEach(button => {
+      button.addEventListener("click",() => setRoute(button.dataset.route));
+    });
+    document.querySelectorAll(".knowledge-node").forEach(node => {
+      node.addEventListener("click",() => setReader(node.dataset.node));
+    });
+    document.addEventListener("click",event => {
+      const readButton = event.target.closest("[data-select-article]");
+      if(readButton) setReader(readButton.dataset.selectArticle);
+      const learningButton = event.target.closest("[data-learning-route]");
+      if(learningButton){
+        setRoute(learningButton.dataset.learningRoute);
+        learningButton.closest(".learning-card").classList.toggle("is-open");
+      }
+      if(event.target.matches("[data-open-search]")) openSearch();
+      if(event.target.matches("[data-menu-toggle]")) toggleMenu();
+      if(event.target.matches("[data-close-menu]")) toggleMenu(false);
+      const result = event.target.closest("[data-search-article]");
+      if(result) selectSearchArticle(result.dataset.searchArticle);
+      if(event.target === searchDialog) closeSearch();
+      if(event.target === menu) toggleMenu(false);
+    });
+    searchInput.addEventListener("input",() => {
+      selectedSearchIndex = 0;
+      renderSearchResults(searchInput.value);
+    });
+    document.addEventListener("keydown",event => {
+      if((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "k"){
+        event.preventDefault();
+        openSearch();
+      }
+      if(event.key === "Escape"){
+        closeSearch();
+        toggleMenu(false);
+      }
+      if(searchDialog.classList.contains("is-open") && ["ArrowDown","ArrowUp","Enter"].includes(event.key)){
+        const results = [...document.querySelectorAll("[data-search-article]")];
+        if(!results.length) return;
+        event.preventDefault();
+        if(event.key === "ArrowDown") selectedSearchIndex = Math.min(selectedSearchIndex + 1,results.length - 1);
+        if(event.key === "ArrowUp") selectedSearchIndex = Math.max(selectedSearchIndex - 1,0);
+        if(event.key === "Enter") selectSearchArticle(results[selectedSearchIndex].dataset.searchArticle);
+        renderSearchResults(searchInput.value);
+      }
+    });
+  </script>
+</body>
+</html>
