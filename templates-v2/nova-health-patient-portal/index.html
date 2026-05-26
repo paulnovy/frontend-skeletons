@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Nova Health Patient Portal is a premium healthtech patient portal skeleton for appointments, prescriptions, lab results, messages, and care plans.">
+  <title>Nova Health Patient Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,650;8..60,700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --clinical-white:#FAFCFF;--deep-teal:#0A5C5A;--deep-teal-2:#074846;--sky:#BDEBFF;--sky-soft:#EAF8FF;--lavender:#E8E2FF;--lavender-soft:#F4F1FF;--soft-red:#FFB4A8;--soft-red-light:#FFE6E1;--navy:#182333;--navy-soft:#46566D;--white:#FFFFFF;--line:rgba(24,35,51,0.13);--line-strong:rgba(24,35,51,0.2);--success:#2F7D5A;--focus:#C75040;--font-ui:"Atkinson Hyperlegible",system-ui,sans-serif;--font-editorial:"Source Serif 4",Georgia,serif;--space-1:4px;--space-2:8px;--space-3:12px;--space-4:16px;--space-5:20px;--space-6:24px;--space-8:32px;--space-10:40px;--space-12:48px;--radius-xs:6px;--radius-sm:8px;--radius-md:14px;--radius-lg:20px;--shadow-soft:0 20px 60px rgba(24,35,51,0.09);--shadow-card:0 14px 34px rgba(24,35,51,0.07);--content-max:1480px;--motion-fast:150ms ease;--motion-med:240ms ease;--z-nav:30;--z-overlay:50}
+    *{
+      box-sizing:border-box}
+    html{
+      color-scheme:light;scroll-behavior:smooth}
+    body{
+      margin:0;min-height:100vh;background:linear-gradient(180deg,var(--clinical-white) 0%,#F3FAFF 55%,#F8F6FF 100%);color:var(--navy);font-family:var(--font-ui);line-height:1.5;overflow-x:hidden}
+    body.nav-open{
+      overflow:hidden}
+    a{
+      color:inherit;text-decoration:none}
+    button,input,textarea,select{
+      font:inherit}
+    button{
+      border:0;cursor:pointer}
+    :focus-visible{
+      outline:3px solid var(--focus);outline-offset:3px;border-radius:var(--radius-xs)}
+    .skip-link{
+      position:fixed;left:var(--space-4);top:var(--space-4);z-index:80;transform:translateY(-160%);padding:var(--space-3) var(--space-4);border-radius:var(--radius-sm);background:var(--navy);color:var(--white);font-weight:700;transition:transform var(--motion-fast)}
+    .skip-link:focus{
+      transform:translateY(0)}
+    .app-shell{
+      width:min(100%,var(--content-max));margin:0 auto;padding:var(--space-5)}
+    .topbar{
+      position:sticky;top:var(--space-4);z-index:var(--z-nav);display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:var(--space-5);padding:var(--space-3);border:1px solid var(--line);border-radius:var(--radius-lg);background:rgba(250,252,255,0.9);box-shadow:var(--shadow-card);backdrop-filter:blur(18px)}
+    .brand{
+      display:flex;align-items:center;gap:var(--space-3);min-width:220px;padding-left:var(--space-2)}
+    .brand-mark{
+      width:44px;height:44px;display:grid;place-items:center;border-radius:var(--radius-md);background:var(--deep-teal);color:var(--sky);font-family:var(--font-editorial);font-size:1.55rem;font-weight:700}
+    .brand-title{
+      display:block;font-weight:700;letter-spacing:0}
+    .brand-subtitle{
+      display:block;color:var(--navy-soft);font-size:0.78rem;margin-top:1px}
+    .nav{
+      justify-self:center}
+    .nav-list{
+      display:flex;align-items:center;gap:var(--space-2);list-style:none;padding:0;margin:0}
+    .nav-link{
+      display:inline-flex;align-items:center;min-height:42px;padding:var(--space-2) var(--space-4);border-radius:999px;color:var(--navy-soft);font-weight:700;transition:background var(--motion-fast),color var(--motion-fast)}
+    .nav-link:hover,.nav-link.active{
+      background:var(--sky-soft);color:var(--deep-teal)}
+    .top-actions{
+      display:flex;align-items:center;justify-content:flex-end;gap:var(--space-2)}
+    .icon-button,.hamburger{
+      width:44px;height:44px;display:grid;place-items:center;border-radius:var(--radius-sm);background:var(--white);border:1px solid var(--line);color:var(--deep-teal);font-weight:700}
+    .hamburger{
+      position:relative;display:none}
+    .hamburger span,.hamburger::before,.hamburger::after{
+      content:"";width:18px;height:2px;border-radius:999px;background:currentColor;transition:transform var(--motion-fast),opacity var(--motion-fast)}
+    .hamburger::before{
+      position:absolute;transform:translateY(-7px)}
+    .hamburger::after{
+      position:absolute;transform:translateY(7px)}
+    .nav-open .hamburger span{
+      opacity:0}
+    .nav-open .hamburger::before{
+      transform:rotate(45deg)}
+    .nav-open .hamburger::after{
+      transform:rotate(-45deg)}
+    .primary-button,.secondary-button,.quiet-button{
+      min-height:44px;display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);padding:0 var(--space-4);border-radius:999px;font-weight:700;transition:transform var(--motion-fast),box-shadow var(--motion-fast),background var(--motion-fast)}
+    .primary-button{
+      background:var(--deep-teal);color:var(--white);box-shadow:0 12px 24px rgba(10,92,90,0.2)}
+    .secondary-button{
+      background:var(--sky-soft);color:var(--deep-teal);border:1px solid rgba(10,92,90,0.14)}
+    .quiet-button{
+      background:var(--white);color:var(--deep-teal);border:1px solid var(--line)}
+    .primary-button:hover,.secondary-button:hover,.quiet-button:hover{
+      transform:translateY(-1px)}
+    .page{
+      display:grid;gap:var(--space-5);padding-top:var(--space-6)}
+    .status-banner{
+      display:grid;grid-template-columns:minmax(0,1.2fr) auto auto;align-items:center;gap:var(--space-4);padding:var(--space-5);border:1px solid rgba(10,92,90,0.16);border-radius:var(--radius-lg);background:linear-gradient(100deg,rgba(189,235,255,0.55),rgba(232,226,255,0.52)),var(--white);box-shadow:var(--shadow-soft)}
+    .status-copy{
+      display:grid;gap:var(--space-2)}
+    .eyebrow{
+      margin:0;color:var(--deep-teal);font-size:0.78rem;font-weight:700;letter-spacing:0.08em;text-transform:uppercase}
+    h1,h2,h3{
+      margin:0;line-height:1.08;letter-spacing:0}
+    h1{
+      font-family:var(--font-editorial);font-size:clamp(2.15rem,4.6vw,5.3rem);font-weight:700;max-width:780px}
+    h2{
+      font-family:var(--font-editorial);font-size:clamp(1.65rem,2.6vw,2.75rem);font-weight:700}
+    h3{
+      font-size:1.02rem;font-weight:700}
+    p{
+      margin:0}
+    .editorial{
+      font-family:var(--font-editorial);font-size:clamp(1.1rem,1.5vw,1.35rem);color:var(--navy-soft);max-width:760px}
+    .status-pill{
+      display:inline-flex;align-items:center;gap:var(--space-2);width:fit-content;min-height:36px;padding:0 var(--space-3);border-radius:999px;background:var(--white);color:var(--deep-teal);border:1px solid rgba(10,92,90,0.16);font-weight:700}
+    .dot{
+      width:10px;height:10px;border-radius:999px;background:var(--success);box-shadow:0 0 0 5px rgba(47,125,90,0.12)}
+    .status-metric{
+      min-width:170px;padding:var(--space-4);border-radius:var(--radius-md);background:rgba(255,255,255,0.72);border:1px solid rgba(24,35,51,0.08)}
+    .status-metric strong{
+      display:block;font-size:1.5rem;color:var(--deep-teal);line-height:1}
+    .status-metric span{
+      display:block;margin-top:var(--space-2);color:var(--navy-soft);font-size:0.88rem}
+    .dashboard-grid{
+      display:grid;grid-template-columns:minmax(260px,0.85fr) minmax(0,1.35fr) minmax(280px,0.95fr);gap:var(--space-5);align-items:start}
+    .column{
+      display:grid;gap:var(--space-5);min-width:0}
+    .card{
+      background:rgba(255,255,255,0.88);border:1px solid var(--line);border-radius:var(--radius-lg);box-shadow:var(--shadow-card);overflow:hidden}
+    .card-pad{
+      padding:var(--space-5)}
+    .section-head{
+      display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-4);margin-bottom:var(--space-4)}
+    .section-head p{
+      color:var(--navy-soft);margin-top:var(--space-2)}
+    .priority-list,.appointment-list,.med-list,.lab-list,.message-list,.plan-list{
+      display:grid;gap:var(--space-3)}
+    .priority-item,.appointment-card,.medication-card,.lab-card,.message-card,.plan-card{
+      display:grid;gap:var(--space-3);padding:var(--space-4);border:1px solid var(--line);border-radius:var(--radius-md);background:var(--white)}
+    .priority-item.attention{
+      border-color:rgba(199,80,64,0.26);background:linear-gradient(180deg,var(--soft-red-light),var(--white))}
+    .priority-item.easy{
+      border-color:rgba(10,92,90,0.16);background:linear-gradient(180deg,var(--sky-soft),var(--white))}
+    .item-top{
+      display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-3)}
+    .tag{
+      display:inline-flex;align-items:center;min-height:30px;padding:0 var(--space-3);border-radius:999px;background:var(--lavender-soft);color:var(--deep-teal);font-size:0.84rem;font-weight:700;white-space:nowrap}
+    .tag.attention{
+      background:var(--soft-red-light);color:#873B30}
+    .tag.sky{
+      background:var(--sky-soft);color:var(--deep-teal)}
+    .tag.done{
+      background:#EAF8EF;color:var(--success)}
+    .muted{
+      color:var(--navy-soft)}
+    .care-team{
+      display:grid;gap:var(--space-3)}
+    .team-row{
+      display:grid;grid-template-columns:46px minmax(0,1fr) auto;align-items:center;gap:var(--space-3);padding:var(--space-3);border-radius:var(--radius-md);background:var(--sky-soft)}
+    .avatar{
+      width:46px;height:46px;display:grid;place-items:center;border-radius:999px;background:var(--deep-teal);color:var(--white);font-weight:700}
+    .appointment-card{
+      grid-template-columns:86px minmax(0,1fr);align-items:start}
+    .date-tile{
+      min-height:86px;display:grid;place-items:center;align-content:center;border-radius:var(--radius-md);background:var(--deep-teal);color:var(--white);text-align:center;font-weight:700}
+    .date-tile span{
+      display:block;font-size:0.78rem;text-transform:uppercase;letter-spacing:0.08em}
+    .date-tile strong{
+      display:block;font-size:1.75rem;line-height:1}
+    .appointment-main{
+      display:grid;gap:var(--space-3);min-width:0}
+    .appointment-actions,.mobile-action-row,.message-actions{
+      display:flex;flex-wrap:wrap;gap:var(--space-2)}
+    .mobile-action-row{
+      order:-1}
+    .appointment-card.featured{
+      border-color:rgba(10,92,90,0.22);background:linear-gradient(180deg,rgba(189,235,255,0.34),var(--white))}
+    .medication-card{
+      grid-template-columns:minmax(0,1fr) auto;align-items:start}
+    .dose{
+      display:block;color:var(--navy-soft);margin-top:var(--space-1)}
+    .refill-meter{
+      display:grid;gap:var(--space-2)}
+    .meter-track{
+      height:10px;border-radius:999px;background:rgba(24,35,51,0.09);overflow:hidden}
+    .meter-fill{
+      height:100%;width:var(--value);border-radius:inherit;background:var(--deep-teal)}
+    .meter-fill.attention{
+      background:#C75040}
+    .lab-tabs{
+      display:flex;align-items:center;gap:var(--space-2);padding:var(--space-1);border:1px solid var(--line);border-radius:999px;background:var(--clinical-white)}
+    .tab-button{
+      min-height:38px;padding:0 var(--space-4);border-radius:999px;background:transparent;color:var(--navy-soft);font-weight:700}
+    .tab-button[aria-selected="true"]{
+      background:var(--deep-teal);color:var(--white)}
+    .panel{
+      display:none}
+    .panel.active{
+      display:block}
+    .lab-card{
+      grid-template-columns:minmax(0,1fr) auto;align-items:center}
+    .result-value{
+      text-align:right;font-weight:700;color:var(--deep-teal)}
+    .result-value span{
+      display:block;color:var(--navy-soft);font-size:0.84rem;font-weight:400}
+    .range-line{
+      grid-column:1 / -1;height:8px;border-radius:999px;background:linear-gradient(90deg,var(--sky) 0%,var(--deep-teal) var(--value),rgba(24,35,51,0.1) var(--value))}
+    .message-card{
+      grid-template-columns:minmax(0,1fr) auto;align-items:start}
+    .message-preview{
+      color:var(--navy-soft)}
+    .message-meta{
+      display:flex;flex-wrap:wrap;gap:var(--space-2);color:var(--navy-soft);font-size:0.9rem}
+    .plan-card{
+      background:linear-gradient(180deg,var(--lavender-soft),var(--white))}
+    .plan-steps{
+      display:grid;gap:var(--space-2);padding:0;margin:0;list-style:none}
+    .plan-steps li{
+      display:flex;align-items:flex-start;gap:var(--space-2);color:var(--navy-soft)}
+    .check{
+      width:22px;height:22px;flex:0 0 auto;display:grid;place-items:center;border-radius:999px;background:var(--deep-teal);color:var(--white);font-size:0.78rem;font-weight:700}
+    .wellbeing-note{
+      display:grid;gap:var(--space-4);padding:var(--space-5);border-radius:var(--radius-lg);background:var(--navy);color:var(--white)}
+    .wellbeing-note .editorial{
+      color:#DCE7F5}
+    .quick-actions{
+      display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-3)}
+    .quick-action{
+      min-height:98px;display:grid;align-content:space-between;gap:var(--space-2);padding:var(--space-4);border-radius:var(--radius-md);background:var(--white);border:1px solid var(--line);color:var(--navy);text-align:left;font-weight:700}
+    .quick-action span{
+      color:var(--navy-soft);font-size:0.88rem;font-weight:400}
+    .timeline{
+      display:grid;gap:var(--space-4);position:relative;padding-left:var(--space-4)}
+    .timeline::before{
+      content:"";position:absolute;left:5px;top:4px;bottom:4px;width:2px;background:var(--line-strong)}
+    .timeline-item{
+      position:relative;display:grid;gap:var(--space-1)}
+    .timeline-item::before{
+      content:"";position:absolute;left:-16px;top:5px;width:12px;height:12px;border-radius:999px;background:var(--deep-teal);border:3px solid var(--white)}
+    .portal-footer{
+      display:flex;align-items:center;justify-content:space-between;gap:var(--space-4);padding:var(--space-8) 0 var(--space-4);color:var(--navy-soft);font-size:0.92rem}
+    .overlay{
+      position:fixed;inset:0;z-index:var(--z-overlay);display:none;background:rgba(24,35,51,0.36)}
+    .nav-open .overlay{
+      display:block}
+    @media (max-width:1180px){
+      .dashboard-grid{
+      grid-template-columns:minmax(250px,0.85fr) minmax(0,1.15fr)}
+    .right-rail{
+      grid-column:1 / -1;grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media (max-width:960px){
+      .app-shell{
+      padding:var(--space-4)}
+    .topbar{
+      top:var(--space-3);grid-template-columns:auto auto}
+    .brand{
+      min-width:0}
+    .nav{
+      position:fixed;top:92px;right:var(--space-4);z-index:70;width:min(340px,calc(100vw - 32px));padding:var(--space-3);border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--white);box-shadow:var(--shadow-soft);transform:translateY(-12px);opacity:0;pointer-events:none;transition:transform var(--motion-med),opacity var(--motion-med)}
+    .nav-open .nav{
+      transform:translateY(0);opacity:1;pointer-events:auto}
+    .nav-list{
+      display:grid;gap:var(--space-2)}
+    .nav-link{
+      width:100%;min-height:48px}
+    .top-actions .primary-button{
+      display:none}
+    .hamburger{
+      display:grid}
+    .status-banner{
+      grid-template-columns:1fr}
+    .dashboard-grid{
+      grid-template-columns:1fr}
+    .right-rail{
+      grid-template-columns:1fr}
+    .care-overview{
+      order:3}
+    .main-column{
+      order:1}
+    .right-rail{
+      order:2}
+    }
+    @media (max-width:640px){
+      .app-shell{
+      padding:var(--space-3)}
+    .brand-subtitle,.top-actions .secondary-button,.icon-button{
+      display:none}
+    .topbar{
+      border-radius:var(--radius-md)}
+    .status-banner,.card-pad,.wellbeing-note{
+      padding:var(--space-4)}
+    .status-metric{
+      min-width:0}
+    .section-head{
+      display:grid}
+    .appointment-card,.medication-card,.lab-card,.message-card{
+      grid-template-columns:1fr}
+    .date-tile{
+      width:86px}
+    .appointment-actions,.message-actions,.mobile-action-row{
+      display:grid;grid-template-columns:1fr}
+    .primary-button,.secondary-button,.quiet-button{
+      width:100%;min-height:50px}
+    .quick-actions{
+      grid-template-columns:1fr}
+    .lab-tabs{
+      overflow-x:auto;border-radius:var(--radius-sm)}
+    .portal-footer{
+      display:grid}
+    }
+    @media (prefers-reduced-motion:reduce){
+      *,*::before,*::after{
+      animation-duration:1ms !important;scroll-behavior:auto !important;transition-duration:1ms !important}
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#care-status">Skip to care status</a>
+  <div class="overlay" data-close-menu></div>
+  <div class="app-shell">
+    <header class="topbar" aria-label="Nova Health portal header">
+      <a class="brand" href="#care-status" aria-label="Nova Health home">
+        <span class="brand-mark">N</span>
+        <span>
+          <span class="brand-title">Nova Health</span>
+          <span class="brand-subtitle">Patient portal</span>
+        </span>
+      </a>
+      <nav class="nav" aria-label="Primary navigation">
+        <ul class="nav-list">
+          <li><a class="nav-link active" href="#care-status">Home</a></li>
+          <li><a class="nav-link" href="#appointments">Appointments</a></li>
+          <li><a class="nav-link" href="#medications">Medications</a></li>
+          <li><a class="nav-link" href="#labs">Lab results</a></li>
+          <li><a class="nav-link" href="#messages">Messages</a></li>
+        </ul>
+      </nav>
+      <div class="top-actions">
+        <button class="icon-button" type="button" aria-label="View notifications">3</button>
+        <a class="secondary-button" href="#messages">Message care team</a>
+        <a class="primary-button" href="#appointments">Schedule care</a>
+        <button class="hamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="primary-navigation">
+          <span></span>
+        </button>
+      </div>
+    </header>
+
+    <main class="page" id="care-status">
+      <section class="status-banner" aria-labelledby="portal-heading">
+        <div class="status-copy">
+          <span class="status-pill"><span class="dot"></span> Care status: steady</span>
+          <h1 id="portal-heading">Good afternoon, Maya. Two items need your attention this week.</h1>
+          <p class="editorial">Your care team has reviewed the new thyroid panel. Nothing here is framed as urgent; the portal highlights the next practical steps so you can handle them calmly.</p>
+        </div>
+        <div class="status-metric" aria-label="Next appointment">
+          <strong>Jun 2</strong>
+          <span>Primary care check-in with Dr. Lina Patel at 9:30 AM</span>
+        </div>
+        <div class="status-metric" aria-label="Open care tasks">
+          <strong>2</strong>
+          <span>Needs your attention before Friday</span>
+        </div>
+      </section>
+
+      <section class="dashboard-grid" aria-label="Patient portal dashboard">
+        <aside class="column care-overview" aria-label="Care overview">
+          <section class="card card-pad">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Today</p>
+                <h2>Care priorities</h2>
+                <p>Plain-language reminders from your care team.</p>
+              </div>
+            </div>
+            <div class="priority-list">
+              <article class="priority-item attention">
+                <div class="item-top">
+                  <h3>Needs your attention</h3>
+                  <span class="tag attention">By May 30</span>
+                </div>
+                <p class="muted">Confirm whether you have started the Levothyroxine dose change from 75 mcg to 88 mcg each morning.</p>
+                <button class="quiet-button" type="button" data-toast="Dose change note saved">Update medication note</button>
+              </article>
+              <article class="priority-item easy">
+                <div class="item-top">
+                  <h3>Review when ready</h3>
+                  <span class="tag sky">5 min</span>
+                </div>
+                <p class="muted">Your A1C is 5.7%. Dr. Patel added a short explanation and food plan note.</p>
+                <a class="secondary-button" href="#labs">Read lab explanation</a>
+              </article>
+            </div>
+          </section>
+
+          <section class="card card-pad">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Care team</p>
+                <h2>Your people</h2>
+              </div>
+            </div>
+            <div class="care-team">
+              <article class="team-row">
+                <span class="avatar">LP</span>
+                <div>
+                  <h3>Dr. Lina Patel</h3>
+                  <p class="muted">Primary care physician</p>
+                </div>
+                <span class="tag done">Online</span>
+              </article>
+              <article class="team-row">
+                <span class="avatar">MR</span>
+                <div>
+                  <h3>Mara Rivera, RN</h3>
+                  <p class="muted">Care coordinator</p>
+                </div>
+                <span class="tag sky">Replies today</span>
+              </article>
+              <article class="team-row">
+                <span class="avatar">CT</span>
+                <div>
+                  <h3>Chris Tan, RD</h3>
+                  <p class="muted">Nutrition specialist</p>
+                </div>
+                <span class="tag">Thu</span>
+              </article>
+            </div>
+          </section>
+
+          <section class="wellbeing-note" aria-labelledby="note-heading">
+            <div>
+              <p class="eyebrow">Reassuring context</p>
+              <h2 id="note-heading">One place for the next small step.</h2>
+            </div>
+            <p class="editorial">Nova avoids alarm language by separating "needs your attention" from true emergency instructions. If symptoms feel severe, call local emergency services instead of waiting on portal messages.</p>
+          </section>
+        </aside>
+
+        <div class="column main-column">
+          <section class="card card-pad" id="appointments">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Next visit</p>
+                <h2>Upcoming appointments</h2>
+                <p>Actions are first on mobile so it is easy to join, reschedule, or prepare.</p>
+              </div>
+              <a class="quiet-button" href="#">View calendar</a>
+            </div>
+            <div class="appointment-list">
+              <article class="appointment-card featured">
+                <div class="date-tile" aria-hidden="true">
+                  <span>Jun</span>
+                  <strong>02</strong>
+                </div>
+                <div class="appointment-main">
+                  <div class="mobile-action-row" aria-label="Appointment quick actions">
+                    <button class="primary-button" type="button" data-toast="Video visit link copied">Join video visit</button>
+                    <button class="secondary-button" type="button" data-toast="Prep checklist opened">Prep checklist</button>
+                  </div>
+                  <div class="item-top">
+                    <div>
+                      <h3>Primary care follow-up</h3>
+                      <p class="muted">Tuesday, June 2 at 9:30 AM with Dr. Lina Patel</p>
+                    </div>
+                    <span class="tag done">Confirmed</span>
+                  </div>
+                  <p class="muted">Bring home blood pressure readings from May 27 through June 1. The visit will cover thyroid dose changes and sleep quality.</p>
+                  <div class="appointment-actions">
+                    <button class="quiet-button" type="button" data-toast="Reschedule options opened">Reschedule</button>
+                    <button class="quiet-button" type="button" data-toast="Question added to appointment notes">Add a question</button>
+                  </div>
+                </div>
+              </article>
+              <article class="appointment-card">
+                <div class="date-tile" aria-hidden="true">
+                  <span>Jun</span>
+                  <strong>12</strong>
+                </div>
+                <div class="appointment-main">
+                  <div class="item-top">
+                    <div>
+                      <h3>Nutrition plan review</h3>
+                      <p class="muted">Friday, June 12 at 2:15 PM with Chris Tan, RD</p>
+                    </div>
+                    <span class="tag">In clinic</span>
+                  </div>
+                  <p class="muted">Review breakfast patterns, iron intake, and a low-stress plan for steady energy during workdays.</p>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="card card-pad" id="labs">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Reviewed May 25</p>
+                <h2>Lab results</h2>
+                <p>Clinical values stay visible beside human explanations.</p>
+              </div>
+              <div class="lab-tabs" role="tablist" aria-label="Lab result groups">
+                <button class="tab-button" type="button" role="tab" aria-selected="true" aria-controls="panel-recent" id="tab-recent">Recent</button>
+                <button class="tab-button" type="button" role="tab" aria-selected="false" aria-controls="panel-trends" id="tab-trends">Trends</button>
+              </div>
+            </div>
+            <div class="panel active" role="tabpanel" id="panel-recent" aria-labelledby="tab-recent">
+              <div class="lab-list">
+                <article class="lab-card">
+                  <div>
+                    <h3>TSH</h3>
+                    <p class="muted">A little higher than your target range; dose adjustment already added.</p>
+                  </div>
+                  <p class="result-value">5.8 <span>mIU/L</span></p>
+                  <div class="range-line" style="--value: 78%" aria-label="TSH position in reference range"></div>
+                </article>
+                <article class="lab-card">
+                  <div>
+                    <h3>A1C</h3>
+                    <p class="muted">Stable. Your care plan focuses on breakfast protein and walking after dinner.</p>
+                  </div>
+                  <p class="result-value">5.7 <span>percent</span></p>
+                  <div class="range-line" style="--value: 44%" aria-label="A1C position in reference range"></div>
+                </article>
+                <article class="lab-card">
+                  <div>
+                    <h3>Ferritin</h3>
+                    <p class="muted">Improved from March after adding ferrous sulfate every other evening.</p>
+                  </div>
+                  <p class="result-value">38 <span>ng/mL</span></p>
+                  <div class="range-line" style="--value: 58%" aria-label="Ferritin position in reference range"></div>
+                </article>
+              </div>
+            </div>
+            <div class="panel" role="tabpanel" id="panel-trends" aria-labelledby="tab-trends">
+              <div class="timeline" aria-label="Lab trend timeline">
+                <article class="timeline-item">
+                  <h3>TSH moved from 4.9 to 5.8</h3>
+                  <p class="muted">Dr. Patel recommends checking again six weeks after the dose change.</p>
+                </article>
+                <article class="timeline-item">
+                  <h3>A1C stayed within a narrow range</h3>
+                  <p class="muted">5.6 in February, 5.7 in May. No medication change recommended.</p>
+                </article>
+                <article class="timeline-item">
+                  <h3>Ferritin improved steadily</h3>
+                  <p class="muted">22 in February, 31 in April, 38 in May.</p>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <section class="card card-pad" id="messages">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Secure inbox</p>
+                <h2>Messages</h2>
+                <p>Short previews make it clear what needs a reply.</p>
+              </div>
+              <button class="primary-button" type="button" data-toast="New secure message opened">New message</button>
+            </div>
+            <div class="message-list">
+              <article class="message-card">
+                <div>
+                  <div class="item-top">
+                    <h3>Mara Rivera, RN</h3>
+                    <span class="tag attention">Reply helpful</span>
+                  </div>
+                  <p class="message-preview">Could you confirm the first morning you took 88 mcg? This helps us schedule the follow-up TSH check.</p>
+                  <div class="message-meta">
+                    <span>Today, 10:18 AM</span>
+                    <span>Care coordination</span>
+                  </div>
+                </div>
+                <div class="message-actions">
+                  <button class="secondary-button" type="button" data-toast="Reply composer opened">Reply</button>
+                </div>
+              </article>
+              <article class="message-card">
+                <div>
+                  <div class="item-top">
+                    <h3>Dr. Lina Patel</h3>
+                    <span class="tag sky">No reply needed</span>
+                  </div>
+                  <p class="message-preview">Your A1C is steady. I added a note with three food swaps that fit the plan we discussed.</p>
+                  <div class="message-meta">
+                    <span>May 25, 4:42 PM</span>
+                    <span>Lab explanation</span>
+                  </div>
+                </div>
+                <div class="message-actions">
+                  <button class="quiet-button" type="button" data-toast="Message saved to care plan">Save</button>
+                </div>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <aside class="column right-rail" aria-label="Medications and care plan">
+          <section class="card card-pad" id="medications">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Prescriptions</p>
+                <h2>Medications</h2>
+                <p>Refills and dose notes use calm status labels.</p>
+              </div>
+            </div>
+            <div class="med-list">
+              <article class="medication-card">
+                <div>
+                  <h3>Levothyroxine</h3>
+                  <span class="dose">88 mcg by mouth every morning before breakfast</span>
+                </div>
+                <span class="tag attention">Dose changed</span>
+                <div class="refill-meter" style="grid-column: 1 / -1;">
+                  <p class="muted">18 tablets remaining. Next refill suggested by June 10.</p>
+                  <div class="meter-track"><div class="meter-fill attention" style="--value: 34%"></div></div>
+                </div>
+                <button class="secondary-button" type="button" data-toast="Refill request prepared">Request refill</button>
+              </article>
+              <article class="medication-card">
+                <div>
+                  <h3>Ferrous sulfate</h3>
+                  <span class="dose">325 mg every other evening with vitamin C</span>
+                </div>
+                <span class="tag done">On track</span>
+                <div class="refill-meter" style="grid-column: 1 / -1;">
+                  <p class="muted">42 tablets remaining. Refill not needed this month.</p>
+                  <div class="meter-track"><div class="meter-fill" style="--value: 72%"></div></div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section class="card card-pad">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Fast actions</p>
+                <h2>Common tasks</h2>
+              </div>
+            </div>
+            <div class="quick-actions">
+              <button class="quick-action" type="button" data-toast="Blood pressure entry opened">Log blood pressure<span>Morning and evening readings</span></button>
+              <button class="quick-action" type="button" data-toast="Insurance card upload opened">Upload document<span>Insurance card or lab slip</span></button>
+              <button class="quick-action" type="button" data-toast="Visit summary opened">View summary<span>May 21 care notes</span></button>
+              <button class="quick-action" type="button" data-toast="Medication list downloaded">Download meds<span>Current medication list</span></button>
+            </div>
+          </section>
+
+          <section class="card card-pad">
+            <div class="section-head">
+              <div>
+                <p class="eyebrow">Care plan</p>
+                <h2>Next small steps</h2>
+              </div>
+            </div>
+            <div class="plan-list">
+              <article class="plan-card">
+                <div class="item-top">
+                  <h3>Thyroid follow-up</h3>
+                  <span class="tag attention">6 weeks</span>
+                </div>
+                <ul class="plan-steps">
+                  <li><span class="check">1</span><span>Take Levothyroxine 88 mcg each morning with water.</span></li>
+                  <li><span class="check">2</span><span>Wait 30 minutes before coffee or breakfast when possible.</span></li>
+                  <li><span class="check">3</span><span>Repeat TSH lab between July 8 and July 15.</span></li>
+                </ul>
+              </article>
+              <article class="plan-card">
+                <div class="item-top">
+                  <h3>Energy and iron</h3>
+                  <span class="tag sky">Steady</span>
+                </div>
+                <ul class="plan-steps">
+                  <li><span class="check">1</span><span>Continue ferrous sulfate every other evening.</span></li>
+                  <li><span class="check">2</span><span>Add citrus or bell pepper with iron-rich meals.</span></li>
+                  <li><span class="check">3</span><span>Message Mara if constipation lasts more than three days.</span></li>
+                </ul>
+              </article>
+            </div>
+          </section>
+        </aside>
+      </section>
+    </main>
+
+    <footer class="portal-footer">
+      <span>Nova Health Patient Portal</span>
+      <span>Built with Frontend Skeletons</span>
+    </footer>
+  </div>
+
+  <script>
+    const body = document.body; const menuButton = document.querySelector(".hamburger"); const nav = document.querySelector(".nav"); const overlay = document.querySelector("[data-close-menu]"); const toastButtons = document.querySelectorAll("[data-toast]"); const tabButtons = document.querySelectorAll("[role='tab']"); nav.id = "primary-navigation"; function closeMenu() { body.classList.remove("nav-open"); menuButton.setAttribute("aria-expanded", "false"); menuButton.setAttribute("aria-label", "Open menu"); } function openMenu() { body.classList.add("nav-open"); menuButton.setAttribute("aria-expanded", "true"); menuButton.setAttribute("aria-label", "Close menu"); } menuButton.addEventListener("click", () => { if (body.classList.contains("nav-open")) { closeMenu(); } else { openMenu(); } }); overlay.addEventListener("click", closeMenu); document.querySelectorAll(".nav-link").forEach((link) => { link.addEventListener("click", closeMenu); }); document.addEventListener("keydown", (event) => { if (event.key === "Escape") { closeMenu(); } }); function showToast(message) { const existing = document.querySelector(".toast"); if (existing) { existing.remove(); } const toast = document.createElement("div"); toast.className = "toast"; toast.setAttribute("role", "status"); toast.textContent = message; toast.style.position = "fixed"; toast.style.left = "50%"; toast.style.bottom = "24px"; toast.style.transform = "translateX(-50%)"; toast.style.zIndex = "90"; toast.style.padding = "12px 16px"; toast.style.borderRadius = "8px"; toast.style.background = "#182333"; toast.style.color = "#FFFFFF"; toast.style.boxShadow = "0 16px 40px rgba(24, 35, 51, 0.22)"; toast.style.fontWeight = "700"; document.body.appendChild(toast); window.setTimeout(() => { toast.remove(); }, 2200); } toastButtons.forEach((button) => { button.addEventListener("click", () => showToast(button.dataset.toast)); }); function activateTab(button) { const panelId = button.getAttribute("aria-controls"); tabButtons.forEach((tab) => { tab.setAttribute("aria-selected", String(tab === button)); tab.tabIndex = tab === button ? 0 : -1; }); document.querySelectorAll(".panel").forEach((panel) => { panel.classList.toggle("active", panel.id === panelId); }); button.focus(); } tabButtons.forEach((button, index) => { button.tabIndex = button.getAttribute("aria-selected") === "true" ? 0 : -1; button.addEventListener("click", () => activateTab(button)); button.addEventListener("keydown", (event) => { if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") { return; } event.preventDefault(); const direction = event.key === "ArrowRight" ? 1 : -1; const next = (index + direction + tabButtons.length) % tabButtons.length; activateTab(tabButtons[next]); }); });
+  </script>
+</body>
+</html>
