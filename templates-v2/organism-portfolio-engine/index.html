@@ -520,7 +520,7 @@
               <p id="case-kicker">Selected cell</p>
               <h2 id="case-title">Mnemosyne Atlas</h2>
             </div>
-            <button class="close-reader" type="button" aria-label="Close case study" data-close-case>×</button>
+            <button class="close-reader" type="button" aria-label="Close case study" data-close-case>x</button>
           </div>
           <div class="reader-body">
             <div class="reader-meta" id="case-meta"></div>
@@ -737,7 +737,7 @@
             <span class="index-nucleus">${project.code}</span>
             <span class="index-copy">
               <strong>${project.title}</strong>
-              <span>${project.discipline} · ${project.role}</span>
+              <span>${project.discipline} &middot; ${project.role}</span>
             </span>
             <span class="index-year">${project.year}</span>
           </button>
@@ -748,7 +748,7 @@
           <span class="mobile-dot" aria-hidden="true"></span>
           <span>
             <strong>${project.title}</strong>
-            <span>${project.year} · ${project.tissue}</span>
+            <span>${project.year} &middot; ${project.tissue}</span>
           </span>
         </button>
       `).join("");
@@ -772,7 +772,7 @@
         button.classList.toggle("is-active", button.dataset.project === project.id);
       });
       document.getElementById("case-title").textContent = project.title;
-      document.getElementById("case-kicker").textContent = `${project.code} · ${project.tissue}`;
+      document.getElementById("case-kicker").textContent = `${project.code} &middot; ${project.tissue}`;
       document.getElementById("case-summary").textContent = project.summary;
       document.getElementById("case-detail").textContent = project.detail;
       document.getElementById("case-meta").innerHTML = [project.year, project.discipline, project.role, ...project.meta].map((item) => `<span>${item}</span>`).join("");

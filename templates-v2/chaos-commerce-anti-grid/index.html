@@ -98,7 +98,7 @@
     .price{font-family:var(--font-mono);font-size:1.05rem;font-weight:700}
     .add-button{min-height:42px;padding:0 var(--space-4);border:2px solid currentColor;background:transparent;color:inherit;font-weight:900;transition:transform var(--motion-fast),background var(--motion-fast),color var(--motion-fast)}
     .add-button:hover{transform:translateY(-2px);background:currentColor;color:var(--white)}
-    .product-card:not(.dark):not(.blue-card):not(.magenta-card) .add-button:hover{color:var(--white)}
+    .product-card.dark .add-button:hover,.product-card.blue-card .add-button:hover,.product-card.magenta-card .add-button:hover{color:var(--black)}
     .story-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-4);margin-top:var(--space-10)}
     .story-tile{min-height:230px;display:grid;align-content:space-between;gap:var(--space-4);padding:var(--space-5);border:3px solid var(--black);background:var(--white)}
     .story-tile:nth-child(2){background:var(--black);color:var(--white);transform:translateY(28px) rotate(1deg)}

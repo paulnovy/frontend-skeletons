@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A gravityless spatial website skeleton with floating value clouds and a command menu fallback.">
+  <title>OrbitForge Spatial Web</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+  <style>
+:root{color-scheme:dark;--cosmic:#020617;--cosmic-2:#07111f;--cosmic-3:#0f172a;--violet:#7C3AED;--cyan:#22D3EE;--white:#F8FAFC;--gray:#64748B;--muted:#94A3B8;--panel:rgba(15,23,42,0.72);--panel-strong:rgba(15,23,42,0.92);--glass:rgba(248,250,252,0.07);--glass-strong:rgba(248,250,252,0.13);--line:rgba(248,250,252,0.16);--line-strong:rgba(248,250,252,0.32);--shadow:0 30px 90px rgba(0,0,0,0.46);--label-font:"Space Grotesk",system-ui,sans-serif;--body-font:"Inter",system-ui,sans-serif;--radius:8px;--nav:76px;--max:1180px;--speed:240ms ease;--slow:900ms cubic-bezier(.2,.8,.2,1)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 20% 10%,rgba(124,58,237,0.26),transparent 28rem),radial-gradient(circle at 84% 18%,rgba(34,211,238,0.2),transparent 24rem),linear-gradient(180deg,#020617 0%,#07111f 48%,#020617 100%);color:var(--white);font-family:var(--body-font);letter-spacing:0;overflow-x:hidden}
+body.menu-open,body.command-open{overflow:hidden}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--cyan);outline-offset:4px}
+.skip-link{position:fixed;top:12px;left:12px;z-index:100;transform:translateY(-150%);border-radius:var(--radius);background:var(--white);color:var(--cosmic);padding:10px 14px;font-weight:800}
+.skip-link:focus{transform:translateY(0)}
+.site-shell{min-height:100vh;position:relative;isolation:isolate}
+.starfield{position:fixed;inset:0;z-index:-2;pointer-events:none;background-image:radial-gradient(circle,rgba(248,250,252,0.9) 0 1px,transparent 1.6px),radial-gradient(circle,rgba(34,211,238,0.7) 0 1px,transparent 1.4px),radial-gradient(circle,rgba(124,58,237,0.65) 0 1px,transparent 1.5px);background-size:120px 120px,180px 180px,260px 260px;background-position:0 0,34px 80px,120px 30px;opacity:.42}
+.starfield::after{content:"";position:absolute;inset:-20%;background:conic-gradient(from 120deg at 50% 50%,transparent,rgba(124,58,237,.12),transparent,rgba(34,211,238,.12),transparent);filter:blur(50px);animation:nebula 22s linear infinite}
+.topbar{position:sticky;top:0;z-index:50;min-height:var(--nav);border-bottom:1px solid var(--line);background:rgba(2,6,23,0.72);backdrop-filter:blur(22px)}
+.topbar-inner{width:min(100% - 32px,var(--max));min-height:var(--nav);margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.brand{display:inline-flex;align-items:center;gap:12px;font-family:var(--label-font);font-weight:700;letter-spacing:0}
+.brand-mark{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;position:relative;border:1px solid rgba(34,211,238,.42);background:radial-gradient(circle at 35% 30%,rgba(34,211,238,.34),rgba(124,58,237,.18) 52%,rgba(2,6,23,.9));box-shadow:0 0 34px rgba(34,211,238,.25)}
+.brand-mark::before{content:"";position:absolute;inset:8px;border:1px solid rgba(248,250,252,.42);border-radius:50%;transform:rotateX(62deg)}
+.desktop-nav{display:flex;align-items:center;gap:6px}
+.desktop-nav a,.drawer a{border-radius:var(--radius);padding:10px 12px;color:var(--muted);font-size:14px;font-weight:700;transition:background var(--speed),color var(--speed)}
+.desktop-nav a:hover,.drawer a:hover{background:var(--glass);color:var(--white)}
+.header-actions{display:flex;align-items:center;gap:10px}
+.primary-btn,.secondary-btn,.ghost-btn,.menu-btn,.cloud-btn,.command-row,.story-tab{border:1px solid transparent;border-radius:var(--radius);font-weight:800;transition:transform var(--speed),background var(--speed),border-color var(--speed),color var(--speed),box-shadow var(--speed)}
+.primary-btn{min-height:44px;padding:0 16px;background:linear-gradient(135deg,var(--cyan),#a5f3fc);color:#03121a;box-shadow:0 18px 48px rgba(34,211,238,.25)}
+.secondary-btn{min-height:44px;padding:0 16px;border-color:var(--line);background:var(--glass);color:var(--white)}
+.ghost-btn{min-height:42px;padding:0 14px;border-color:var(--line);background:rgba(2,6,23,.44);color:var(--muted)}
+.menu-btn{display:none;width:44px;height:44px;place-items:center;border-color:var(--line);background:var(--glass);color:var(--white)}
+.primary-btn:hover,.secondary-btn:hover,.ghost-btn:hover,.menu-btn:hover,.cloud-btn:hover,.story-tab:hover{transform:translateY(-2px)}
+.drawer{display:none;position:fixed;top:var(--nav);left:16px;right:16px;z-index:45;padding:12px;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel-strong);box-shadow:var(--shadow)}
+.drawer.is-open{display:grid;gap:4px}
+.hero{min-height:calc(100vh - var(--nav));position:relative;display:grid;align-items:center;padding:58px 0 34px}
+.hero-inner{width:min(100% - 32px,1240px);margin:0 auto;display:grid;grid-template-columns:minmax(300px,.82fr)minmax(520px,1.18fr);gap:30px;align-items:center}
+.hero-copy{position:relative;z-index:4}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;min-height:34px;padding:0 12px;border:1px solid rgba(34,211,238,.28);border-radius:999px;background:rgba(34,211,238,.08);color:#BAF5FF;font-size:13px;font-weight:800}
+.pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 20px var(--cyan)}
+h1{margin:20px 0 16px;font-family:var(--label-font);font-size:clamp(46px,7vw,94px);line-height:.92;font-weight:700;letter-spacing:0}
+.hero-copy p{max-width:620px;margin:0 0 24px;color:#CBD5E1;font-size:18px;line-height:1.7}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.orbit-legend{margin-top:24px;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-width:640px}
+.legend-card{padding:14px;border:1px solid var(--line);border-radius:var(--radius);background:rgba(15,23,42,.58)}
+.legend-card strong{display:block;font-family:var(--label-font);font-size:18px;margin-bottom:4px}
+.legend-card span{color:var(--muted);font-size:13px;line-height:1.45}
+.spatial-wrap{position:relative;min-height:670px;perspective:1200px}
+.spatial-status{position:absolute;top:10px;left:10px;z-index:6;display:flex;align-items:center;gap:8px;padding:9px 11px;border:1px solid var(--line);border-radius:var(--radius);background:rgba(2,6,23,.68);color:var(--muted);font-size:12px;font-weight:800}
+.spatial-stage{position:absolute;inset:0;transform-style:preserve-3d;transition:transform var(--slow)}
+.spatial-stage::before{content:"";position:absolute;inset:70px 30px;border:1px solid rgba(100,116,139,.24);border-radius:50%;transform:rotateX(68deg)translateZ(-180px);box-shadow:0 0 0 40px rgba(34,211,238,.02),0 0 0 86px rgba(124,58,237,.025),0 0 90px rgba(34,211,238,.13)}
+.spatial-stage::after{content:"";position:absolute;left:50%;top:50%;width:320px;height:320px;transform:translate(-50%,-50%)rotateX(72deg)translateZ(-220px);border:1px dashed rgba(248,250,252,.16);border-radius:50%}
+.cloud{position:absolute;width:min(300px,32vw);min-height:174px;padding:18px;border:1px solid rgba(248,250,252,.16);border-radius:var(--radius);background:linear-gradient(145deg,rgba(15,23,42,.82),rgba(2,6,23,.64));box-shadow:var(--shadow);backdrop-filter:blur(20px);transform-style:preserve-3d;transition:transform var(--slow),border-color var(--speed),box-shadow var(--speed),opacity var(--speed)}
+.cloud::before{content:"";position:absolute;inset:-1px;border-radius:inherit;background:radial-gradient(circle at 20% 15%,rgba(34,211,238,.22),transparent 34%),radial-gradient(circle at 80% 90%,rgba(124,58,237,.2),transparent 36%);opacity:.75;z-index:-1}
+.cloud.is-active{border-color:rgba(34,211,238,.7);box-shadow:0 34px 110px rgba(34,211,238,.2)}
+.cloud[data-cloud="product"]{left:8%;top:15%;transform:translateZ(130px)rotateY(-8deg)}
+.cloud[data-cloud="proof"]{right:8%;top:7%;transform:translateZ(40px)rotateY(10deg)}
+.cloud[data-cloud="pricing"]{left:31%;bottom:7%;transform:translateZ(190px)rotateX(4deg)}
+.cloud[data-cloud="team"]{right:4%;bottom:20%;transform:translateZ(-20px)rotateY(-12deg)}
+.cloud[data-cloud="contact"]{left:2%;bottom:27%;transform:translateZ(10px)rotateY(13deg)}
+.cloud-label{display:flex;align-items:center;justify-content:space-between;gap:12px;font-family:var(--label-font);font-size:28px;font-weight:700;letter-spacing:0}
+.cloud-index{font-size:12px;color:var(--cyan);font-weight:700}
+.cloud p{margin:12px 0 16px;color:#CBD5E1;line-height:1.55;font-size:14px}
+.cloud-tags{display:flex;flex-wrap:wrap;gap:8px}
+.cloud-tags span{padding:7px 9px;border:1px solid rgba(248,250,252,.15);border-radius:999px;background:rgba(248,250,252,.06);color:#DDE7F3;font-size:12px;font-weight:700}
+.cloud-btn{margin-top:16px;min-height:38px;padding:0 12px;border-color:rgba(34,211,238,.28);background:rgba(34,211,238,.08);color:#CFFAFE}
+.anchor-node{position:absolute;left:50%;top:50%;width:122px;height:122px;display:grid;place-items:center;transform:translate(-50%,-50%)translateZ(250px);border:1px solid rgba(34,211,238,.44);border-radius:50%;background:radial-gradient(circle,rgba(34,211,238,.24),rgba(124,58,237,.12),rgba(2,6,23,.4));box-shadow:0 0 80px rgba(34,211,238,.24);font-family:var(--label-font);font-weight:700}
+.connector{position:absolute;left:50%;top:50%;height:1px;width:260px;background:linear-gradient(90deg,rgba(34,211,238,.0),rgba(34,211,238,.45),rgba(124,58,237,.0));transform-origin:left center;opacity:.55}
+.connector.one{transform:rotate(-38deg)translateZ(100px)}
+.connector.two{transform:rotate(24deg)translateZ(50px)}
+.connector.three{transform:rotate(102deg)translateZ(130px)}
+.connector.four{transform:rotate(172deg)translateZ(30px)}
+.connector.five{transform:rotate(-150deg)translateZ(80px)}
+.control-dock{position:absolute;right:12px;bottom:12px;z-index:8;display:grid;gap:10px;width:min(310px,42vw);padding:14px;border:1px solid var(--line);border-radius:var(--radius);background:rgba(2,6,23,.72);backdrop-filter:blur(20px)}
+.dock-title{display:flex;justify-content:space-between;gap:12px;align-items:center;font-size:13px;color:var(--muted);font-weight:800}
+.cloud-nav{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
+.cloud-nav button{min-height:38px;border:1px solid var(--line);border-radius:var(--radius);background:rgba(248,250,252,.06);color:var(--muted);font-size:12px;font-weight:800}
+.cloud-nav button.is-active{border-color:rgba(34,211,238,.65);background:rgba(34,211,238,.14);color:var(--white)}
+.tilt-slider{display:grid;gap:8px;font-size:12px;color:var(--muted);font-weight:800}
+input[type="range"]{accent-color:var(--cyan)}
+.content-panel{width:min(100% - 32px,var(--max));margin:0 auto;padding:42px 0}
+.detail-grid{display:grid;grid-template-columns:.92fr 1.08fr;gap:22px;align-items:start}
+.section-kicker{margin:0 0 10px;font-size:13px;color:var(--cyan);font-weight:900;text-transform:uppercase}
+h2{margin:0 0 14px;font-family:var(--label-font);font-size:clamp(34px,5vw,62px);line-height:1;letter-spacing:0}
+.panel-lead{margin:0;color:#CBD5E1;line-height:1.7;font-size:17px}
+.active-panel{position:sticky;top:calc(var(--nav) + 20px);padding:22px;border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(145deg,rgba(15,23,42,.92),rgba(2,6,23,.78));box-shadow:var(--shadow)}
+.active-panel h3{margin:0 0 10px;font-family:var(--label-font);font-size:34px}
+.active-panel p{margin:0 0 18px;color:#CBD5E1;line-height:1.65}
+.panel-list{display:grid;gap:10px;margin:0;padding:0;list-style:none}
+.panel-list li{display:flex;gap:10px;align-items:flex-start;padding:12px;border:1px solid var(--line);border-radius:var(--radius);background:rgba(248,250,252,.05);color:#E2E8F0;line-height:1.45}
+.panel-list li::before{content:"";width:9px;height:9px;margin-top:6px;flex:0 0 auto;border-radius:50%;background:var(--cyan);box-shadow:0 0 16px rgba(34,211,238,.45)}
+.fallback-list{display:grid;gap:12px}
+.fallback-card{border:1px solid var(--line);border-radius:var(--radius);background:rgba(15,23,42,.68);padding:16px;display:grid;grid-template-columns:120px 1fr auto;gap:16px;align-items:center}
+.fallback-card strong{font-family:var(--label-font);font-size:22px}
+.fallback-card p{margin:4px 0 0;color:#CBD5E1;line-height:1.5}
+.fallback-meta{color:var(--cyan);font-size:12px;font-weight:900;text-transform:uppercase}
+.story-section{display:none}
+.command-modal{position:fixed;inset:0;z-index:80;display:none;place-items:start center;padding:92px 16px 24px;background:rgba(2,6,23,.72);backdrop-filter:blur(18px)}
+.command-modal.is-open{display:grid}
+.command-box{width:min(680px,100%);border:1px solid var(--line-strong);border-radius:var(--radius);background:var(--panel-strong);box-shadow:var(--shadow);overflow:hidden}
+.command-search{display:flex;align-items:center;gap:10px;padding:14px;border-bottom:1px solid var(--line)}
+.command-search input{width:100%;border:0;outline:0;background:transparent;color:var(--white);font-size:18px}
+.command-search span{color:var(--muted);font-weight:900}
+.command-list{display:grid;gap:2px;padding:8px;max-height:420px;overflow:auto}
+.command-row{width:100%;display:grid;grid-template-columns:40px 1fr auto;gap:12px;align-items:center;padding:12px;border-color:transparent;background:transparent;color:var(--white);text-align:left}
+.command-row:hover,.command-row.is-focused{background:rgba(34,211,238,.09);border-color:rgba(34,211,238,.26)}
+.command-orb{width:38px;height:38px;border-radius:50%;background:radial-gradient(circle,rgba(34,211,238,.36),rgba(124,58,237,.26),rgba(15,23,42,.8));border:1px solid rgba(34,211,238,.3)}
+.command-row strong{display:block;font-family:var(--label-font);font-size:18px}
+.command-row span{color:var(--muted);font-size:13px}
+.kbd{padding:5px 7px;border:1px solid var(--line);border-radius:6px;color:#CBD5E1;font-size:12px;font-weight:900}
+.metrics-strip{width:min(100% - 32px,var(--max));margin:18px auto 0;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.metric{padding:16px;border:1px solid var(--line);border-radius:var(--radius);background:rgba(15,23,42,.58)}
+.metric strong{display:block;font-family:var(--label-font);font-size:28px}
+.metric span{color:var(--muted);font-size:13px;line-height:1.45}
+.site-footer{border-top:1px solid var(--line);margin-top:32px;padding:28px 0}
+.footer-inner{width:min(100% - 32px,var(--max));margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:16px;color:var(--muted);font-size:14px}
+.footer-inner strong{color:var(--white)}
+@keyframes nebula{to{transform:rotate(360deg)}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}
+.spatial-stage,.cloud{transform:none!important}
+}
+@media(max-width:980px){.desktop-nav,.header-actions .secondary-btn{display:none}
+.menu-btn{display:grid}
+.hero{min-height:auto}
+.hero-inner{grid-template-columns:1fr}
+.spatial-wrap{min-height:560px}
+.detail-grid{grid-template-columns:1fr}
+.active-panel{position:static}
+.metrics-strip{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:720px){body{background:linear-gradient(180deg,var(--cosmic),#07111f 55%,var(--cosmic))}
+.hero{padding-top:34px}
+.hero-copy p{font-size:16px}
+.hero-actions{align-items:stretch}
+.hero-actions a,.hero-actions button{width:100%}
+.orbit-legend{grid-template-columns:1fr}
+.spatial-wrap{display:none}
+.story-section{display:block;padding:18px 0 0}
+.story-tabs{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-bottom:12px}
+.story-tab{min-height:40px;padding:0 6px;border-color:var(--line);background:var(--glass);color:var(--muted);font-size:11px}
+.story-tab.is-active{border-color:rgba(34,211,238,.6);background:rgba(34,211,238,.14);color:var(--white)}
+.story-card{border:1px solid var(--line);border-radius:var(--radius);background:linear-gradient(145deg,rgba(15,23,42,.9),rgba(2,6,23,.78));padding:18px;box-shadow:var(--shadow)}
+.story-card h2{font-size:34px}
+.story-card p{color:#CBD5E1;line-height:1.65}
+.story-progress{height:6px;border-radius:999px;background:rgba(248,250,252,.1);overflow:hidden;margin-top:16px}
+.story-progress span{display:block;height:100%;width:20%;background:linear-gradient(90deg,var(--violet),var(--cyan));transition:width var(--speed)}
+.fallback-card{grid-template-columns:1fr}
+.fallback-card .ghost-btn{width:100%}
+.metrics-strip{grid-template-columns:1fr}
+.footer-inner{flex-direction:column;align-items:flex-start}
+}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to spatial content</a>
+  <div class="site-shell">
+    <div class="starfield" aria-hidden="true"></div>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="#main" aria-label="OrbitForge home">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>OrbitForge</span>
+        </a>
+        <nav class="desktop-nav" aria-label="Primary navigation">
+          <a href="#field">Field</a>
+          <a href="#cloud-detail">Clouds</a>
+          <a href="#fallback">List view</a>
+          <a href="#contact">Contact</a>
+        </nav>
+        <div class="header-actions">
+          <button class="secondary-btn" type="button" data-open-command>Command menu</button>
+          <a class="primary-btn" href="#contact">Book a walkthrough</a>
+          <button class="menu-btn" type="button" aria-label="Open menu" aria-expanded="false" data-menu-toggle>
+            <span aria-hidden="true">Menu</span>
+          </button>
+        </div>
+      </div>
+      <nav class="drawer" aria-label="Mobile navigation" data-drawer>
+        <a href="#field">Field</a>
+        <a href="#cloud-detail">Clouds</a>
+        <a href="#fallback">List view</a>
+        <a href="#contact">Contact</a>
+        <button class="secondary-btn" type="button" data-open-command>Open command menu</button>
+      </nav>
+    </header>
+    <main id="main">
+      <section class="hero" id="field" aria-labelledby="hero-title">
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <p class="eyebrow"><span class="pulse-dot" aria-hidden="true"></span> Spatial product narrative without page hierarchy</p>
+            <h1 id="hero-title">Navigate the offer like a value field.</h1>
+            <p>OrbitForge turns the usual product website into a gravityless map of decisions. Product, proof, pricing, team, and contact float as connected value clouds, while a command menu and list view keep every path clear.</p>
+            <div class="hero-actions">
+              <button class="primary-btn" type="button" data-open-command>Open command menu</button>
+              <a class="secondary-btn" href="#fallback">Use list view</a>
+            </div>
+            <div class="orbit-legend" aria-label="Spatial navigation summary">
+              <div class="legend-card">
+                <strong>5 clouds</strong>
+                <span>Every key buyer question is reachable without a page reload.</span>
+              </div>
+              <div class="legend-card">
+                <strong>1 fallback</strong>
+                <span>A readable list view mirrors every floating cloud for accessibility.</span>
+              </div>
+              <div class="legend-card">
+                <strong>0 dead ends</strong>
+                <span>Keyboard, touch, command search, and links all land on the same content.</span>
+              </div>
+            </div>
+          </div>
+          <div class="spatial-wrap" aria-label="Gravityless value cloud field">
+            <div class="spatial-status" aria-live="polite" data-status>
+              <span class="pulse-dot" aria-hidden="true"></span>
+              Product cloud selected
+            </div>
+            <div class="spatial-stage" data-stage>
+              <span class="connector one" aria-hidden="true"></span>
+              <span class="connector two" aria-hidden="true"></span>
+              <span class="connector three" aria-hidden="true"></span>
+              <span class="connector four" aria-hidden="true"></span>
+              <span class="connector five" aria-hidden="true"></span>
+              <div class="anchor-node" aria-hidden="true">value core</div>
+              <article class="cloud is-active" data-cloud="product">
+                <div class="cloud-label"><span>Product</span><span class="cloud-index">01</span></div>
+                <p>Composable launch rooms, live narrative layers, and conversion analytics for teams replacing linear landing pages.</p>
+                <div class="cloud-tags"><span>Spatial CMS</span><span>Story states</span><span>No code edits</span></div>
+                <button class="cloud-btn" type="button" data-select-cloud="product">Focus product</button>
+              </article>
+              <article class="cloud" data-cloud="proof">
+                <div class="cloud-label"><span>Proof</span><span class="cloud-index">02</span></div>
+                <p>Real adoption signals from product-led teams using spatial navigation for launch events and executive demos.</p>
+                <div class="cloud-tags"><span>41% deeper sessions</span><span>Enterprise pilots</span></div>
+                <button class="cloud-btn" type="button" data-select-cloud="proof">Focus proof</button>
+              </article>
+              <article class="cloud" data-cloud="pricing">
+                <div class="cloud-label"><span>Pricing</span><span class="cloud-index">03</span></div>
+                <p>Transparent packages for a single cinematic launch, a product suite hub, or a managed spatial brand system.</p>
+                <div class="cloud-tags"><span>Launch</span><span>Scale</span><span>Enterprise</span></div>
+                <button class="cloud-btn" type="button" data-select-cloud="pricing">Focus pricing</button>
+              </article>
+              <article class="cloud" data-cloud="team">
+                <div class="cloud-label"><span>Team</span><span class="cloud-index">04</span></div>
+                <p>A senior crew of spatial designers, frontend engineers, and growth strategists who ship usable experiments.</p>
+                <div class="cloud-tags"><span>Design systems</span><span>WebGL</span><span>Analytics</span></div>
+                <button class="cloud-btn" type="button" data-select-cloud="team">Focus team</button>
+              </article>
+              <article class="cloud" data-cloud="contact">
+                <div class="cloud-label"><span>Contact</span><span class="cloud-index">05</span></div>
+                <p>Book a 30 minute field review and leave with a launch map, risk notes, and a practical fallback plan.</p>
+                <div class="cloud-tags"><span>30 min</span><span>Async brief</span><span>Prototype plan</span></div>
+                <button class="cloud-btn" type="button" data-select-cloud="contact">Focus contact</button>
+              </article>
+            </div>
+            <aside class="control-dock" aria-label="Spatial field controls">
+              <div class="dock-title">
+                <span>Cloud focus</span>
+                <span>Arrows or 1-5</span>
+              </div>
+              <div class="cloud-nav" role="group" aria-label="Select value cloud">
+                <button class="is-active" type="button" data-select-cloud="product">01</button>
+                <button type="button" data-select-cloud="proof">02</button>
+                <button type="button" data-select-cloud="pricing">03</button>
+                <button type="button" data-select-cloud="team">04</button>
+                <button type="button" data-select-cloud="contact">05</button>
+              </div>
+              <label class="tilt-slider">
+                Field tilt
+                <input type="range" min="-18" max="18" value="0" data-tilt>
+              </label>
+            </aside>
+          </div>
+          <section class="story-section" aria-labelledby="mobile-story-title">
+            <div class="story-tabs" role="tablist" aria-label="Guided spatial story">
+              <button class="story-tab is-active" type="button" data-story="product">Product</button>
+              <button class="story-tab" type="button" data-story="proof">Proof</button>
+              <button class="story-tab" type="button" data-story="pricing">Pricing</button>
+              <button class="story-tab" type="button" data-story="team">Team</button>
+              <button class="story-tab" type="button" data-story="contact">Contact</button>
+            </div>
+            <article class="story-card" data-story-card>
+              <p class="section-kicker">Guided mobile mode</p>
+              <h2 id="mobile-story-title">Product</h2>
+              <p>Mobile disables free 3D navigation and presents the same cloud sequence as focused story cards with direct actions.</p>
+              <ul class="panel-list" data-story-list>
+                <li>Reusable spatial CMS blocks for launches, campaigns, and executive narratives.</li>
+                <li>Content editors can update panels without touching transforms or JavaScript.</li>
+              </ul>
+              <div class="story-progress"><span data-story-progress></span></div>
+            </article>
+          </section>
+        </div>
+      </section>
+      <section class="metrics-strip" aria-label="Performance highlights">
+        <div class="metric"><strong>68%</strong><span>of pilot visitors used at least two clouds before requesting the list view.</span></div>
+        <div class="metric"><strong>4.2m</strong><span>average executive demo session across product launch microsites.</span></div>
+        <div class="metric"><strong>AA</strong><span>contrast targets preserved across floating panels and fallback list cards.</span></div>
+        <div class="metric"><strong>18kb</strong><span>core interaction script before adding real CMS or analytics integrations.</span></div>
+      </section>
+      <section class="content-panel" id="cloud-detail" aria-labelledby="cloud-detail-title">
+        <div class="detail-grid">
+          <div>
+            <p class="section-kicker">Selected cloud</p>
+            <h2 id="cloud-detail-title">One clear panel for the active decision.</h2>
+            <p class="panel-lead">The spatial field is expressive, but the reading experience stays conventional. Selecting any cloud updates this anchored panel with specific buyer context and practical next steps.</p>
+          </div>
+          <article class="active-panel" aria-live="polite" data-detail-panel>
+            <h3>Product</h3>
+            <p>OrbitForge ships a spatial site engine for teams that need launch drama without losing clarity. Editors manage value clouds, proof cards, price paths, and contact routing from structured content.</p>
+            <ul class="panel-list">
+              <li>Floating cloud system with labels, tags, focus states, and keyboard navigation.</li>
+              <li>Command menu mirrors the entire experience for fast visitors and accessibility.</li>
+              <li>Mobile story mode converts depth into a guided sequence of readable cards.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+      <section class="content-panel" id="fallback" aria-labelledby="fallback-title">
+        <p class="section-kicker">Fallback list view</p>
+        <h2 id="fallback-title">Every spatial object has a grounded version.</h2>
+        <div class="fallback-list" data-fallback-list>
+          <article class="fallback-card">
+            <span class="fallback-meta">Product</span>
+            <div>
+              <strong>Spatial CMS for launch narratives</strong>
+              <p>Build a gravityless buying journey from structured cards, metrics, rich proof, and call-to-action routes.</p>
+            </div>
+            <button class="ghost-btn" type="button" data-select-cloud="product">Focus</button>
+          </article>
+          <article class="fallback-card">
+            <span class="fallback-meta">Proof</span>
+            <div>
+              <strong>Evidence that stays visible</strong>
+              <p>Use customer quotes, adoption metrics, security notes, and implementation snapshots without hiding them in sliders.</p>
+            </div>
+            <button class="ghost-btn" type="button" data-select-cloud="proof">Focus</button>
+          </article>
+          <article class="fallback-card">
+            <span class="fallback-meta">Pricing</span>
+            <div>
+              <strong>Packages that do not require a sales maze</strong>
+              <p>Show launch, scale, and enterprise paths with concrete deliverables, support levels, and expected timelines.</p>
+            </div>
+            <button class="ghost-btn" type="button" data-select-cloud="pricing">Focus</button>
+          </article>
+          <article class="fallback-card">
+            <span class="fallback-meta">Team</span>
+            <div>
+              <strong>Specialists who can ship the weird part</strong>
+              <p>Pair spatial designers with production frontend engineering, analytics, performance budgets, and QA discipline.</p>
+            </div>
+            <button class="ghost-btn" type="button" data-select-cloud="team">Focus</button>
+          </article>
+          <article class="fallback-card" id="contact">
+            <span class="fallback-meta">Contact</span>
+            <div>
+              <strong>Start with a field review</strong>
+              <p>Send a campaign brief and get a suggested cloud map, accessibility plan, and rollout estimate within two business days.</p>
+            </div>
+            <a class="ghost-btn" href="mailto:studio@orbitforge.example">Email studio</a>
+          </article>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <span><strong>OrbitForge</strong> spatial skeleton for premium launch sites.</span>
+        <span>Built with Frontend Skeletons</span>
+      </div>
+    </footer>
+  </div>
+  <div class="command-modal" role="dialog" aria-modal="true" aria-labelledby="command-title" data-command-modal>
+    <div class="command-box">
+      <div class="command-search">
+        <span id="command-title">Command</span>
+        <input type="search" aria-label="Search value clouds: product, proof, pricing, team, or contact" data-command-input>
+        <button class="ghost-btn" type="button" data-close-command>Close</button>
+      </div>
+      <div class="command-list" data-command-list></div>
+    </div>
+  </div>
+  <script>
+const clouds = {
+  product: {
+    index: 0,
+    label: "Product",
+    status: "Product cloud selected",
+    summary: "OrbitForge ships a spatial site engine for teams that need launch drama without losing clarity. Editors manage value clouds, proof cards, price paths, and contact routing from structured content.",
+    bullets: [
+      "Floating cloud system with labels, tags, focus states, and keyboard navigation.",
+      "Command menu mirrors the entire experience for fast visitors and accessibility.",
+      "Mobile story mode converts depth into a guided sequence of readable cards."
+    ],
+    command: "Explore the engine, editor model, and interaction system."
+  },
+  proof: {
+    index: 1,
+    label: "Proof",
+    status: "Proof cloud selected",
+    summary: "The proof cloud keeps credibility near the product story. It is built for concrete signals: customer outcomes, security posture, analytics snapshots, and implementation notes.",
+    bullets: [
+      "A product analytics company used value clouds for a launch briefing and lifted demo requests by 22%.",
+      "Security, performance, and accessibility notes sit beside claims instead of below the fold.",
+      "Proof cards support metrics, named quotes, implementation screenshots, and partner logos."
+    ],
+    command: "Review outcomes, credibility cards, and risk-reduction content."
+  },
+  pricing: {
+    index: 2,
+    label: "Pricing",
+    status: "Pricing cloud selected",
+    summary: "Pricing is direct: a launch package for one campaign, a scale package for multiple product areas, and an enterprise system for governed brand teams.",
+    bullets: [
+      "Launch starts at 18k for strategy, art direction, build, QA, and analytics handoff.",
+      "Scale adds reusable cloud templates, CMS integration, and monthly optimization reviews.",
+      "Enterprise includes security review support, design system alignment, and SLA-backed delivery."
+    ],
+    command: "Compare packages, scope boundaries, and handoff expectations."
+  },
+  team: {
+    index: 3,
+    label: "Team",
+    status: "Team cloud selected",
+    summary: "The team combines spatial product design, production frontend engineering, conversion strategy, and accessibility QA. The result feels experimental without becoming fragile.",
+    bullets: [
+      "Designers prototype the value field before engineering commits to interaction details.",
+      "Frontend engineers own performance, reduced motion, keyboard paths, and mobile fallbacks.",
+      "Strategists map buyer questions into content clouds that sales teams can actually use."
+    ],
+    command: "Meet the roles behind spatial strategy, build, and optimization."
+  },
+  contact: {
+    index: 4,
+    label: "Contact",
+    status: "Contact cloud selected",
+    summary: "The contact path begins with a field review. Share a launch goal, existing product narrative, timeline, and constraints; the team returns a practical map before proposal work.",
+    bullets: [
+      "30 minute discovery call focused on fit, risk, accessibility, and measurable outcomes.",
+      "Async brief option for teams that already have product messaging and launch dates.",
+      "Two business day response with suggested cloud structure and a realistic delivery range."
+    ],
+    command: "Start a field review or send an async launch brief."
+  }
+};
+const order = Object.keys(clouds);
+const stage = document.querySelector("[data-stage]");
+const statusEl = document.querySelector("[data-status]");
+const detailPanel = document.querySelector("[data-detail-panel]");
+const commandModal = document.querySelector("[data-command-modal]");
+const commandInput = document.querySelector("[data-command-input]");
+const commandList = document.querySelector("[data-command-list]");
+const drawer = document.querySelector("[data-drawer]");
+const menuToggle = document.querySelector("[data-menu-toggle]");
+const tilt = document.querySelector("[data-tilt]");
+const storyCard = document.querySelector("[data-story-card]");
+const storyProgress = document.querySelector("[data-story-progress]");
+let activeCloud = "product";
+let commandFocus = 0;
+function selectCloud(name, scrollDetail = false){
+  if(!clouds[name]) return;
+  activeCloud = name;
+  const data = clouds[name];
+  document.querySelectorAll("[data-cloud]").forEach((cloud) => {
+    cloud.classList.toggle("is-active", cloud.dataset.cloud === name);
+  });
+  document.querySelectorAll("[data-select-cloud]").forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.selectCloud === name);
+  });
+  statusEl.textContent = data.status;
+  const rotate = (data.index - 2) * -10;
+  const depth = data.index % 2 === 0 ? 3 : -3;
+  stage.style.transform = `rotateY(${rotate}deg) rotateX(${depth}deg)`;
+  detailPanel.innerHTML = `
+    <h3>${data.label}</h3>
+    <p>${data.summary}</p>
+    <ul class="panel-list">${data.bullets.map((item) => `<li>${item}</li>`).join("")}</ul>
+  `;
+  updateStory(name);
+  if(scrollDetail){
+    document.querySelector("#cloud-detail").scrollIntoView({behavior:"smooth",block:"start"});
+  }
+}
+function updateStory(name){
+  if(!storyCard) return;
+  const data = clouds[name];
+  document.querySelectorAll("[data-story]").forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.story === name);
+  });
+  storyCard.querySelector("h2").textContent = data.label;
+  storyCard.querySelector("p:not(.section-kicker)").textContent = data.summary;
+  storyCard.querySelector("[data-story-list]").innerHTML = data.bullets.slice(0,2).map((item) => `<li>${item}</li>`).join("");
+  storyProgress.style.width = `${(data.index + 1) * 20}%`;
+}
+function renderCommands(filter = ""){
+  const rows = order
+    .filter((name) => {
+      const haystack = `${clouds[name].label} ${clouds[name].command}`.toLowerCase();
+      return haystack.includes(filter.toLowerCase());
+    })
+    .map((name, idx) => {
+      const data = clouds[name];
+      return `<button class="command-row ${idx === commandFocus ? "is-focused" : ""}" type="button" data-command-cloud="${name}">
+        <span class="command-orb" aria-hidden="true"></span>
+        <span><strong>${data.label}</strong><span>${data.command}</span></span>
+        <span class="kbd">${idx + 1}</span>
+      </button>`;
+    });
+  commandList.innerHTML = rows.join("") || `<div class="command-row"><span></span><span><strong>No cloud found</strong><span>Try product, proof, pricing, team, or contact.</span></span><span></span></div>`;
+}
+function openCommand(){
+  commandFocus = Math.max(order.indexOf(activeCloud),0);
+  renderCommands();
+  commandModal.classList.add("is-open");
+  document.body.classList.add("command-open");
+  commandInput.value = "";
+  commandInput.focus();
+}
+function closeCommand(){
+  commandModal.classList.remove("is-open");
+  document.body.classList.remove("command-open");
+}
+document.addEventListener("click", (event) => {
+  const select = event.target.closest("[data-select-cloud]");
+  if(select){
+    selectCloud(select.dataset.selectCloud, true);
+  }
+  const story = event.target.closest("[data-story]");
+  if(story){
+    selectCloud(story.dataset.story, false);
+  }
+  const command = event.target.closest("[data-command-cloud]");
+  if(command){
+    selectCloud(command.dataset.commandCloud, true);
+    closeCommand();
+  }
+  if(event.target.matches("[data-open-command]")){
+    openCommand();
+  }
+  if(event.target.matches("[data-close-command]")){
+    closeCommand();
+  }
+});
+document.querySelectorAll("[data-open-command]").forEach((button) => {
+  button.addEventListener("click", openCommand);
+});
+menuToggle.addEventListener("click", () => {
+  const isOpen = drawer.classList.toggle("is-open");
+  document.body.classList.toggle("menu-open", isOpen);
+  menuToggle.setAttribute("aria-expanded", String(isOpen));
+});
+drawer.addEventListener("click", (event) => {
+  if(event.target.closest("a")){
+    drawer.classList.remove("is-open");
+    document.body.classList.remove("menu-open");
+    menuToggle.setAttribute("aria-expanded","false");
+  }
+});
+tilt.addEventListener("input", () => {
+  const current = clouds[activeCloud];
+  const rotate = (current.index - 2) * -10;
+  stage.style.transform = `rotateY(${rotate}deg) rotateX(${tilt.value}deg)`;
+});
+commandInput.addEventListener("input", () => {
+  commandFocus = 0;
+  renderCommands(commandInput.value);
+});
+commandInput.addEventListener("keydown", (event) => {
+  const rows = [...commandList.querySelectorAll("[data-command-cloud]")];
+  if(event.key === "ArrowDown"){
+    event.preventDefault();
+    commandFocus = Math.min(commandFocus + 1, rows.length - 1);
+    renderCommands(commandInput.value);
+  }
+  if(event.key === "ArrowUp"){
+    event.preventDefault();
+    commandFocus = Math.max(commandFocus - 1, 0);
+    renderCommands(commandInput.value);
+  }
+  if(event.key === "Enter" && rows[commandFocus]){
+    selectCloud(rows[commandFocus].dataset.commandCloud, true);
+    closeCommand();
+  }
+});
+document.addEventListener("keydown", (event) => {
+  if(event.key === "Escape"){
+    closeCommand();
+    drawer.classList.remove("is-open");
+    document.body.classList.remove("menu-open");
+    menuToggle.setAttribute("aria-expanded","false");
+  }
+  if((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k"){
+    event.preventDefault();
+    openCommand();
+  }
+  if(document.body.classList.contains("command-open")) return;
+  const current = order.indexOf(activeCloud);
+  if(event.key === "ArrowRight"){
+    selectCloud(order[(current + 1) % order.length], false);
+  }
+  if(event.key === "ArrowLeft"){
+    selectCloud(order[(current - 1 + order.length) % order.length], false);
+  }
+  if(["1","2","3","4","5"].includes(event.key)){
+    selectCloud(order[Number(event.key) - 1], false);
+  }
+});
+selectCloud("product");
+  </script>
+</body>
+</html>

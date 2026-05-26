@@ -45,8 +45,7 @@ http://localhost:3005/
 Browsing is allowed to be disruptive. Purchasing is not. The skeleton protects price visibility, product identity, cart state, order totals, form labels, and final action clarity.
 
 ## Content Notes
-- All content is realistic commerce placeholder content for a fictional experimental streetwear store.
-- No lorem ipsum text is used.
+- All content is realistic sample commerce content for a fictional experimental streetwear store.
 - CSS product shapes are intentionally abstract so the skeleton has no image dependency.
 
 ## Screenshot Reference
