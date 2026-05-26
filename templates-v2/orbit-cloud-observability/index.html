@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Orbit Cloud Observability premium frontend skeleton for cloud operators, incident triage, service maps, latency charts, logs, deployments, and probable cause analysis.">
+  <title>Orbit Cloud Observability</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --midnight:#080C16;
+      --navy:#111C2E;
+      --navy-2:#16243A;
+      --violet:#8B5CF6;
+      --cyan:#22D3EE;
+      --green:#34D399;
+      --rose:#FB7185;
+      --amber:#FBBF24;
+      --white:#F8FAFC;
+      --ice:#DCE7F5;
+      --muted:#91A3BA;
+      --muted-2:#66758C;
+      --line:rgba(220,231,245,0.12);
+      --line-strong:rgba(220,231,245,0.22);
+      --surface:rgba(17,28,46,0.82);
+      --surface-soft:rgba(220,231,245,0.055);
+      --surface-hot:rgba(251,113,133,0.12);
+      --surface-ok:rgba(52,211,153,0.10);
+      --surface-info:rgba(34,211,238,0.10);
+      --font-ui:"Inter",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+      --font-mono:"JetBrains Mono","SFMono-Regular",Consolas,monospace;
+      --radius-xs:6px;
+      --radius-sm:8px;
+      --radius-md:12px;
+      --radius-lg:16px;
+      --shadow-panel:0 24px 80px rgba(0,0,0,0.42);
+      --shadow-glow:0 0 0 1px rgba(34,211,238,0.14),0 18px 70px rgba(34,211,238,0.09);
+      --header:68px;
+      --motion-fast:150ms ease;
+      --motion-med:260ms ease;
+      --max:1480px;
+    }
+    *{box-sizing:border-box}
+    html{background:var(--midnight);scroll-behavior:smooth}
+    body{
+      margin:0;
+      min-height:100vh;
+      color:var(--ice);
+      font-family:var(--font-ui);
+      line-height:1.45;
+      background:
+        radial-gradient(circle at 14% 10%,rgba(139,92,246,0.16),transparent 31%),
+        radial-gradient(circle at 88% 0%,rgba(34,211,238,0.12),transparent 28%),
+        linear-gradient(180deg,#080C16 0%,#0B1220 45%,#080C16 100%);
+      overflow-x:hidden;
+    }
+    body.menu-open{overflow:hidden}
+    a{color:inherit;text-decoration:none}
+    button,input,select{font:inherit}
+    button{border:0;cursor:pointer}
+    :focus-visible{outline:3px solid var(--cyan);outline-offset:3px;border-radius:var(--radius-xs)}
+    .skip-link{
+      position:fixed;
+      top:16px;
+      left:16px;
+      z-index:100;
+      transform:translateY(-160%);
+      padding:10px 14px;
+      border-radius:var(--radius-sm);
+      background:var(--cyan);
+      color:var(--midnight);
+      font-weight:800;
+      transition:transform var(--motion-fast);
+    }
+    .skip-link:focus{transform:translateY(0)}
+    .app-shell{min-height:100vh;display:grid;grid-template-rows:auto 1fr auto}
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:50;
+      min-height:var(--header);
+      border-bottom:1px solid var(--line);
+      background:rgba(8,12,22,0.86);
+      backdrop-filter:blur(20px);
+    }
+    .topbar-inner{
+      width:min(100% - 28px,var(--max));
+      min-height:var(--header);
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+    }
+    .brand{display:inline-flex;align-items:center;gap:12px;font-weight:900;letter-spacing:0;color:var(--white)}
+    .brand-mark{
+      width:38px;
+      height:38px;
+      display:grid;
+      place-items:center;
+      border:1px solid rgba(34,211,238,0.42);
+      border-radius:var(--radius-sm);
+      background:linear-gradient(145deg,rgba(34,211,238,0.16),rgba(139,92,246,0.14));
+      box-shadow:var(--shadow-glow);
+      color:var(--cyan);
+      font-family:var(--font-mono);
+      font-size:0.78rem;
+    }
+    .nav-links{display:flex;align-items:center;gap:4px;margin:0;padding:0;list-style:none}
+    .nav-link{
+      display:inline-flex;
+      align-items:center;
+      min-height:38px;
+      padding:0 12px;
+      border-radius:var(--radius-sm);
+      color:var(--muted);
+      font-size:0.88rem;
+      font-weight:700;
+      transition:background var(--motion-fast),color var(--motion-fast);
+    }
+    .nav-link:hover,.nav-link.is-active{background:var(--surface-soft);color:var(--white)}
+    .topbar-actions{display:flex;align-items:center;gap:10px}
+    .env-select{
+      min-height:38px;
+      padding:0 32px 0 12px;
+      border:1px solid var(--line);
+      border-radius:var(--radius-sm);
+      background:var(--navy);
+      color:var(--ice);
+      font-weight:700;
+    }
+    .live-pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      min-height:38px;
+      padding:0 12px;
+      border:1px solid rgba(52,211,153,0.3);
+      border-radius:999px;
+      background:var(--surface-ok);
+      color:var(--green);
+      font-family:var(--font-mono);
+      font-size:0.74rem;
+      font-weight:700;
+      white-space:nowrap;
+    }
+    .live-pill::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 6px rgba(52,211,153,0.13)}
+    .icon-button{
+      width:40px;
+      height:40px;
+      display:grid;
+      place-items:center;
+      border:1px solid var(--line);
+      border-radius:var(--radius-sm);
+      background:var(--surface-soft);
+      color:var(--ice);
+      transition:border-color var(--motion-fast),background var(--motion-fast),transform var(--motion-fast);
+    }
+    .icon-button:hover{border-color:rgba(34,211,238,0.48);background:rgba(34,211,238,0.09);transform:translateY(-1px)}
+    .menu-toggle{display:none}
+    .menu-lines{position:relative;width:18px;height:14px}
+    .menu-lines span{position:absolute;left:0;width:100%;height:2px;border-radius:99px;background:currentColor;transition:top var(--motion-med),opacity var(--motion-med),transform var(--motion-med)}
+    .menu-lines span:nth-child(1){top:0}
+    .menu-lines span:nth-child(2){top:6px}
+    .menu-lines span:nth-child(3){top:12px}
+    .menu-open .menu-lines span:nth-child(1){top:6px;transform:rotate(45deg)}
+    .menu-open .menu-lines span:nth-child(2){opacity:0}
+    .menu-open .menu-lines span:nth-child(3){top:6px;transform:rotate(-45deg)}
+    main{width:min(100% - 28px,var(--max));margin:0 auto;padding:18px 0 26px}
+    .ops-hero{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) auto;
+      align-items:end;
+      gap:18px;
+      margin:10px 0 16px;
+    }
+    .eyebrow{margin:0 0 8px;color:var(--cyan);font-family:var(--font-mono);font-size:0.75rem;font-weight:700;text-transform:uppercase}
+    h1,h2,h3,p{letter-spacing:0}
+    h1{margin:0;color:var(--white);font-size:clamp(2rem,4vw,3.65rem);line-height:0.98;font-weight:900}
+    .hero-copy{max-width:820px;margin:12px 0 0;color:var(--muted);font-size:1rem}
+    .hero-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:2px}
+    .metric-card{
+      min-width:128px;
+      padding:13px 14px;
+      border:1px solid var(--line);
+      border-radius:var(--radius-md);
+      background:rgba(17,28,46,0.74);
+    }
+    .metric-card span{display:block;color:var(--muted);font-size:0.76rem;font-weight:700}
+    .metric-card strong{display:block;margin-top:6px;color:var(--white);font-family:var(--font-mono);font-size:1.12rem}
+    .metric-card strong.ok{color:var(--green)}
+    .metric-card strong.warn{color:var(--amber)}
+    .metric-card strong.hot{color:var(--rose)}
+    .dashboard-grid{
+      display:grid;
+      grid-template-columns:310px minmax(0,1fr) 360px;
+      grid-template-rows:auto auto auto;
+      gap:14px;
+      grid-template-areas:
+        "map map map"
+        "incidents charts logs"
+        "timeline timeline logs";
+    }
+    .panel{
+      border:1px solid var(--line);
+      border-radius:var(--radius-lg);
+      background:linear-gradient(180deg,rgba(17,28,46,0.9),rgba(11,18,32,0.86));
+      box-shadow:0 18px 54px rgba(0,0,0,0.23);
+      overflow:hidden;
+    }
+    .panel-head{
+      min-height:52px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px 16px;
+      border-bottom:1px solid var(--line);
+    }
+    .panel-title{margin:0;color:var(--white);font-size:0.95rem;font-weight:800}
+    .panel-kicker{color:var(--muted);font-family:var(--font-mono);font-size:0.7rem;font-weight:700}
+    .map-section{grid-area:map;min-height:330px}
+    .service-map{
+      position:relative;
+      min-height:276px;
+      margin:14px;
+      border:1px solid rgba(220,231,245,0.1);
+      border-radius:var(--radius-md);
+      background:
+        linear-gradient(rgba(220,231,245,0.045) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(220,231,245,0.045) 1px,transparent 1px),
+        radial-gradient(circle at 46% 50%,rgba(34,211,238,0.11),transparent 35%),
+        rgba(8,12,22,0.72);
+      background-size:32px 32px,32px 32px,auto,auto;
+      overflow:hidden;
+    }
+    .service-map::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(34,211,238,0.08),transparent);animation:scan 7s linear infinite;pointer-events:none}
+    .map-link{position:absolute;height:2px;background:linear-gradient(90deg,rgba(34,211,238,0.08),rgba(34,211,238,0.72),rgba(139,92,246,0.08));transform-origin:left center;z-index:1}
+    .link-a{width:210px;left:17%;top:42%;transform:rotate(-10deg)}
+    .link-b{width:250px;left:38%;top:39%;transform:rotate(14deg)}
+    .link-c{width:220px;left:53%;top:61%;transform:rotate(-18deg)}
+    .link-d{width:180px;left:24%;top:66%;transform:rotate(20deg)}
+    .link-hot{background:linear-gradient(90deg,rgba(251,113,133,0.06),rgba(251,113,133,0.82),rgba(251,113,133,0.08));animation:pulseLine 2.4s ease-in-out infinite}
+    .svc-node{
+      position:absolute;
+      z-index:2;
+      width:150px;
+      min-height:82px;
+      padding:11px;
+      border:1px solid rgba(220,231,245,0.16);
+      border-radius:var(--radius-sm);
+      background:rgba(8,12,22,0.88);
+      box-shadow:0 16px 36px rgba(0,0,0,0.3);
+    }
+    .svc-node::before{content:"";position:absolute;left:10px;top:10px;width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 0 6px rgba(52,211,153,0.12)}
+    .svc-node.degraded::before{background:var(--amber);box-shadow:0 0 0 6px rgba(251,191,36,0.12)}
+    .svc-node.critical::before{background:var(--rose);box-shadow:0 0 0 6px rgba(251,113,133,0.13)}
+    .svc-node strong{display:block;margin-left:18px;color:var(--white);font-size:0.88rem}
+    .svc-node span{display:block;margin-top:10px;color:var(--muted);font-family:var(--font-mono);font-size:0.68rem}
+    .svc-node small{display:inline-flex;margin-top:8px;padding:3px 6px;border-radius:999px;background:var(--surface-soft);color:var(--cyan);font-family:var(--font-mono);font-size:0.64rem;font-weight:700}
+    .node-api{left:5%;top:34%}
+    .node-auth{left:24%;top:10%}
+    .node-billing{left:42%;top:34%}
+    .node-search{left:66%;top:15%}
+    .node-events{left:72%;top:62%}
+    .node-db{left:28%;top:64%}
+    .incident-panel{grid-area:incidents}
+    .incident-list{display:grid;gap:10px;padding:12px;margin:0;list-style:none}
+    .incident-card{
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius:var(--radius-md);
+      background:rgba(8,12,22,0.54);
+      transition:border-color var(--motion-fast),background var(--motion-fast),transform var(--motion-fast);
+    }
+    .incident-card:hover,.incident-card:focus-within{border-color:rgba(34,211,238,0.38);background:rgba(34,211,238,0.055);transform:translateY(-1px)}
+    .incident-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .incident-id{color:var(--muted);font-family:var(--font-mono);font-size:0.7rem;font-weight:700}
+    .severity{display:inline-flex;padding:4px 7px;border-radius:999px;font-size:0.67rem;font-weight:900;text-transform:uppercase}
+    .sev-p1{background:var(--surface-hot);color:var(--rose)}
+    .sev-p2{background:rgba(251,191,36,0.11);color:var(--amber)}
+    .sev-p3{background:var(--surface-info);color:var(--cyan)}
+    .incident-card h3{margin:10px 0 7px;color:var(--white);font-size:0.92rem;line-height:1.25}
+    .incident-card p{margin:0;color:var(--muted);font-size:0.8rem}
+    .incident-meta{display:flex;flex-wrap:wrap;gap:6px;margin-top:11px}
+    .chip{display:inline-flex;align-items:center;min-height:24px;padding:0 7px;border:1px solid var(--line);border-radius:999px;color:var(--muted);font-family:var(--font-mono);font-size:0.64rem;font-weight:700}
+    .incident-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+    .small-button{min-height:34px;border-radius:var(--radius-sm);background:var(--surface-soft);color:var(--ice);font-size:0.78rem;font-weight:800}
+    .small-button.primary{background:var(--cyan);color:var(--midnight)}
+    .charts-panel{grid-area:charts;min-height:430px}
+    .chart-tabs{display:flex;align-items:center;gap:6px}
+    .chart-tab{min-height:32px;padding:0 10px;border-radius:var(--radius-sm);background:transparent;color:var(--muted);font-size:0.75rem;font-weight:800}
+    .chart-tab[aria-selected="true"]{background:rgba(34,211,238,0.12);color:var(--cyan)}
+    .chart-stage{padding:14px 16px 16px}
+    .chart-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+    .summary-tile{padding:11px;border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(8,12,22,0.52)}
+    .summary-tile span{display:block;color:var(--muted);font-size:0.68rem;font-weight:800;text-transform:uppercase}
+    .summary-tile strong{display:block;margin-top:6px;color:var(--white);font-family:var(--font-mono);font-size:1rem}
+    .latency-chart{height:208px;display:flex;align-items:end;gap:8px;padding:16px 10px 10px;border:1px solid var(--line);border-radius:var(--radius-md);background:linear-gradient(180deg,rgba(220,231,245,0.04),rgba(8,12,22,0.62))}
+    .bar{position:relative;flex:1;min-width:12px;border-radius:6px 6px 2px 2px;background:linear-gradient(180deg,var(--cyan),rgba(34,211,238,0.18));box-shadow:0 0 24px rgba(34,211,238,0.16)}
+    .bar.hot{background:linear-gradient(180deg,var(--rose),rgba(251,113,133,0.18));box-shadow:0 0 24px rgba(251,113,133,0.16)}
+    .bar.warn{background:linear-gradient(180deg,var(--amber),rgba(251,191,36,0.16))}
+    .bar::after{content:attr(data-label);position:absolute;left:50%;bottom:-24px;transform:translateX(-50%);color:var(--muted-2);font-family:var(--font-mono);font-size:0.62rem}
+    .cause-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:36px}
+    .cause-card{padding:12px;border:1px solid var(--line);border-radius:var(--radius-md);background:rgba(8,12,22,0.56)}
+    .cause-card strong{display:block;color:var(--white);font-size:0.84rem}
+    .cause-card span{display:block;margin-top:7px;color:var(--muted);font-size:0.76rem}
+    .cause-card b{color:var(--cyan);font-family:var(--font-mono)}
+    .logs-panel{grid-area:logs;display:grid;grid-template-rows:auto 1fr}
+    .log-toolbar{display:flex;align-items:center;gap:8px}
+    .log-input{width:132px;min-height:32px;border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(8,12,22,0.76);color:var(--ice);padding:0 10px;font-family:var(--font-mono);font-size:0.72rem}
+    .log-stream{min-height:0;padding:12px;overflow:auto;max-height:680px;background:rgba(8,12,22,0.72)}
+    .log-line{display:grid;grid-template-columns:76px 44px 1fr;gap:8px;padding:8px 0;border-bottom:1px solid rgba(220,231,245,0.06);font-family:var(--font-mono);font-size:0.7rem;color:var(--muted)}
+    .log-line:last-child{border-bottom:0}
+    .log-time{color:var(--muted-2)}
+    .log-level{font-weight:800;text-transform:uppercase}
+    .level-error{color:var(--rose)}
+    .level-warn{color:var(--amber)}
+    .level-info{color:var(--cyan)}
+    .level-ok{color:var(--green)}
+    .log-msg{color:var(--ice)}
+    .timeline-panel{grid-area:timeline}
+    .deploy-lane{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--line)}
+    .deploy-event{min-height:150px;padding:14px;background:rgba(8,12,22,0.64)}
+    .deploy-event time{color:var(--muted);font-family:var(--font-mono);font-size:0.68rem;font-weight:700}
+    .deploy-event h3{margin:10px 0 7px;color:var(--white);font-size:0.88rem}
+    .deploy-event p{margin:0;color:var(--muted);font-size:0.76rem}
+    .deploy-event code{display:inline-flex;margin-top:10px;padding:4px 6px;border-radius:var(--radius-xs);background:rgba(139,92,246,0.13);color:#C4B5FD;font-family:var(--font-mono);font-size:0.68rem}
+    .deploy-event.current{background:linear-gradient(180deg,rgba(251,113,133,0.13),rgba(8,12,22,0.68))}
+    .mobile-triage{display:none}
+    .footer{border-top:1px solid var(--line);color:var(--muted);background:rgba(8,12,22,0.9)}
+    .footer-inner{width:min(100% - 28px,var(--max));margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 0;font-size:0.84rem}
+    .footer strong{color:var(--ice)}
+    @keyframes scan{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+    @keyframes pulseLine{0%,100%{opacity:0.45}50%{opacity:1}}
+    @media (prefers-reduced-motion:reduce){
+      *,*::before,*::after{animation-duration:0.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:0.01ms!important}
+    }
+    @media (max-width:1180px){
+      .dashboard-grid{grid-template-columns:300px minmax(0,1fr);grid-template-areas:"map map" "incidents charts" "logs logs" "timeline timeline"}
+      .logs-panel{min-height:430px}
+      .log-stream{max-height:390px}
+      .hero-metrics{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:860px){
+      .menu-toggle{display:grid}
+      .nav-links{
+        position:fixed;
+        inset:var(--header) 14px auto 14px;
+        display:none;
+        padding:10px;
+        border:1px solid var(--line);
+        border-radius:var(--radius-md);
+        background:rgba(17,28,46,0.97);
+        box-shadow:var(--shadow-panel);
+      }
+      .menu-open .nav-links{display:grid}
+      .nav-link{min-height:44px;width:100%}
+      .env-select,.live-pill{display:none}
+      main{width:min(100% - 20px,var(--max));padding-top:12px}
+      .ops-hero{grid-template-columns:1fr;align-items:start}
+      .hero-metrics{grid-template-columns:repeat(2,1fr)}
+      .dashboard-grid{display:block}
+      .panel{margin-bottom:12px}
+      .map-section{display:none}
+      .mobile-triage{display:block;margin-bottom:12px;border:1px solid var(--line);border-radius:var(--radius-lg);background:linear-gradient(180deg,rgba(17,28,46,0.92),rgba(8,12,22,0.88));overflow:hidden}
+      .triage-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:12px}
+      .triage-card{padding:12px;border-top:1px solid var(--line)}
+      .triage-card h3{margin:0 0 6px;color:var(--white);font-size:0.95rem}
+      .triage-card p{margin:0;color:var(--muted);font-size:0.8rem}
+      .chart-summary,.cause-grid{grid-template-columns:1fr 1fr}
+      .deploy-lane{grid-template-columns:1fr}
+      .log-line{grid-template-columns:68px 40px 1fr;font-size:0.66rem}
+      .footer-inner{flex-direction:column;align-items:flex-start}
+    }
+    @media (max-width:560px){
+      .hero-metrics{grid-template-columns:1fr}
+      .topbar-inner{width:min(100% - 20px,var(--max))}
+      .brand span{font-size:0.94rem}
+      h1{font-size:2.05rem}
+      .chart-summary,.cause-grid{grid-template-columns:1fr}
+      .incident-actions,.triage-actions{grid-template-columns:1fr}
+      .panel-head{align-items:flex-start;flex-direction:column}
+      .chart-tabs{width:100%;overflow:auto;padding-bottom:2px}
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#dashboard">Skip to dashboard</a>
+  <div class="app-shell">
+    <header class="topbar" aria-label="Primary navigation">
+      <div class="topbar-inner">
+        <a class="brand" href="#top" aria-label="Orbit Cloud Observability home">
+          <span class="brand-mark">OC</span>
+          <span>Orbit Cloud Observability</span>
+        </a>
+        <nav aria-label="Dashboard sections">
+          <ul class="nav-links" id="primary-nav">
+            <li><a class="nav-link is-active" href="#dashboard">Live Ops</a></li>
+            <li><a class="nav-link" href="#incidents">Incidents</a></li>
+            <li><a class="nav-link" href="#latency">Latency</a></li>
+            <li><a class="nav-link" href="#logs">Logs</a></li>
+            <li><a class="nav-link" href="#deployments">Deployments</a></li>
+          </ul>
+        </nav>
+        <div class="topbar-actions">
+          <select class="env-select" aria-label="Environment">
+            <option>Production EU West</option>
+            <option>Production US East</option>
+            <option>Canary</option>
+          </select>
+          <span class="live-pill">Live 14:31 UTC</span>
+          <button class="icon-button menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="primary-nav">
+            <span class="menu-lines" aria-hidden="true"><span></span><span></span><span></span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+    <main id="top">
+      <section class="ops-hero" aria-labelledby="page-title">
+        <div>
+          <p class="eyebrow">Incident command workspace</p>
+          <h1 id="page-title">Know what changed, what broke, and what to do next.</h1>
+          <p class="hero-copy">Orbit compresses service topology, deployments, latency anomalies, and live logs into a single operator view built for fast triage during customer-impacting events.</p>
+        </div>
+        <div class="hero-metrics" aria-label="Current operating metrics">
+          <div class="metric-card"><span>Global SLO</span><strong class="warn">99.91%</strong></div>
+          <div class="metric-card"><span>Open P1</span><strong class="hot">1</strong></div>
+          <div class="metric-card"><span>p95 API</span><strong>418 ms</strong></div>
+          <div class="metric-card"><span>Error budget</span><strong class="ok">43.2%</strong></div>
+        </div>
+      </section>
+      <section class="mobile-triage" aria-label="Mobile incident triage mode">
+        <div class="panel-head">
+          <h2 class="panel-title">Triage Mode</h2>
+          <span class="panel-kicker">Priority first</span>
+        </div>
+        <div class="triage-card">
+          <h3>INC-4821: Checkout p95 spike</h3>
+          <p>Billing API and ledger-writer affected. Probable cause is deployment orbit-web@9f3a2c1 enabling the new tax resolver.</p>
+        </div>
+        <div class="triage-actions">
+          <button class="small-button primary" type="button">Acknowledge</button>
+          <button class="small-button" type="button">Start rollback</button>
+          <button class="small-button" type="button">Page billing</button>
+          <button class="small-button" type="button">Open runbook</button>
+        </div>
+      </section>
+      <section class="dashboard-grid" id="dashboard" aria-label="Cloud observability dashboard">
+        <article class="panel map-section" aria-labelledby="map-title">
+          <div class="panel-head">
+            <h2 class="panel-title" id="map-title">Service Map</h2>
+            <span class="panel-kicker">6 services, 2 degraded edges</span>
+          </div>
+          <div class="service-map" role="img" aria-label="Service map showing checkout API connected to auth, billing, search, events, and database services">
+            <span class="map-link link-a"></span>
+            <span class="map-link link-b link-hot"></span>
+            <span class="map-link link-c"></span>
+            <span class="map-link link-d"></span>
+            <button class="svc-node node-api degraded" type="button"><strong>checkout-api</strong><span>p95 418 ms - 2.8% 5xx</span><small>12 pods</small></button>
+            <button class="svc-node node-auth" type="button"><strong>identity-gate</strong><span>p95 92 ms - 0.04% 5xx</span><small>8 pods</small></button>
+            <button class="svc-node node-billing critical" type="button"><strong>billing-core</strong><span>p95 731 ms - 7.1% 5xx</span><small>18 pods</small></button>
+            <button class="svc-node node-search" type="button"><strong>catalog-search</strong><span>p95 141 ms - stable</span><small>10 pods</small></button>
+            <button class="svc-node node-events degraded" type="button"><strong>ledger-writer</strong><span>queue lag 38k - retrying</span><small>6 pods</small></button>
+            <button class="svc-node node-db" type="button"><strong>orders-postgres</strong><span>cpu 74% - iops normal</span><small>primary</small></button>
+          </div>
+        </article>
+        <aside class="panel incident-panel" id="incidents" aria-labelledby="incident-title">
+          <div class="panel-head">
+            <h2 class="panel-title" id="incident-title">Incident Queue</h2>
+            <span class="panel-kicker">Arrow keys move focus</span>
+          </div>
+          <ul class="incident-list" aria-label="Priority incidents">
+            <li class="incident-card" tabindex="0">
+              <div class="incident-top"><span class="incident-id">INC-4821</span><span class="severity sev-p1">P1</span></div>
+              <h3>Checkout latency and failed card captures</h3>
+              <p>EU checkout conversion down 18.4% since 14:12 UTC.</p>
+              <div class="incident-meta"><span class="chip">billing-core</span><span class="chip">EU West</span><span class="chip">owner payments</span></div>
+              <div class="incident-actions"><button class="small-button primary" type="button">Acknowledge</button><button class="small-button" type="button">Runbook</button></div>
+            </li>
+            <li class="incident-card" tabindex="0">
+              <div class="incident-top"><span class="incident-id">INC-4819</span><span class="severity sev-p2">P2</span></div>
+              <h3>Ledger writer retry queue above threshold</h3>
+              <p>Kafka topic orders.settled lag reached 38,420 messages.</p>
+              <div class="incident-meta"><span class="chip">ledger-writer</span><span class="chip">queue lag</span></div>
+              <div class="incident-actions"><button class="small-button" type="button">Assign</button><button class="small-button" type="button">Inspect</button></div>
+            </li>
+            <li class="incident-card" tabindex="0">
+              <div class="incident-top"><span class="incident-id">INC-4817</span><span class="severity sev-p3">P3</span></div>
+              <h3>Search warmup slower after shard rebalance</h3>
+              <p>Catalog search p99 is 612 ms for first-request cohorts.</p>
+              <div class="incident-meta"><span class="chip">catalog-search</span><span class="chip">watch</span></div>
+              <div class="incident-actions"><button class="small-button" type="button">Mute 30m</button><button class="small-button" type="button">Details</button></div>
+            </li>
+          </ul>
+        </aside>
+        <article class="panel charts-panel" id="latency" aria-labelledby="latency-title">
+          <div class="panel-head">
+            <h2 class="panel-title" id="latency-title">Latency and Probable Cause</h2>
+            <div class="chart-tabs" role="tablist" aria-label="Latency services">
+              <button class="chart-tab" role="tab" aria-selected="true" data-service="checkout">Checkout</button>
+              <button class="chart-tab" role="tab" aria-selected="false" data-service="billing">Billing</button>
+              <button class="chart-tab" role="tab" aria-selected="false" data-service="ledger">Ledger</button>
+            </div>
+          </div>
+          <div class="chart-stage">
+            <div class="chart-summary" aria-label="Selected service summary">
+              <div class="summary-tile"><span>p50</span><strong id="p50">84 ms</strong></div>
+              <div class="summary-tile"><span>p95</span><strong id="p95">418 ms</strong></div>
+              <div class="summary-tile"><span>p99</span><strong id="p99">944 ms</strong></div>
+              <div class="summary-tile"><span>5xx</span><strong id="errors">2.8%</strong></div>
+            </div>
+            <div class="latency-chart" aria-label="Latency over the last 60 minutes">
+              <span class="bar" style="height:34%" data-label="13:30"></span>
+              <span class="bar" style="height:38%" data-label="13:40"></span>
+              <span class="bar" style="height:41%" data-label="13:50"></span>
+              <span class="bar warn" style="height:54%" data-label="14:00"></span>
+              <span class="bar hot" style="height:78%" data-label="14:10"></span>
+              <span class="bar hot" style="height:88%" data-label="14:20"></span>
+              <span class="bar hot" style="height:82%" data-label="14:30"></span>
+              <span class="bar warn" style="height:62%" data-label="14:40"></span>
+              <span class="bar" style="height:47%" data-label="14:50"></span>
+            </div>
+            <div class="cause-grid" aria-label="Probable cause cards">
+              <div class="cause-card"><strong>Probable cause</strong><span><b>86%</b> match: orbit-web@9f3a2c1 changed tax resolver timeout from 180 ms to 900 ms.</span></div>
+              <div class="cause-card"><strong>Blast radius</strong><span><b>EU West</b> card capture path, 14.7k sessions, three largest merchants affected.</span></div>
+              <div class="cause-card"><strong>Next action</strong><span><b>Rollback</b> feature flag tax.resolve.v2 or revert deployment batch dep-7714.</span></div>
+            </div>
+          </div>
+        </article>
+        <aside class="panel logs-panel" id="logs" aria-labelledby="logs-title">
+          <div class="panel-head">
+            <h2 class="panel-title" id="logs-title">Live Logs</h2>
+            <div class="log-toolbar"><input class="log-input" id="log-filter" type="search" aria-label="Filter logs by service"></div>
+          </div>
+          <div class="log-stream" id="log-stream" aria-live="polite" aria-label="Filtered live log entries">
+            <div class="log-line" data-service="billing-core"><span class="log-time">14:31:04</span><span class="log-level level-error">err</span><span class="log-msg">billing-core capture timeout merchant=atlas-outdoor trace=7ef29 route=/v1/capture</span></div>
+            <div class="log-line" data-service="checkout-api"><span class="log-time">14:30:58</span><span class="log-level level-warn">warn</span><span class="log-msg">checkout-api retrying card capture attempt=2 latency=1274ms cart=ca_18492</span></div>
+            <div class="log-line" data-service="ledger-writer"><span class="log-time">14:30:51</span><span class="log-level level-warn">warn</span><span class="log-msg">ledger-writer kafka lag topic=orders.settled partition=12 lag=38420</span></div>
+            <div class="log-line" data-service="billing-core"><span class="log-time">14:30:44</span><span class="log-level level-info">info</span><span class="log-msg">billing-core tax resolver cache miss region=DE vat_profile=business</span></div>
+            <div class="log-line" data-service="orders-postgres"><span class="log-time">14:30:38</span><span class="log-level level-ok">ok</span><span class="log-msg">orders-postgres checkpoint complete buffers=18291 write_ms=62</span></div>
+            <div class="log-line" data-service="identity-gate"><span class="log-time">14:30:31</span><span class="log-level level-ok">ok</span><span class="log-msg">identity-gate oauth token verify p95=31ms issuer=accounts.orbitcloud.io</span></div>
+            <div class="log-line" data-service="catalog-search"><span class="log-time">14:30:22</span><span class="log-level level-info">info</span><span class="log-msg">catalog-search shard warmup completed shard=eu-products-07 docs=2.8m</span></div>
+            <div class="log-line" data-service="billing-core"><span class="log-time">14:30:11</span><span class="log-level level-error">err</span><span class="log-msg">billing-core dependency timeout tax-resolver-v2 elapsed=904ms budget=450ms</span></div>
+            <div class="log-line" data-service="checkout-api"><span class="log-time">14:29:56</span><span class="log-level level-warn">warn</span><span class="log-msg">checkout-api brownout guard entered service=billing-core error_rate=2.8</span></div>
+            <div class="log-line" data-service="ledger-writer"><span class="log-time">14:29:41</span><span class="log-level level-info">info</span><span class="log-msg">ledger-writer consumer group rebalance generation=7714 members=6</span></div>
+            <div class="log-line" data-service="billing-core"><span class="log-time">14:29:18</span><span class="log-level level-info">info</span><span class="log-msg">billing-core release orbit-web@9f3a2c1 config tax.resolve.v2=true</span></div>
+            <div class="log-line" data-service="checkout-api"><span class="log-time">14:28:59</span><span class="log-level level-ok">ok</span><span class="log-msg">checkout-api deploy marker received dep-7714 sha=9f3a2c1</span></div>
+          </div>
+        </aside>
+        <article class="panel timeline-panel" id="deployments" aria-labelledby="timeline-title">
+          <div class="panel-head">
+            <h2 class="panel-title" id="timeline-title">Deployment Timeline</h2>
+            <span class="panel-kicker">Correlated with incident window</span>
+          </div>
+          <div class="deploy-lane" aria-label="Recent deployments">
+            <div class="deploy-event"><time>13:42 UTC</time><h3>identity-gate</h3><p>JWT issuer cache normalized for partner SSO.</p><code>4b92a77</code></div>
+            <div class="deploy-event"><time>13:58 UTC</time><h3>catalog-search</h3><p>Shard warmup tuning rolled to 25 percent.</p><code>a17c0d8</code></div>
+            <div class="deploy-event current"><time>14:12 UTC</time><h3>orbit-web checkout</h3><p>Tax resolver v2 enabled for EU merchants.</p><code>9f3a2c1</code></div>
+            <div class="deploy-event"><time>14:18 UTC</time><h3>ledger-writer</h3><p>Consumer image rebuilt with OpenTelemetry 1.29.</p><code>d83e5aa</code></div>
+            <div class="deploy-event"><time>14:27 UTC</time><h3>billing-core</h3><p>Autoscaler added three pods after latency alert.</p><code>c6f71be</code></div>
+          </div>
+        </article>
+      </section>
+    </main>
+    <footer class="footer">
+      <div class="footer-inner">
+        <span><strong>Orbit Cloud Observability</strong> operator dashboard skeleton</span>
+        <span>Built with Frontend Skeletons</span>
+      </div>
+    </footer>
+  </div>
+  <script>
+    const body = document.body;
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const tabs = Array.from(document.querySelectorAll('.chart-tab'));
+    const incidents = Array.from(document.querySelectorAll('.incident-card'));
+    const logFilter = document.querySelector('#log-filter');
+    const logLines = Array.from(document.querySelectorAll('.log-line'));
+    const latencyData = {
+      checkout:{p50:'84 ms',p95:'418 ms',p99:'944 ms',errors:'2.8%'},
+      billing:{p50:'132 ms',p95:'731 ms',p99:'1.8 s',errors:'7.1%'},
+      ledger:{p50:'58 ms',p95:'206 ms',p99:'489 ms',errors:'0.6%'}
+    };
+    function setMenu(open){
+      body.classList.toggle('menu-open',open);
+      menuToggle?.setAttribute('aria-expanded',String(open));
+      menuToggle?.setAttribute('aria-label',open?'Close menu':'Open menu');
+    }
+    menuToggle?.addEventListener('click',()=>setMenu(!body.classList.contains('menu-open')));
+    navLinks.forEach(link=>{
+      link.addEventListener('click',()=>{
+        navLinks.forEach(item=>item.classList.remove('is-active'));
+        link.classList.add('is-active');
+        setMenu(false);
+      });
+    });
+    function activateTab(tab){
+      tabs.forEach(item=>item.setAttribute('aria-selected',String(item===tab)));
+      const data = latencyData[tab.dataset.service];
+      document.querySelector('#p50').textContent = data.p50;
+      document.querySelector('#p95').textContent = data.p95;
+      document.querySelector('#p99').textContent = data.p99;
+      document.querySelector('#errors').textContent = data.errors;
+    }
+    tabs.forEach((tab,index)=>{
+      tab.addEventListener('click',()=>activateTab(tab));
+      tab.addEventListener('keydown',event=>{
+        if(event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+        event.preventDefault();
+        const dir = event.key === 'ArrowRight' ? 1 : -1;
+        const next = tabs[(index + dir + tabs.length) % tabs.length];
+        next.focus();
+        activateTab(next);
+      });
+    });
+    incidents.forEach((card,index)=>{
+      card.addEventListener('keydown',event=>{
+        if(event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+        event.preventDefault();
+        const dir = event.key === 'ArrowDown' ? 1 : -1;
+        incidents[(index + dir + incidents.length) % incidents.length].focus();
+      });
+    });
+    logFilter?.addEventListener('input',event=>{
+      const query = event.target.value.trim().toLowerCase();
+      logLines.forEach(line=>{
+        const match = !query || line.dataset.service.includes(query) || line.textContent.toLowerCase().includes(query);
+        line.hidden = !match;
+      });
+    });
+    window.addEventListener('keydown',event=>{
+      if(event.key === 'Escape') setMenu(false);
+      if(event.key === '/' && document.activeElement !== logFilter){
+        event.preventDefault();
+        logFilter?.focus();
+      }
+    });
+  </script>
+</body>
+</html>
