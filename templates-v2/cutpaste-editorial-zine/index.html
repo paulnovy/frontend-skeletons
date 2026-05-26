@@ -1,0 +1,1400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Cutpaste Editorial Zine is a tactile digital publication skeleton with torn paper cutouts, taped photos, strong editorial hierarchy, and mobile-safe stacked layouts.">
+  <title>Cutpaste Editorial Zine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Special+Elite&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --kraft:#D4A574;
+      --newsprint:#F5F5F0;
+      --ink:#1A1A1A;
+      --red:#DC2626;
+      --blue:#1D4ED8;
+      --paper-shadow:0 18px 42px rgba(26,26,26,0.2);
+      --paper-shadow-hard:7px 8px 0 rgba(26,26,26,0.18);
+      --tape:rgba(255,246,187,0.72);
+      --line:rgba(26,26,26,0.22);
+      --line-strong:rgba(26,26,26,0.42);
+      --font-head:"Archivo",system-ui,sans-serif;
+      --font-body:"Special Elite","Courier New",monospace;
+      --space-1:4px;
+      --space-2:8px;
+      --space-3:12px;
+      --space-4:16px;
+      --space-5:20px;
+      --space-6:24px;
+      --space-8:32px;
+      --space-10:40px;
+      --space-12:48px;
+      --space-16:64px;
+      --radius-sm:2px;
+      --radius-md:6px;
+      --motion-fast:150ms ease;
+      --motion-med:260ms ease;
+      --z-nav:20;
+      --z-menu:40;
+    }
+
+    *{
+      box-sizing:border-box;
+    }
+
+    html{
+      scroll-behavior:smooth;
+      color-scheme:light;
+    }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      color:var(--ink);
+      font-family:var(--font-body);
+      line-height:1.55;
+      background:
+        radial-gradient(circle at 10% 12%,rgba(220,38,38,0.1),transparent 24%),
+        radial-gradient(circle at 92% 6%,rgba(29,78,216,0.12),transparent 28%),
+        linear-gradient(rgba(26,26,26,0.045) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(26,26,26,0.035) 1px,transparent 1px),
+        var(--kraft);
+      background-size:auto,auto,34px 34px,34px 34px,auto;
+      overflow-x:hidden;
+    }
+
+    body.nav-open{
+      overflow:hidden;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      z-index:-1;
+      opacity:0.34;
+      pointer-events:none;
+      background:
+        repeating-linear-gradient(5deg,rgba(255,255,255,0.12) 0 1px,transparent 1px 6px),
+        repeating-linear-gradient(-12deg,rgba(26,26,26,0.035) 0 1px,transparent 1px 8px);
+      mix-blend-mode:multiply;
+    }
+
+    a{
+      color:inherit;
+      text-decoration:none;
+    }
+
+    button,
+    input{
+      font:inherit;
+    }
+
+    button{
+      border:0;
+      cursor:pointer;
+    }
+
+    img{
+      display:block;
+      max-width:100%;
+    }
+
+    :focus-visible{
+      outline:3px solid var(--blue);
+      outline-offset:4px;
+      border-radius:var(--radius-sm);
+    }
+
+    .skip-link{
+      position:fixed;
+      top:var(--space-4);
+      left:var(--space-4);
+      z-index:60;
+      transform:translateY(-160%);
+      padding:var(--space-3) var(--space-4);
+      background:var(--ink);
+      color:var(--newsprint);
+      font-family:var(--font-head);
+      font-weight:900;
+      text-transform:uppercase;
+      transition:transform var(--motion-fast);
+    }
+
+    .skip-link:focus{
+      transform:translateY(0);
+    }
+
+    .site-header{
+      position:sticky;
+      top:0;
+      z-index:var(--z-nav);
+      display:grid;
+      grid-template-columns:auto 1fr auto;
+      align-items:center;
+      gap:var(--space-4);
+      padding:var(--space-4) var(--space-6);
+      border-bottom:3px solid var(--ink);
+      background:rgba(245,245,240,0.92);
+      backdrop-filter:blur(14px);
+      box-shadow:0 8px 0 rgba(26,26,26,0.08);
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:var(--space-3);
+      font-family:var(--font-head);
+      font-weight:900;
+      letter-spacing:0;
+      text-transform:uppercase;
+    }
+
+    .brand-mark{
+      width:48px;
+      height:48px;
+      display:grid;
+      place-items:center;
+      border:3px solid var(--ink);
+      background:
+        linear-gradient(135deg,transparent 0 42%,var(--red) 43% 56%,transparent 57%),
+        var(--kraft);
+      box-shadow:4px 4px 0 var(--ink);
+      transform:rotate(-4deg);
+    }
+
+    .brand small{
+      display:block;
+      font-family:var(--font-body);
+      font-size:0.72rem;
+      font-weight:400;
+      text-transform:none;
+    }
+
+    .primary-nav{
+      justify-self:center;
+    }
+
+    .nav-list{
+      display:flex;
+      align-items:center;
+      gap:var(--space-2);
+      margin:0;
+      padding:0;
+      list-style:none;
+    }
+
+    .nav-link{
+      display:inline-flex;
+      min-height:42px;
+      align-items:center;
+      padding:0 var(--space-3);
+      border:2px solid transparent;
+      font-family:var(--font-head);
+      font-size:0.78rem;
+      font-weight:800;
+      letter-spacing:0.04em;
+      text-transform:uppercase;
+      transition:background var(--motion-fast),border-color var(--motion-fast),transform var(--motion-fast);
+    }
+
+    .nav-link:hover,
+    .nav-link.active{
+      border-color:var(--ink);
+      background:var(--tape);
+      transform:rotate(-1deg);
+    }
+
+    .issue-stamp{
+      justify-self:end;
+      display:grid;
+      gap:2px;
+      padding:var(--space-2) var(--space-3);
+      border:2px dashed var(--red);
+      color:var(--red);
+      font-family:var(--font-head);
+      font-size:0.75rem;
+      font-weight:900;
+      line-height:1.1;
+      text-align:center;
+      text-transform:uppercase;
+      transform:rotate(3deg);
+      background:rgba(245,245,240,0.7);
+    }
+
+    .menu-button{
+      display:none;
+      min-height:44px;
+      align-items:center;
+      justify-content:center;
+      gap:var(--space-2);
+      padding:0 var(--space-4);
+      border:2px solid var(--ink);
+      background:var(--newsprint);
+      color:var(--ink);
+      font-family:var(--font-head);
+      font-weight:900;
+      text-transform:uppercase;
+      box-shadow:4px 4px 0 var(--ink);
+    }
+
+    .menu-lines{
+      width:18px;
+      display:grid;
+      gap:4px;
+    }
+
+    .menu-lines span{
+      display:block;
+      height:3px;
+      background:currentColor;
+    }
+
+    .zine-shell{
+      max-width:1480px;
+      margin:0 auto;
+      padding:var(--space-8) var(--space-6) var(--space-12);
+    }
+
+    .front-page{
+      position:relative;
+      display:grid;
+      grid-template-columns:minmax(0,1.12fr) minmax(320px,0.88fr);
+      gap:var(--space-8);
+      align-items:start;
+      min-height:calc(100vh - 96px);
+    }
+
+    .hero-stack{
+      position:relative;
+      min-height:680px;
+      display:grid;
+      align-items:end;
+    }
+
+    .paper{
+      position:relative;
+      background:
+        linear-gradient(90deg,rgba(26,26,26,0.035) 1px,transparent 1px),
+        linear-gradient(rgba(26,26,26,0.03) 1px,transparent 1px),
+        var(--newsprint);
+      background-size:26px 26px;
+      border:2px solid var(--ink);
+      box-shadow:var(--paper-shadow-hard),var(--paper-shadow);
+    }
+
+    .paper::after{
+      content:"";
+      position:absolute;
+      left:-2px;
+      right:-2px;
+      bottom:-12px;
+      height:18px;
+      background:
+        radial-gradient(12px 9px at 8px 0,transparent 58%,var(--ink) 60% 64%,transparent 66%),
+        radial-gradient(16px 10px at 28px 1px,transparent 58%,var(--newsprint) 60%);
+      background-size:38px 18px;
+      opacity:0.55;
+      pointer-events:none;
+    }
+
+    .lead-paper{
+      padding:var(--space-10);
+      transform:rotate(-1.2deg);
+      clip-path:polygon(0 2%,98% 0,100% 96%,93% 100%,5% 98%,0 93%);
+    }
+
+    .eyebrow{
+      display:flex;
+      flex-wrap:wrap;
+      gap:var(--space-2);
+      margin:0 0 var(--space-4);
+      font-family:var(--font-head);
+      font-size:0.78rem;
+      font-weight:900;
+      letter-spacing:0.06em;
+      text-transform:uppercase;
+    }
+
+    .eyebrow span{
+      padding:5px var(--space-2);
+      border:2px solid var(--ink);
+      background:var(--kraft);
+    }
+
+    .eyebrow .red{
+      color:var(--red);
+      background:transparent;
+      border-color:currentColor;
+    }
+
+    .hero-title{
+      max-width:10ch;
+      margin:0;
+      font-family:var(--font-head);
+      font-size:clamp(4.6rem,10vw,10.5rem);
+      line-height:0.78;
+      font-weight:900;
+      letter-spacing:0;
+      text-transform:uppercase;
+    }
+
+    .hero-title mark{
+      display:inline;
+      padding:0 0.06em;
+      color:var(--newsprint);
+      background:var(--ink);
+      box-decoration-break:clone;
+    }
+
+    .lead-copy{
+      max-width:64ch;
+      margin:var(--space-6) 0 0;
+      font-size:1.18rem;
+    }
+
+    .lead-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:var(--space-3);
+      margin-top:var(--space-6);
+    }
+
+    .cut-button{
+      display:inline-flex;
+      min-height:46px;
+      align-items:center;
+      justify-content:center;
+      gap:var(--space-2);
+      padding:0 var(--space-4);
+      border:2px solid var(--ink);
+      background:var(--newsprint);
+      color:var(--ink);
+      font-family:var(--font-head);
+      font-size:0.82rem;
+      font-weight:900;
+      text-transform:uppercase;
+      box-shadow:4px 4px 0 var(--ink);
+      transition:transform var(--motion-fast),box-shadow var(--motion-fast),background var(--motion-fast);
+    }
+
+    .cut-button:hover,
+    .cut-button.active{
+      transform:translate(-2px,-2px) rotate(-1deg);
+      box-shadow:7px 7px 0 var(--ink);
+      background:var(--tape);
+    }
+
+    .cut-button.primary{
+      background:var(--ink);
+      color:var(--newsprint);
+    }
+
+    .photo-cutout{
+      position:absolute;
+      right:1%;
+      top:2%;
+      width:min(42%,360px);
+      padding:var(--space-3);
+      transform:rotate(6deg);
+      background:var(--newsprint);
+      border:2px solid var(--ink);
+      box-shadow:var(--paper-shadow-hard),var(--paper-shadow);
+    }
+
+    .photo-cutout::before,
+    .mini-photo::before,
+    .taped::before{
+      content:"";
+      position:absolute;
+      top:-18px;
+      left:50%;
+      width:116px;
+      height:34px;
+      transform:translateX(-50%) rotate(-2deg);
+      background:
+        linear-gradient(90deg,rgba(255,255,255,0.18),transparent 35% 65%,rgba(255,255,255,0.18)),
+        var(--tape);
+      border-left:1px solid rgba(26,26,26,0.08);
+      border-right:1px solid rgba(26,26,26,0.08);
+      box-shadow:0 2px 6px rgba(26,26,26,0.08);
+    }
+
+    .photo-art{
+      min-height:300px;
+      border:2px solid var(--ink);
+      background:
+        linear-gradient(135deg,rgba(29,78,216,0.6) 0 18%,transparent 18%),
+        linear-gradient(24deg,transparent 0 45%,rgba(220,38,38,0.8) 45% 52%,transparent 52%),
+        repeating-linear-gradient(90deg,rgba(26,26,26,0.85) 0 7px,rgba(245,245,240,0.9) 7px 15px),
+        linear-gradient(180deg,#b7b7aa,#eeeeea);
+      filter:contrast(1.08) grayscale(0.18);
+    }
+
+    .photo-caption{
+      margin:var(--space-3) 0 0;
+      font-size:0.84rem;
+    }
+
+    .sidebar-stack{
+      display:grid;
+      gap:var(--space-6);
+      padding-top:var(--space-10);
+    }
+
+    .editor-note{
+      padding:var(--space-6);
+      transform:rotate(1.4deg);
+      clip-path:polygon(2% 0,100% 3%,97% 100%,0 98%);
+    }
+
+    .editor-note h2,
+    .section-title,
+    .cutout-card h3,
+    .dispatch h3,
+    .manifesto h2,
+    .letter-panel h2{
+      margin:0;
+      font-family:var(--font-head);
+      font-weight:900;
+      line-height:0.92;
+      letter-spacing:0;
+      text-transform:uppercase;
+    }
+
+    .editor-note h2{
+      color:var(--blue);
+      font-size:clamp(2.2rem,4vw,4rem);
+    }
+
+    .editor-note p{
+      margin:var(--space-4) 0 0;
+      font-size:1rem;
+    }
+
+    .issue-index{
+      padding:var(--space-5);
+      transform:rotate(-2deg);
+      background:var(--ink);
+      color:var(--newsprint);
+      box-shadow:var(--paper-shadow);
+    }
+
+    .issue-index h2{
+      margin:0 0 var(--space-4);
+      font-family:var(--font-head);
+      font-size:1.2rem;
+      font-weight:900;
+      text-transform:uppercase;
+    }
+
+    .issue-index ol{
+      display:grid;
+      gap:var(--space-3);
+      margin:0;
+      padding:0;
+      list-style:none;
+      counter-reset:toc;
+    }
+
+    .issue-index li{
+      counter-increment:toc;
+      display:grid;
+      grid-template-columns:34px 1fr;
+      gap:var(--space-3);
+      align-items:start;
+      border-top:1px solid rgba(245,245,240,0.24);
+      padding-top:var(--space-3);
+    }
+
+    .issue-index li::before{
+      content:counter(toc,decimal-leading-zero);
+      color:var(--red);
+      font-family:var(--font-head);
+      font-weight:900;
+    }
+
+    .issue-index a{
+      font-family:var(--font-head);
+      font-size:0.9rem;
+      font-weight:800;
+      text-transform:uppercase;
+    }
+
+    .issue-index span{
+      display:block;
+      margin-top:2px;
+      color:rgba(245,245,240,0.72);
+      font-size:0.78rem;
+    }
+
+    .section-band{
+      position:relative;
+      margin-top:var(--space-16);
+    }
+
+    .section-head{
+      display:flex;
+      align-items:end;
+      justify-content:space-between;
+      gap:var(--space-4);
+      margin-bottom:var(--space-8);
+      border-bottom:4px solid var(--ink);
+      padding-bottom:var(--space-3);
+    }
+
+    .section-title{
+      max-width:12ch;
+      font-size:clamp(2.8rem,6vw,6.8rem);
+    }
+
+    .section-kicker{
+      max-width:32ch;
+      margin:0;
+      color:var(--red);
+      font-family:var(--font-head);
+      font-size:0.9rem;
+      font-weight:900;
+      text-align:right;
+      text-transform:uppercase;
+    }
+
+    .feature-grid{
+      display:grid;
+      grid-template-columns:repeat(12,1fr);
+      gap:var(--space-5);
+      align-items:start;
+    }
+
+    .cutout-card{
+      position:relative;
+      display:grid;
+      gap:var(--space-4);
+      padding:var(--space-5);
+      min-height:320px;
+      transition:transform var(--motion-med),box-shadow var(--motion-med),z-index var(--motion-med);
+    }
+
+    .cutout-card:hover,
+    .cutout-card:focus-within,
+    .cutout-card.active{
+      z-index:6;
+      transform:rotate(0deg) translateY(-8px) scale(1.015);
+      box-shadow:12px 14px 0 rgba(26,26,26,0.2),0 24px 60px rgba(26,26,26,0.24);
+    }
+
+    .cutout-card h3{
+      font-size:clamp(1.8rem,3vw,3.2rem);
+    }
+
+    .cutout-card p{
+      margin:0;
+      max-width:58ch;
+    }
+
+    .cutout-card .meta{
+      display:flex;
+      flex-wrap:wrap;
+      gap:var(--space-2);
+      margin:0;
+      font-family:var(--font-head);
+      font-size:0.72rem;
+      font-weight:900;
+      text-transform:uppercase;
+    }
+
+    .meta span{
+      padding:4px 7px;
+      border:2px solid var(--ink);
+      background:var(--kraft);
+    }
+
+    .meta .blue{
+      color:var(--blue);
+      background:transparent;
+      border-color:currentColor;
+    }
+
+    .meta .red{
+      color:var(--red);
+      background:transparent;
+      border-color:currentColor;
+    }
+
+    .story-a{
+      grid-column:1 / span 7;
+      transform:rotate(-1.8deg);
+      clip-path:polygon(0 2%,94% 0,100% 10%,98% 100%,6% 98%,0 90%);
+    }
+
+    .story-b{
+      grid-column:7 / span 6;
+      margin-top:var(--space-12);
+      transform:rotate(2.5deg);
+      clip-path:polygon(4% 0,100% 3%,97% 94%,88% 100%,0 97%,2% 8%);
+    }
+
+    .story-c{
+      grid-column:2 / span 5;
+      margin-top:-34px;
+      transform:rotate(3.4deg);
+      clip-path:polygon(0 0,92% 4%,100% 96%,8% 100%,0 88%);
+    }
+
+    .story-d{
+      grid-column:6 / span 7;
+      margin-top:var(--space-4);
+      transform:rotate(-2.6deg);
+      clip-path:polygon(3% 2%,100% 0,96% 100%,0 94%);
+    }
+
+    .pull-quote{
+      grid-column:1 / span 4;
+      align-self:stretch;
+      padding:var(--space-6);
+      background:var(--red);
+      color:var(--newsprint);
+      border:3px solid var(--ink);
+      box-shadow:var(--paper-shadow-hard);
+      transform:rotate(-4deg);
+    }
+
+    .pull-quote blockquote{
+      margin:0;
+      font-family:var(--font-head);
+      font-size:clamp(2rem,4vw,4.5rem);
+      font-weight:900;
+      line-height:0.9;
+      text-transform:uppercase;
+    }
+
+    .pull-quote cite{
+      display:block;
+      margin-top:var(--space-4);
+      font-style:normal;
+    }
+
+    .collage-row{
+      display:grid;
+      grid-template-columns:1.1fr 0.8fr 1fr;
+      gap:var(--space-5);
+      align-items:center;
+      margin-top:var(--space-10);
+    }
+
+    .mini-photo{
+      position:relative;
+      min-height:290px;
+      padding:var(--space-3);
+      border:2px solid var(--ink);
+      background:var(--newsprint);
+      box-shadow:var(--paper-shadow-hard),var(--paper-shadow);
+    }
+
+    .mini-photo:nth-child(1){
+      transform:rotate(2.6deg);
+    }
+
+    .mini-photo:nth-child(2){
+      transform:rotate(-3.2deg);
+      margin-top:var(--space-8);
+    }
+
+    .mini-photo:nth-child(3){
+      transform:rotate(1.2deg);
+    }
+
+    .photo-one,
+    .photo-two,
+    .photo-three{
+      min-height:230px;
+      border:2px solid var(--ink);
+      background-size:cover;
+    }
+
+    .photo-one{
+      background:
+        radial-gradient(circle at 20% 30%,var(--red) 0 8%,transparent 9%),
+        linear-gradient(115deg,transparent 0 48%,rgba(26,26,26,0.9) 49% 54%,transparent 55%),
+        repeating-linear-gradient(0deg,#a8aaa0 0 16px,#e8e8df 16px 32px);
+    }
+
+    .photo-two{
+      background:
+        linear-gradient(90deg,rgba(29,78,216,0.9) 0 20%,transparent 20%),
+        radial-gradient(circle at 70% 28%,rgba(245,245,240,0.8) 0 11%,transparent 12%),
+        repeating-linear-gradient(45deg,#222 0 10px,#ddd 10px 20px);
+    }
+
+    .photo-three{
+      background:
+        linear-gradient(170deg,transparent 0 38%,rgba(220,38,38,0.85) 39% 48%,transparent 49%),
+        radial-gradient(circle at 44% 48%,rgba(29,78,216,0.72) 0 18%,transparent 19%),
+        linear-gradient(180deg,#d6d2c5,#8c8d84);
+    }
+
+    .mini-photo p{
+      margin:var(--space-3) 0 0;
+      font-size:0.82rem;
+    }
+
+    .departments{
+      display:grid;
+      grid-template-columns:1fr 1fr 1fr;
+      gap:var(--space-5);
+      margin-top:var(--space-8);
+    }
+
+    .dispatch{
+      position:relative;
+      padding:var(--space-5);
+      min-height:310px;
+      background:var(--newsprint);
+      border:2px solid var(--ink);
+      box-shadow:var(--paper-shadow-hard);
+    }
+
+    .dispatch:nth-child(1){
+      transform:rotate(-2deg);
+    }
+
+    .dispatch:nth-child(2){
+      transform:rotate(1.4deg);
+      margin-top:var(--space-6);
+    }
+
+    .dispatch:nth-child(3){
+      transform:rotate(-0.8deg);
+    }
+
+    .dispatch h3{
+      color:var(--blue);
+      font-size:2.1rem;
+    }
+
+    .dispatch p{
+      margin:var(--space-4) 0 0;
+    }
+
+    .dispatch ul{
+      display:grid;
+      gap:var(--space-3);
+      margin:var(--space-5) 0 0;
+      padding:0;
+      list-style:none;
+    }
+
+    .dispatch li{
+      padding-top:var(--space-3);
+      border-top:1px dashed var(--line-strong);
+    }
+
+    .manifesto{
+      display:grid;
+      grid-template-columns:minmax(0,0.82fr) minmax(300px,1.18fr);
+      gap:var(--space-6);
+      align-items:start;
+      margin-top:var(--space-16);
+      padding:var(--space-8);
+      border:3px solid var(--ink);
+      background:var(--ink);
+      color:var(--newsprint);
+      box-shadow:var(--paper-shadow);
+      transform:rotate(-0.4deg);
+    }
+
+    .manifesto h2{
+      color:var(--kraft);
+      font-size:clamp(2.5rem,5vw,6rem);
+    }
+
+    .manifesto-list{
+      display:grid;
+      gap:var(--space-4);
+      margin:0;
+      padding:0;
+      list-style:none;
+    }
+
+    .manifesto-list li{
+      display:grid;
+      grid-template-columns:54px 1fr;
+      gap:var(--space-4);
+      align-items:start;
+      padding:var(--space-4);
+      border:1px solid rgba(245,245,240,0.24);
+      background:rgba(245,245,240,0.06);
+    }
+
+    .manifesto-list strong{
+      color:var(--red);
+      font-family:var(--font-head);
+      font-size:1.4rem;
+      font-weight:900;
+    }
+
+    .manifesto-list p{
+      margin:0;
+    }
+
+    .letter-panel{
+      position:relative;
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 340px;
+      gap:var(--space-6);
+      margin-top:var(--space-16);
+      padding:var(--space-8);
+      transform:rotate(1deg);
+      clip-path:polygon(0 0,98% 2%,100% 92%,94% 100%,3% 97%);
+    }
+
+    .letter-panel h2{
+      font-size:clamp(2.4rem,5vw,5rem);
+    }
+
+    .letter-panel p{
+      max-width:68ch;
+      margin:var(--space-4) 0 0;
+    }
+
+    .letter-form{
+      display:grid;
+      gap:var(--space-3);
+      align-content:start;
+    }
+
+    .letter-form label{
+      font-family:var(--font-head);
+      font-size:0.8rem;
+      font-weight:900;
+      text-transform:uppercase;
+    }
+
+    .letter-form input{
+      min-height:48px;
+      padding:0 var(--space-3);
+      border:2px solid var(--ink);
+      background:var(--newsprint);
+      color:var(--ink);
+    }
+
+    .site-footer{
+      max-width:1480px;
+      margin:0 auto;
+      padding:var(--space-8) var(--space-6) var(--space-10);
+      border-top:4px solid var(--ink);
+      text-align:center;
+    }
+
+    .site-footer p{
+      margin:0;
+      font-family:var(--font-head);
+      font-weight:900;
+      text-transform:uppercase;
+    }
+
+    .overlay{
+      position:fixed;
+      inset:0;
+      z-index:30;
+      display:none;
+      background:rgba(26,26,26,0.46);
+    }
+
+    body.nav-open .overlay{
+      display:block;
+    }
+
+    @media (prefers-reduced-motion:reduce){
+      *,
+      *::before,
+      *::after{
+        scroll-behavior:auto!important;
+        animation-duration:0.001ms!important;
+        animation-iteration-count:1!important;
+        transition-duration:0.001ms!important;
+      }
+
+      .lead-paper,
+      .photo-cutout,
+      .editor-note,
+      .issue-index,
+      .cutout-card,
+      .mini-photo,
+      .dispatch,
+      .manifesto,
+      .letter-panel{
+        transform:none!important;
+      }
+    }
+
+    @media (max-width:1100px){
+      .site-header{
+        grid-template-columns:auto auto;
+      }
+
+      .primary-nav{
+        position:fixed;
+        inset:76px var(--space-4) auto var(--space-4);
+        z-index:var(--z-menu);
+        display:none;
+        padding:var(--space-4);
+        border:3px solid var(--ink);
+        background:var(--newsprint);
+        box-shadow:8px 8px 0 var(--ink);
+      }
+
+      body.nav-open .primary-nav{
+        display:block;
+      }
+
+      .nav-list{
+        display:grid;
+      }
+
+      .nav-link{
+        width:100%;
+        border-color:var(--line);
+      }
+
+      .issue-stamp{
+        display:none;
+      }
+
+      .menu-button{
+        display:inline-flex;
+        justify-self:end;
+      }
+
+      .front-page,
+      .manifesto,
+      .letter-panel{
+        grid-template-columns:1fr;
+      }
+
+      .photo-cutout{
+        position:relative;
+        top:auto;
+        right:auto;
+        width:min(520px,78%);
+        margin:-80px 0 0 auto;
+      }
+
+      .hero-stack{
+        min-height:auto;
+      }
+
+      .sidebar-stack{
+        padding-top:0;
+      }
+
+      .feature-grid{
+        grid-template-columns:1fr 1fr;
+      }
+
+      .story-a,
+      .story-b,
+      .story-c,
+      .story-d,
+      .pull-quote{
+        grid-column:auto;
+        margin-top:0;
+      }
+
+      .collage-row,
+      .departments{
+        grid-template-columns:1fr 1fr;
+      }
+    }
+
+    @media (max-width:720px){
+      .site-header{
+        padding:var(--space-3) var(--space-4);
+      }
+
+      .brand{
+        max-width:210px;
+      }
+
+      .brand-mark{
+        width:42px;
+        height:42px;
+      }
+
+      .zine-shell{
+        padding:var(--space-5) var(--space-4) var(--space-10);
+      }
+
+      .front-page{
+        gap:var(--space-5);
+      }
+
+      .lead-paper,
+      .editor-note,
+      .issue-index,
+      .cutout-card,
+      .mini-photo,
+      .dispatch,
+      .manifesto,
+      .letter-panel{
+        transform:none;
+      }
+
+      .lead-paper{
+        padding:var(--space-5);
+      }
+
+      .hero-title{
+        font-size:clamp(3.5rem,18vw,5.2rem);
+      }
+
+      .photo-cutout{
+        width:100%;
+        margin:var(--space-5) 0 0;
+      }
+
+      .photo-art{
+        min-height:220px;
+      }
+
+      .section-band{
+        margin-top:var(--space-10);
+      }
+
+      .section-head{
+        display:grid;
+        gap:var(--space-3);
+      }
+
+      .section-kicker{
+        text-align:left;
+      }
+
+      .feature-grid,
+      .collage-row,
+      .departments{
+        grid-template-columns:1fr;
+      }
+
+      .cutout-card{
+        min-height:0;
+      }
+
+      .cutout-card:hover,
+      .cutout-card:focus-within,
+      .cutout-card.active{
+        transform:translateY(-4px);
+      }
+
+      .mini-photo:nth-child(2),
+      .dispatch:nth-child(2){
+        margin-top:0;
+      }
+
+      .manifesto,
+      .letter-panel{
+        padding:var(--space-5);
+      }
+
+      .manifesto-list li{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#features">Skip to features</a>
+  <header class="site-header" aria-label="Site header">
+    <a class="brand" href="#top" aria-label="Cutpaste Zine home">
+      <span class="brand-mark">CP</span>
+      <span>Cutpaste<br><small>field notes for tactile digital culture</small></span>
+    </a>
+    <nav class="primary-nav" id="primaryNav" aria-label="Primary navigation">
+      <ul class="nav-list">
+        <li><a class="nav-link active" href="#top">Cover</a></li>
+        <li><a class="nav-link" href="#features">Features</a></li>
+        <li><a class="nav-link" href="#photos">Photo Desk</a></li>
+        <li><a class="nav-link" href="#departments">Departments</a></li>
+        <li><a class="nav-link" href="#letters">Letters</a></li>
+      </ul>
+    </nav>
+    <div class="issue-stamp" aria-label="Current issue">
+      <span>Issue 04</span>
+      <span>Spring Print Run</span>
+    </div>
+    <button class="menu-button" type="button" aria-expanded="false" aria-controls="primaryNav">
+      <span class="menu-lines" aria-hidden="true"><span></span><span></span><span></span></span>
+      Menu
+    </button>
+  </header>
+
+  <div class="overlay" data-close-menu></div>
+
+  <main class="zine-shell" id="top">
+    <section class="front-page" aria-labelledby="cover-title">
+      <div class="hero-stack">
+        <article class="paper lead-paper" tabindex="0">
+          <p class="eyebrow">
+            <span>Digital Zine</span>
+            <span class="red">No smooth edges</span>
+            <span>Printed from the browser</span>
+          </p>
+          <h1 class="hero-title" id="cover-title">The screen wants <mark>paper</mark> back.</h1>
+          <p class="lead-copy">A publication prototype for editors, artists, and small studios who want the web to feel handled, folded, corrected, taped, and passed across a table.</p>
+          <div class="lead-actions" aria-label="Cover actions">
+            <a class="cut-button primary" href="#features">Read the issue</a>
+            <button class="cut-button" type="button" data-shuffle>Shuffle cutouts</button>
+          </div>
+        </article>
+        <aside class="photo-cutout taped" aria-label="Cover photo">
+          <div class="photo-art" role="img" aria-label="Abstract photocopied street poster collage with blue ink stripe and red marker slash"></div>
+          <p class="photo-caption">Poster wall outside a closed copy shop, photographed during a midnight layout sprint.</p>
+        </aside>
+      </div>
+
+      <div class="sidebar-stack">
+        <article class="paper editor-note taped" tabindex="0">
+          <h2>Editor's note</h2>
+          <p>This issue follows the designers making digital work deliberately physical: software with tape marks, CMS layouts that leave fingerprints, and editorial systems that refuse to become another gray dashboard.</p>
+          <p>The chaos is staged. The reading order is not.</p>
+        </article>
+        <aside class="issue-index" aria-labelledby="toc-title">
+          <h2 id="toc-title">Inside the issue</h2>
+          <ol>
+            <li><a href="#features">Riso Thinking<span>How small teams build texture into product stories.</span></a></li>
+            <li><a href="#photos">Photo Desk<span>Three taped field studies from independent publishers.</span></a></li>
+            <li><a href="#departments">Departments<span>Tools, margins, corrections, mail, and type specimens.</span></a></li>
+            <li><a href="#letters">Letters<span>Reader notes from the last edition and a signup tear slip.</span></a></li>
+          </ol>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section-band" id="features" aria-labelledby="features-title">
+      <div class="section-head">
+        <h2 class="section-title" id="features-title">Features</h2>
+        <p class="section-kicker">Strong hierarchy, rough hands, readable articles, deliberate overlaps.</p>
+      </div>
+      <div class="feature-grid">
+        <article class="paper cutout-card story-a taped" tabindex="0" data-cutout>
+          <p class="meta"><span>Cover Story</span><span class="red">12 min</span></p>
+          <h3>Riso thinking for product teams</h3>
+          <p>Independent publishers have known for years that constraints can become the voice. A two-color palette, a misregistered image, and a tight deadline can make a page feel alive. Digital teams are borrowing that energy for launches, reports, and editorial microsites.</p>
+          <p>The best examples do not imitate paper as decoration. They use paper logic to guide pacing: one dominant headline, a marked correction, a taped visual, and a quiet column that lets the reader breathe.</p>
+        </article>
+        <article class="paper cutout-card story-b" tabindex="0" data-cutout>
+          <p class="meta"><span class="blue">Interview</span><span>8 min</span></p>
+          <h3>The art director keeps the crooked scan</h3>
+          <p>Mara Voss runs a three-person magazine from a studio above a bicycle repair shop. Her rule is simple: if a texture helps the reader understand where a piece came from, it stays.</p>
+          <p>"Clean is not the same as clear," she says. The studio now prototypes page rhythm in browser first, then prints only the spreads that deserve ink.</p>
+        </article>
+        <aside class="pull-quote" tabindex="0">
+          <blockquote>"The mess only works when the editor still has a spine."</blockquote>
+          <cite>Field note, paste-up workshop, Lisbon</cite>
+        </aside>
+        <article class="paper cutout-card story-c" tabindex="0" data-cutout>
+          <p class="meta"><span>Process</span><span class="red">Studio Visit</span></p>
+          <h3>Margins as navigation</h3>
+          <p>Instead of hiding wayfinding in a smooth top bar, the zine uses visible issue stamps, table-of-contents blocks, and repeated section labels. Readers always know whether they are at the cover, the photo desk, or the letters page.</p>
+        </article>
+        <article class="paper cutout-card story-d taped" tabindex="0" data-cutout>
+          <p class="meta"><span class="blue">Criticism</span><span>6 min</span></p>
+          <h3>Against fake authenticity</h3>
+          <p>A torn edge is not a personality. The physical language has to support editorial judgment: hierarchy first, material cues second, motion last. If a page gets harder to read because it wants to look handmade, the gimmick wins and the reader loses.</p>
+          <p>This skeleton keeps article bodies on generous paper surfaces and pulls the expressive behavior into edges, rotations, stamps, tape, and transitions.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-band" id="photos" aria-labelledby="photos-title">
+      <div class="section-head">
+        <h2 class="section-title" id="photos-title">Photo Desk</h2>
+        <p class="section-kicker">Taped images are CSS-built so the template stays portable and fast.</p>
+      </div>
+      <div class="collage-row">
+        <figure class="mini-photo">
+          <div class="photo-one" role="img" aria-label="Abstract folded zine spread on a copy machine bed"></div>
+          <figcaption><p>Copy bed at 01:12. The last spread before the staples ran out.</p></figcaption>
+        </figure>
+        <figure class="mini-photo">
+          <div class="photo-two" role="img" aria-label="Abstract striped street wall with blue taped poster"></div>
+          <figcaption><p>Street wall study: blue tape, black paste, one missing corner.</p></figcaption>
+        </figure>
+        <figure class="mini-photo">
+          <div class="photo-three" role="img" aria-label="Abstract workshop table with red marker slash and blue ink pool"></div>
+          <figcaption><p>Workshop table after a layout critique. Nobody cleaned the marker.</p></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section-band" id="departments" aria-labelledby="departments-title">
+      <div class="section-head">
+        <h2 class="section-title" id="departments-title">Departments</h2>
+        <p class="section-kicker">Short recurring modules keep the publication scannable.</p>
+      </div>
+      <div class="departments">
+        <article class="dispatch taped" tabindex="0">
+          <h3>Tool Shelf</h3>
+          <p>Three objects from the studio table this month.</p>
+          <ul>
+            <li>Blue grease pencil for annotating screenshots without turning them into corporate diagrams.</li>
+            <li>Cheap receipt printer for testing whether captions still work at terrible widths.</li>
+            <li>Archive box labeled "failed covers" because failures are faster than moodboards.</li>
+          </ul>
+        </article>
+        <article class="dispatch" tabindex="0">
+          <h3>Corrections</h3>
+          <p>In Issue 03 we described a community press as volunteer-run. It is worker-owned, which is both more precise and more interesting.</p>
+          <ul>
+            <li>The archive date for the Porto poster walk was March 18, not March 19.</li>
+            <li>The blue ink in the type specimen was Reflex Blue, not process cyan.</li>
+          </ul>
+        </article>
+        <article class="dispatch taped" tabindex="0">
+          <h3>Margin Notes</h3>
+          <p>Readers sent photos of zines opened beside laptops, soldering stations, kitchen counters, and one train window. The best digital publications travel like print even when they never leave the screen.</p>
+          <ul>
+            <li>Next issue: field reports from tiny arts organizations rebuilding their websites.</li>
+            <li>Open call: send one screenshot that still feels like a place.</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="manifesto" aria-labelledby="manifesto-title">
+      <div>
+        <p class="eyebrow"><span class="red">Layout rules</span></p>
+        <h2 id="manifesto-title">Chaos with an editor.</h2>
+      </div>
+      <ul class="manifesto-list">
+        <li><strong>01</strong><p>Every page needs one loud idea. Rotations, tape, and overlaps are accents around that idea, not a substitute for it.</p></li>
+        <li><strong>02</strong><p>Article surfaces stay calm enough to read. Texture belongs in the paper, the edges, and the image treatment.</p></li>
+        <li><strong>03</strong><p>Mobile collapses into stacked cutouts with reduced overlap, larger reading areas, and full-width controls.</p></li>
+      </ul>
+    </section>
+
+    <section class="paper letter-panel taped" id="letters" aria-labelledby="letters-title">
+      <div>
+        <p class="eyebrow"><span>Reader Mail</span><span class="blue">Monthly packet</span></p>
+        <h2 id="letters-title">Send us a torn corner.</h2>
+        <p>Subscribe for a monthly packet of publishing references, layout breakdowns, and practical notes from small editorial teams making digital work feel less weightless.</p>
+        <p>The form is static in this skeleton. Wire it to your newsletter, CMS, or member list when you adapt the template.</p>
+      </div>
+      <form class="letter-form" aria-label="Subscribe to reader letters">
+        <label for="reader-name">Name</label>
+        <input id="reader-name" name="name" autocomplete="name" value="Ari from the night desk">
+        <label for="reader-email">Email</label>
+        <input id="reader-email" name="email" type="email" autocomplete="email" value="ari@example.com">
+        <button class="cut-button primary" type="submit">Join the mailing stack</button>
+      </form>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>Built with Frontend Skeletons</p>
+  </footer>
+
+  <script>
+    const body=document.body;
+    const menuButton=document.querySelector(".menu-button");
+    const nav=document.querySelector("#primaryNav");
+    const navLinks=[...document.querySelectorAll(".nav-link")];
+    const cutouts=[...document.querySelectorAll("[data-cutout]")];
+    const shuffleButton=document.querySelector("[data-shuffle]");
+    const letterForm=document.querySelector(".letter-form");
+    const closeTargets=[...document.querySelectorAll("[data-close-menu]")];
+
+    function syncNavState(open){
+      const mobile=window.matchMedia("(max-width:1100px)").matches;
+      nav.setAttribute("aria-hidden",String(mobile&&!open));
+    }
+
+    function setMenu(open){
+      body.classList.toggle("nav-open",open);
+      menuButton.setAttribute("aria-expanded",String(open));
+      syncNavState(open);
+    }
+
+    function setActiveLink(hash){
+      navLinks.forEach(link=>{
+        link.classList.toggle("active",link.getAttribute("href")===hash);
+      });
+    }
+
+    function activateCutout(index){
+      cutouts.forEach(card=>card.classList.remove("active"));
+      const next=cutouts[(index+cutouts.length)%cutouts.length];
+      next.classList.add("active");
+      next.focus({preventScroll:false});
+    }
+
+    menuButton.addEventListener("click",()=>{
+      setMenu(!body.classList.contains("nav-open"));
+    });
+
+    closeTargets.forEach(target=>{
+      target.addEventListener("click",()=>setMenu(false));
+    });
+
+    navLinks.forEach(link=>{
+      link.addEventListener("click",event=>{
+        setActiveLink(link.getAttribute("href"));
+        setMenu(false);
+      });
+    });
+
+    cutouts.forEach((card,index)=>{
+      card.addEventListener("focus",()=>{
+        cutouts.forEach(item=>item.classList.remove("active"));
+        card.classList.add("active");
+      });
+      card.addEventListener("click",()=>activateCutout(index));
+    });
+
+    shuffleButton.addEventListener("click",()=>{
+      cutouts.forEach((card,index)=>{
+        const turn=[-2.8,1.8,3.1,-1.5][index%4];
+        const drift=[0,18,-12,10][index%4];
+        card.style.transform=`rotate(${turn}deg) translateY(${drift}px)`;
+      });
+      shuffleButton.classList.add("active");
+      window.setTimeout(()=>shuffleButton.classList.remove("active"),700);
+    });
+
+    letterForm.addEventListener("submit",event=>{
+      event.preventDefault();
+      const button=letterForm.querySelector("button");
+      button.textContent="Stacked for the next issue";
+      window.setTimeout(()=>button.textContent="Join the mailing stack",1800);
+    });
+
+    document.addEventListener("keydown",event=>{
+      if(event.key==="Escape"){
+        setMenu(false);
+      }
+
+      if(event.altKey&&(event.key==="ArrowRight"||event.key==="ArrowLeft")){
+        event.preventDefault();
+        const current=Math.max(0,cutouts.findIndex(card=>card.classList.contains("active")));
+        const offset=event.key==="ArrowRight"?1:-1;
+        activateCutout(current+offset);
+      }
+    });
+
+    const sections=[...document.querySelectorAll("main section[id]")];
+    const observer=new IntersectionObserver(entries=>{
+      entries.forEach(entry=>{
+        if(entry.isIntersecting){
+          setActiveLink(`#${entry.target.id}`);
+        }
+      });
+    },{rootMargin:"-40% 0px -52% 0px",threshold:0.01});
+
+    sections.forEach(section=>observer.observe(section));
+    window.addEventListener("resize",()=>syncNavState(body.classList.contains("nav-open")));
+    setMenu(false);
+  </script>
+</body>
+</html>

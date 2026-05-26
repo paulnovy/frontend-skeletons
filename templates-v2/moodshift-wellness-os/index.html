@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MoodShift Wellness OS is a premium adaptive wellness interface that changes density, tone, and journaling prompts based on a user's declared emotional state.">
+  <title>MoodShift Wellness OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+
+  </style>
+</head>
+<body data-mood="steady">
+  <a class="skip-link" href="#today">Skip to today's state</a>
+
+  <header class="topbar" aria-label="Primary navigation">
+    <div class="shell topbar-inner">
+      <a class="brand" href="#today" aria-label="MoodShift Wellness OS home">
+        <span class="brand-mark" aria-hidden="true">M</span>
+        <span>MoodShift OS</span>
+      </a>
+      <nav class="desktop-nav" aria-label="Main sections">
+        <a href="#today">Today</a>
+        <a href="#journal">Journal</a>
+        <a href="#rhythm">Rhythm</a>
+        <a href="#workspace">Workspace</a>
+        <a href="#log">Log</a>
+      </nav>
+      <div class="top-actions">
+        <button class="button soft" type="button" data-action="save">Save reflection</button>
+        <button class="button primary" type="button" data-action="compose">New journal note</button>
+        <button class="hamburger" type="button" aria-label="Open navigation menu" aria-controls="mobile-menu" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+    <div class="mobile-menu" id="mobile-menu">
+      <nav aria-label="Mobile navigation">
+        <a href="#today">Today</a>
+        <a href="#journal">Journal</a>
+        <a href="#rhythm">Rhythm</a>
+        <a href="#workspace">Workspace</a>
+        <a href="#log">Log</a>
+      </nav>
+    </div>
+  </header>
+
+  <div class="mood-strip" aria-label="Mood selector">
+    <div class="shell mood-selector">
+      <span class="mood-label">Declare state</span>
+      <div class="mood-options" role="group" aria-label="Choose current emotional state">
+        <button class="mood-chip" type="button" data-mood-choice="stressed" aria-pressed="false">Stressed</button>
+        <button class="mood-chip" type="button" data-mood-choice="steady" aria-pressed="true">Steady</button>
+        <button class="mood-chip" type="button" data-mood-choice="energized" aria-pressed="false">Energized</button>
+        <button class="mood-chip" type="button" data-mood-choice="grounded" aria-pressed="false">Grounded</button>
+      </div>
+      <span class="privacy-note">Logged as a preference, never a judgment.</span>
+    </div>
+  </div>
+
+  <main>
+    <section class="shell hero" id="today" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <div>
+          <p class="eyebrow">Adaptive wellness operating system</p>
+          <h1 id="hero-title">A workspace that listens to the mood you name.</h1>
+          <p class="hero-subtitle" id="mood-copy">MoodShift adjusts density, contrast, prompts, and next actions after you declare how you feel. The entry is logged neutrally, without diagnosis, scoring, or judgment.</p>
+        </div>
+        <div class="hero-meta" aria-label="Wellness operating system highlights">
+          <div class="meta-tile">
+            <strong id="visible-count">7</strong>
+            <span>Visible modules right now, adjusted to your selected state.</span>
+          </div>
+          <div class="meta-tile">
+            <strong>3 min</strong>
+            <span>Shortest reflection flow uses one prompt and one simple next step.</span>
+          </div>
+          <div class="meta-tile">
+            <strong>0 labels</strong>
+            <span>No good or bad moods, no wellness score, no clinical language.</span>
+          </div>
+        </div>
+      </div>
+
+      <aside class="today-panel" aria-label="Today's adaptive view">
+        <div class="state-card">
+          <h2 id="state-title">Steady view</h2>
+          <p id="state-description">A balanced dashboard keeps reflection, planning, and context visible with calm pacing.</p>
+          <div class="state-badges" aria-label="Current interface adjustments">
+            <span class="badge" id="badge-density">Balanced density</span>
+            <span class="badge" id="badge-targets">Comfortable targets</span>
+            <span class="badge" id="badge-palette">Sage and blue</span>
+          </div>
+        </div>
+        <div class="check-row">
+          <span class="check-icon" aria-hidden="true">1</span>
+          <div>
+            <h3>Declare what is true now</h3>
+            <p>Your chosen state changes the interface. It does not define you.</p>
+          </div>
+          <button class="mini-button" type="button" data-action="acknowledge">Noted</button>
+        </div>
+        <div class="check-row">
+          <span class="check-icon" aria-hidden="true">2</span>
+          <div>
+            <h3>Write one honest line</h3>
+            <p>The journal follows every mode so reflection stays available.</p>
+          </div>
+          <button class="mini-button" type="button" data-jump="#journal">Write</button>
+        </div>
+        <div class="check-row" data-detail="advanced">
+          <span class="check-icon" aria-hidden="true">3</span>
+          <div>
+            <h3>Choose the amount of structure</h3>
+            <p>Keep a quiet list, open the full rhythm board, or archive today.</p>
+          </div>
+          <button class="mini-button" type="button" data-action="structure">Tune</button>
+        </div>
+      </aside>
+    </section>
+
+    <div class="shell layout">
+      <aside class="left-rail" aria-label="Personal context">
+        <section class="aside-panel">
+          <div class="section-heading">
+            <h2>Compass</h2>
+            <span>Private</span>
+          </div>
+          <ul class="ritual-list">
+            <li>
+              <span class="ritual-index">A</span>
+              <p><strong>Anchor:</strong> "I can make this smaller before I make it perfect."</p>
+            </li>
+            <li>
+              <span class="ritual-index">B</span>
+              <p><strong>Boundary:</strong> Focus blocks end at 17:30; evening notes stay light.</p>
+            </li>
+            <li data-detail="advanced">
+              <span class="ritual-index">C</span>
+              <p><strong>Pattern:</strong> Monday planning works best after a short walk and coffee.</p>
+            </li>
+          </ul>
+        </section>
+
+        <section class="aside-panel">
+          <div class="section-heading">
+            <h2>Careful Language</h2>
+            <span>Always</span>
+          </div>
+          <div class="card compact">
+            <h3>No diagnosis, no score</h3>
+            <p>MoodShift only records declared states and interface preferences. It never names a condition or recommends care.</p>
+          </div>
+        </section>
+
+        <section class="aside-panel" data-feature="expanded">
+          <div class="section-heading">
+            <h2>Momentum</h2>
+            <span>Energized</span>
+          </div>
+          <div class="workspace-card">
+            <div>
+              <h3>Open project sprint</h3>
+              <p>Three active cards are visible because the energized view allows more surface area.</p>
+            </div>
+            <span class="status-dot" aria-hidden="true"></span>
+          </div>
+        </section>
+      </aside>
+
+      <div class="main-stack">
+        <section class="journal-panel" id="journal" aria-labelledby="journal-title">
+          <div class="section-heading">
+            <h2 id="journal-title">Journal Everywhere</h2>
+            <span id="journal-mode">Balanced prompt</span>
+          </div>
+          <div class="journal-card">
+            <div>
+              <p class="journal-prompt" id="journal-prompt">What feels steady enough to continue?</p>
+              <textarea class="journal-textarea" aria-label="Journal entry" placeholder="Write a few lines without editing yourself."></textarea>
+              <div class="task-card card" style="min-height: auto; margin-top: 12px;">
+                <span class="time">Reflection link</span>
+                <h3>Today's notes will attach to the rhythm board</h3>
+                <p>Journal entries can be connected to focus blocks, meals, walks, calls, or quiet time without forcing a conclusion.</p>
+                <div class="actions">
+                  <button class="mini-button dark" type="button" data-action="save">Save note</button>
+                  <button class="mini-button" type="button" data-action="pin">Pin prompt</button>
+                </div>
+              </div>
+            </div>
+            <div class="journal-side" aria-label="Journal assists">
+              <div class="card compact">
+                <h3>Prompt style</h3>
+                <p id="prompt-style">Open, balanced, and practical.</p>
+              </div>
+              <div class="card compact">
+                <h3>Privacy posture</h3>
+                <p>Entries are treated as user-owned notes, not assessment data.</p>
+              </div>
+              <div class="card compact" data-detail="advanced">
+                <h3>Linked context</h3>
+                <p>Calendar pressure, sleep estimate, and project load can be shown only when wanted.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="timeline-panel" id="rhythm" aria-labelledby="rhythm-title">
+          <div class="section-heading">
+            <h2 id="rhythm-title">Rhythm Board</h2>
+            <span>Today, May 26</span>
+          </div>
+          <div class="plan-grid">
+            <article class="card task-card">
+              <div>
+                <span class="time">09:10</span>
+                <h3>Gentle start review</h3>
+                <p>Choose the one commitment that would make the rest of the day easier to navigate.</p>
+              </div>
+              <div class="actions">
+                <button class="mini-button dark" type="button" data-action="done">Done</button>
+                <button class="mini-button" type="button" data-action="journal">Journal</button>
+              </div>
+            </article>
+            <article class="card task-card">
+              <div>
+                <span class="time">11:30</span>
+                <h3>Focus block: partnership deck</h3>
+                <p>Prepare the metric story and leave the visual polish for the afternoon pass.</p>
+              </div>
+              <div class="actions">
+                <button class="mini-button dark" type="button" data-action="start">Start</button>
+                <button class="mini-button" type="button" data-action="reduce">Make smaller</button>
+              </div>
+            </article>
+            <article class="card task-card" data-detail="advanced">
+              <div>
+                <span class="time">14:00</span>
+                <h3>Energy check before calls</h3>
+                <p>Review tone, choose meeting notes density, and place one recovery break after the last call.</p>
+              </div>
+              <div class="actions">
+                <button class="mini-button dark" type="button" data-action="review">Review</button>
+                <button class="mini-button" type="button" data-action="move">Move</button>
+              </div>
+            </article>
+            <article class="card task-card" data-feature="expanded">
+              <div>
+                <span class="time">16:20</span>
+                <h3>High-output window</h3>
+                <p>Use the energized view to expose backlog, quick wins, and optional publishing tasks.</p>
+              </div>
+              <div class="actions">
+                <button class="mini-button dark" type="button" data-action="queue">Queue</button>
+                <button class="mini-button" type="button" data-action="share">Share summary</button>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="timeline-panel" id="workspace" aria-labelledby="workspace-title">
+          <div class="section-heading">
+            <h2 id="workspace-title">Adaptive Workspace</h2>
+            <span>Keyboard tabs</span>
+          </div>
+          <div class="module-tabs" role="tablist" aria-label="Workspace modules">
+            <button class="module-tab" type="button" role="tab" aria-selected="true" aria-controls="panel-overview" id="tab-overview" data-tab="overview">Overview</button>
+            <button class="module-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-focus" id="tab-focus" data-tab="focus">Focus</button>
+            <button class="module-tab" type="button" role="tab" aria-selected="false" aria-controls="panel-social" id="tab-social" data-tab="social">Social</button>
+          </div>
+          <div class="module-panel is-active" role="tabpanel" id="panel-overview" aria-labelledby="tab-overview">
+            <div class="signal-grid">
+              <div class="signal">
+                <strong>Light</strong>
+                <span>Visual density respects the declared state instead of forcing a constant dashboard.</span>
+              </div>
+              <div class="signal">
+                <strong>Near</strong>
+                <span>Journal, next step, and personal compass stay close across every mode.</span>
+              </div>
+              <div class="signal" data-detail="advanced">
+                <strong>Optional</strong>
+                <span>More analytics appear in energized mode and recede when the interface is simplified.</span>
+              </div>
+            </div>
+          </div>
+          <div class="module-panel" role="tabpanel" id="panel-focus" aria-labelledby="tab-focus">
+            <div class="workspace-card">
+              <div>
+                <h3>Focus queue</h3>
+                <p>Draft partner narrative, review budget deltas, write two closing questions, and leave review notes in the archive.</p>
+              </div>
+              <button class="mini-button dark" type="button" data-action="focus">Begin</button>
+            </div>
+          </div>
+          <div class="module-panel" role="tabpanel" id="panel-social" aria-labelledby="tab-social">
+            <div class="workspace-card">
+              <div>
+                <h3>Connection plan</h3>
+                <p>Reply to Mira, confirm Thursday lunch, and send the meeting recap with one clear ask.</p>
+              </div>
+              <button class="mini-button dark" type="button" data-action="reply">Open</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="timeline-panel" aria-labelledby="library-title">
+          <div class="section-heading">
+            <h2 id="library-title">Reflection Library</h2>
+            <span>Reusable</span>
+          </div>
+          <div class="plan-grid">
+            <article class="card task-card">
+              <div>
+                <span class="time">Stressed</span>
+                <h3>One-line reduction</h3>
+                <p>Write the task that feels too large, then write the smallest visible version of it.</p>
+              </div>
+              <div class="actions">
+                <button class="mini-button dark" type="button" data-action="use-prompt">Use prompt</button>
+                <button class="mini-button" type="button" data-action="save-template">Save</button>
+              </div>
+            </article>
+            <article class="card task-card">
+              <div>
+                <span class="time">Steady</span>
+                <h3>Continuation note</h3>
+                <p>Name what is already working and the condition that would help it keep working.</p>
+              </div>
+              <div class="actions">
+                <button class="mini-button dark" type="button" data-action="use-prompt">Use prompt</button>
+                <button class="mini-button" type="button" data-action="save-template">Save</button>
+              </div>
+            </article>
+            <article class="card task-card" data-detail="advanced">
+              <div>
+                <span class="time">Grounded</span>
+                <h3>Room inventory</h3>
+                <p>List three concrete details in the room, then connect one of them to the next action.</p>
+              </div>
+              <div class="actions">
+                <button class="mini-button dark" type="button" data-action="use-prompt">Use prompt</button>
+                <button class="mini-button" type="button" data-action="save-template">Save</button>
+              </div>
+            </article>
+            <article class="card task-card" data-feature="expanded">
+              <div>
+                <span class="time">Energized</span>
+                <h3>Idea capture sprint</h3>
+                <p>Capture five ideas quickly, choose one to advance, and park the rest without ranking them.</p>
+              </div>
+              <div class="actions">
+                <button class="mini-button dark" type="button" data-action="use-prompt">Use prompt</button>
+                <button class="mini-button" type="button" data-action="save-template">Save</button>
+              </div>
+            </article>
+          </div>
+        </section>
+      </div>
+
+      <aside class="right-rail" aria-label="Logs and routines">
+        <section class="aside-panel" id="log" aria-labelledby="log-title">
+          <div class="section-heading">
+            <h2 id="log-title">Mood Log</h2>
+            <span>Neutral</span>
+          </div>
+          <ul class="log-list" id="mood-log">
+            <li>
+              <strong>Steady selected</strong>
+              <span>23:28 · Interface set to balanced density. No interpretation added.</span>
+            </li>
+            <li>
+              <strong>Grounded selected</strong>
+              <span>Yesterday · Journal prompt changed to sensory detail and context.</span>
+            </li>
+            <li data-detail="advanced">
+              <strong>Energized selected</strong>
+              <span>Monday · Expanded project modules and optional social planning.</span>
+            </li>
+          </ul>
+        </section>
+
+        <section class="aside-panel">
+          <div class="section-heading">
+            <h2>Small Rituals</h2>
+            <span>Choose one</span>
+          </div>
+          <ul class="ritual-list">
+            <li>
+              <span class="ritual-index">1</span>
+              <p>Clear the desk surface before opening the second task.</p>
+            </li>
+            <li>
+              <span class="ritual-index">2</span>
+              <p>Name the next task in ten words or fewer.</p>
+            </li>
+            <li>
+              <span class="ritual-index">3</span>
+              <p>Put one note in the journal before checking another dashboard.</p>
+            </li>
+            <li data-detail="advanced">
+              <span class="ritual-index">4</span>
+              <p>Archive one stale note so the journal feels current.</p>
+            </li>
+          </ul>
+        </section>
+
+        <section class="aside-panel" data-feature="expanded">
+          <div class="section-heading">
+            <h2>Expanded Tools</h2>
+            <span>Optional</span>
+          </div>
+          <div class="workspace-card">
+            <div>
+              <h3>Pattern compare</h3>
+              <p>Compare declared states across meeting-heavy and writing-heavy days without assigning value.</p>
+            </div>
+            <button class="mini-button" type="button" data-action="compare">View</button>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="shell footer-inner">
+      <span><strong>MoodShift Wellness OS</strong> adapts presentation to declared emotional state without judgment.</span>
+      <span>Notes stay framed as reflection and planning.</span>
+      <span>Interface changes remain user-declared.</span>
+      <span>Built with Frontend Skeletons</span>
+    </div>
+  </footer>
+
+  <div class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const moodData = {
+      stressed: {
+        title: "Stressed view",
+        description: "The interface becomes quieter, larger, and more selective so the next action is easy to see.",
+        copy: "Stressed mode reduces visible modules, softens contrast, enlarges click targets, and keeps journaling close. It records only your declaration and UI preference.",
+        prompt: "What can become smaller right now?",
+        promptStyle: "Short, concrete, and non-demanding.",
+        journalMode: "Simplified prompt",
+        badges: ["Muted palette", "Larger targets", "Simplified view"],
+        visible: "4"
+      },
+      steady: {
+        title: "Steady view",
+        description: "A balanced dashboard keeps reflection, planning, and context visible with calm pacing.",
+        copy: "MoodShift adjusts density, contrast, prompts, and next actions after you declare how you feel. The entry is logged neutrally, without diagnosis, scoring, or judgment.",
+        prompt: "What feels steady enough to continue?",
+        promptStyle: "Open, balanced, and practical.",
+        journalMode: "Balanced prompt",
+        badges: ["Balanced density", "Comfortable targets", "Sage and blue"],
+        visible: "7"
+      },
+      energized: {
+        title: "Energized view",
+        description: "More tools and optional modules appear because the interface can carry additional momentum.",
+        copy: "Energized mode brightens the palette, exposes optional planning tools, and keeps journal capture available so ideas have somewhere to land.",
+        prompt: "Where should this energy go first?",
+        promptStyle: "Expansive, directional, and fast to capture.",
+        journalMode: "Expanded prompt",
+        badges: ["Amber accents", "More modules", "Quick capture"],
+        visible: "10"
+      },
+      grounded: {
+        title: "Grounded view",
+        description: "The interface emphasizes sensory detail, personal anchors, and steady next steps.",
+        copy: "Grounded mode highlights rituals, context, and reflective notes without hiding the day plan. It supports orientation without making claims about what the mood means.",
+        prompt: "What detail brings you back to the room?",
+        promptStyle: "Sensory, present-tense, and plain.",
+        journalMode: "Grounding prompt",
+        badges: ["Sage emphasis", "Ritual first", "Context visible"],
+        visible: "6"
+      }
+    };
+
+    const body = document.body;
+    const chips = Array.from(document.querySelectorAll(".mood-chip"));
+    const logList = document.querySelector("#mood-log");
+    const toast = document.querySelector(".toast");
+    const hamburger = document.querySelector(".hamburger");
+    const mobileMenu = document.querySelector("#mobile-menu");
+    const tabs = Array.from(document.querySelectorAll(".module-tab"));
+    const panels = Array.from(document.querySelectorAll(".module-panel"));
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("is-visible");
+      window.clearTimeout(showToast.timer);
+      showToast.timer = window.setTimeout(() => {
+        toast.classList.remove("is-visible");
+      }, 2600);
+    }
+
+    function updateMood(mood) {
+      const data = moodData[mood];
+      body.dataset.mood = mood;
+      chips.forEach((chip) => {
+        chip.setAttribute("aria-pressed", String(chip.dataset.moodChoice === mood));
+      });
+      document.querySelector("#state-title").textContent = data.title;
+      document.querySelector("#state-description").textContent = data.description;
+      document.querySelector("#mood-copy").textContent = data.copy;
+      document.querySelector("#journal-prompt").textContent = data.prompt;
+      document.querySelector("#prompt-style").textContent = data.promptStyle;
+      document.querySelector("#journal-mode").textContent = data.journalMode;
+      document.querySelector("#visible-count").textContent = data.visible;
+      document.querySelector("#badge-density").textContent = data.badges[0];
+      document.querySelector("#badge-targets").textContent = data.badges[1];
+      document.querySelector("#badge-palette").textContent = data.badges[2];
+      const time = new Intl.DateTimeFormat([], { hour: "2-digit", minute: "2-digit" }).format(new Date());
+      const item = document.createElement("li");
+      item.innerHTML = `<strong>${data.title} selected</strong><span>${time} · Interface preference logged without interpretation.</span>`;
+      logList.prepend(item);
+      showToast(`${data.title} applied. The change was logged neutrally.`);
+    }
+
+    chips.forEach((chip, index) => {
+      chip.addEventListener("click", () => updateMood(chip.dataset.moodChoice));
+      chip.addEventListener("keydown", (event) => {
+        if (!["ArrowRight", "ArrowLeft", "Home", "End"].includes(event.key)) return;
+        event.preventDefault();
+        let nextIndex = index;
+        if (event.key === "ArrowRight") nextIndex = (index + 1) % chips.length;
+        if (event.key === "ArrowLeft") nextIndex = (index - 1 + chips.length) % chips.length;
+        if (event.key === "Home") nextIndex = 0;
+        if (event.key === "End") nextIndex = chips.length - 1;
+        chips[nextIndex].focus();
+        updateMood(chips[nextIndex].dataset.moodChoice);
+      });
+    });
+
+    hamburger.addEventListener("click", () => {
+      const isOpen = mobileMenu.classList.toggle("is-open");
+      hamburger.setAttribute("aria-expanded", String(isOpen));
+      hamburger.setAttribute("aria-label", isOpen ? "Close navigation menu" : "Open navigation menu");
+    });
+
+    mobileMenu.addEventListener("click", (event) => {
+      if (event.target.matches("a")) {
+        mobileMenu.classList.remove("is-open");
+        hamburger.setAttribute("aria-expanded", "false");
+        hamburger.setAttribute("aria-label", "Open navigation menu");
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && mobileMenu.classList.contains("is-open")) {
+        mobileMenu.classList.remove("is-open");
+        hamburger.setAttribute("aria-expanded", "false");
+        hamburger.focus();
+      }
+    });
+
+    tabs.forEach((tab, index) => {
+      tab.addEventListener("click", () => activateTab(tab.dataset.tab));
+      tab.addEventListener("keydown", (event) => {
+        if (!["ArrowRight", "ArrowLeft", "Home", "End"].includes(event.key)) return;
+        event.preventDefault();
+        let nextIndex = index;
+        if (event.key === "ArrowRight") nextIndex = (index + 1) % tabs.length;
+        if (event.key === "ArrowLeft") nextIndex = (index - 1 + tabs.length) % tabs.length;
+        if (event.key === "Home") nextIndex = 0;
+        if (event.key === "End") nextIndex = tabs.length - 1;
+        tabs[nextIndex].focus();
+        activateTab(tabs[nextIndex].dataset.tab);
+      });
+    });
+
+    function activateTab(name) {
+      tabs.forEach((tab) => {
+        tab.setAttribute("aria-selected", String(tab.dataset.tab === name));
+      });
+      panels.forEach((panel) => {
+        panel.classList.toggle("is-active", panel.id === `panel-${name}`);
+      });
+    }
+
+    document.querySelectorAll("[data-action]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const action = button.dataset.action.replace("-", " ");
+        showToast(`${button.textContent.trim() || action} noted. No judgment added.`);
+      });
+    });
+
+    document.querySelectorAll("[data-jump]").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelector(button.dataset.jump).scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    });
+  </script>
+</body>
+</html>
