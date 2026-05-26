@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sentryline Cybersecurity Suite premium frontend skeleton for an enterprise security platform landing page and SOC dashboard preview.">
+  <title>Sentryline Cybersecurity Suite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--black:#050505;--gray:#18181B;--gray-2:#232328;--gray-3:#2E2E35;--green:#B6FF3B;--red:#FF3B4F;--steel:#94A3B8;--ice:#E2E8F0;--white:#F8FAFC;--muted:rgba(148,163,184,0.78);--line:rgba(226,232,240,0.12);--line-strong:rgba(226,232,240,0.24);--surface:rgba(24,24,27,0.82);--surface-soft:rgba(226,232,240,0.045);--surface-green:rgba(182,255,59,0.11);--surface-red:rgba(255,59,79,0.12);--font-head:"Archivo",system-ui,sans-serif;--font-body:"Inter",system-ui,sans-serif;--font-mono:"IBM Plex Mono",monospace;--radius-xs:6px;--radius-sm:8px;--radius-md:14px;--radius-lg:22px;--shadow-panel:0 26px 80px rgba(0,0,0,0.42);--shadow-green:0 18px 48px rgba(182,255,59,0.14);--header-height:72px;--max:1180px;--motion-fast:150ms ease;--motion-med:260ms ease;--motion-slow:760ms cubic-bezier(0.18,0.84,0.28,1)}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth;background:var(--black)}
+    body{margin:0;min-height:100vh;color:var(--ice);font-family:var(--font-body);line-height:1.55;background:radial-gradient(circle at 14% 6%,rgba(182,255,59,0.14),transparent 30%),radial-gradient(circle at 90% 14%,rgba(255,59,79,0.13),transparent 25%),linear-gradient(180deg,#050505 0%,#0A0A0B 47%,#050505 100%);overflow-x:hidden}
+    body.menu-open{overflow:hidden}
+    a{color:inherit;text-decoration:none}
+    button,input{font:inherit}
+    button{border:0;cursor:pointer}
+    :focus-visible{outline:3px solid var(--green);outline-offset:3px;border-radius:var(--radius-xs)}
+    .skip-link{position:fixed;top:16px;left:16px;z-index:100;transform:translateY(-160%);padding:10px 14px;border-radius:var(--radius-sm);background:var(--green);color:var(--black);font-weight:800;transition:transform var(--motion-fast)}
+    .skip-link:focus{transform:translateY(0)}
+    .site-header{position:sticky;top:0;z-index:50;min-height:var(--header-height);border-bottom:1px solid var(--line);background:rgba(5,5,5,0.82);backdrop-filter:blur(18px)}
+    .nav{width:min(100% - 32px,var(--max));min-height:var(--header-height);margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:24px}
+    .brand{display:inline-flex;align-items:center;gap:12px;font-family:var(--font-head);font-weight:900}
+    .brand-mark{width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(182,255,59,0.46);border-radius:var(--radius-sm);background:linear-gradient(145deg,rgba(182,255,59,0.18),rgba(24,24,27,0.84));color:var(--green);font-family:var(--font-mono);font-size:0.84rem;box-shadow:var(--shadow-green)}
+    .nav-links{display:flex;align-items:center;gap:6px;margin:0;padding:0;list-style:none}
+    .nav-link{display:inline-flex;align-items:center;min-height:40px;padding:0 13px;border-radius:var(--radius-sm);color:var(--steel);font-size:0.92rem;font-weight:700;transition:color var(--motion-fast),background var(--motion-fast)}
+    .nav-link:hover,.nav-link.is-active{color:var(--ice);background:rgba(226,232,240,0.06)}
+    .nav-actions{display:flex;align-items:center;gap:10px}
+    .status-pill{display:inline-flex;align-items:center;gap:8px;min-height:36px;padding:0 12px;border:1px solid var(--line);border-radius:999px;color:var(--steel);font-family:var(--font-mono);font-size:0.72rem;font-weight:700}
+    .status-pill::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 0 6px rgba(182,255,59,0.12)}
+    .button{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:44px;padding:0 17px;border-radius:var(--radius-sm);font-weight:800;transition:transform var(--motion-fast),border-color var(--motion-fast),background var(--motion-fast);white-space:nowrap}
+    .button:hover{transform:translateY(-1px)}
+    .button-primary{background:var(--green);color:var(--black);box-shadow:var(--shadow-green)}
+    .button-secondary{border:1px solid var(--line-strong);background:rgba(226,232,240,0.055);color:var(--ice)}
+    .button-secondary:hover{border-color:rgba(182,255,59,0.44);background:rgba(182,255,59,0.09)}
+    .menu-toggle{width:44px;height:44px;display:none;place-items:center;border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(226,232,240,0.055);color:var(--ice)}
+    .menu-lines{width:18px;height:14px;position:relative}
+    .menu-lines span{position:absolute;left:0;width:100%;height:2px;border-radius:99px;background:currentColor;transition:top var(--motion-med),transform var(--motion-med),opacity var(--motion-med)}
+    .menu-lines span:nth-child(1){top:0}
+    .menu-lines span:nth-child(2){top:6px}
+    .menu-lines span:nth-child(3){top:12px}
+    .menu-open .menu-lines span:nth-child(1){top:6px;transform:rotate(45deg)}
+    .menu-open .menu-lines span:nth-child(2){opacity:0}
+    .menu-open .menu-lines span:nth-child(3){top:6px;transform:rotate(-45deg)}
+    main{min-width:0}
+    .section{width:min(100% - 32px,var(--max));margin:0 auto;padding:86px 0}
+    .hero{width:min(100% - 32px,1320px);margin:0 auto;padding:68px 0 36px;display:grid;grid-template-columns:minmax(0,0.9fr) minmax(520px,1.1fr);align-items:center;gap:34px}
+    .eyebrow{display:inline-flex;align-items:center;gap:9px;margin:0 0 18px;color:var(--green);font-family:var(--font-mono);font-size:0.78rem;font-weight:800;letter-spacing:0.04em;text-transform:uppercase}
+    .eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green);box-shadow:0 0 22px rgba(182,255,59,0.78)}
+    h1,h2,h3{font-family:var(--font-head);letter-spacing:0}
+    h1{max-width:670px;margin:0;color:var(--white);font-size:clamp(3rem,6.8vw,6.1rem);line-height:0.9;font-weight:900}
+    .hero-copy{max-width:630px;margin:24px 0 0;color:var(--steel);font-size:clamp(1.05rem,1.8vw,1.28rem)}
+    .flow-strip{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+    .flow-step{display:inline-flex;align-items:center;gap:8px;padding:9px 12px;border:1px solid var(--line);border-radius:999px;background:rgba(226,232,240,0.045);color:var(--ice);font-family:var(--font-mono);font-size:0.78rem;font-weight:700}
+    .flow-step strong{color:var(--green)}
+    .hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+    .hero-proof{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:34px}
+    .proof-card{min-height:96px;padding:16px;border:1px solid var(--line);border-radius:var(--radius-md);background:rgba(24,24,27,0.72)}
+    .proof-card strong{display:block;color:var(--ice);font-family:var(--font-mono);font-size:1rem}
+    .proof-card span{display:block;margin-top:7px;color:var(--steel);font-size:0.84rem}
+    .threat-console{position:relative;min-height:620px;border:1px solid var(--line-strong);border-radius:var(--radius-lg);background:linear-gradient(180deg,rgba(24,24,27,0.94),rgba(5,5,5,0.96)),radial-gradient(circle at 50% 48%,rgba(182,255,59,0.1),transparent 44%);box-shadow:var(--shadow-panel);overflow:hidden}
+    .console-top{height:54px;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:0 18px;border-bottom:1px solid var(--line);color:var(--steel);font-family:var(--font-mono);font-size:0.74rem;font-weight:700}
+    .window-dots{display:inline-flex;gap:7px}
+    .window-dots span{width:9px;height:9px;border-radius:50%;background:var(--steel)}
+    .window-dots span:nth-child(1){background:var(--red)}
+    .window-dots span:nth-child(2){background:#F59E0B}
+    .window-dots span:nth-child(3){background:var(--green)}
+    .map-panel{position:relative;height:390px;margin:18px;border:1px solid rgba(226,232,240,0.1);border-radius:var(--radius-md);background:linear-gradient(rgba(226,232,240,0.05) 1px,transparent 1px),linear-gradient(90deg,rgba(226,232,240,0.05) 1px,transparent 1px),radial-gradient(circle at 18% 54%,rgba(148,163,184,0.2),transparent 10%),radial-gradient(circle at 42% 36%,rgba(148,163,184,0.2),transparent 12%),radial-gradient(circle at 74% 48%,rgba(148,163,184,0.18),transparent 13%),linear-gradient(145deg,rgba(5,5,5,0.74),rgba(24,24,27,0.86));background-size:34px 34px,34px 34px,auto,auto,auto,auto;overflow:hidden}
+    .map-panel::before{content:"";position:absolute;inset:28px;border:1px solid rgba(182,255,59,0.14);border-radius:50%;transform:skewX(-14deg)}
+    .map-panel::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,rgba(182,255,59,0.08),transparent);transform:translateX(-100%);animation:scan 5.8s linear infinite}
+    .threat-node{position:absolute;display:grid;gap:4px;min-width:132px;padding:10px;border:1px solid rgba(226,232,240,0.16);border-radius:var(--radius-sm);background:rgba(5,5,5,0.84);color:var(--ice);font-family:var(--font-mono);font-size:0.7rem;box-shadow:0 12px 36px rgba(0,0,0,0.36);z-index:2}
+    .threat-node::before{content:"";position:absolute;width:12px;height:12px;left:-6px;top:14px;border-radius:50%;background:var(--green);box-shadow:0 0 0 7px rgba(182,255,59,0.13),0 0 24px rgba(182,255,59,0.74)}
+    .threat-node.alert::before{background:var(--red);box-shadow:0 0 0 7px rgba(255,59,79,0.14),0 0 24px rgba(255,59,79,0.72)}
+    .threat-node strong{color:var(--green);font-weight:800}
+    .threat-node.alert strong{color:var(--red)}
+    .node-1{left:12%;top:18%}
+    .node-2{left:58%;top:23%}
+    .node-3{left:36%;top:61%}
+    .node-4{left:68%;top:65%}
+    .beam{position:absolute;height:1px;background:linear-gradient(90deg,transparent,rgba(182,255,59,0.7),transparent);transform-origin:left center;z-index:1;animation:pulseLine 3.6s ease-in-out infinite}
+    .beam-red{background:linear-gradient(90deg,transparent,rgba(255,59,79,0.76),transparent)}
+    .beam-1{width:250px;left:25%;top:35%;transform:rotate(11deg)}
+    .beam-2{width:230px;left:49%;top:47%;transform:rotate(37deg)}
+    .beam-3{width:200px;left:25%;top:69%;transform:rotate(-18deg)}
+    .threat-cards-mobile{display:none;gap:12px;margin:18px}
+    .console-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:0 18px 18px}
+    .console-card{padding:14px;border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(226,232,240,0.045)}
+    .console-card span{color:var(--steel);font-size:0.78rem;font-weight:700}
+    .console-card strong{display:block;margin-top:6px;font-family:var(--font-mono);font-size:1.1rem}
+    .section-heading{display:grid;grid-template-columns:minmax(0,0.78fr) minmax(280px,0.42fr);gap:28px;align-items:end;margin-bottom:34px}
+    .section-heading h2{margin:0;color:var(--white);font-size:clamp(2.1rem,4.8vw,4.6rem);line-height:0.96;font-weight:900}
+    .section-heading p{margin:0;color:var(--steel);font-size:1.04rem}
+    .risk-grid{display:grid;grid-template-columns:1.15fr repeat(2,0.92fr);gap:16px}
+    .risk-card{position:relative;min-height:260px;padding:22px;border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--surface);overflow:hidden}
+    .risk-card::after{content:"";position:absolute;inset:auto -20% -46% 24%;height:220px;background:radial-gradient(circle,rgba(182,255,59,0.16),transparent 58%);pointer-events:none}
+    .risk-card.critical::after{background:radial-gradient(circle,rgba(255,59,79,0.17),transparent 58%)}
+    .risk-label{display:flex;align-items:center;justify-content:space-between;gap:16px;color:var(--steel);font-family:var(--font-mono);font-size:0.76rem;font-weight:800;text-transform:uppercase}
+    .risk-score{margin:22px 0 6px;color:var(--white);font-family:var(--font-mono);font-size:clamp(2.7rem,7vw,5.6rem);line-height:0.9}
+    .risk-score em{color:var(--steel);font-size:0.25em;font-style:normal}
+    .risk-card h3{position:relative;z-index:1;margin:18px 0 8px;font-size:1.3rem}
+    .risk-card p{position:relative;z-index:1;margin:0;color:var(--steel)}
+    .factor-list{position:relative;z-index:1;display:grid;gap:10px;margin:20px 0 0;padding:0;list-style:none}
+    .factor-list li{display:flex;align-items:center;justify-content:space-between;gap:12px;color:var(--steel);font-size:0.88rem}
+    .factor-list strong{color:var(--ice);font-family:var(--font-mono)}
+    .timeline-wrap{border:1px solid var(--line);border-radius:var(--radius-lg);background:rgba(24,24,27,0.72);overflow:hidden}
+    .timeline-head{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:18px 20px;border-bottom:1px solid var(--line)}
+    .timeline-head h3{margin:0;font-size:1.1rem}
+    .timeline-head span{color:var(--green);font-family:var(--font-mono);font-size:0.76rem;font-weight:800}
+    .timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line)}
+    .event{min-height:260px;padding:22px;background:rgba(5,5,5,0.82)}
+    .event-time{display:inline-flex;padding:5px 8px;border-radius:var(--radius-xs);background:rgba(182,255,59,0.1);color:var(--green);font-family:var(--font-mono);font-size:0.72rem;font-weight:800}
+    .event h3{margin:18px 0 8px;font-size:1.16rem}
+    .event p{margin:0;color:var(--steel);font-size:0.92rem}
+    .event-id{display:block;margin-top:20px;color:var(--muted);font-family:var(--font-mono);font-size:0.74rem}
+    .event.is-live{background:linear-gradient(180deg,rgba(255,59,79,0.14),rgba(5,5,5,0.84))}
+    .dashboard{display:grid;grid-template-columns:280px minmax(0,1fr) 310px;gap:16px;padding:18px;border:1px solid var(--line-strong);border-radius:var(--radius-lg);background:linear-gradient(180deg,rgba(24,24,27,0.9),rgba(5,5,5,0.94)),radial-gradient(circle at 70% 0%,rgba(182,255,59,0.1),transparent 38%);box-shadow:var(--shadow-panel)}
+    .dash-panel{border:1px solid var(--line);border-radius:var(--radius-md);background:rgba(5,5,5,0.62);overflow:hidden}
+    .dash-panel-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px;border-bottom:1px solid var(--line)}
+    .dash-panel-head h3{margin:0;font-size:0.98rem}
+    .dash-panel-head span{color:var(--steel);font-family:var(--font-mono);font-size:0.72rem;font-weight:700}
+    .asset-list,.case-list,.compliance-list{display:grid;gap:10px;margin:0;padding:14px;list-style:none}
+    .asset-item,.case-item,.module{padding:13px;border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(226,232,240,0.04)}
+    .asset-item strong,.case-item strong,.module strong{display:block;color:var(--ice);font-size:0.9rem}
+    .asset-item span,.case-item span,.module span{display:block;margin-top:5px;color:var(--steel);font-family:var(--font-mono);font-size:0.72rem}
+    .alert-board{display:grid;gap:12px;padding:14px}
+    .alert-row{display:grid;grid-template-columns:92px 1fr auto;align-items:center;gap:12px;padding:13px;border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(226,232,240,0.04)}
+    .severity{display:inline-flex;justify-content:center;padding:5px 8px;border-radius:var(--radius-xs);color:var(--black);background:var(--green);font-family:var(--font-mono);font-size:0.68rem;font-weight:900;text-transform:uppercase}
+    .severity.high{background:var(--red);color:var(--white)}
+    .alert-copy strong{display:block;font-size:0.92rem}
+    .alert-copy span{display:block;color:var(--steel);font-family:var(--font-mono);font-size:0.72rem}
+    .action-link{color:var(--green);font-family:var(--font-mono);font-size:0.74rem;font-weight:800}
+    .graph{height:180px;display:grid;grid-template-columns:repeat(12,1fr);align-items:end;gap:8px;padding:18px 14px 14px;border-top:1px solid var(--line);background:linear-gradient(rgba(226,232,240,0.04) 1px,transparent 1px),transparent;background-size:100% 36px}
+    .bar{min-height:22px;border-radius:5px 5px 0 0;background:linear-gradient(180deg,var(--green),rgba(182,255,59,0.24))}
+    .bar.red{background:linear-gradient(180deg,var(--red),rgba(255,59,79,0.2))}
+    .compliance-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+    .module{min-height:190px;padding:18px;background:rgba(24,24,27,0.78)}
+    .module-meter{height:8px;margin-top:18px;border-radius:999px;background:rgba(226,232,240,0.1);overflow:hidden}
+    .module-meter i{display:block;width:var(--fill);height:100%;border-radius:inherit;background:var(--green)}
+    .case-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .case-card{min-height:310px;padding:22px;border:1px solid var(--line);border-radius:var(--radius-lg);background:rgba(24,24,27,0.8)}
+    .case-card .tag{display:inline-flex;padding:5px 8px;border:1px solid rgba(182,255,59,0.28);border-radius:var(--radius-xs);color:var(--green);font-family:var(--font-mono);font-size:0.7rem;font-weight:800}
+    .case-card h3{margin:22px 0 10px;font-size:1.35rem}
+    .case-card p{margin:0;color:var(--steel)}
+    .case-metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:24px}
+    .case-metrics span{padding:12px;border:1px solid var(--line);border-radius:var(--radius-sm);color:var(--ice);background:rgba(226,232,240,0.04);font-family:var(--font-mono);font-size:0.78rem;font-weight:800}
+    .cta{display:grid;grid-template-columns:minmax(0,0.9fr) minmax(280px,0.45fr);gap:24px;align-items:center;padding:34px;border:1px solid rgba(182,255,59,0.28);border-radius:var(--radius-lg);background:radial-gradient(circle at 100% 0%,rgba(182,255,59,0.16),transparent 38%),rgba(24,24,27,0.86)}
+    .cta h2{margin:0;font-size:clamp(2rem,4vw,4rem);line-height:1}
+    .cta p{margin:18px 0 0;color:var(--steel)}
+    .site-footer{width:min(100% - 32px,var(--max));margin:0 auto;padding:30px 0 46px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;border-top:1px solid var(--line);color:var(--steel);font-size:0.9rem}
+    .site-footer strong{color:var(--ice)}
+    .mobile-menu{position:fixed;inset:var(--header-height) 0 0;z-index:40;display:none;background:rgba(5,5,5,0.92);backdrop-filter:blur(14px)}
+    .mobile-menu.is-open{display:block}
+    .mobile-menu-panel{width:min(420px,100%);margin-left:auto;height:100%;padding:22px;border-left:1px solid var(--line);background:var(--black)}
+    .mobile-menu-panel a{display:flex;min-height:46px;align-items:center;border-bottom:1px solid var(--line);color:var(--ice);font-weight:800}
+    @keyframes scan{to{transform:translateX(100%)}
+    }
+    @keyframes pulseLine{0%,100%{opacity:0.28}
+    50%{opacity:1}
+    }
+    @media (max-width:1120px){.hero,.dashboard,.section-heading,.cta{grid-template-columns:1fr}
+    .hero{padding-top:48px}
+    .threat-console{min-height:auto}
+    .risk-grid,.case-grid{grid-template-columns:1fr 1fr}
+    .compliance-grid{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:780px){:root{--header-height:66px}
+    .nav{width:min(100% - 24px,var(--max))}
+    .nav-links,.status-pill,.nav-actions .button{display:none}
+    .menu-toggle{display:grid}
+    .section{width:min(100% - 24px,var(--max));padding:62px 0}
+    .hero{width:min(100% - 24px,1320px);padding:40px 0 18px}
+    h1{font-size:clamp(2.8rem,17vw,4.4rem)}
+    .hero-proof,.risk-grid,.timeline,.dashboard,.compliance-grid,.case-grid,.console-grid,.case-metrics{grid-template-columns:1fr}
+    .hero-actions{display:grid}
+    .button{width:100%}
+    .map-panel{display:none}
+    .threat-cards-mobile{display:grid}
+    .threat-node{position:relative;left:auto;top:auto;min-width:0}
+    .threat-node::before{left:auto;right:12px}
+    .event{min-height:0;padding:18px}
+    .timeline-head{align-items:flex-start;flex-direction:column}
+    .alert-row{grid-template-columns:1fr}
+    .cta{padding:24px}
+    }
+    @media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto !important;animation-duration:0.01ms !important;animation-iteration-count:1 !important;transition-duration:0.01ms !important}
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <nav class="nav" aria-label="Primary navigation">
+      <a class="brand" href="#top" aria-label="Sentryline home">
+        <span class="brand-mark">SL</span>
+        <span>Sentryline</span>
+      </a>
+      <ul class="nav-links">
+        <li><a class="nav-link is-active" href="#platform">Platform</a></li>
+        <li><a class="nav-link" href="#timeline">Threat flow</a></li>
+        <li><a class="nav-link" href="#dashboard">SOC preview</a></li>
+        <li><a class="nav-link" href="#compliance">Compliance</a></li>
+        <li><a class="nav-link" href="#cases">Cases</a></li>
+      </ul>
+      <div class="nav-actions">
+        <span class="status-pill">MDR live 24/7</span>
+        <a class="button button-primary" href="#demo">Book briefing</a>
+        <button class="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+          <span class="menu-lines" aria-hidden="true"><span></span><span></span><span></span></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <div class="mobile-menu" id="mobile-menu" aria-label="Mobile navigation">
+    <div class="mobile-menu-panel">
+      <a href="#platform">Platform</a>
+      <a href="#timeline">Threat flow</a>
+      <a href="#dashboard">SOC preview</a>
+      <a href="#compliance">Compliance</a>
+      <a href="#cases">Cases</a>
+      <a href="#demo">Book briefing</a>
+    </div>
+  </div>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div>
+        <p class="eyebrow">Cybersecurity platform landing + dashboard preview</p>
+        <h1 id="hero-title">Detect, contain, prove every material threat.</h1>
+        <p class="hero-copy">Sentryline unifies attack surface telemetry, identity risk, endpoint containment, and evidence-ready compliance into a single command surface for modern SOC teams.</p>
+        <div class="flow-strip" aria-label="Operating flow">
+          <span class="flow-step"><strong>01</strong> Detect signal</span>
+          <span class="flow-step"><strong>02</strong> Contain blast radius</span>
+          <span class="flow-step"><strong>03</strong> Prove control state</span>
+        </div>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#dashboard">View SOC preview</a>
+          <a class="button button-secondary" href="#timeline">Trace active incident</a>
+        </div>
+        <div class="hero-proof" aria-label="Security operations metrics">
+          <div class="proof-card">
+            <strong>4.8 min</strong>
+            <span>Median containment for high-confidence endpoint alerts</span>
+          </div>
+          <div class="proof-card">
+            <strong>98.7%</strong>
+            <span>Evidence coverage across SOC 2, ISO 27001, and NIST CSF</span>
+          </div>
+          <div class="proof-card">
+            <strong>31M</strong>
+            <span>Daily signals normalized from cloud, identity, and EDR</span>
+          </div>
+        </div>
+      </div>
+
+      <aside class="threat-console" aria-label="Live threat map">
+        <div class="console-top">
+          <span class="window-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span>GLOBAL THREAT GRAPH / EU-WEST-2 / LIVE</span>
+        </div>
+        <div class="map-panel" aria-hidden="true">
+          <span class="beam beam-1"></span>
+          <span class="beam beam-red beam-2"></span>
+          <span class="beam beam-3"></span>
+          <span class="threat-node node-1">
+            <strong>THR-8241</strong>
+            Helsinki C2 beacon blocked
+          </span>
+          <span class="threat-node alert node-2">
+            <strong>THR-9130</strong>
+            Privilege escalation attempt
+          </span>
+          <span class="threat-node node-3">
+            <strong>IDR-4067</strong>
+            Impossible travel contained
+          </span>
+          <span class="threat-node node-4">
+            <strong>CLD-5582</strong>
+            S3 policy drift remediated
+          </span>
+        </div>
+        <div class="threat-cards-mobile" aria-label="Mobile threat summary">
+          <span class="threat-node"><strong>THR-8241</strong> Helsinki C2 beacon blocked</span>
+          <span class="threat-node alert"><strong>THR-9130</strong> Privilege escalation attempt</span>
+          <span class="threat-node"><strong>IDR-4067</strong> Impossible travel contained</span>
+        </div>
+        <div class="console-grid">
+          <div class="console-card">
+            <span>Current risk</span>
+            <strong>42 / 100</strong>
+          </div>
+          <div class="console-card">
+            <span>Open material incidents</span>
+            <strong>3 active</strong>
+          </div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="section" id="platform" aria-labelledby="platform-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Risk command</p>
+          <h2 id="platform-title">The board asks for risk. The SOC needs facts.</h2>
+        </div>
+        <p>Sentryline keeps urgency precise: security leaders see risk scores and proof, analysts see incident IDs and next actions, auditors see control evidence mapped to frameworks.</p>
+      </div>
+      <div class="risk-grid">
+        <article class="risk-card">
+          <div class="risk-label">
+            <span>Enterprise risk score</span>
+            <span>Updated 14:58 UTC</span>
+          </div>
+          <div class="risk-score">42<em>/100</em></div>
+          <h3>Moderate exposure, contained identity incident.</h3>
+          <p>Risk moved down 11 points after revoking two stale OAuth grants and isolating one unmanaged MacBook from finance.</p>
+          <ul class="factor-list">
+            <li><span>Identity drift</span><strong>-18%</strong></li>
+            <li><span>Endpoint hygiene</span><strong>91%</strong></li>
+            <li><span>Cloud misconfigurations</span><strong>4 open</strong></li>
+          </ul>
+        </article>
+        <article class="risk-card critical">
+          <div class="risk-label">
+            <span>Priority asset</span>
+            <span>PAYROLL-DB-02</span>
+          </div>
+          <div class="risk-score">87<em>/100</em></div>
+          <h3>High-value database received anomalous query volume.</h3>
+          <p>Containment policy SL-EDR-112 limited lateral movement while the case owner reviews service account activity.</p>
+        </article>
+        <article class="risk-card">
+          <div class="risk-label">
+            <span>Control confidence</span>
+            <span>SOC 2 CC7</span>
+          </div>
+          <div class="risk-score">96<em>%</em></div>
+          <h3>Evidence is ready for incident response controls.</h3>
+          <p>Runbooks, reviewer attestations, alert triage notes, and containment timestamps are export-ready.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="timeline" aria-labelledby="timeline-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Incident timeline</p>
+          <h2 id="timeline-title">From first signal to proof package.</h2>
+        </div>
+        <p>The timeline turns a noisy attack sequence into an accountable chain of custody with threat IDs, responder actions, and audit artifacts.</p>
+      </div>
+      <div class="timeline-wrap">
+        <div class="timeline-head">
+          <h3>INC-2026-05-26-0147: Finance identity escalation</h3>
+          <span>MTTC 00:04:48</span>
+        </div>
+        <div class="timeline" aria-label="Security incident steps">
+          <article class="event">
+            <span class="event-time">14:06:11</span>
+            <h3>Detect</h3>
+            <p>Okta risk engine flagged impossible travel for marta.nowak@northbridge.example from Warsaw and Singapore within 17 minutes.</p>
+            <span class="event-id">IDR-4067 / CONF 0.94</span>
+          </article>
+          <article class="event is-live">
+            <span class="event-time">14:07:52</span>
+            <h3>Contain</h3>
+            <p>Session revoked, OAuth grant suspended, device FIN-MBP-337 moved into restricted network group.</p>
+            <span class="event-id">ACT-7710 / OWNER SOC-L2</span>
+          </article>
+          <article class="event">
+            <span class="event-time">14:10:59</span>
+            <h3>Hunt</h3>
+            <p>Cross-source search found no successful access to payroll export buckets or finance approval queues.</p>
+            <span class="event-id">HNT-2194 / 3 SOURCES</span>
+          </article>
+          <article class="event">
+            <span class="event-time">14:18:32</span>
+            <h3>Prove</h3>
+            <p>Evidence bundle attached to SOC 2 CC6.6, ISO A.5.24, and NIST RS.AN-3 controls.</p>
+            <span class="event-id">EVB-6628 / READY</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="dashboard" aria-labelledby="dashboard-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">SOC dashboard preview</p>
+          <h2 id="dashboard-title">One workspace for analysts and executives.</h2>
+        </div>
+        <p>The preview combines executive posture, analyst queues, live signal volume, asset context, and case ownership without turning the dashboard into theater.</p>
+      </div>
+      <div class="dashboard">
+        <aside class="dash-panel">
+          <div class="dash-panel-head">
+            <h3>Watched assets</h3>
+            <span>12 critical</span>
+          </div>
+          <ul class="asset-list">
+            <li class="asset-item"><strong>PAYROLL-DB-02</strong><span>Risk 87 / Crown jewel</span></li>
+            <li class="asset-item"><strong>OKTA-PROD</strong><span>Risk 58 / Identity core</span></li>
+            <li class="asset-item"><strong>AWS-EU-BILLING</strong><span>Risk 34 / Cloud account</span></li>
+            <li class="asset-item"><strong>JIRA-CORP</strong><span>Risk 22 / SaaS workspace</span></li>
+          </ul>
+        </aside>
+        <section class="dash-panel" aria-label="Alert queue">
+          <div class="dash-panel-head">
+            <h3>High-confidence queue</h3>
+            <span>7 requiring owner</span>
+          </div>
+          <div class="alert-board">
+            <article class="alert-row">
+              <span class="severity high">High</span>
+              <div class="alert-copy">
+                <strong>Suspicious service account token reuse</strong>
+                <span>THR-9130 / svc-payroll-export / 6 endpoints</span>
+              </div>
+              <a class="action-link" href="#timeline">Open</a>
+            </article>
+            <article class="alert-row">
+              <span class="severity">Guarded</span>
+              <div class="alert-copy">
+                <strong>CloudTrail disabled in sandbox account</strong>
+                <span>CLD-5582 / aws-eu-dev / drift policy</span>
+              </div>
+              <a class="action-link" href="#compliance">Map</a>
+            </article>
+            <article class="alert-row">
+              <span class="severity">Medium</span>
+              <div class="alert-copy">
+                <strong>Rare PowerShell encoded command</strong>
+                <span>EDR-2049 / FIN-WIN-118 / blocked</span>
+              </div>
+              <a class="action-link" href="#demo">Assign</a>
+            </article>
+          </div>
+          <div class="graph" aria-label="Signal volume chart">
+            <span class="bar" style="height: 42%"></span>
+            <span class="bar" style="height: 58%"></span>
+            <span class="bar red" style="height: 82%"></span>
+            <span class="bar red" style="height: 92%"></span>
+            <span class="bar" style="height: 63%"></span>
+            <span class="bar" style="height: 48%"></span>
+            <span class="bar" style="height: 52%"></span>
+            <span class="bar red" style="height: 76%"></span>
+            <span class="bar" style="height: 44%"></span>
+            <span class="bar" style="height: 38%"></span>
+            <span class="bar" style="height: 31%"></span>
+            <span class="bar" style="height: 29%"></span>
+          </div>
+        </section>
+        <aside class="dash-panel">
+          <div class="dash-panel-head">
+            <h3>Case owners</h3>
+            <span>Shift Bravo</span>
+          </div>
+          <ul class="case-list">
+            <li class="case-item"><strong>INC-0147</strong><span>Owner: Anika P. / ETA 22m</span></li>
+            <li class="case-item"><strong>INC-0142</strong><span>Owner: Leo K. / Legal review</span></li>
+            <li class="case-item"><strong>INC-0139</strong><span>Owner: Nora S. / Closed pending proof</span></li>
+            <li class="case-item"><strong>EVB-6628</strong><span>Audit export: SOC 2 CC7.2</span></li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="compliance" aria-labelledby="compliance-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Compliance modules</p>
+          <h2 id="compliance-title">Evidence that updates while the SOC works.</h2>
+        </div>
+        <p>Security teams should not rebuild proof after the incident. Sentryline maps alerts, decisions, approvals, and containment evidence to the frameworks your auditors already use.</p>
+      </div>
+      <div class="compliance-grid">
+        <article class="module">
+          <strong>SOC 2 Type II</strong>
+          <span>CC6.6, CC7.2, CC7.4</span>
+          <div class="module-meter" aria-label="SOC 2 evidence coverage 98 percent"><i style="--fill: 98%"></i></div>
+        </article>
+        <article class="module">
+          <strong>ISO 27001:2022</strong>
+          <span>A.5.24, A.8.15, A.8.16</span>
+          <div class="module-meter" aria-label="ISO evidence coverage 94 percent"><i style="--fill: 94%"></i></div>
+        </article>
+        <article class="module">
+          <strong>NIST CSF 2.0</strong>
+          <span>DE.CM, RS.AN, RS.MA</span>
+          <div class="module-meter" aria-label="NIST coverage 91 percent"><i style="--fill: 91%"></i></div>
+        </article>
+        <article class="module">
+          <strong>PCI DSS 4.0</strong>
+          <span>Req. 10, Req. 11, Req. 12</span>
+          <div class="module-meter" aria-label="PCI coverage 88 percent"><i style="--fill: 88%"></i></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="cases" aria-labelledby="cases-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Case studies</p>
+          <h2 id="cases-title">Outcomes that survive executive review.</h2>
+        </div>
+        <p>Realistic security marketing should show what changed: less time exposed, fewer manual artifacts, stronger proof, and less analyst fatigue.</p>
+      </div>
+      <div class="case-grid">
+        <article class="case-card">
+          <span class="tag">Fintech / 1,900 employees</span>
+          <h3>Credential stuffing contained before payment data access.</h3>
+          <p>Identity anomalies, WAF spikes, and endpoint session telemetry were correlated into one incident with automated token revocation.</p>
+          <div class="case-metrics">
+            <span>74% faster triage</span>
+            <span>0 data access</span>
+          </div>
+        </article>
+        <article class="case-card">
+          <span class="tag">Healthcare / HIPAA</span>
+          <h3>Audit package produced in under 20 minutes.</h3>
+          <p>Incident evidence mapped to NIST CSF and internal retention policies without pulling analysts away from response work.</p>
+          <div class="case-metrics">
+            <span>18m evidence</span>
+            <span>41 controls</span>
+          </div>
+        </article>
+        <article class="case-card">
+          <span class="tag">SaaS / Global SOC</span>
+          <h3>Cloud drift remediation moved from weekly to live.</h3>
+          <p>Misconfigured storage, public IP exposure, and privileged role changes were scored against customer-facing SLA risk.</p>
+          <div class="case-metrics">
+            <span>63% fewer alerts</span>
+            <span>9 regions</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="demo" aria-labelledby="demo-title">
+      <div class="cta">
+        <div>
+          <p class="eyebrow">Briefing room</p>
+          <h2 id="demo-title">Bring one incident. Leave with the proof path.</h2>
+          <p>Use this skeleton for a cybersecurity platform that needs enterprise urgency, analyst credibility, executive clarity, and compliance substance on the same page.</p>
+        </div>
+        <div class="hero-actions">
+          <a class="button button-primary" href="#top">Schedule security briefing</a>
+          <a class="button button-secondary" href="#platform">Review risk model</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <span><strong>Sentryline Cybersecurity Suite</strong> / enterprise security skeleton</span>
+    <span>Built with Frontend Skeletons</span>
+  </footer>
+
+  <script>
+    const body = document.body;
+    const menuToggle = document.querySelector(".menu-toggle");
+    const mobileMenu = document.querySelector("#mobile-menu");
+    const mobileLinks = document.querySelectorAll(".mobile-menu a");
+    const navLinks = document.querySelectorAll(".nav-link");
+    const sections = [...document.querySelectorAll("main section[id]")];
+
+    function closeMenu() {
+      body.classList.remove("menu-open");
+      mobileMenu.classList.remove("is-open");
+      menuToggle.setAttribute("aria-expanded", "false");
+    }
+
+    menuToggle.addEventListener("click", () => {
+      const isOpen = body.classList.toggle("menu-open");
+      mobileMenu.classList.toggle("is-open", isOpen);
+      menuToggle.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    mobileLinks.forEach((link) => {
+      link.addEventListener("click", closeMenu);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeMenu();
+      }
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        navLinks.forEach((link) => {
+          link.classList.toggle("is-active", link.getAttribute("href") === `#${entry.target.id}`);
+        });
+      });
+    }, { rootMargin: "-35% 0px -55% 0px", threshold: 0.01 });
+
+    sections.forEach((section) => observer.observe(section));
+
+    const timelineEvents = [...document.querySelectorAll(".event")];
+    let activeEvent = 1;
+
+    function rotateTimeline() {
+      timelineEvents.forEach((event, index) => {
+        event.classList.toggle("is-live", index === activeEvent);
+      });
+      activeEvent = (activeEvent + 1) % timelineEvents.length;
+    }
+
+    if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      window.setInterval(rotateTimeline, 4200);
+    }
+  </script>
+</body>
+</html>
