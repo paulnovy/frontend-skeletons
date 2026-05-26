@@ -256,12 +256,16 @@
       display: grid; grid-template-columns: repeat(4, 1fr);
       gap: 8px; margin: 0 0 24px;
       padding: 0; list-style: none; }
+    .progress li {
+      min-width: 0; }
     .progress-step {
       position: relative; display: grid;
-      align-content: start; min-width: 0;
+      align-content: start; width: 100%;
+      min-width: 0;
       gap: 8px; color: rgba(4, 47, 46, 0.56);
       font-size: 0.7rem; font-weight: 900;
-      text-align: center; }
+      text-align: center; border: 0;
+      background: transparent; padding: 0; cursor: pointer; }
     .progress-step::before {
       display: grid; width: var(--step-size);
       height: var(--step-size); place-items: center;
@@ -276,6 +280,9 @@
     .progress-step[data-state="done"]::before {
       background: var(--liquid-cyan); color: var(--deep-teal);
       content: "✓"; }
+    .progress-step:hover::before {
+      border-color: rgba(94, 234, 212, 0.72);
+      transform: translateY(-2px); }
     .form-stage {
       position: relative; overflow: hidden;
       min-height: 518px; border: 1px solid rgba(4, 47, 46, 0.08);
@@ -610,11 +617,11 @@
                 Encrypted
               </span>
             </div>
-            <ol class="progress" aria-label="Onboarding progress">
-              <li class="progress-step" data-index="1" data-state="active">Enter Info</li>
-              <li class="progress-step" data-index="2" data-state="idle">Verify</li>
-              <li class="progress-step" data-index="3" data-state="idle">Review</li>
-              <li class="progress-step" data-index="4" data-state="idle">Confirm</li>
+            <ol class="progress" role="tablist" aria-label="Onboarding progress">
+              <li><button class="progress-step" type="button" role="tab" aria-selected="true" data-index="1" data-state="active">Enter Info</button></li>
+              <li><button class="progress-step" type="button" role="tab" aria-selected="false" data-index="2" data-state="idle">Verify</button></li>
+              <li><button class="progress-step" type="button" role="tab" aria-selected="false" data-index="3" data-state="idle">Review</button></li>
+              <li><button class="progress-step" type="button" role="tab" aria-selected="false" data-index="4" data-state="idle">Confirm</button></li>
             </ol>
             <form class="identity-form" novalidate>
               <div class="form-stage" aria-live="polite">
@@ -804,6 +811,8 @@
         } else {
           step.dataset.state = "idle";
         }
+        step.setAttribute("aria-selected", String(index === activeStep));
+        step.tabIndex = index === activeStep ? 0 : -1;
       });
       stepMeta.textContent = `Step ${activeStep + 1} of 4 · ${labels[activeStep]}`;
       backButton.disabled = activeStep === 0;
@@ -839,6 +848,38 @@
     backButton.addEventListener("click", () => {
       activeStep = Math.max(0, activeStep - 1);
       renderStep();
+    });
+    progressSteps.forEach((step, index) => {
+      step.addEventListener("click", () => {
+        activeStep = index;
+        renderStep();
+      });
+      step.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          activeStep = Math.min(progressSteps.length - 1, index + 1);
+          renderStep();
+          progressSteps[activeStep].focus();
+        }
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          activeStep = Math.max(0, index - 1);
+          renderStep();
+          progressSteps[activeStep].focus();
+        }
+        if (event.key === "Home") {
+          event.preventDefault();
+          activeStep = 0;
+          renderStep();
+          progressSteps[activeStep].focus();
+        }
+        if (event.key === "End") {
+          event.preventDefault();
+          activeStep = progressSteps.length - 1;
+          renderStep();
+          progressSteps[activeStep].focus();
+        }
+      });
     });
     document.querySelectorAll(".control").forEach((control) => {
       control.addEventListener("input", () => {

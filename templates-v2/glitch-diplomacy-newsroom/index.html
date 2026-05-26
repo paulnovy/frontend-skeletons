@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Glitch Diplomacy Newsroom is a premium experimental geopolitical newsroom interface that arranges reporting by tension, uncertainty, and source confidence.">
+  <title>Glitch Diplomacy Newsroom</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600;6..72,700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --paper:#F8F5EF;
+      --paper-warm:#EFE9DE;
+      --paper-cool:#F1F3F5;
+      --ink:#111111;
+      --ink-soft:#303030;
+      --blue:#1D4ED8;
+      --red:#B91C1C;
+      --gray:#71717A;
+      --gray-dark:#3F3F46;
+      --line:rgba(17,17,17,0.16);
+      --line-strong:rgba(17,17,17,0.3);
+      --blue-soft:rgba(29,78,216,0.12);
+      --red-soft:rgba(185,28,28,0.12);
+      --gray-soft:rgba(113,113,122,0.14);
+      --font-article:"Newsreader",Georgia,serif;
+      --font-mono:"IBM Plex Mono",ui-monospace,monospace;
+      --font-label:"Archivo",system-ui,sans-serif;
+      --space-1:4px;
+      --space-2:8px;
+      --space-3:12px;
+      --space-4:16px;
+      --space-5:20px;
+      --space-6:24px;
+      --space-7:28px;
+      --space-8:32px;
+      --space-10:40px;
+      --space-12:48px;
+      --radius-xs:4px;
+      --radius-sm:6px;
+      --radius-md:8px;
+      --shadow-paper:0 20px 80px rgba(17,17,17,0.11);
+      --shadow-blue:0 0 0 1px rgba(29,78,216,0.2),0 18px 60px rgba(29,78,216,0.12);
+      --motion-fast:140ms ease;
+      --motion-med:220ms ease;
+      --z-nav:20;
+      --z-overlay:40;
+      --z-modal:50;
+    }
+    *{box-sizing:border-box}
+    html{
+      color-scheme:light;
+      scroll-behavior:smooth;
+    }
+    body{
+      margin:0;
+      min-height:100vh;
+      background:
+        linear-gradient(rgba(17,17,17,0.025) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(17,17,17,0.018) 1px,transparent 1px),
+        radial-gradient(circle at 14% 0%,rgba(29,78,216,0.1),transparent 26%),
+        radial-gradient(circle at 88% 12%,rgba(185,28,28,0.08),transparent 24%),
+        var(--paper);
+      background-size:28px 28px,28px 28px,auto,auto,auto;
+      color:var(--ink);
+      font-family:var(--font-article);
+      line-height:1.48;
+      overflow-x:hidden;
+    }
+    body.nav-open{overflow:hidden}a{color:inherit;text-decoration:none}
+    button,input,select{font:inherit}button{border:0;cursor:pointer}
+    img{max-width:100%;display:block}
+    :focus-visible{outline:3px solid var(--blue);outline-offset:3px;border-radius:var(--radius-xs)}
+    .skip-link{position:fixed;left:var(--space-4);top:var(--space-4);z-index:var(--z-modal);transform:translateY(-160%);background:var(--ink);color:var(--paper);padding:var(--space-3) var(--space-4);border-radius:var(--radius-sm);font-family:var(--font-label);font-weight:800;transition:transform var(--motion-fast)}
+    .skip-link:focus{transform:translateY(0)}
+    .newsroom-shell{display:grid;grid-template-columns:288px minmax(0,1fr) 336px;min-height:100vh}
+    .masthead{position:sticky;top:0;height:100vh;z-index:var(--z-nav);display:flex;flex-direction:column;gap:var(--space-7);padding:var(--space-6);border-right:1px solid var(--line);background:rgba(248,245,239,0.86);backdrop-filter:blur(18px);overflow-y:auto}
+    .brand{display:grid;gap:var(--space-3);padding-bottom:var(--space-6);border-bottom:2px solid var(--ink)}
+    .brand-kicker{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);font-family:var(--font-mono);font-size:0.72rem;color:var(--gray-dark);text-transform:uppercase;letter-spacing:0.08em}
+    .brand-mark{width:44px;height:44px;display:grid;place-items:center;border:2px solid var(--ink);background:linear-gradient(135deg,transparent 0 45%,var(--red) 46% 54%,transparent 55%),var(--paper);color:var(--blue);font-family:var(--font-label);font-size:0.72rem;font-weight:900;letter-spacing:0.08em}
+    .brand h1{margin:0;max-width:11ch;font-family:var(--font-article);font-size:clamp(2.25rem,4vw,4.3rem);line-height:0.9;font-weight:700;letter-spacing:0}
+    .brand-note{margin:0;color:var(--gray-dark);font-family:var(--font-mono);font-size:0.78rem}
+    .nav-block{display:grid;gap:var(--space-3)}
+    .nav-title,.rail-title,.section-label{margin:0;font-family:var(--font-label);font-size:0.72rem;font-weight:800;letter-spacing:0.08em;text-transform:uppercase}
+    .nav-list{display:grid;gap:var(--space-2);margin:0;padding:0;list-style:none}
+    .nav-link{min-height:44px;display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);padding:var(--space-3);border:1px solid transparent;border-radius:var(--radius-sm);color:var(--ink-soft);font-family:var(--font-label);font-size:0.9rem;font-weight:700;transition:background var(--motion-fast),border-color var(--motion-fast),transform var(--motion-fast)}
+    .nav-link:hover,.nav-link.active{background:var(--blue-soft);border-color:rgba(29,78,216,0.22);transform:translateX(2px)}
+    .nav-count{min-width:30px;padding:2px var(--space-2);border:1px solid var(--line);border-radius:999px;text-align:center;font-family:var(--font-mono);font-size:0.7rem;color:var(--blue);background:rgba(255,255,255,0.36)}
+    .desk-status{margin-top:auto;display:grid;gap:var(--space-3);padding:var(--space-4);border:1px solid var(--line);border-radius:var(--radius-md);background:rgba(255,255,255,0.42)}
+    .status-row{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);font-family:var(--font-mono);font-size:0.74rem}
+    .status-dot{width:9px;height:9px;border-radius:50%;background:var(--red);box-shadow:0 0 0 5px rgba(185,28,28,0.12)}
+    .mobile-topbar{display:none;position:sticky;top:0;z-index:var(--z-nav);align-items:center;justify-content:space-between;gap:var(--space-3);padding:var(--space-3) var(--space-4);border-bottom:1px solid var(--line);background:rgba(248,245,239,0.92);backdrop-filter:blur(18px)}
+    .mobile-logo{display:flex;align-items:center;gap:var(--space-3);font-family:var(--font-label);font-weight:900;letter-spacing:0.02em;text-transform:uppercase}
+    .menu-button,.ghost-button,.filter-chip,.story-button{min-height:42px;border:1px solid var(--line-strong);border-radius:var(--radius-sm);background:var(--paper);color:var(--ink);font-family:var(--font-label);font-size:0.84rem;font-weight:800;transition:transform var(--motion-fast),background var(--motion-fast),color var(--motion-fast),border-color var(--motion-fast)}
+    .menu-button,.ghost-button{display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);padding:0 var(--space-4)}
+    .menu-button:hover,.ghost-button:hover,.filter-chip:hover,.story-button:hover{transform:translateY(-1px)}
+    .menu-button[aria-expanded="true"],.filter-chip.active{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+    .main{min-width:0;padding:var(--space-6)}
+    .front-grid{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(280px,0.8fr);gap:var(--space-6);align-items:stretch;margin-bottom:var(--space-6)}
+    .lead-panel,.signal-panel,.story-card,.analysis-panel,.rail-panel{border:1px solid var(--line);border-radius:var(--radius-md);background:rgba(248,245,239,0.76);box-shadow:var(--shadow-paper)}
+    .lead-panel{position:relative;min-height:520px;display:grid;align-content:end;overflow:hidden;padding:var(--space-7);background:linear-gradient(180deg,rgba(248,245,239,0.32),rgba(248,245,239,0.94)),repeating-linear-gradient(90deg,rgba(185,28,28,0.1) 0 1px,transparent 1px 16px),var(--paper-warm)}
+    .lead-panel::before,.lead-panel::after{content:"";position:absolute;inset:0;pointer-events:none}
+    .lead-panel::before{background:linear-gradient(90deg,transparent 0 8%,rgba(29,78,216,0.16) 8% 8.5%,transparent 8.5% 46%,rgba(185,28,28,0.12) 46% 47%,transparent 47%),linear-gradient(180deg,transparent 0 26%,rgba(17,17,17,0.08) 26% 26.5%,transparent 26.5%);mix-blend-mode:multiply}
+    .lead-panel::after{opacity:0;background:linear-gradient(90deg,rgba(29,78,216,0.16),transparent 22%),linear-gradient(270deg,rgba(185,28,28,0.12),transparent 28%);animation:glitch-wash 8s steps(2,end) infinite}
+    .lead-content{position:relative;z-index:1;display:grid;gap:var(--space-4);max-width:760px}
+    .dateline{display:flex;flex-wrap:wrap;gap:var(--space-2);font-family:var(--font-mono);font-size:0.75rem;color:var(--gray-dark)}
+    .dateline span{padding:4px var(--space-2);border:1px solid var(--line);background:rgba(248,245,239,0.7)}
+    .tension-label{display:inline-flex;align-items:center;width:fit-content;min-height:32px;padding:5px var(--space-3);border:2px solid currentColor;font-family:var(--font-label);font-size:0.73rem;font-weight:900;letter-spacing:0.08em;text-transform:uppercase}
+    .tension-label.critical{color:var(--red);background:var(--red-soft)}
+    .tension-label.watch{color:var(--blue);background:var(--blue-soft)}
+    .tension-label.uncertain{color:var(--gray-dark);background:var(--gray-soft)}
+    .glitch-title{position:relative;margin:0;font-size:clamp(3.2rem,7.5vw,7.4rem);line-height:0.84;font-weight:700;letter-spacing:0;text-wrap:balance}
+    .glitch-title::before,.glitch-title::after{content:attr(data-alt);position:absolute;inset:0;opacity:0;pointer-events:none}
+    .glitch-title::before{color:var(--blue);transform:translate(5px,-2px);clip-path:inset(0 0 54% 0)}
+    .glitch-title::after{color:var(--red);transform:translate(-4px,2px);clip-path:inset(58% 0 0 0)}
+    .lead-panel:hover .glitch-title::before,.lead-panel:hover .glitch-title::after,.lead-panel:focus-within .glitch-title::before,.lead-panel:focus-within .glitch-title::after{animation:title-glitch 700ms steps(2,end) both}
+    .lead-copy{max-width:68ch;margin:0;color:var(--ink-soft);font-size:1.24rem;line-height:1.45}
+    .lead-actions{display:flex;flex-wrap:wrap;gap:var(--space-3)}
+    .story-button{display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);padding:0 var(--space-4)}
+    .story-button.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+    .signal-panel{display:grid;gap:var(--space-5);padding:var(--space-5);align-content:start}
+    .signal-map{display:grid;gap:var(--space-3);padding:var(--space-4);border:1px solid var(--line);background:rgba(255,255,255,0.42)}
+    .signal-row{display:grid;grid-template-columns:88px 1fr 48px;align-items:center;gap:var(--space-3);font-family:var(--font-mono);font-size:0.75rem}
+    .bar{height:10px;border:1px solid var(--line);background:var(--paper);overflow:hidden}
+    .bar>span{display:block;height:100%;background:var(--blue)}
+    .bar.red>span{background:var(--red)}.bar.gray>span{background:var(--gray)}
+    .correction-box{display:grid;gap:var(--space-2);padding:var(--space-4);border-left:4px solid var(--red);background:var(--red-soft);font-family:var(--font-mono);font-size:0.78rem}
+    .correction-box strong{font-family:var(--font-label);text-transform:uppercase;letter-spacing:0.06em}
+    .filters{display:flex;flex-wrap:wrap;gap:var(--space-3);margin:0 0 var(--space-5);padding:var(--space-4);border-block:2px solid var(--ink)}
+    .filter-chip{padding:0 var(--space-4);color:var(--gray-dark);background:transparent}
+    .section-head{display:flex;align-items:end;justify-content:space-between;gap:var(--space-4);margin-bottom:var(--space-4)}
+    .section-head h2{margin:0;font-size:clamp(2rem,4vw,4.6rem);line-height:0.9;letter-spacing:0}
+    .section-head p{max-width:44ch;margin:0;color:var(--gray-dark);font-family:var(--font-mono);font-size:0.78rem}
+    .story-lanes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-5)}
+    .lane{display:grid;align-content:start;gap:var(--space-4)}
+    .lane-header{min-height:96px;display:grid;gap:var(--space-2);padding:var(--space-4);border:2px solid var(--ink);background:var(--paper)}
+    .lane-header h3{margin:0;font-family:var(--font-label);font-size:1rem;text-transform:uppercase;letter-spacing:0.06em}
+    .lane-header p{margin:0;color:var(--gray-dark);font-family:var(--font-mono);font-size:0.74rem}
+    .story-card{position:relative;display:grid;gap:var(--space-4);padding:var(--space-4);transition:transform var(--motion-med),box-shadow var(--motion-med),border-color var(--motion-med)}
+    .story-card[hidden]{display:none}
+    .story-card:hover,.story-card.active{transform:translateY(-3px);border-color:rgba(29,78,216,0.42);box-shadow:var(--shadow-blue)}
+    .story-card::before{content:attr(data-conflict);position:absolute;top:var(--space-3);right:var(--space-3);max-width:18ch;padding:4px var(--space-2);opacity:0;transform:translateY(-3px);border:1px solid var(--red);background:var(--paper);color:var(--red);font-family:var(--font-mono);font-size:0.62rem;line-height:1.3;pointer-events:none;transition:opacity var(--motion-fast),transform var(--motion-fast)}
+    .story-card:hover::before,.story-card:focus-within::before{opacity:1;transform:translateY(0)}
+    .story-meta{display:flex;flex-wrap:wrap;gap:var(--space-2);padding-right:116px;font-family:var(--font-mono);font-size:0.68rem;color:var(--gray-dark);text-transform:uppercase;letter-spacing:0.05em}
+    .story-meta span{padding:3px 6px;border:1px solid var(--line);background:rgba(255,255,255,0.42)}
+    .story-card h3{margin:0;font-size:clamp(1.5rem,2.6vw,2.2rem);line-height:0.96;letter-spacing:0}
+    .story-card p{margin:0;color:var(--ink-soft);font-size:1.02rem}
+    .confidence{display:grid;gap:var(--space-2);font-family:var(--font-mono);font-size:0.74rem}
+    .confidence-line{display:flex;justify-content:space-between;gap:var(--space-3)}
+    .meter{height:12px;border:1px solid var(--line-strong);background:var(--paper-warm);overflow:hidden}
+    .meter span{display:block;height:100%;background:linear-gradient(90deg,var(--red) 0 12px,transparent 12px 16px),linear-gradient(90deg,var(--blue),var(--blue));background-size:16px 100%,100% 100%}
+    details.source-drawer{border-top:1px solid var(--line);padding-top:var(--space-3);font-family:var(--font-mono);font-size:0.74rem}
+    details.source-drawer summary{min-height:36px;display:flex;align-items:center;justify-content:space-between;gap:var(--space-2);color:var(--blue);font-weight:700;cursor:pointer;list-style:none}
+    details.source-drawer summary::-webkit-details-marker{display:none}
+    .source-list{display:grid;gap:var(--space-2);margin:var(--space-2) 0 0;padding:0;list-style:none;color:var(--gray-dark)}
+    .source-list li{display:flex;justify-content:space-between;gap:var(--space-3);padding:var(--space-2);border:1px solid var(--line);background:rgba(255,255,255,0.36)}
+    .analysis-panel{margin-top:var(--space-6);padding:var(--space-6)}
+    .analysis-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,0.8fr);gap:var(--space-5);margin-top:var(--space-4)}
+    .narrative-list{display:grid;gap:var(--space-3);margin:0;padding:0;list-style:none}
+    .narrative-item{display:grid;gap:var(--space-2);padding:var(--space-4);border:1px solid var(--line);background:rgba(255,255,255,0.36)}
+    .narrative-item strong{font-family:var(--font-label);font-size:0.9rem;text-transform:uppercase;letter-spacing:0.05em}
+    .narrative-item span{color:var(--gray-dark);font-family:var(--font-mono);font-size:0.74rem}
+    .inspect{position:sticky;top:0;height:100vh;display:grid;align-content:start;gap:var(--space-5);padding:var(--space-6);border-left:1px solid var(--line);background:rgba(241,243,245,0.82);backdrop-filter:blur(18px);overflow-y:auto}
+    .rail-panel{display:grid;gap:var(--space-4);padding:var(--space-5);box-shadow:none;background:rgba(255,255,255,0.42)}
+    .brief-title{margin:0;font-size:2.1rem;line-height:0.95;letter-spacing:0}
+    .brief-copy{margin:0;color:var(--ink-soft);font-size:1rem}
+    .brief-table{display:grid;gap:var(--space-2);font-family:var(--font-mono);font-size:0.74rem}
+    .brief-table div{display:grid;grid-template-columns:1fr auto;gap:var(--space-3);padding-bottom:var(--space-2);border-bottom:1px solid var(--line)}
+    .timeline{display:grid;gap:var(--space-3);margin:0;padding:0;list-style:none}
+    .timeline li{display:grid;gap:var(--space-1);padding-left:var(--space-3);border-left:3px solid var(--blue);font-family:var(--font-mono);font-size:0.74rem}
+    .timeline time{color:var(--gray-dark)}
+    .responsibility-note{padding:var(--space-4);border:1px dashed var(--line-strong);color:var(--gray-dark);font-family:var(--font-mono);font-size:0.74rem;background:rgba(248,245,239,0.54)}
+    .site-footer{padding:var(--space-8) var(--space-6);border-top:2px solid var(--ink);color:var(--gray-dark);font-family:var(--font-mono);font-size:0.78rem;text-align:center}
+    .overlay{position:fixed;inset:0;z-index:calc(var(--z-nav) - 1);display:none;background:rgba(17,17,17,0.36)}
+    body.nav-open .overlay{display:block}@keyframes title-glitch{0%,100%{opacity:0}
+    18%,42%,64%{opacity:0.75}28%,54%{opacity:0.2}}
+    @keyframes glitch-wash{0%,84%,100%{opacity:0;transform:translateX(0)}
+    86%{opacity:1;transform:translateX(-10px)}88%{opacity:0.35;transform:translateX(8px)}
+    90%{opacity:0;transform:translateX(0)}}
+    @media (max-width:1240px){.newsroom-shell{grid-template-columns:250px minmax(0,1fr)}
+    .inspect{position:static;grid-column:1 / -1;height:auto;border-left:0;border-top:1px solid var(--line)}
+    .front-grid,.analysis-grid{grid-template-columns:1fr}}
+    @media (max-width:860px){.mobile-topbar{display:flex}.newsroom-shell{display:block}
+    .masthead{position:fixed;inset:0 auto 0 0;width:min(86vw,340px);transform:translateX(-105%);transition:transform var(--motion-med);box-shadow:28px 0 80px rgba(17,17,17,0.2)}
+    body.nav-open .masthead{transform:translateX(0)}.main{padding:var(--space-4)}
+    .lead-panel{min-height:480px;padding:var(--space-5)}.lead-copy{font-size:1.08rem}
+    .filters{overflow-x:auto;flex-wrap:nowrap}.filter-chip{white-space:nowrap}
+    .section-head{display:grid;align-items:start}.story-lanes{grid-template-columns:1fr}
+    .lane{gap:var(--space-3)}.lane-header{min-height:auto}.story-meta{padding-right:0}
+    .story-card::before{position:static;max-width:none;opacity:1;transform:none;order:2}
+    .inspect{padding:var(--space-4)}}
+    @media (max-width:560px){.glitch-title{font-size:clamp(2.7rem,17vw,4.6rem)}
+    .lead-actions,.signal-row,.source-list li,.brief-table div{display:grid;grid-template-columns:1fr}
+    .story-button,.ghost-button{width:100%}}
+    @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms !important;animation-iteration-count:1 !important;scroll-behavior:auto !important;transition-duration:0.01ms !important}
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#workspace">Skip to newsroom</a>
+  <div class="mobile-topbar">
+    <div class="mobile-logo" aria-label="Glitch Diplomacy Newsroom">
+      <span class="brand-mark">GDN</span>
+      <span>Glitch Desk</span>
+    </div>
+    <button class="menu-button" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-nav">Menu</button>
+  </div>
+
+  <div class="overlay" data-overlay></div>
+
+  <div class="newsroom-shell">
+    <aside class="masthead" id="site-nav" aria-label="Newsroom navigation">
+      <div class="brand">
+        <div class="brand-kicker">
+          <span>May 26, 2026</span>
+          <span>16:52 CET</span>
+        </div>
+        <div class="brand-mark" aria-hidden="true">GDN</div>
+        <h1>Glitch Diplomacy</h1>
+        <p class="brand-note">News arranged by pressure, evidence gaps, and competing accounts, not by the clock.</p>
+      </div>
+
+      <nav class="nav-block" aria-label="Desk sections">
+        <p class="nav-title">Tension Desk</p>
+        <ul class="nav-list">
+          <li><a class="nav-link active" href="#workspace"><span>Pressure map</span><span class="nav-count">12</span></a></li>
+          <li><a class="nav-link" href="#critical"><span>Critical strain</span><span class="nav-count">4</span></a></li>
+          <li><a class="nav-link" href="#uncertain"><span>High uncertainty</span><span class="nav-count">5</span></a></li>
+          <li><a class="nav-link" href="#confidence"><span>Confidence ledger</span><span class="nav-count">9</span></a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-block">
+        <p class="nav-title">Source Policy</p>
+        <ul class="nav-list">
+          <li><a class="nav-link" href="#corrections"><span>Corrections</span><span class="nav-count">2</span></a></li>
+          <li><a class="nav-link" href="#updates"><span>Live updates</span><span class="nav-count">6</span></a></li>
+          <li><a class="nav-link" href="#method"><span>Method notes</span><span class="nav-count">A1</span></a></li>
+        </ul>
+      </div>
+
+      <div class="desk-status" aria-label="Current desk status">
+        <div class="status-row"><span>Verification posture</span><strong>Restrained</strong></div>
+        <div class="status-row"><span>Unconfirmed claims</span><strong>17</strong></div>
+        <div class="status-row"><span>Escalation signal</span><span class="status-dot" aria-label="High escalation signal"></span></div>
+      </div>
+    </aside>
+
+    <main class="main" id="workspace">
+      <section class="front-grid" aria-labelledby="lead-headline">
+        <article class="lead-panel" tabindex="0">
+          <div class="lead-content">
+            <div class="dateline">
+              <span>Brussels / Warsaw / Ankara</span>
+              <span>Updated 16:42 CET</span>
+              <span>Confidence 72%</span>
+            </div>
+            <span class="tension-label critical">Critical Strain</span>
+            <h2 class="glitch-title" id="lead-headline" data-alt="Allies dispute the same ceasefire text">Allies dispute same ceasefire text</h2>
+            <p class="lead-copy">Three diplomatic delegations describe the draft as near agreement, while two security officials warn the enforcement language remains unresolved. The gap is not timing; it is what each side believes the document already promises.</p>
+            <div class="lead-actions">
+              <button class="story-button primary" type="button" data-focus-story="black-sea">Inspect source split</button>
+              <button class="story-button" type="button" data-filter="uncertain">Show uncertain claims</button>
+            </div>
+          </div>
+        </article>
+
+        <aside class="signal-panel" aria-labelledby="signal-title">
+          <div>
+            <p class="section-label">Desk Signal</p>
+            <h2 class="brief-title" id="signal-title">Pressure before chronology</h2>
+          </div>
+          <div class="signal-map" aria-label="Signal levels">
+            <div class="signal-row"><span>Tension</span><div class="bar red"><span style="width: 88%"></span></div><strong>88</strong></div>
+            <div class="signal-row"><span>Uncertainty</span><div class="bar gray"><span style="width: 63%"></span></div><strong>63</strong></div>
+            <div class="signal-row"><span>Confidence</span><div class="bar"><span style="width: 72%"></span></div><strong>72</strong></div>
+          </div>
+          <div class="correction-box" id="corrections">
+            <strong>Correction logged 15:58 CET</strong>
+            <span>An earlier summary said the maritime corridor proposal was introduced by Greece. The proposal was tabled by a joint Greek-Turkish technical channel, according to the published meeting note.</span>
+          </div>
+          <p class="brief-copy">Hover or focus story cards to reveal the competing narrative currently attached to each report.</p>
+        </aside>
+      </section>
+
+      <div class="filters" aria-label="Story filters">
+        <button class="filter-chip active" type="button" data-filter="all">All pressure</button>
+        <button class="filter-chip" type="button" data-filter="critical">Critical strain</button>
+        <button class="filter-chip" type="button" data-filter="uncertain">Uncertain claims</button>
+        <button class="filter-chip" type="button" data-filter="confidence">High confidence</button>
+        <button class="filter-chip" type="button" data-filter="correction">Corrections</button>
+      </div>
+
+      <section id="critical" aria-labelledby="lanes-title">
+        <div class="section-head">
+          <div>
+            <p class="section-label">Story Lanes</p>
+            <h2 id="lanes-title">Arranged by diplomatic stress</h2>
+          </div>
+          <p>Cards are sorted by tension, uncertainty, and source confidence. Update times are visible, but they do not control priority.</p>
+        </div>
+
+        <div class="story-lanes">
+          <section class="lane" aria-labelledby="lane-critical">
+            <header class="lane-header">
+              <h3 id="lane-critical">Critical Strain</h3>
+              <p>High escalation risk, disputed intent, immediate policy consequences.</p>
+            </header>
+
+            <article class="story-card active" id="black-sea" tabindex="0" data-story data-filter-tags="critical confidence" data-conflict="Counterclaim: naval officials say corridor language is only a contingency draft.">
+              <div class="story-meta"><span>Black Sea</span><span>16:38 CET</span><span>Updated</span></div>
+              <span class="tension-label critical">Tension 91</span>
+              <h3>Mine-clearing corridor becomes the hardest line in ceasefire talks</h3>
+              <p>Shipping insurers are modeling a limited corridor, but defense ministries still disagree on who verifies the route and who escorts the first convoy.</p>
+              <div class="confidence">
+                <div class="confidence-line"><span>Source confidence</span><strong>76%</strong></div>
+                <div class="meter" aria-hidden="true"><span style="width: 76%"></span></div>
+              </div>
+              <details class="source-drawer">
+                <summary>Sources and confidence <span>Open</span></summary>
+                <ul class="source-list">
+                  <li><span>NATO maritime official</span><strong>High</strong></li>
+                  <li><span>Lloyd's market note</span><strong>Medium</strong></li>
+                  <li><span>Regional defense aide</span><strong>Medium</strong></li>
+                </ul>
+              </details>
+            </article>
+
+            <article class="story-card" tabindex="0" data-story data-filter-tags="critical uncertain" data-conflict="Counterclaim: one EU diplomat says sanctions timing is routine calendar work.">
+              <div class="story-meta"><span>Energy Council</span><span>15:21 CET</span><span>Watch</span></div>
+              <span class="tension-label critical">Tension 86</span>
+              <h3>Emergency gas reserve vote moves ahead without public consensus</h3>
+              <p>Ministers are preparing fallback purchasing rules after a late-night call with pipeline operators produced conflicting demand forecasts.</p>
+              <div class="confidence">
+                <div class="confidence-line"><span>Source confidence</span><strong>64%</strong></div>
+                <div class="meter" aria-hidden="true"><span style="width: 64%"></span></div>
+              </div>
+              <details class="source-drawer">
+                <summary>Sources and confidence <span>Open</span></summary>
+                <ul class="source-list">
+                  <li><span>Commission energy desk</span><strong>Medium</strong></li>
+                  <li><span>Pipeline dispatch logs</span><strong>Medium</strong></li>
+                  <li><span>Two member-state aides</span><strong>Low</strong></li>
+                </ul>
+              </details>
+            </article>
+          </section>
+
+          <section class="lane" id="uncertain" aria-labelledby="lane-uncertain">
+            <header class="lane-header">
+              <h3 id="lane-uncertain">Uncertainty Front</h3>
+              <p>Important claims where the missing evidence is the story.</p>
+            </header>
+
+            <article class="story-card" tabindex="0" data-story data-filter-tags="uncertain correction" data-conflict="Counterclaim: satellite pass does not confirm vehicle type or direction.">
+              <div class="story-meta"><span>Caucasus</span><span>14:47 CET</span><span>Correction</span></div>
+              <span class="tension-label uncertain">Uncertainty 78</span>
+              <h3>Border convoy reports hinge on two minutes of missing footage</h3>
+              <p>Local channels showed vehicles near the crossing, but the verified clip ends before the route marker that would confirm whether they entered the buffer zone.</p>
+              <div class="confidence">
+                <div class="confidence-line"><span>Source confidence</span><strong>58%</strong></div>
+                <div class="meter" aria-hidden="true"><span style="width: 58%"></span></div>
+              </div>
+              <details class="source-drawer">
+                <summary>Sources and confidence <span>Open</span></summary>
+                <ul class="source-list">
+                  <li><span>Planet Labs image review</span><strong>Medium</strong></li>
+                  <li><span>Local emergency radio</span><strong>Low</strong></li>
+                  <li><span>Border ministry denial</span><strong>Medium</strong></li>
+                </ul>
+              </details>
+            </article>
+
+            <article class="story-card" tabindex="0" data-story data-filter-tags="uncertain" data-conflict="Counterclaim: humanitarian staff report normal customs processing at two gates.">
+              <div class="story-meta"><span>Levant</span><span>13:12 CET</span><span>Developing</span></div>
+              <span class="tension-label uncertain">Uncertainty 73</span>
+              <h3>Aid crossing pause described as both inspection and retaliation</h3>
+              <p>The convoy is still staged outside the terminal. Officials agree on the delay but not on whether the order came from security, customs, or political offices.</p>
+              <div class="confidence">
+                <div class="confidence-line"><span>Source confidence</span><strong>61%</strong></div>
+                <div class="meter" aria-hidden="true"><span style="width: 61%"></span></div>
+              </div>
+              <details class="source-drawer">
+                <summary>Sources and confidence <span>Open</span></summary>
+                <ul class="source-list">
+                  <li><span>UN logistics coordinator</span><strong>High</strong></li>
+                  <li><span>Terminal operator</span><strong>Medium</strong></li>
+                  <li><span>Interior ministry statement</span><strong>Medium</strong></li>
+                </ul>
+              </details>
+            </article>
+          </section>
+
+          <section class="lane" id="confidence" aria-labelledby="lane-confidence">
+            <header class="lane-header">
+              <h3 id="lane-confidence">Confidence Ledger</h3>
+              <p>Confirmed details that still carry political consequence.</p>
+            </header>
+
+            <article class="story-card" tabindex="0" data-story data-filter-tags="confidence" data-conflict="Counterclaim: opposition parties call the delay tactical, not procedural.">
+              <div class="story-meta"><span>Nordic Council</span><span>12:04 CET</span><span>Confirmed</span></div>
+              <span class="tension-label watch">Confidence 89</span>
+              <h3>Defense procurement vote postponed after audit office memo</h3>
+              <p>The memo is public, the delay is confirmed, and the unresolved question is whether the audit changes the acquisition plan or simply slows committee approval.</p>
+              <div class="confidence">
+                <div class="confidence-line"><span>Source confidence</span><strong>89%</strong></div>
+                <div class="meter" aria-hidden="true"><span style="width: 89%"></span></div>
+              </div>
+              <details class="source-drawer">
+                <summary>Sources and confidence <span>Open</span></summary>
+                <ul class="source-list">
+                  <li><span>Audit office memo</span><strong>High</strong></li>
+                  <li><span>Parliament calendar</span><strong>High</strong></li>
+                  <li><span>Committee chair briefing</span><strong>High</strong></li>
+                </ul>
+              </details>
+            </article>
+
+            <article class="story-card" tabindex="0" data-story data-filter-tags="confidence correction" data-conflict="Counterclaim: trade ministry says the exemption list remains open.">
+              <div class="story-meta"><span>Indo-Pacific</span><span>10:35 CET</span><span>Corrected</span></div>
+              <span class="tension-label watch">Confidence 82</span>
+              <h3>Rare-earth export waiver covers medical scanners, not turbine magnets</h3>
+              <p>The published customs note narrows the exemption to diagnostic imaging parts. Wind-sector suppliers are still waiting for a separate ruling.</p>
+              <div class="confidence">
+                <div class="confidence-line"><span>Source confidence</span><strong>82%</strong></div>
+                <div class="meter" aria-hidden="true"><span style="width: 82%"></span></div>
+              </div>
+              <details class="source-drawer">
+                <summary>Sources and confidence <span>Open</span></summary>
+                <ul class="source-list">
+                  <li><span>Customs notice 26-184</span><strong>High</strong></li>
+                  <li><span>Medical device importer</span><strong>High</strong></li>
+                  <li><span>Wind industry lobby note</span><strong>Medium</strong></li>
+                </ul>
+              </details>
+            </article>
+          </section>
+        </div>
+      </section>
+
+      <section class="analysis-panel" id="method" aria-labelledby="method-title">
+        <p class="section-label">Narrative Splitter</p>
+        <div class="analysis-grid">
+          <div>
+            <h2 class="brief-title" id="method-title">The interface treats contradiction as first-class data.</h2>
+            <p class="brief-copy">Every story separates what happened, who says it happened, what remains unverified, and what was corrected. Glitch effects are used only to reveal conflicting narratives, never to obscure confidence labels.</p>
+          </div>
+          <ul class="narrative-list">
+            <li class="narrative-item"><strong>Confirmed</strong><span>Events supported by documents, named institutions, or multiple independent records.</span></li>
+            <li class="narrative-item"><strong>Contested</strong><span>Claims with credible sources on both sides or unclear institutional ownership.</span></li>
+            <li class="narrative-item"><strong>Corrected</strong><span>Reports amended with visible timestamps and a plain-language correction note.</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <footer class="site-footer">Built with Frontend Skeletons</footer>
+    </main>
+
+    <aside class="inspect" aria-labelledby="briefing-title">
+      <section class="rail-panel">
+        <p class="rail-title">Selected Brief</p>
+        <h2 class="brief-title" id="briefing-title">Mine-clearing corridor becomes the hardest line in ceasefire talks</h2>
+        <p class="brief-copy" data-brief-copy>Shipping insurers are modeling a limited corridor, but defense ministries still disagree on who verifies the route and who escorts the first convoy.</p>
+        <div class="brief-table">
+          <div><span>Confidence</span><strong data-brief-confidence>76%</strong></div>
+          <div><span>Last update</span><strong data-brief-time>16:38 CET</strong></div>
+          <div><span>Responsible editor</span><strong>Elena Markovic</strong></div>
+          <div><span>Correction status</span><strong data-brief-status>None open</strong></div>
+        </div>
+      </section>
+
+      <section class="rail-panel" id="updates">
+        <p class="rail-title">Update Ledger</p>
+        <ul class="timeline">
+          <li><time datetime="2026-05-26T16:42:00+02:00">16:42 CET</time><span>Added insurers' corridor model after second-market confirmation.</span></li>
+          <li><time datetime="2026-05-26T15:58:00+02:00">15:58 CET</time><span>Corrected attribution of maritime proposal to joint technical channel.</span></li>
+          <li><time datetime="2026-05-26T14:27:00+02:00">14:27 CET</time><span>Downgraded convoy claim from likely to unverified pending image review.</span></li>
+          <li><time datetime="2026-05-26T12:18:00+02:00">12:18 CET</time><span>Promoted audit memo story to high confidence after publication.</span></li>
+        </ul>
+      </section>
+
+      <section class="rail-panel">
+        <p class="rail-title">Source Guardrails</p>
+        <div class="responsibility-note">Confidence percentages describe the desk's current evidentiary support, not the probability that a political outcome will occur. Anonymous sources require role labeling and at least one corroborating record before a claim can enter the critical lane.</div>
+      </section>
+    </aside>
+  </div>
+
+  <script>
+    const body = document.body;
+    const menuToggle = document.querySelector("[data-menu-toggle]");
+    const overlay = document.querySelector("[data-overlay]");
+    const navLinks = document.querySelectorAll(".nav-link");
+    const filterButtons = document.querySelectorAll("[data-filter]");
+    const storyCards = Array.from(document.querySelectorAll("[data-story]"));
+    const briefTitle = document.querySelector("#briefing-title");
+    const briefCopy = document.querySelector("[data-brief-copy]");
+    const briefConfidence = document.querySelector("[data-brief-confidence]");
+    const briefTime = document.querySelector("[data-brief-time]");
+    const briefStatus = document.querySelector("[data-brief-status]");
+
+    const storyDetails = {
+      "black-sea": {
+        status: "None open",
+        editor: "Elena Markovic"
+      }
+    };
+
+    function setMenu(open) {
+      body.classList.toggle("nav-open", open);
+      menuToggle?.setAttribute("aria-expanded", String(open));
+    }
+
+    function setActiveStory(card) {
+      storyCards.forEach((story) => story.classList.toggle("active", story === card));
+      const headline = card.querySelector("h3")?.textContent || "";
+      const summary = card.querySelector("p")?.textContent || "";
+      const confidence = card.querySelector(".confidence-line strong")?.textContent || "Pending";
+      const time = card.querySelector(".story-meta span:nth-child(2)")?.textContent || "No timestamp";
+      const corrected = card.dataset.filterTags.includes("correction");
+
+      briefTitle.textContent = headline;
+      briefCopy.textContent = summary;
+      briefConfidence.textContent = confidence;
+      briefTime.textContent = time;
+      briefStatus.textContent = corrected ? "Correction attached" : (storyDetails[card.id]?.status || "None open");
+    }
+
+    function applyFilter(filter) {
+      filterButtons.forEach((button) => {
+        button.classList.toggle("active", button.dataset.filter === filter);
+      });
+
+      storyCards.forEach((card) => {
+        const tags = card.dataset.filterTags || "";
+        const visible = filter === "all" || tags.includes(filter);
+        card.hidden = !visible;
+      });
+
+      const firstVisible = storyCards.find((card) => !card.hidden);
+      if (firstVisible) setActiveStory(firstVisible);
+    }
+
+    menuToggle?.addEventListener("click", () => {
+      setMenu(!body.classList.contains("nav-open"));
+    });
+
+    overlay?.addEventListener("click", () => setMenu(false));
+
+    navLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        navLinks.forEach((item) => item.classList.remove("active"));
+        link.classList.add("active");
+        setMenu(false);
+      });
+    });
+
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const filter = button.dataset.filter || "all";
+        applyFilter(filter);
+      });
+    });
+
+    storyCards.forEach((card) => {
+      card.addEventListener("click", () => setActiveStory(card));
+      card.addEventListener("focusin", () => setActiveStory(card));
+    });
+
+    document.querySelectorAll("[data-focus-story]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const target = document.getElementById(button.dataset.focusStory);
+        if (!target) return;
+        applyFilter("all");
+        target.scrollIntoView({ behavior: "smooth", block: "center" });
+        target.focus({ preventScroll: true });
+        setActiveStory(target);
+      });
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") setMenu(false);
+      if (!event.altKey) return;
+      const visibleStories = storyCards.filter((card) => !card.hidden);
+      const activeIndex = visibleStories.findIndex((card) => card.classList.contains("active"));
+      if (event.key === "ArrowRight") {
+        event.preventDefault();
+        const next = visibleStories[(activeIndex + 1 + visibleStories.length) % visibleStories.length];
+        next?.focus();
+        if (next) setActiveStory(next);
+      }
+      if (event.key === "ArrowLeft") {
+        event.preventDefault();
+        const previous = visibleStories[(activeIndex - 1 + visibleStories.length) % visibleStories.length];
+        previous?.focus();
+        if (previous) setActiveStory(previous);
+      }
+    });
+  </script>
+</body>
+</html>
