@@ -1,0 +1,947 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Summit Enterprise CRM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+:root{
+ --cloud:#F6F8FC;  --ink:#19212B;  --indigo:#4F46E5;  --cyan:#06B6D4;  --lime:#A3E635;  --coral:#FB7185;  --ink-92:rgba(25,33,43,.92);  --ink-78:rgba(25,33,43,.78);  --ink-62:rgba(25,33,43,.62);  --ink-42:rgba(25,33,43,.42);  --ink-18:rgba(25,33,43,.18);  --ink-10:rgba(25,33,43,.10);  --ink-06:rgba(25,33,43,.06);  --cloud-96:rgba(246,248,252,.96);  --cloud-88:rgba(246,248,252,.88);  --cloud-72:rgba(246,248,252,.72);  --indigo-18:rgba(79,70,229,.18);  --indigo-12:rgba(79,70,229,.12);  --indigo-08:rgba(79,70,229,.08);  --cyan-18:rgba(6,182,212,.18);  --cyan-12:rgba(6,182,212,.12);  --lime-22:rgba(163,230,53,.22);  --lime-14:rgba(163,230,53,.14);  --coral-18:rgba(251,113,133,.18);  --coral-12:rgba(251,113,133,.12);  --surface:color-mix(in srgb,var(--cloud) 86%,var(--ink) 14%);  --panel:color-mix(in srgb,var(--cloud) 94%,var(--ink) 6%);  --card:color-mix(in srgb,var(--cloud) 98%,var(--ink) 2%);  --shadow:0 22px 70px rgba(25,33,43,.12);  --radius:8px;  --radius-small:6px;  --max:1440px;  color-scheme:light}
+  *{
+  box-sizing:border-box}
+  html{
+  scroll-behavior:smooth}
+  body{
+  margin:0;  min-height:100vh;  background:radial-gradient(circle at 12% 0%,var(--indigo-08),transparent 30rem),radial-gradient(circle at 95% 14%,var(--cyan-12),transparent 25rem),var(--cloud);  color:var(--ink);  font-family:"Inter",system-ui,sans-serif;  line-height:1.5}
+  body.drawer-open{
+  overflow:hidden}
+  a{
+  color:inherit;  text-decoration:none}
+  button,input{
+  font:inherit}
+  button{
+  cursor:pointer}
+  :focus-visible{
+  outline:3px solid var(--cyan);  outline-offset:3px}
+  .app-shell{
+  min-height:100vh;  display:flex;  flex-direction:column}
+  .skip-link{
+  position:fixed;  top:.75rem;  left:.75rem;  z-index:100;  transform:translateY(-150%);  padding:.7rem 1rem;  border-radius:var(--radius-small);  background:var(--ink);  color:var(--cloud);  font-weight:800}
+  .skip-link:focus{
+  transform:translateY(0)}
+  .topbar{
+  position:sticky;  top:0;  z-index:50;  border-bottom:1px solid var(--ink-10);  background:var(--cloud-96);  backdrop-filter:blur(18px)}
+  .topbar-inner{
+  width:min(100%,var(--max));  margin:0 auto;  min-height:74px;  padding:0 1.25rem;  display:grid;  grid-template-columns:auto 1fr auto;  align-items:center;  gap:1rem}
+  .brand{
+  display:inline-flex;  align-items:center;  gap:.7rem;  min-width:max-content;  font-family:"Manrope",system-ui,sans-serif;  font-weight:800;  letter-spacing:0}
+  .brand-mark{
+  width:38px;  height:38px;  border-radius:8px;  display:grid;  place-items:center;  background:var(--ink);  color:var(--cloud);  box-shadow:inset 0 -8px 16px var(--indigo-18)}
+  .brand-mark svg,.icon svg{
+  width:20px;  height:20px;  display:block}
+  .desktop-nav{
+  display:flex;  justify-content:center;  align-items:center;  gap:.25rem}
+  .desktop-nav a,.drawer-nav a{
+  border-radius:var(--radius-small);  padding:.65rem .82rem;  color:var(--ink-78);  font-weight:700;  font-size:.92rem}
+  .desktop-nav a:hover,.drawer-nav a:hover{
+  color:var(--ink);  background:var(--ink-06)}
+  .top-actions{
+  display:flex;  align-items:center;  justify-content:flex-end;  gap:.6rem}
+  .search{
+  position:relative;  width:min(25vw,320px)}
+  .search svg{
+  position:absolute;  left:.85rem;  top:50%;  width:17px;  height:17px;  transform:translateY(-50%);  color:var(--ink-42);
+  pointer-events:none}
+  .search input,.table-tools input{
+  width:100%;
+  border:1px solid var(--ink-10);
+  border-radius:var(--radius-small);
+  background:var(--cloud-72);
+  color:var(--ink);
+  padding:.78rem .9rem .78rem 2.35rem;
+  font-weight:600}
+  .search input::selection,.table-tools input::selection{
+  background:var(--indigo-18)}
+  .icon-button{
+  position:relative;
+  display:inline-grid;
+  place-items:center;
+  width:42px;
+  height:42px;
+  border:1px solid var(--ink-10);
+  border-radius:var(--radius-small);
+  background:var(--cloud-88);
+  color:var(--ink)}
+  .icon-button:hover{
+  background:var(--ink-06)}
+  .badge{
+  position:absolute;
+  top:-6px;
+  right:-6px;
+  min-width:20px;
+  height:20px;
+  padding:0 .28rem;
+  border-radius:999px;
+  display:grid;
+  place-items:center;
+  background:var(--coral);
+  color:var(--cloud);
+  font-size:.7rem;
+  font-weight:800;
+  border:2px solid var(--cloud)}
+  .hamburger{
+  display:none}
+  .drawer-backdrop{
+  position:fixed;
+  inset:0;
+  z-index:80;
+  background:rgba(25,33,43,.42);
+  opacity:0;
+  pointer-events:none;
+  transition:opacity .24s ease}
+  .drawer-backdrop.visible{
+  opacity:1;
+  pointer-events:auto}
+  .drawer{
+  position:fixed;
+  top:0;
+  right:0;
+  z-index:90;
+  width:min(88vw,370px);
+  height:100vh;
+  padding:1rem;
+  background:var(--cloud);
+  box-shadow:-24px 0 72px rgba(25,33,43,.18);
+  transform:translateX(110%);
+  transition:transform .26s ease;
+  display:flex;
+  flex-direction:column;
+  gap:1rem}
+  .drawer.open{
+  transform:translateX(0)}
+  .drawer-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  padding-bottom:.75rem;
+  border-bottom:1px solid var(--ink-10)}
+  .drawer-nav{
+  display:grid;
+  gap:.35rem}
+  .drawer .search{
+  width:100%}
+  main{
+  flex:1}
+  .page{
+  width:min(100%,var(--max));
+  margin:0 auto;
+  padding:1.25rem;
+  display:grid;
+  gap:1.25rem}
+  .hero-band{
+  display:grid;
+  grid-template-columns:1.5fr .8fr;
+  gap:1rem;
+  align-items:stretch;
+  min-height:270px}
+  .hero-copy{
+  border-radius:var(--radius);
+  padding:clamp(1.25rem,3vw,2.2rem);
+  background:linear-gradient(135deg,var(--ink),var(--ink-92)),var(--ink);
+  color:var(--cloud);
+  display:grid;
+  align-content:center;
+  gap:.9rem;
+  overflow:hidden;
+  position:relative}
+  .hero-copy::after{
+  content:"";
+  position:absolute;
+  inset:auto -8% -34% 52%;
+  height:70%;
+  border-radius:999px;
+  background:radial-gradient(circle,var(--cyan-18),transparent 70%)}
+  .eyebrow{
+  display:inline-flex;
+  align-items:center;
+  gap:.45rem;
+  width:fit-content;
+  border:1px solid rgba(246,248,252,.18);
+  border-radius:999px;
+  padding:.35rem .62rem;
+  color:var(--cloud-88);
+  font-size:.78rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.08em}
+  .live-dot{
+  width:.56rem;
+  height:.56rem;
+  border-radius:50%;
+  background:var(--cyan);
+  box-shadow:0 0 0 6px var(--cyan-18)}
+  h1,h2,h3,.metric-value{
+  margin:0;
+  font-family:"Manrope",system-ui,sans-serif;
+  letter-spacing:0}
+  h1{
+  max-width:780px;
+  font-size:clamp(2.1rem,4vw,4.3rem);
+  line-height:1.02}
+  .hero-copy p{
+  max-width:680px;
+  margin:0;
+  color:var(--cloud-72);
+  font-size:clamp(1rem,1.5vw,1.16rem)}
+  .hero-panel{
+  border:1px solid var(--ink-10);
+  border-radius:var(--radius);
+  padding:1rem;
+  background:var(--card);
+  box-shadow:var(--shadow);
+  display:grid;
+  align-content:space-between;
+  gap:1rem}
+  .forecast-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  padding:.85rem 0;
+  border-bottom:1px solid var(--ink-10)}
+  .forecast-row:last-child{
+  border-bottom:0}
+  .forecast-row span{
+  color:var(--ink-62);
+  font-size:.86rem;
+  font-weight:700}
+  .forecast-row strong{
+  font-family:"Manrope",system-ui,sans-serif;
+  font-size:1.24rem}
+  .kpi-strip{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:.9rem}
+  .metric{
+  min-height:138px;
+  border:1px solid var(--ink-10);
+  border-radius:var(--radius);
+  background:var(--card);
+  padding:1rem;
+  display:grid;
+  align-content:space-between;
+  gap:1rem}
+  .metric-label{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  color:var(--ink-62);
+  font-size:.82rem;
+  font-weight:800;
+  text-transform:uppercase;
+  letter-spacing:.08em}
+  .metric-icon{
+  width:34px;
+  height:34px;
+  border-radius:var(--radius-small);
+  display:grid;
+  place-items:center;
+  background:var(--indigo-12);
+  color:var(--indigo)}
+  .metric-icon.cyan{
+  background:var(--cyan-12);
+  color:var(--cyan)}
+  .metric-icon.lime{
+  background:var(--lime-14);
+  color:var(--ink)}
+  .metric-icon.coral{
+  background:var(--coral-12);
+  color:var(--coral)}
+  .metric-value{
+  font-size:clamp(1.7rem,3vw,2.45rem);
+  line-height:1}
+  .metric-trend{
+  color:var(--ink-62);
+  font-size:.9rem;
+  font-weight:700}
+  .metric-trend strong{
+  color:var(--indigo)}
+  .section{
+  display:grid;
+  gap:.85rem}
+  .section-head{
+  display:flex;
+  align-items:end;
+  justify-content:space-between;
+  gap:1rem;
+  padding:.2rem 0}
+  .section-title{
+  display:grid;
+  gap:.2rem}
+  .section-title h2{
+  font-size:clamp(1.35rem,2vw,1.85rem)}
+  .section-title p{
+  margin:0;
+  color:var(--ink-62);
+  font-weight:600}
+  .view-chip{
+  border:1px solid var(--ink-10);
+  border-radius:999px;
+  padding:.48rem .75rem;
+  color:var(--ink-78);
+  background:var(--cloud-72);
+  font-weight:800;
+  font-size:.84rem}
+  .kanban{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(220px,1fr));
+  gap:.85rem;
+  overflow-x:auto;
+  padding-bottom:.2rem;
+  scroll-snap-type:x proximity}
+  .lane{
+  min-height:430px;
+  border:1px solid var(--ink-10);
+  border-radius:var(--radius);
+  background:var(--panel);
+  padding:.85rem;
+  display:flex;
+  flex-direction:column;
+  gap:.75rem;
+  scroll-snap-align:start}
+  .lane.over{
+  outline:2px solid var(--cyan);
+  outline-offset:-2px;
+  background:var(--cyan-12)}
+  .lane-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.75rem;
+  padding-bottom:.35rem;
+  border-bottom:1px solid var(--ink-10)}
+  .lane-head h3{
+  font-size:1rem}
+  .lane-count{
+  min-width:28px;
+  height:28px;
+  display:grid;
+  place-items:center;
+  border-radius:999px;
+  background:var(--ink);
+  color:var(--cloud);
+  font-size:.78rem;
+  font-weight:800}
+  .deal-card{
+  border:1px solid var(--ink-10);
+  border-radius:var(--radius);
+  background:var(--cloud);
+  padding:.9rem;
+  box-shadow:0 10px 25px rgba(25,33,43,.06);
+  display:grid;
+  gap:.75rem;
+  cursor:grab}
+  .deal-card:active{
+  cursor:grabbing}
+  .deal-card.dragging{
+  opacity:.54;
+  transform:scale(.98)}
+  .deal-top{
+  display:flex;
+  align-items:start;
+  justify-content:space-between;
+  gap:.75rem}
+  .deal-top strong{
+  font-family:"Manrope",system-ui,sans-serif;
+  line-height:1.2}
+  .pill{
+  width:fit-content;
+  border-radius:999px;
+  padding:.25rem .5rem;
+  background:var(--indigo-12);
+  color:var(--indigo);
+  font-size:.72rem;
+  font-weight:800;
+  white-space:nowrap}
+  .pill.cyan{
+  background:var(--cyan-12);
+  color:var(--ink)}
+  .pill.lime{
+  background:var(--lime-22);
+  color:var(--ink)}
+  .pill.coral{
+  background:var(--coral-12);
+  color:var(--coral)}
+  .deal-meta{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:.6rem;
+  color:var(--ink-62);
+  font-size:.82rem;
+  font-weight:700}
+  .deal-meta b{
+  color:var(--ink);
+  display:block;
+  font-size:.95rem}
+  .contact-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1.4fr) minmax(290px,.6fr);
+  gap:1rem;
+  align-items:start}
+  .table-panel,.detail-panel,.feed-panel,.report-panel{
+  border:1px solid var(--ink-10);
+  border-radius:var(--radius);
+  background:var(--card);
+  overflow:hidden}
+  .table-tools{
+  position:relative;
+  padding:.9rem;
+  border-bottom:1px solid var(--ink-10)}
+  .table-tools svg{
+  position:absolute;
+  left:1.75rem;
+  top:50%;
+  width:17px;
+  height:17px;
+  transform:translateY(-50%);
+  color:var(--ink-42)}
+  .contact-table{
+  width:100%;
+  border-collapse:collapse}
+  .contact-table th,.contact-table td{
+  padding:.9rem;
+  text-align:left;
+  border-bottom:1px solid var(--ink-10);
+  vertical-align:middle}
+  .contact-table th{
+  color:var(--ink-62);
+  font-size:.78rem;
+  text-transform:uppercase;
+  letter-spacing:.08em}
+  .contact-table td{
+  font-weight:650}
+  .contact-table tr.hidden{
+  display:none}
+  .person{
+  display:flex;
+  align-items:center;
+  gap:.7rem;
+  min-width:190px}
+  .avatar{
+  width:36px;
+  height:36px;
+  border-radius:999px;
+  display:grid;
+  place-items:center;
+  background:var(--ink);
+  color:var(--cloud);
+  font-size:.78rem;
+  font-weight:800;
+  flex:0 0 auto}
+  .email{
+  color:var(--indigo);
+  font-weight:800}
+  .detail-stack{
+  display:grid;
+  gap:.7rem;
+  padding:.9rem}
+  .detail-card{
+  border:1px solid var(--ink-10);
+  border-radius:var(--radius);
+  background:var(--cloud);
+  overflow:clip}
+  .detail-toggle{
+  width:100%;
+  border:0;
+  background:transparent;
+  color:var(--ink);
+  padding:.9rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.8rem;
+  text-align:left}
+  .detail-toggle strong{
+  display:block;
+  font-family:"Manrope",system-ui,sans-serif}
+  .detail-toggle span{
+  color:var(--ink-62);
+  font-size:.86rem;
+  font-weight:700}
+  .chevron{
+  width:26px;
+  height:26px;
+  border-radius:999px;
+  display:grid;
+  place-items:center;
+  background:var(--ink-06);
+  transition:transform .2s ease;
+  flex:0 0 auto}
+  .detail-card[aria-expanded="true"] .chevron{
+  transform:rotate(180deg)}
+  .detail-body{
+  display:none;
+  padding:0 .9rem .9rem}
+  .detail-card[aria-expanded="true"] .detail-body{
+  display:grid;
+  gap:.65rem}
+  .detail-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:.75rem;
+  color:var(--ink-62);
+  font-weight:700;
+  font-size:.9rem}
+  .detail-row b{
+  color:var(--ink);
+  text-align:right}
+  .activity-reports{
+  display:grid;
+  grid-template-columns:minmax(320px,.85fr) minmax(0,1.15fr);
+  gap:1rem;
+  align-items:start}
+  .feed-list{
+  display:grid;
+  padding:.45rem 0}
+  .feed-item{
+  display:grid;
+  grid-template-columns:42px 1fr;
+  gap:.75rem;
+  padding:.9rem;
+  border-bottom:1px solid var(--ink-10)}
+  .feed-item:last-child{
+  border-bottom:0}
+  .feed-icon{
+  width:42px;
+  height:42px;
+  border-radius:999px;
+  display:grid;
+  place-items:center;
+  background:var(--indigo-12);
+  color:var(--indigo)}
+  .feed-item.email-event .feed-icon{
+  background:var(--cyan-12);
+  color:var(--ink)}
+  .feed-item.meeting-event .feed-icon{
+  background:var(--lime-14);
+  color:var(--ink)}
+  .feed-item.note-event .feed-icon{
+  background:var(--coral-12);
+  color:var(--coral)}
+  .feed-copy strong{
+  display:block;
+  font-family:"Manrope",system-ui,sans-serif}
+  .feed-copy span{
+  color:var(--ink-62);
+  font-size:.88rem;
+  font-weight:700}
+  .reports-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1rem;
+  padding:.9rem}
+  .chart-card{
+  border:1px solid var(--ink-10);
+  border-radius:var(--radius);
+  background:var(--cloud);
+  padding:1rem;
+  display:grid;
+  gap:1rem;
+  min-height:320px}
+  .chart-card h3{
+  font-size:1.02rem}
+  .bar-chart{
+  height:210px;
+  display:grid;
+  grid-template-columns:repeat(7,1fr);
+  align-items:end;
+  gap:.65rem;
+  padding:.5rem 0 0;
+  border-bottom:1px solid var(--ink-18)}
+  .bar{
+  position:relative;
+  min-height:24px;
+  border-radius:6px 6px 0 0;
+  background:linear-gradient(180deg,var(--indigo),var(--cyan))}
+  .bar::after{
+  content:attr(data-label);
+  position:absolute;
+  left:50%;
+  bottom:-1.8rem;
+  transform:translateX(-50%);
+  color:var(--ink-62);
+  font-size:.72rem;
+  font-weight:800}
+  .funnel{
+  display:grid;
+  gap:.68rem;
+  align-content:center;
+  min-height:230px}
+  .funnel-step{
+  height:34px;
+  border-radius:var(--radius-small);
+  background:var(--indigo);
+  color:var(--cloud);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 .8rem;
+  font-size:.82rem;
+  font-weight:800;
+  margin:0 auto;
+  width:var(--w)}
+  .funnel-step:nth-child(2){
+  background:color-mix(in srgb,var(--indigo) 78%,var(--cyan) 22%)}
+  .funnel-step:nth-child(3){
+  background:var(--cyan);
+  color:var(--ink)}
+  .funnel-step:nth-child(4){
+  background:var(--lime);
+  color:var(--ink)}
+  .funnel-step:nth-child(5){
+  background:var(--coral);
+  color:var(--cloud)}
+  .chart-note{
+  color:var(--ink-62);
+  font-size:.86rem;
+  font-weight:700}
+  .site-footer{
+  margin-top:auto;
+  border-top:1px solid var(--ink-10);
+  background:var(--cloud-88)}
+  .footer-inner{
+  width:min(100%,var(--max));
+  margin:0 auto;
+  padding:1.25rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:1rem;
+  color:var(--ink-62);
+  font-weight:700;
+  font-size:.92rem}
+  .footer-inner strong{
+  color:var(--ink)}
+  @media (max-width:1180px){
+  .topbar-inner{
+  grid-template-columns:auto 1fr auto}
+  .desktop-nav{
+  display:none}
+  .hamburger{
+  display:inline-grid}
+  .hero-band,.contact-grid,.activity-reports{
+  grid-template-columns:1fr}
+  .kpi-strip{
+  grid-template-columns:repeat(2,minmax(0,1fr))}
+ }
+@media (max-width:760px){
+.topbar-inner{
+min-height:66px;
+padding:0 .85rem}
+.top-actions>.search{
+display:none}
+.page{
+padding:.85rem}
+.hero-band{
+min-height:auto}
+.kpi-strip,.reports-grid{
+grid-template-columns:1fr}
+.section-head,.footer-inner{
+align-items:start;
+flex-direction:column}
+.table-panel{
+overflow-x:auto}
+.contact-table{
+min-width:720px}
+}
+@media (prefers-reduced-motion:reduce){
+*,*::before,*::after{
+scroll-behavior:auto !important;
+transition-duration:.01ms !important;
+animation-duration:.01ms !important;
+animation-iteration-count:1 !important}
+}
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <a class="skip-link" href="#main">Skip to CRM workspace</a>
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="#main" aria-label="Summit Enterprise CRM dashboard">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M4 17 10.4 6.8l3.8 5.4L16 9.6 20 17H4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span>Summit CRM</span>
+        </a>
+        <nav class="desktop-nav" aria-label="Primary navigation">
+          <a href="#dashboard">Dashboard</a>
+          <a href="#pipeline">Pipeline</a>
+          <a href="#contacts">Contacts</a>
+          <a href="#deals">Deals</a>
+          <a href="#reports">Reports</a>
+        </nav>
+        <div class="top-actions">
+          <form class="search" role="search" aria-label="Global CRM search">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="m21 21-4.3-4.3m2.3-5.2a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <input aria-label="Search accounts, contacts, and deals" type="search" name="global-search" autocomplete="off" value="">
+          </form>
+          <button class="icon-button" type="button" aria-label="Open notifications">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M18 8a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M10 21h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span class="badge" aria-label="7 unread notifications">7</span>
+          </button>
+          <button class="icon-button hamburger" id="menuButton" type="button" aria-label="Open menu" aria-controls="mobileDrawer" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+    <aside class="drawer" id="mobileDrawer" aria-label="Mobile navigation" aria-hidden="true">
+      <div class="drawer-head">
+        <a class="brand" href="#main">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M4 17 10.4 6.8l3.8 5.4L16 9.6 20 17H4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span>Summit CRM</span>
+        </a>
+        <button class="icon-button" id="closeDrawer" type="button" aria-label="Close menu">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <form class="search" role="search" aria-label="Mobile CRM search">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m21 21-4.3-4.3m2.3-5.2a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input aria-label="Search CRM records" type="search" name="mobile-search" autocomplete="off" value="">
+      </form>
+      <nav class="drawer-nav" aria-label="Mobile primary navigation">
+        <a href="#dashboard">Dashboard</a>
+        <a href="#pipeline">Pipeline</a>
+        <a href="#contacts">Contacts</a>
+        <a href="#deals">Deals</a>
+        <a href="#reports">Reports</a>
+      </nav>
+    </aside>
+
+    <main id="main" tabindex="-1">
+      <div class="page">
+        <section class="hero-band" id="dashboard" aria-labelledby="dashboard-title">
+          <div class="hero-copy">
+            <span class="eyebrow"><span class="live-dot" aria-hidden="true"></span>Live enterprise revenue command center</span>
+            <h1 id="dashboard-title">Pipeline intelligence for complex account teams.</h1>
+            <p>Summit brings executive forecasting, account movement, deal risk, and relationship activity into one focused workspace for enterprise revenue teams.</p>
+          </div>
+          <aside class="hero-panel" aria-label="Revenue forecast summary">
+            <div class="section-title">
+              <h2>Quarter Outlook</h2>
+              <p>Board-ready forecast from active CRM signals.</p>
+            </div>
+            <div>
+              <div class="forecast-row"><span>Committed</span><strong>$8.4M</strong></div>
+              <div class="forecast-row"><span>Upside</span><strong>$2.1M</strong></div>
+              <div class="forecast-row"><span>At-risk value</span><strong>$640K</strong></div>
+              <div class="forecast-row"><span>Healthy accounts</span><strong>84%</strong></div>
+            </div>
+          </aside>
+        </section>
+
+        <section class="kpi-strip" aria-label="Key performance indicators">
+          <article class="metric">
+            <div class="metric-label">Total deals <span class="metric-icon"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7h16v12H4zM8 7V5h8v2" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span></div>
+            <div><div class="metric-value">148</div><div class="metric-trend"><strong>+18</strong> since last month</div></div>
+          </article>
+          <article class="metric">
+            <div class="metric-label">Pipeline value <span class="metric-icon cyan"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19V5m0 14h16M8 16l3-5 3 2 4-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div><div class="metric-value">$12.8M</div><div class="metric-trend"><strong>32%</strong> enterprise expansion</div></div>
+          </article>
+          <article class="metric">
+            <div class="metric-label">Win rate <span class="metric-icon lime"><svg viewBox="0 0 24 24" fill="none"><path d="M20 6 9 17l-5-5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <div><div class="metric-value">41%</div><div class="metric-trend"><strong>+6.4%</strong> rolling quarter</div></div>
+          </article>
+          <article class="metric">
+            <div class="metric-label">Avg deal cycle <span class="metric-icon coral"><svg viewBox="0 0 24 24" fill="none"><path d="M12 8v5l3 2m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></div>
+            <div><div class="metric-value">47d</div><div class="metric-trend"><strong>-9d</strong> from baseline</div></div>
+          </article>
+        </section>
+
+        <section class="section" id="pipeline" aria-labelledby="pipeline-title">
+          <div class="section-head">
+            <div class="section-title">
+              <h2 id="pipeline-title">Pipeline Kanban</h2>
+              <p>Drag deal cards between stages to model movement.</p>
+            </div>
+            <span class="view-chip">6 stages · 14 visible deals</span>
+          </div>
+          <div class="kanban" aria-label="Deal pipeline lanes">
+            <section class="lane" data-stage="Lead" aria-labelledby="lead-title">
+              <div class="lane-head"><h3 id="lead-title">Lead</h3><span class="lane-count">3</span></div>
+              <article class="deal-card" draggable="true"><div class="deal-top"><strong>Atlas Health Network</strong><span class="pill">New</span></div><div class="deal-meta"><span><b>$210K</b>Value</span><span><b>Priya Rao</b>Owner</span></div></article>
+              <article class="deal-card" draggable="true"><div class="deal-top"><strong>Northline Energy</strong><span class="pill cyan">Inbound</span></div><div class="deal-meta"><span><b>$160K</b>Value</span><span><b>Owen Kim</b>Owner</span></div></article>
+              <article class="deal-card" draggable="true"><div class="deal-top"><strong>UrbanGrid Transit</strong><span class="pill">Partner</span></div><div class="deal-meta"><span><b>$98K</b>Value</span><span><b>Maya Chen</b>Owner</span></div></article>
+            </section>
+            <section class="lane" data-stage="Qualified" aria-labelledby="qualified-title">
+              <div class="lane-head"><h3 id="qualified-title">Qualified</h3><span class="lane-count">2</span></div>
+              <article class="deal-card" draggable="true"><div class="deal-top"><strong>Meridian Bank</strong><span class="pill lime">Fit</span></div><div class="deal-meta"><span><b>$540K</b>Value</span><span><b>Elena Cruz</b>Owner</span></div></article>
+              <article class="deal-card" draggable="true"><div class="deal-top"><strong>FrostPoint Retail</strong><span class="pill">Discovery</span></div><div class="deal-meta"><span><b>$270K</b>Value</span><span><b>Noah Patel</b>Owner</span></div></article>
+            </section>
+            <section class="lane" data-stage="Proposal" aria-labelledby="proposal-title">
+              <div class="lane-head"><h3 id="proposal-title">Proposal</h3><span class="lane-count">3</span></div>
+              <article class="deal-card" draggable="true"><div class="deal-top"><strong>HelioSoft Global</strong><span class="pill cyan">Sent</span></div><div class="deal-meta"><span><b>$890K</b>Value</span><span><b>Jon Bell</b>Owner</span></div></article>
+              <article class="deal-card" draggable="true"><div class="deal-top"><strong>Everblue Logistics</strong><span class="pill">Legal</span></div><div class="deal-meta"><span><b>$410K</b>Value</span><span><b>Ada Stone</b>Owner</span></div></article>
+              <article class="deal-card" draggable="true"><div class="deal-top"><strong>Quanta Systems</strong><span class="pill">Pilot</span></div><div class="deal-meta"><span><b>$365K</b>Value</span><span><b>Leo Park</b>Owner</span></div></article>
+            </section>
+            <section class="lane" data-stage="Negotiation" aria-labelledby="negotiation-title">
+              <div class="lane-head"><h3 id="negotiation-title">Negotiation</h3><span class="lane-count">3</span></div>
+              <article class="deal-card" draggable="true"><div class="deal-top"><strong>Keystone Labs</strong><span class="pill coral">Risk</span></div><div class="deal-meta"><span><b>$720K</b>Value</span><span><b>Iris Cole</b>Owner</span></div></article>
+              <article class="deal-card" draggable="true"><div class="deal-top"><strong>Stratus Media</strong><span class="pill lime">Exec</span></div><div class="deal-meta"><span><b>$305K</b>Value</span><span><b>Sam Rivera</b>Owner</span></div></article>
+              <article class="deal-card" draggable="true"><div class="deal-top"><strong>VectorWorks AI</strong><span class="pill">Security</span></div><div class="deal-meta"><span><b>$1.2M</b>Value</span><span><b>Nina Fox</b>Owner</span></div></article>
+            </section>
+            <section class="lane" data-stage="Won" aria-labelledby="won-title">
+              <div class="lane-head"><h3 id="won-title">Won</h3><span class="lane-count">2</span></div>
+              <article class="deal-card" draggable="true"><div class="deal-top"><strong>Summit Foods</strong><span class="pill lime">Closed</span></div><div class="deal-meta"><span><b>$680K</b>Value</span><span><b>Priya Rao</b>Owner</span></div></article>
+              <article class="deal-card" draggable="true"><div class="deal-top"><strong>Aster Finance</strong><span class="pill lime">Closed</span></div><div class="deal-meta"><span><b>$455K</b>Value</span><span><b>Elena Cruz</b>Owner</span></div></article>
+            </section>
+            <section class="lane" data-stage="Lost" aria-labelledby="lost-title">
+              <div class="lane-head"><h3 id="lost-title">Lost</h3><span class="lane-count">1</span></div>
+              <article class="deal-card" draggable="true"><div class="deal-top"><strong>Clearpath Devices</strong><span class="pill coral">Paused</span></div><div class="deal-meta"><span><b>$185K</b>Value</span><span><b>Owen Kim</b>Owner</span></div></article>
+            </section>
+          </div>
+        </section>
+
+        <section class="section contact-grid" id="contacts" aria-labelledby="contacts-title">
+          <div class="table-panel">
+            <div class="section-head" style="padding: .9rem .9rem 0;">
+              <div class="section-title">
+                <h2 id="contacts-title">Contact List</h2>
+                <p>Searchable enterprise relationship table.</p>
+              </div>
+            </div>
+            <div class="table-tools">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m21 21-4.3-4.3m2.3-5.2a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              <input id="contactSearch" type="search" aria-label="Search contact table" autocomplete="off" value="">
+            </div>
+            <table class="contact-table">
+              <thead><tr><th>Name</th><th>Company</th><th>Email</th><th>Last activity</th><th>Deal count</th></tr></thead>
+              <tbody>
+                <tr><td><div class="person"><span class="avatar">AR</span>Ana Roberts</div></td><td>Meridian Bank</td><td><a class="email" href="mailto:ana@meridian.example">ana@meridian.example</a></td><td>Contract review · today</td><td>4</td></tr>
+                <tr><td><div class="person"><span class="avatar">JL</span>Jonas Lee</div></td><td>HelioSoft Global</td><td><a class="email" href="mailto:jonas@heliosoft.example">jonas@heliosoft.example</a></td><td>Security call · 2h ago</td><td>3</td></tr>
+                <tr><td><div class="person"><span class="avatar">MC</span>Mira Cohen</div></td><td>Keystone Labs</td><td><a class="email" href="mailto:mira@keystone.example">mira@keystone.example</a></td><td>Pricing email · 5h ago</td><td>2</td></tr>
+                <tr><td><div class="person"><span class="avatar">TS</span>Tariq Shah</div></td><td>VectorWorks AI</td><td><a class="email" href="mailto:tariq@vectorworks.example">tariq@vectorworks.example</a></td><td>Legal note · yesterday</td><td>5</td></tr>
+                <tr><td><div class="person"><span class="avatar">EP</span>Ella Park</div></td><td>Everblue Logistics</td><td><a class="email" href="mailto:ella@everblue.example">ella@everblue.example</a></td><td>Demo recap · Monday</td><td>2</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <aside class="detail-panel" id="deals" aria-labelledby="deals-title">
+            <div class="section-head" style="padding: .9rem .9rem 0;">
+              <div class="section-title">
+                <h2 id="deals-title">Deal Details</h2>
+                <p>Expandable close-plan cards.</p>
+              </div>
+            </div>
+            <div class="detail-stack">
+              <article class="detail-card" aria-expanded="true">
+                <button class="detail-toggle" type="button"><span><strong>VectorWorks AI Platform</strong><span>$1.2M · Negotiation</span></span><span class="chevron">⌄</span></button>
+                <div class="detail-body"><div class="detail-row"><span>Owner</span><b>Nina Fox</b></div><div class="detail-row"><span>Next action</span><b>Security redlines</b></div><div class="detail-row"><span>Close date</span><b>June 18</b></div></div>
+              </article>
+              <article class="detail-card" aria-expanded="false">
+                <button class="detail-toggle" type="button"><span><strong>HelioSoft Global Suite</strong><span>$890K · Proposal</span></span><span class="chevron">⌄</span></button>
+                <div class="detail-body"><div class="detail-row"><span>Owner</span><b>Jon Bell</b></div><div class="detail-row"><span>Next action</span><b>Executive business case</b></div><div class="detail-row"><span>Close date</span><b>June 27</b></div></div>
+              </article>
+              <article class="detail-card" aria-expanded="false">
+                <button class="detail-toggle" type="button"><span><strong>Keystone Labs Renewal</strong><span>$720K · Negotiation</span></span><span class="chevron">⌄</span></button>
+                <div class="detail-body"><div class="detail-row"><span>Owner</span><b>Iris Cole</b></div><div class="detail-row"><span>Next action</span><b>Procurement alignment</b></div><div class="detail-row"><span>Close date</span><b>July 2</b></div></div>
+              </article>
+            </div>
+          </aside>
+        </section>
+
+        <section class="activity-reports" id="reports" aria-label="Activity and reports">
+          <div class="feed-panel">
+            <div class="section-head" style="padding: .9rem .9rem 0;">
+              <div class="section-title">
+                <h2>Activity Feed</h2>
+                <p>Recent calls, emails, meetings, and notes.</p>
+              </div>
+            </div>
+            <div class="feed-list">
+              <article class="feed-item"><span class="feed-icon">☎</span><p class="feed-copy"><strong>Discovery call completed with Meridian Bank</strong><span>12 minutes ago · Ana Roberts requested compliance packet</span></p></article>
+              <article class="feed-item email-event"><span class="feed-icon">✉</span><p class="feed-copy"><strong>Proposal email opened by HelioSoft Global</strong><span>38 minutes ago · pricing section viewed three times</span></p></article>
+              <article class="feed-item meeting-event"><span class="feed-icon">●</span><p class="feed-copy"><strong>Executive meeting scheduled for VectorWorks AI</strong><span>Today at 16:30 · CFO and CIO attending</span></p></article>
+              <article class="feed-item note-event"><span class="feed-icon">✎</span><p class="feed-copy"><strong>Procurement note added to Keystone Labs</strong><span>Yesterday · discount threshold requires approval</span></p></article>
+            </div>
+          </div>
+
+          <div class="report-panel">
+            <div class="section-head" style="padding: .9rem .9rem 0;">
+              <div class="section-title">
+                <h2>Reports Preview</h2>
+                <p>CSS-only velocity and conversion visuals.</p>
+              </div>
+              <span class="view-chip">Updated live</span>
+            </div>
+            <div class="reports-grid">
+              <article class="chart-card">
+                <h3>Deal Velocity</h3>
+                <div class="bar-chart" aria-label="Deal velocity by week">
+                  <span class="bar" style="height: 42%;" data-label="W1"></span>
+                  <span class="bar" style="height: 64%;" data-label="W2"></span>
+                  <span class="bar" style="height: 58%;" data-label="W3"></span>
+                  <span class="bar" style="height: 78%;" data-label="W4"></span>
+                  <span class="bar" style="height: 72%;" data-label="W5"></span>
+                  <span class="bar" style="height: 88%;" data-label="W6"></span>
+                  <span class="bar" style="height: 94%;" data-label="W7"></span>
+                </div>
+                <p class="chart-note">Velocity improved after proposal automation and executive follow-up routing.</p>
+              </article>
+              <article class="chart-card">
+                <h3>Conversion Funnel</h3>
+                <div class="funnel" aria-label="Conversion funnel">
+                  <span class="funnel-step" style="--w: 100%;"><span>Lead</span><b>100%</b></span>
+                  <span class="funnel-step" style="--w: 86%;"><span>Qualified</span><b>86%</b></span>
+                  <span class="funnel-step" style="--w: 64%;"><span>Proposal</span><b>64%</b></span>
+                  <span class="funnel-step" style="--w: 43%;"><span>Won</span><b>43%</b></span>
+                  <span class="funnel-step" style="--w: 29%;"><span>Expansion</span><b>29%</b></span>
+                </div>
+                <p class="chart-note">Enterprise conversion holds strongest when next action is scheduled within 24 hours.</p>
+              </article>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <span><strong>Summit Enterprise CRM</strong> — designed by Northstar Systems Studio.</span>
+        <span>Pipeline visualization · contact management · deal tracking</span>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+const menuButton=document.querySelector("#menuButton");const drawer=document.querySelector("#mobileDrawer");const closeDrawer=document.querySelector("#closeDrawer");const backdrop=document.querySelector("#drawerBackdrop");const drawerLinks=drawer.querySelectorAll("a");const contactSearch=document.querySelector("#contactSearch");const contactRows=document.querySelectorAll(".contact-table tbody tr");let draggedCard=null;let lastFocus=null;function openDrawer(){lastFocus=document.activeElement;document.body.classList.add("drawer-open");drawer.classList.add("open");backdrop.hidden=false;requestAnimationFrame(()=>backdrop.classList.add("visible"));drawer.setAttribute("aria-hidden","false");menuButton.setAttribute("aria-expanded","true");closeDrawer.focus();}function shutDrawer(){document.body.classList.remove("drawer-open");drawer.classList.remove("open");backdrop.classList.remove("visible");drawer.setAttribute("aria-hidden","true");menuButton.setAttribute("aria-expanded","false");setTimeout(()=>{backdrop.hidden=true;},240);if(lastFocus)lastFocus.focus();}menuButton.addEventListener("click",openDrawer);closeDrawer.addEventListener("click",shutDrawer);backdrop.addEventListener("click",shutDrawer);drawerLinks.forEach((link)=>link.addEventListener("click",shutDrawer));document.addEventListener("keydown",(event)=>{if(event.key==="Escape" && drawer.classList.contains("open"))shutDrawer();if(event.key !=="Tab" || !drawer.classList.contains("open"))return;const focusable=drawer.querySelectorAll("a,button,input");const first=focusable[0];const last=focusable[focusable.length-1];if(event.shiftKey && document.activeElement===first){event.preventDefault();last.focus();}else if(!event.shiftKey && document.activeElement===last){event.preventDefault();first.focus();}});document.querySelectorAll(".detail-card").forEach((card)=>{const button=card.querySelector(".detail-toggle");button.addEventListener("click",()=>{const expanded=card.getAttribute("aria-expanded")==="true";card.setAttribute("aria-expanded",String(!expanded));});});contactSearch.addEventListener("input",(event)=>{const term=event.target.value.trim().toLowerCase();contactRows.forEach((row)=>{row.classList.toggle("hidden",!row.textContent.toLowerCase().includes(term));});});document.querySelectorAll(".deal-card").forEach((card)=>{card.addEventListener("dragstart",()=>{draggedCard=card;card.classList.add("dragging");});card.addEventListener("dragend",()=>{card.classList.remove("dragging");draggedCard=null;updateLaneCounts();});});document.querySelectorAll(".lane").forEach((lane)=>{lane.addEventListener("dragover",(event)=>{event.preventDefault();lane.classList.add("over");});lane.addEventListener("dragleave",()=>lane.classList.remove("over"));lane.addEventListener("drop",(event)=>{event.preventDefault();lane.classList.remove("over");if(draggedCard)lane.appendChild(draggedCard);});});function updateLaneCounts(){document.querySelectorAll(".lane").forEach((lane)=>{lane.querySelector(".lane-count").textContent=lane.querySelectorAll(".deal-card").length;});}
+  </script>
+</body>
+</html>
