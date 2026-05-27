@@ -1,0 +1,1374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wave Neighborhood App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --indigo: #4F46E5;
+      --cyan: #06B6D4;
+      --lime: #A3E635;
+      --coral: #FB7185;
+      --surface: rgba(246, 248, 252, 0.92);
+      --surface-strong: rgba(246, 248, 252, 0.98);
+      --ink-muted: rgba(25, 33, 43, 0.68);
+      --ink-soft: rgba(25, 33, 43, 0.1);
+      --ink-line: rgba(25, 33, 43, 0.16);
+      --indigo-soft: rgba(79, 70, 229, 0.12);
+      --cyan-soft: rgba(6, 182, 212, 0.13);
+      --lime-soft: rgba(163, 230, 53, 0.2);
+      --coral-soft: rgba(251, 113, 133, 0.15);
+      --shadow: 0 20px 60px rgba(25, 33, 43, 0.12);
+      --radius: 8px;
+      --max: 1240px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--cloud);
+      color: var(--ink);
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    body.drawer-open {
+      overflow: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 3px;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .skip-link {
+      position: fixed;
+      left: 1rem;
+      top: 1rem;
+      z-index: 1000;
+      transform: translateY(-160%);
+      background: var(--ink);
+      color: var(--cloud);
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius);
+      transition: transform 180ms ease;
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    .shell {
+      width: min(var(--max), calc(100% - 2rem));
+      margin: 0 auto;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(246, 248, 252, 0.86);
+      border-bottom: 1px solid var(--ink-line);
+      backdrop-filter: blur(18px);
+    }
+
+    .topbar {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.72rem;
+      flex: 0 0 auto;
+      font-family: "Manrope", sans-serif;
+      font-weight: 800;
+      font-size: 1.08rem;
+      letter-spacing: 0;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      color: var(--cloud);
+      background: var(--ink);
+      box-shadow: 0 10px 30px rgba(79, 70, 229, 0.22);
+    }
+
+    .brand-wave {
+      width: 24px;
+      height: 14px;
+      border: 3px solid var(--cyan);
+      border-left-color: transparent;
+      border-right-color: transparent;
+      border-bottom-color: transparent;
+      border-radius: 999px;
+      position: relative;
+    }
+
+    .brand-wave::after {
+      content: "";
+      position: absolute;
+      left: 5px;
+      right: 5px;
+      top: 5px;
+      height: 8px;
+      border-top: 3px solid var(--lime);
+      border-radius: 999px;
+    }
+
+    .desktop-nav {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+      margin-left: 0.5rem;
+    }
+
+    .desktop-nav a,
+    .drawer-nav a {
+      border-radius: var(--radius);
+      padding: 0.64rem 0.78rem;
+      color: var(--ink-muted);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .desktop-nav a:hover,
+    .drawer-nav a:hover {
+      color: var(--ink);
+      background: var(--indigo-soft);
+    }
+
+    .nav-actions {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .search {
+      position: relative;
+      width: min(290px, 28vw);
+    }
+
+    .search svg {
+      position: absolute;
+      left: 0.8rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 18px;
+      height: 18px;
+      color: var(--ink-muted);
+    }
+
+    .search input {
+      width: 100%;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: var(--surface-strong);
+      color: var(--ink);
+      padding: 0.72rem 0.9rem 0.72rem 2.35rem;
+    }
+
+    .location-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      min-height: 42px;
+      padding: 0 0.75rem;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: var(--surface-strong);
+      color: var(--ink);
+      font-size: 0.86rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .live-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 0 7px var(--cyan-soft);
+    }
+
+    .hamburger {
+      display: none;
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--cloud);
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hamburger-lines,
+    .hamburger-lines::before,
+    .hamburger-lines::after {
+      width: 20px;
+      height: 2px;
+      border-radius: 999px;
+      background: currentColor;
+      display: block;
+      position: relative;
+      transition: transform 180ms ease, opacity 180ms ease;
+    }
+
+    .hamburger-lines::before,
+    .hamburger-lines::after {
+      content: "";
+      position: absolute;
+      left: 0;
+    }
+
+    .hamburger-lines::before {
+      top: -7px;
+    }
+
+    .hamburger-lines::after {
+      top: 7px;
+    }
+
+    .hamburger[aria-expanded="true"] .hamburger-lines {
+      transform: rotate(45deg);
+    }
+
+    .hamburger[aria-expanded="true"] .hamburger-lines::before {
+      transform: translateY(7px) rotate(90deg);
+    }
+
+    .hamburger[aria-expanded="true"] .hamburger-lines::after {
+      transform: translateY(-7px);
+      opacity: 0;
+    }
+
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 130;
+      background: rgba(25, 33, 43, 0.5);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+    }
+
+    .drawer-backdrop.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .mobile-drawer {
+      position: fixed;
+      inset: 0 0 0 auto;
+      width: min(88vw, 380px);
+      z-index: 140;
+      background: var(--cloud);
+      border-left: 1px solid var(--ink-line);
+      transform: translateX(105%);
+      transition: transform 220ms ease;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+    }
+
+    .mobile-drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--ink-line);
+    }
+
+    .drawer-close {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--cloud);
+      font-size: 1.4rem;
+      line-height: 1;
+    }
+
+    .drawer-nav {
+      display: grid;
+      gap: 0.35rem;
+      padding: 1rem 0;
+    }
+
+    .drawer-nav a {
+      font-size: 1rem;
+      padding: 0.88rem;
+    }
+
+    .drawer-search {
+      margin-top: auto;
+      display: grid;
+      gap: 0.75rem;
+      padding-top: 1rem;
+      border-top: 1px solid var(--ink-line);
+    }
+
+    .drawer-search .search {
+      width: 100%;
+    }
+
+    .hero {
+      padding: 2rem 0 1rem;
+    }
+
+    .hero-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+      min-height: 360px;
+      overflow: hidden;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--cloud);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-copy {
+      padding: clamp(2rem, 5vw, 4rem);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 1.2rem;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      align-self: flex-start;
+      color: var(--lime);
+      font-weight: 800;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: "Manrope", sans-serif;
+      letter-spacing: 0;
+      line-height: 1.05;
+      margin: 0;
+    }
+
+    h1 {
+      max-width: 720px;
+      font-size: clamp(2.25rem, 5vw, 4.8rem);
+    }
+
+    h2 {
+      font-size: clamp(1.65rem, 3vw, 2.5rem);
+    }
+
+    h3 {
+      font-size: 1.05rem;
+    }
+
+    p {
+      margin: 0;
+    }
+
+    .hero-copy p {
+      max-width: 650px;
+      color: rgba(246, 248, 252, 0.78);
+      font-size: 1.04rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 0.4rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.46rem;
+      min-height: 42px;
+      padding: 0.72rem 0.95rem;
+      border-radius: var(--radius);
+      font-weight: 800;
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: var(--indigo);
+      color: var(--cloud);
+    }
+
+    .btn-secondary {
+      background: rgba(246, 248, 252, 0.08);
+      color: var(--cloud);
+      border: 1px solid rgba(246, 248, 252, 0.2);
+    }
+
+    .btn-light {
+      background: var(--cloud);
+      color: var(--ink);
+      border: 1px solid var(--ink-line);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      color: var(--ink-muted);
+      border: 1px solid var(--ink-line);
+    }
+
+    .hero-map {
+      position: relative;
+      min-height: 360px;
+      background:
+        linear-gradient(90deg, rgba(246, 248, 252, 0.08) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(246, 248, 252, 0.08) 1px, transparent 1px),
+        radial-gradient(circle at 70% 25%, rgba(6, 182, 212, 0.36), transparent 32%),
+        radial-gradient(circle at 25% 75%, rgba(163, 230, 53, 0.18), transparent 35%),
+        var(--ink);
+      background-size: 46px 46px, 46px 46px, auto, auto, auto;
+      border-left: 1px solid rgba(246, 248, 252, 0.12);
+    }
+
+    .route {
+      position: absolute;
+      inset: 18% 12%;
+      border: 3px solid rgba(6, 182, 212, 0.58);
+      border-left-color: transparent;
+      border-bottom-color: transparent;
+      border-radius: 42% 58% 44% 56%;
+      transform: rotate(-14deg);
+    }
+
+    .pin {
+      position: absolute;
+      display: grid;
+      place-items: center;
+      width: 44px;
+      height: 44px;
+      border-radius: 50% 50% 50% 8px;
+      transform: rotate(-45deg);
+      background: var(--cloud);
+      color: var(--ink);
+      box-shadow: 0 16px 30px rgba(25, 33, 43, 0.28);
+    }
+
+    .pin span {
+      transform: rotate(45deg);
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: var(--indigo);
+    }
+
+    .pin-one {
+      left: 20%;
+      top: 30%;
+    }
+
+    .pin-two {
+      right: 22%;
+      top: 20%;
+    }
+
+    .pin-three {
+      left: 46%;
+      bottom: 18%;
+    }
+
+    .map-card {
+      position: absolute;
+      right: 1.25rem;
+      bottom: 1.25rem;
+      left: 1.25rem;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.6rem;
+      padding: 0.85rem;
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.94);
+      color: var(--ink);
+      box-shadow: 0 20px 45px rgba(25, 33, 43, 0.18);
+    }
+
+    .map-card strong {
+      display: block;
+      font-family: "Manrope", sans-serif;
+      font-size: 1.2rem;
+    }
+
+    .map-card span {
+      color: var(--ink-muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .section {
+      padding: 2rem 0;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .section-head p {
+      color: var(--ink-muted);
+      max-width: 560px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .dashboard-grid {
+      grid-template-columns: minmax(0, 1.1fr) minmax(330px, 0.9fr);
+      align-items: start;
+    }
+
+    .card {
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: var(--surface-strong);
+      box-shadow: 0 12px 30px rgba(25, 33, 43, 0.06);
+    }
+
+    .feed-list,
+    .neighbor-grid,
+    .business-grid,
+    .event-grid,
+    .alert-list {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .post-card {
+      padding: 1rem;
+    }
+
+    .post-top,
+    .neighbor-top,
+    .business-top,
+    .event-top,
+    .alert-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.9rem;
+    }
+
+    .identity {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      min-width: 0;
+    }
+
+    .avatar {
+      width: 44px;
+      height: 44px;
+      flex: 0 0 auto;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      background: var(--indigo-soft);
+      color: var(--indigo);
+      font-weight: 900;
+    }
+
+    .avatar.cyan {
+      background: var(--cyan-soft);
+      color: var(--cyan);
+    }
+
+    .avatar.lime {
+      background: var(--lime-soft);
+      color: var(--ink);
+    }
+
+    .avatar.coral {
+      background: var(--coral-soft);
+      color: var(--coral);
+    }
+
+    .meta {
+      display: grid;
+      gap: 0.1rem;
+      min-width: 0;
+    }
+
+    .meta strong {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .meta span,
+    .time,
+    .muted {
+      color: var(--ink-muted);
+      font-size: 0.86rem;
+      font-weight: 600;
+    }
+
+    .post-copy {
+      margin: 0.9rem 0;
+      color: rgba(25, 33, 43, 0.86);
+    }
+
+    .post-visual {
+      min-height: 180px;
+      border-radius: var(--radius);
+      border: 1px solid var(--ink-line);
+      background:
+        linear-gradient(135deg, rgba(79, 70, 229, 0.2), transparent 44%),
+        linear-gradient(45deg, rgba(6, 182, 212, 0.16), transparent 48%),
+        repeating-linear-gradient(90deg, rgba(25, 33, 43, 0.05) 0 1px, transparent 1px 24px),
+        var(--cloud);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .post-visual::after {
+      content: "Community photo";
+      position: absolute;
+      left: 1rem;
+      bottom: 1rem;
+      padding: 0.45rem 0.65rem;
+      border-radius: var(--radius);
+      background: rgba(25, 33, 43, 0.78);
+      color: var(--cloud);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .post-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      padding-top: 0.9rem;
+    }
+
+    .icon-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.42rem;
+      min-height: 38px;
+      padding: 0.55rem 0.72rem;
+      border-radius: var(--radius);
+      background: var(--cloud);
+      color: var(--ink-muted);
+      border: 1px solid var(--ink-line);
+      font-weight: 800;
+      font-size: 0.86rem;
+    }
+
+    .icon-btn:hover {
+      color: var(--ink);
+      border-color: rgba(79, 70, 229, 0.4);
+    }
+
+    .stats-panel {
+      padding: 1rem;
+      background: var(--ink);
+      color: var(--cloud);
+      position: sticky;
+      top: 96px;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+
+    .stat {
+      min-height: 112px;
+      border-radius: var(--radius);
+      padding: 0.9rem;
+      background: rgba(246, 248, 252, 0.08);
+      border: 1px solid rgba(246, 248, 252, 0.14);
+    }
+
+    .stat strong {
+      display: block;
+      font-family: "Manrope", sans-serif;
+      font-size: 2rem;
+      line-height: 1;
+      margin-bottom: 0.35rem;
+    }
+
+    .stat span {
+      color: rgba(246, 248, 252, 0.72);
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .stat.ok strong {
+      color: var(--lime);
+    }
+
+    .stat.live strong {
+      color: var(--cyan);
+    }
+
+    .stat.hot strong {
+      color: var(--coral);
+    }
+
+    .neighbor-grid,
+    .business-grid,
+    .event-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .neighbor-card,
+    .business-card,
+    .event-card,
+    .alert-card {
+      padding: 1rem;
+    }
+
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-top: 0.9rem;
+    }
+
+    .tag,
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0.28rem 0.52rem;
+      border-radius: var(--radius);
+      background: var(--cloud);
+      border: 1px solid var(--ink-line);
+      color: var(--ink-muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .badge.indigo {
+      background: var(--indigo-soft);
+      color: var(--indigo);
+      border-color: rgba(79, 70, 229, 0.2);
+    }
+
+    .badge.cyan {
+      background: var(--cyan-soft);
+      color: var(--cyan);
+      border-color: rgba(6, 182, 212, 0.24);
+    }
+
+    .badge.lime {
+      background: var(--lime-soft);
+      color: var(--ink);
+      border-color: rgba(163, 230, 53, 0.4);
+    }
+
+    .badge.coral {
+      background: var(--coral-soft);
+      color: var(--coral);
+      border-color: rgba(251, 113, 133, 0.35);
+    }
+
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--ink-muted);
+      font-size: 0.82rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .status::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--lime);
+    }
+
+    .connect-btn,
+    .rsvp-btn,
+    .report-btn {
+      width: 100%;
+      margin-top: 1rem;
+      min-height: 40px;
+      border-radius: var(--radius);
+      background: var(--indigo);
+      color: var(--cloud);
+      font-weight: 900;
+    }
+
+    .connected {
+      background: var(--cloud);
+      color: var(--ink);
+      border: 1px solid var(--ink-line);
+    }
+
+    .business-details,
+    .event-details,
+    .alert-details {
+      display: grid;
+      gap: 0.45rem;
+      margin-top: 0.9rem;
+      color: var(--ink-muted);
+      font-weight: 650;
+      font-size: 0.9rem;
+    }
+
+    .stars {
+      color: var(--indigo);
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+
+    .event-date {
+      width: 58px;
+      min-height: 58px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--cloud);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      font-weight: 900;
+      line-height: 1.05;
+      flex: 0 0 auto;
+    }
+
+    .event-date span {
+      display: block;
+      color: var(--cyan);
+      font-size: 0.78rem;
+    }
+
+    .alert-list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .alert-card {
+      border-left: 5px solid var(--cyan);
+    }
+
+    .alert-card.warning {
+      border-left-color: var(--indigo);
+    }
+
+    .alert-card.critical {
+      border-left-color: var(--coral);
+    }
+
+    .report-btn {
+      background: var(--ink);
+    }
+
+    .site-footer {
+      margin-top: 2rem;
+      border-top: 1px solid var(--ink-line);
+      padding: 2rem 0;
+      color: var(--ink-muted);
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      font-weight: 800;
+    }
+
+    .footer-links a:hover {
+      color: var(--indigo);
+    }
+
+    @media (max-width: 1040px) {
+      .desktop-nav,
+      .nav-actions {
+        display: none;
+      }
+
+      .hamburger {
+        display: inline-flex;
+        margin-left: auto;
+      }
+
+      .hero-panel,
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats-panel {
+        position: static;
+      }
+
+      .neighbor-grid,
+      .business-grid,
+      .event-grid,
+      .alert-list {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 700px) {
+      .shell {
+        width: min(100% - 1rem, var(--max));
+      }
+
+      .topbar {
+        min-height: 66px;
+      }
+
+      .brand span:last-child {
+        max-width: 170px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .hero {
+        padding-top: 1rem;
+      }
+
+      .hero-copy {
+        padding: 1.25rem;
+      }
+
+      .hero-map {
+        min-height: 280px;
+      }
+
+      .map-card,
+      .stats-grid,
+      .neighbor-grid,
+      .business-grid,
+      .event-grid,
+      .alert-list {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .post-top,
+      .neighbor-top,
+      .business-top,
+      .event-top,
+      .alert-top {
+        align-items: flex-start;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to community dashboard</a>
+  <header class="site-header" aria-label="Primary navigation">
+    <div class="shell topbar">
+      <a class="brand" href="#top" aria-label="Wave Neighborhood App home">
+        <span class="brand-mark" aria-hidden="true"><span class="brand-wave"></span></span>
+        <span>Wave Neighborhood</span>
+      </a>
+      <nav class="desktop-nav" aria-label="Main sections">
+        <a href="#feed">Feed</a>
+        <a href="#neighbors">Neighbors</a>
+        <a href="#events">Events</a>
+        <a href="#businesses">Businesses</a>
+        <a href="#alerts">Alerts</a>
+      </nav>
+      <div class="nav-actions">
+        <form class="search" role="search" aria-label="Search neighborhood">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.8 18.1a7.3 7.3 0 1 1 5.16-2.14l4.04 4.04-1.42 1.42-4.04-4.04a7.25 7.25 0 0 1-3.74.72Zm0-2a5.3 5.3 0 1 0 0-10.6 5.3 5.3 0 0 0 0 10.6Z" fill="currentColor"/></svg>
+          <label class="sr-only" for="site-search">Search neighbors, posts, and places</label>
+          <input id="site-search" type="search" name="q" autocomplete="off" value="" aria-label="Search neighbors, posts, and places" />
+        </form>
+        <span class="location-badge"><span class="live-dot" aria-hidden="true"></span>Riverside Commons</span>
+      </div>
+      <button class="hamburger" type="button" aria-label="Open menu" aria-controls="mobile-drawer" aria-expanded="false">
+        <span class="hamburger-lines" aria-hidden="true"></span>
+      </button>
+    </div>
+  </header>
+  <div class="drawer-backdrop" data-close-drawer></div>
+  <aside class="mobile-drawer" id="mobile-drawer" aria-label="Mobile menu" aria-hidden="true">
+    <div class="drawer-head">
+      <a class="brand" href="#top">
+        <span class="brand-mark" aria-hidden="true"><span class="brand-wave"></span></span>
+        <span>Wave</span>
+      </a>
+      <button class="drawer-close" type="button" aria-label="Close menu" data-close-drawer>&times;</button>
+    </div>
+    <nav class="drawer-nav" aria-label="Mobile sections">
+      <a href="#feed">Feed</a>
+      <a href="#neighbors">Neighbors</a>
+      <a href="#events">Events</a>
+      <a href="#businesses">Businesses</a>
+      <a href="#alerts">Alerts</a>
+    </nav>
+    <div class="drawer-search">
+      <form class="search" role="search" aria-label="Search from menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.8 18.1a7.3 7.3 0 1 1 5.16-2.14l4.04 4.04-1.42 1.42-4.04-4.04a7.25 7.25 0 0 1-3.74.72Zm0-2a5.3 5.3 0 1 0 0-10.6 5.3 5.3 0 0 0 0 10.6Z" fill="currentColor"/></svg>
+        <input type="search" name="mobile-q" aria-label="Search the neighborhood" />
+      </form>
+      <span class="location-badge"><span class="live-dot" aria-hidden="true"></span>Riverside Commons</span>
+    </div>
+  </aside>
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="shell hero-panel">
+        <div class="hero-copy">
+          <span class="eyebrow"><span class="live-dot" aria-hidden="true"></span>Live neighborhood pulse</span>
+          <h1 id="hero-title">Wave keeps Riverside Commons connected.</h1>
+          <p>Neighbors share updates, discover trusted local businesses, coordinate events, and surface safety alerts in one calm community workspace.</p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#feed">Open feed</a>
+            <a class="btn btn-secondary" href="#events">Browse events</a>
+          </div>
+        </div>
+        <div class="hero-map" aria-label="Stylized Riverside Commons map">
+          <div class="route" aria-hidden="true"></div>
+          <div class="pin pin-one"><span></span></div>
+          <div class="pin pin-two"><span></span></div>
+          <div class="pin pin-three"><span></span></div>
+          <div class="map-card" aria-label="Neighborhood highlights">
+            <div><strong>18</strong><span>Live posts</span></div>
+            <div><strong>7</strong><span>Events this week</span></div>
+            <div><strong>94</strong><span>Safety score</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="feed" aria-labelledby="feed-title">
+      <div class="shell grid dashboard-grid">
+        <div>
+          <div class="section-head">
+            <div>
+              <h2 id="feed-title">Community Feed</h2>
+              <p>Fresh posts from neighbors, block captains, and local organizers.</p>
+            </div>
+            <a class="btn btn-light" href="#neighbors">Find neighbors</a>
+          </div>
+          <div class="feed-list">
+            <article class="card post-card">
+              <div class="post-top">
+                <div class="identity">
+                  <span class="avatar">AR</span>
+                  <div class="meta"><strong>Ari Rivera</strong><span>Maple Street · Riverside Commons</span></div>
+                </div>
+                <span class="time">12 min</span>
+              </div>
+              <p class="post-copy">The community garden has extra basil and mint on the west table. Take a bundle and leave the bands in the blue tin.</p>
+              <div class="post-visual" role="img" aria-label="Community garden table with herbs"></div>
+              <div class="post-actions" aria-label="Post actions">
+                <button class="icon-btn" type="button">Like</button>
+                <button class="icon-btn" type="button">Comment</button>
+                <button class="icon-btn" type="button">Share</button>
+              </div>
+            </article>
+            <article class="card post-card">
+              <div class="post-top">
+                <div class="identity">
+                  <span class="avatar cyan">MK</span>
+                  <div class="meta"><strong>Mina Kwon</strong><span>Oak Lane · Riverside Commons</span></div>
+                </div>
+                <span class="time">38 min</span>
+              </div>
+              <p class="post-copy">Found a set of brass keys near the library steps. They are at the front desk under the name Wave keys.</p>
+              <div class="post-actions" aria-label="Post actions">
+                <button class="icon-btn" type="button">Like</button>
+                <button class="icon-btn" type="button">Comment</button>
+                <button class="icon-btn" type="button">Share</button>
+              </div>
+            </article>
+            <article class="card post-card">
+              <div class="post-top">
+                <div class="identity">
+                  <span class="avatar lime">JB</span>
+                  <div class="meta"><strong>Jon Bell</strong><span>River Walk · Riverside Commons</span></div>
+                </div>
+                <span class="time">1 hr</span>
+              </div>
+              <p class="post-copy">Porch light swap is happening Saturday morning. I have a ladder, warm bulbs, and space for two more homes.</p>
+              <div class="post-visual" role="img" aria-label="Porch light maintenance kit"></div>
+              <div class="post-actions" aria-label="Post actions">
+                <button class="icon-btn" type="button">Like</button>
+                <button class="icon-btn" type="button">Comment</button>
+                <button class="icon-btn" type="button">Share</button>
+              </div>
+            </article>
+          </div>
+        </div>
+        <aside class="card stats-panel" aria-labelledby="stats-title">
+          <h2 id="stats-title">Neighborhood Stats</h2>
+          <p class="muted">Riverside Commons activity snapshot for today.</p>
+          <div class="stats-grid">
+            <div class="stat live"><strong>2,418</strong><span>Total neighbors</span></div>
+            <div class="stat ok"><strong>86</strong><span>Active businesses</span></div>
+            <div class="stat"><strong>24</strong><span>Upcoming events</span></div>
+            <div class="stat hot"><strong>94</strong><span>Safety score</span></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+    <section class="section" id="neighbors" aria-labelledby="neighbors-title">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <h2 id="neighbors-title">Neighbor Directory</h2>
+            <p>Connect around shared interests, nearby streets, and helpful skills.</p>
+          </div>
+          <a class="btn btn-light" href="#businesses">See businesses</a>
+        </div>
+        <div class="neighbor-grid">
+          <article class="card neighbor-card">
+            <div class="neighbor-top">
+              <div class="identity"><span class="avatar">SP</span><div class="meta"><strong>Sasha Patel</strong><span>Willow Court</span></div></div>
+              <span class="status">Connected</span>
+            </div>
+            <div class="tag-row"><span class="tag">Cycling</span><span class="tag">Tool share</span><span class="tag">Compost</span></div>
+            <button class="connect-btn connected" type="button">Connected</button>
+          </article>
+          <article class="card neighbor-card">
+            <div class="neighbor-top">
+              <div class="identity"><span class="avatar cyan">EC</span><div class="meta"><strong>Eli Carter</strong><span>Maple Street</span></div></div>
+              <span class="badge cyan">New</span>
+            </div>
+            <div class="tag-row"><span class="tag">Dog walks</span><span class="tag">Book club</span><span class="tag">Chess</span></div>
+            <button class="connect-btn" type="button">Connect</button>
+          </article>
+          <article class="card neighbor-card">
+            <div class="neighbor-top">
+              <div class="identity"><span class="avatar coral">ND</span><div class="meta"><strong>Nora Diaz</strong><span>River Walk</span></div></div>
+              <span class="status">Connected</span>
+            </div>
+            <div class="tag-row"><span class="tag">Mutual aid</span><span class="tag">Gardening</span><span class="tag">Music</span></div>
+            <button class="connect-btn connected" type="button">Connected</button>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="businesses" aria-labelledby="businesses-title">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <h2 id="businesses-title">Local Business Directory</h2>
+            <p>Trusted nearby restaurants, services, and shops with current details.</p>
+          </div>
+          <a class="btn btn-light" href="#events">Plan a visit</a>
+        </div>
+        <div class="business-grid">
+          <article class="card business-card">
+            <div class="business-top"><div><h3>Juniper Table</h3><span class="badge indigo">Restaurant</span></div><span class="stars">★★★★★</span></div>
+            <div class="business-details"><span>0.3 mi · Open until 10 PM</span><span>(555) 014-2288</span><span>Seasonal plates and patio brunch.</span></div>
+          </article>
+          <article class="card business-card">
+            <div class="business-top"><div><h3>BrightFix Handyman</h3><span class="badge cyan">Service</span></div><span class="stars">★★★★☆</span></div>
+            <div class="business-details"><span>0.8 mi · Open until 6 PM</span><span>(555) 019-4420</span><span>Small repairs, fixtures, and weekend help.</span></div>
+          </article>
+          <article class="card business-card">
+            <div class="business-top"><div><h3>Riverbend Market</h3><span class="badge lime">Shop</span></div><span class="stars">★★★★★</span></div>
+            <div class="business-details"><span>0.5 mi · Open until 9 PM</span><span>(555) 011-7304</span><span>Groceries, flowers, and pantry staples.</span></div>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="events" aria-labelledby="events-title">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <h2 id="events-title">Event Board</h2>
+            <p>Block parties, cleanups, workshops, and casual meetups.</p>
+          </div>
+          <a class="btn btn-light" href="#alerts">View alerts</a>
+        </div>
+        <div class="event-grid">
+          <article class="card event-card">
+            <div class="event-top"><div class="identity"><time class="event-date" datetime="2026-06-02"><span>JUN</span>02</time><div class="meta"><strong>Summer Porch Social</strong><span>Tue · 6:30 PM</span></div></div><span class="badge coral">Social</span></div>
+            <div class="event-details"><span>Location: Willow Court green</span><span>Host: Sasha Patel</span><span>42 neighbors attending</span></div>
+            <button class="rsvp-btn" type="button">RSVP</button>
+          </article>
+          <article class="card event-card">
+            <div class="event-top"><div class="identity"><time class="event-date" datetime="2026-06-05"><span>JUN</span>05</time><div class="meta"><strong>Creek Cleanup Crew</strong><span>Fri · 8:00 AM</span></div></div><span class="badge cyan">Civic</span></div>
+            <div class="event-details"><span>Location: River Walk bridge</span><span>Host: Green Block Team</span><span>31 neighbors attending</span></div>
+            <button class="rsvp-btn" type="button">RSVP</button>
+          </article>
+          <article class="card event-card">
+            <div class="event-top"><div class="identity"><time class="event-date" datetime="2026-06-08"><span>JUN</span>08</time><div class="meta"><strong>New Neighbor Coffee</strong><span>Mon · 9:00 AM</span></div></div><span class="badge indigo">Welcome</span></div>
+            <div class="event-details"><span>Location: Juniper Table</span><span>Host: Welcome Circle</span><span>18 neighbors attending</span></div>
+            <button class="rsvp-btn" type="button">RSVP</button>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="alerts" aria-labelledby="alerts-title">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <h2 id="alerts-title">Safety Alerts</h2>
+            <p>Area notices with clear severity, timing, and reporting actions.</p>
+          </div>
+          <a class="btn btn-light" href="#top">Back to top</a>
+        </div>
+        <div class="alert-list">
+          <article class="card alert-card">
+            <div class="alert-top"><div><h3>Advisory: Sidewalk work</h3><span class="badge cyan">Advisory</span></div><span class="time">9:10 AM</span></div>
+            <div class="alert-details"><span>Area: Oak Lane east side</span><span>Crews are repairing two uneven panels near the bus stop through 3 PM.</span></div>
+            <button class="report-btn" type="button">Report update</button>
+          </article>
+          <article class="card alert-card warning">
+            <div class="alert-top"><div><h3>Warning: Low visibility</h3><span class="badge indigo">Warning</span></div><span class="time">7:45 AM</span></div>
+            <div class="alert-details"><span>Area: River Walk bridge</span><span>Morning fog is heavy near the creek crossing. Use lights and slower speeds.</span></div>
+            <button class="report-btn" type="button">Report update</button>
+          </article>
+          <article class="card alert-card critical">
+            <div class="alert-top"><div><h3>Critical: Water main break</h3><span class="badge coral">Critical</span></div><span class="time">6:20 AM</span></div>
+            <div class="alert-details"><span>Area: Maple and 4th</span><span>Water service is paused for nearby homes while repairs are underway.</span></div>
+            <button class="report-btn" type="button">Report update</button>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="shell footer-inner">
+      <p>Wave Neighborhood App — designed by Northstar Civic Studio.</p>
+      <nav class="footer-links" aria-label="Footer links"><a href="#feed">Feed</a><a href="#neighbors">Neighbors</a><a href="#alerts">Alerts</a></nav>
+    </div>
+  </footer>
+  <script>
+    const body = document.body;
+    const hamburger = document.querySelector('.hamburger');
+    const drawer = document.querySelector('#mobile-drawer');
+    const backdrop = document.querySelector('.drawer-backdrop');
+    const closeControls = document.querySelectorAll('[data-close-drawer]');
+    const drawerLinks = drawer.querySelectorAll('a');
+    let lastFocus = null;
+
+    function setDrawer(open) {
+      lastFocus = open ? document.activeElement : lastFocus;
+      hamburger.setAttribute('aria-expanded', String(open));
+      hamburger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      drawer.classList.toggle('open', open);
+      backdrop.classList.toggle('visible', open);
+      drawer.setAttribute('aria-hidden', String(!open));
+      body.classList.toggle('drawer-open', open);
+      if (open) {
+        const firstLink = drawer.querySelector('a');
+        window.setTimeout(() => firstLink.focus(), 60);
+      } else if (lastFocus) {
+        lastFocus.focus();
+      }
+    }
+
+    hamburger.addEventListener('click', () => {
+      const isOpen = hamburger.getAttribute('aria-expanded') === 'true';
+      setDrawer(!isOpen);
+    });
+
+    closeControls.forEach((control) => control.addEventListener('click', () => setDrawer(false)));
+    drawerLinks.forEach((link) => link.addEventListener('click', () => setDrawer(false)));
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && drawer.classList.contains('open')) {
+        setDrawer(false);
+      }
+    });
+  </script>
+</body>
+</html>
