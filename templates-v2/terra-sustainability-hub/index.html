@@ -1,0 +1,1241 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Terra Sustainability Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --indigo: #4F46E5;
+      --cyan: #06B6D4;
+      --lime: #A3E635;
+      --coral: #FB7185;
+      --white: rgba(246, 248, 252, 0.94);
+      --panel: rgba(25, 33, 43, 0.04);
+      --panel-strong: rgba(25, 33, 43, 0.08);
+      --ink-muted: rgba(25, 33, 43, 0.68);
+      --ink-soft: rgba(25, 33, 43, 0.48);
+      --ink-line: rgba(25, 33, 43, 0.12);
+      --indigo-soft: rgba(79, 70, 229, 0.12);
+      --cyan-soft: rgba(6, 182, 212, 0.14);
+      --lime-soft: rgba(163, 230, 53, 0.22);
+      --coral-soft: rgba(251, 113, 133, 0.16);
+      --shadow: 0 24px 80px rgba(25, 33, 43, 0.14);
+      --radius: 8px;
+      color-scheme: light;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 8% 8%, rgba(6, 182, 212, 0.16), transparent 26rem),
+        radial-gradient(circle at 86% 4%, rgba(79, 70, 229, 0.14), transparent 30rem),
+        var(--cloud);
+      color: var(--ink);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    body.drawer-open {
+      overflow: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .skip-link {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 100;
+      padding: 10px 14px;
+      background: var(--ink);
+      color: var(--cloud);
+      border-radius: var(--radius);
+      transform: translateY(-160%);
+      transition: transform 180ms ease;
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 36px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      background: rgba(246, 248, 252, 0.88);
+      border-bottom: 1px solid var(--ink-line);
+    }
+
+    .nav {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 18px;
+      min-height: 76px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: Manrope, Inter, sans-serif;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--lime);
+      box-shadow: inset 0 0 0 1px rgba(246, 248, 252, 0.1);
+    }
+
+    .brand-mark svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 38px;
+      padding: 0 12px;
+      border-radius: var(--radius);
+      color: var(--ink-muted);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      background: var(--panel);
+      color: var(--ink);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .search {
+      position: relative;
+      width: 220px;
+    }
+
+    .search svg {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      width: 17px;
+      height: 17px;
+      color: var(--ink-soft);
+      transform: translateY(-50%);
+      pointer-events: none;
+    }
+
+    .search input {
+      width: 100%;
+      height: 40px;
+      padding: 0 12px 0 36px;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.72);
+      color: var(--ink);
+      outline: none;
+    }
+
+    .search input:focus {
+      border-color: var(--indigo);
+      box-shadow: 0 0 0 4px var(--indigo-soft);
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 0 14px;
+      border: 0;
+      border-radius: var(--radius);
+      background: var(--indigo);
+      color: var(--cloud);
+      font-weight: 800;
+      box-shadow: 0 14px 28px rgba(79, 70, 229, 0.22);
+    }
+
+    .button.secondary {
+      background: var(--ink);
+      color: var(--cloud);
+      box-shadow: 0 14px 28px rgba(25, 33, 43, 0.18);
+    }
+
+    .icon-button {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.72);
+      color: var(--ink);
+    }
+
+    .icon-button svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 3px;
+    }
+
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      background: rgba(25, 33, 43, 0.38);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 80;
+      width: min(360px, 88vw);
+      height: 100vh;
+      padding: 22px;
+      background: var(--cloud);
+      border-left: 1px solid var(--ink-line);
+      box-shadow: var(--shadow);
+      transform: translateX(105%);
+      transition: transform 220ms ease;
+    }
+
+    .drawer[aria-hidden="false"] {
+      transform: translateX(0);
+    }
+
+    .drawer-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .drawer nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    .drawer nav a {
+      padding: 14px;
+      border-radius: var(--radius);
+      background: var(--panel);
+      font-weight: 800;
+    }
+
+    .hero {
+      padding: 56px 0 28px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 360px;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .hero-copy {
+      display: grid;
+      align-content: center;
+      gap: 22px;
+      min-height: 384px;
+      padding: 42px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--cloud);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-copy::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(120deg, transparent 0 45%, rgba(6, 182, 212, 0.18) 45% 46%, transparent 46%),
+        linear-gradient(150deg, transparent 0 62%, rgba(163, 230, 53, 0.18) 62% 63%, transparent 63%);
+      pointer-events: none;
+    }
+
+    .hero-copy > * {
+      position: relative;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      width: max-content;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border: 1px solid rgba(246, 248, 252, 0.18);
+      border-radius: var(--radius);
+      color: rgba(246, 248, 252, 0.78);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .pulse {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 0 7px rgba(6, 182, 212, 0.14);
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      font-family: Manrope, Inter, sans-serif;
+      letter-spacing: 0;
+      line-height: 1.02;
+    }
+
+    h1 {
+      max-width: 760px;
+      font-size: clamp(2.5rem, 7vw, 5.7rem);
+    }
+
+    .hero p {
+      max-width: 680px;
+      margin: 0;
+      color: rgba(246, 248, 252, 0.74);
+      font-size: 1.06rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .command-card {
+      padding: 22px;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.82);
+      box-shadow: var(--shadow);
+    }
+
+    .command-card h2 {
+      font-size: 1rem;
+      margin-bottom: 18px;
+    }
+
+    .audit-list {
+      display: grid;
+      gap: 14px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .audit-list li {
+      display: grid;
+      gap: 8px;
+      padding: 14px;
+      border-radius: var(--radius);
+      background: var(--panel);
+    }
+
+    .audit-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-weight: 800;
+    }
+
+    .mini-meter {
+      height: 8px;
+      border-radius: 99px;
+      background: var(--panel-strong);
+      overflow: hidden;
+    }
+
+    .mini-meter span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--indigo), var(--cyan));
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 26px;
+      padding: 0 8px;
+      border-radius: 99px;
+      background: var(--lime-soft);
+      color: var(--ink);
+      font-size: 0.76rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .status-pill.warn {
+      background: var(--coral-soft);
+    }
+
+    .section {
+      padding: 34px 0;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+    }
+
+    .section-head h2 {
+      font-size: clamp(1.65rem, 4vw, 2.6rem);
+    }
+
+    .section-head p {
+      max-width: 520px;
+      margin: 0;
+      color: var(--ink-muted);
+    }
+
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .kpi {
+      display: grid;
+      gap: 10px;
+      min-height: 154px;
+      padding: 18px;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.78);
+    }
+
+    .kpi-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .kpi-icon {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius);
+      background: var(--indigo-soft);
+      color: var(--indigo);
+    }
+
+    .kpi-icon.cyan {
+      background: var(--cyan-soft);
+      color: var(--cyan);
+    }
+
+    .kpi-icon.lime {
+      background: var(--lime-soft);
+      color: var(--ink);
+    }
+
+    .kpi strong {
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 2.2rem;
+      line-height: 1;
+    }
+
+    .kpi span,
+    .kpi small {
+      color: var(--ink-muted);
+      font-weight: 700;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .score-card {
+      display: grid;
+      gap: 18px;
+      padding: 20px;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.82);
+    }
+
+    .score-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .score-top h3 {
+      font-size: 1.35rem;
+    }
+
+    .score-top p {
+      margin: 5px 0 0;
+      color: var(--ink-muted);
+      font-size: 0.92rem;
+    }
+
+    .rating {
+      display: grid;
+      place-items: center;
+      width: 62px;
+      height: 62px;
+      border-radius: 50%;
+      background: conic-gradient(var(--lime) var(--score), var(--panel-strong) 0);
+      font-family: Manrope, Inter, sans-serif;
+      font-weight: 800;
+    }
+
+    .rating::before {
+      content: attr(data-rating);
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 50%;
+      background: var(--cloud);
+    }
+
+    .trend {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--ink-muted);
+      font-weight: 800;
+    }
+
+    .trend.up svg {
+      color: var(--cyan);
+    }
+
+    .metric-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .metric-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 10px;
+      border-top: 1px solid var(--ink-line);
+      color: var(--ink-muted);
+      font-weight: 700;
+    }
+
+    .metric-list strong {
+      color: var(--ink);
+    }
+
+    .tracker {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 300px;
+      gap: 16px;
+      align-items: stretch;
+    }
+
+    .chart-panel,
+    .target-panel {
+      padding: 20px;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.84);
+    }
+
+    .chart-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .chart-head h3,
+    .target-panel h3 {
+      font-size: 1.25rem;
+    }
+
+    .chart {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      align-items: end;
+      gap: 9px;
+      height: 310px;
+      padding: 28px 0 24px;
+      border-bottom: 1px solid var(--ink-line);
+    }
+
+    .target-line {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 44%;
+      border-top: 2px dashed var(--coral);
+    }
+
+    .target-line span {
+      position: absolute;
+      right: 0;
+      top: -28px;
+      padding: 4px 8px;
+      border-radius: 99px;
+      background: var(--coral-soft);
+      color: var(--ink);
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+
+    .bar-item {
+      display: grid;
+      grid-template-rows: 1fr auto;
+      align-items: end;
+      height: 100%;
+      gap: 8px;
+      min-width: 0;
+      text-align: center;
+      color: var(--ink-muted);
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+
+    .bar {
+      width: 100%;
+      min-height: 26px;
+      border-radius: 7px 7px 0 0;
+      background: linear-gradient(180deg, var(--indigo), var(--cyan));
+      box-shadow: inset 0 0 0 1px rgba(246, 248, 252, 0.22);
+    }
+
+    .target-panel {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+      background: var(--ink);
+      color: var(--cloud);
+    }
+
+    .target-panel p {
+      margin: 0;
+      color: rgba(246, 248, 252, 0.72);
+    }
+
+    .target-stat {
+      display: grid;
+      gap: 6px;
+      padding: 14px;
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.08);
+    }
+
+    .target-stat strong {
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .target-stat span {
+      color: rgba(246, 248, 252, 0.72);
+      font-weight: 700;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .initiative,
+    .goal,
+    .report {
+      display: grid;
+      gap: 14px;
+      min-height: 226px;
+      padding: 18px;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.84);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 12px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 25px;
+      padding: 0 8px;
+      border-radius: 99px;
+      background: var(--cyan-soft);
+      color: var(--ink);
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+
+    .badge.energy {
+      background: var(--lime-soft);
+    }
+
+    .badge.waste {
+      background: var(--indigo-soft);
+    }
+
+    .badge.water {
+      background: var(--cyan-soft);
+    }
+
+    .badge.social {
+      background: var(--coral-soft);
+    }
+
+    .initiative h3,
+    .goal h3,
+    .report h3 {
+      font-size: 1.18rem;
+    }
+
+    .initiative p,
+    .goal p,
+    .report p {
+      margin: 0;
+      color: var(--ink-muted);
+    }
+
+    .progress-wrap {
+      display: grid;
+      gap: 8px;
+      margin-top: auto;
+    }
+
+    .progress-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--ink-muted);
+      font-size: 0.86rem;
+      font-weight: 800;
+    }
+
+    .progress {
+      height: 10px;
+      overflow: hidden;
+      border-radius: 99px;
+      background: var(--panel-strong);
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--indigo), var(--cyan), var(--lime));
+    }
+
+    .impact {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      padding-top: 12px;
+      border-top: 1px solid var(--ink-line);
+    }
+
+    .impact strong {
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 1.45rem;
+    }
+
+    .goal-meta {
+      display: grid;
+      gap: 8px;
+    }
+
+    .goal-meta div {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--ink-muted);
+      font-weight: 700;
+    }
+
+    .goal-meta strong {
+      color: var(--ink);
+    }
+
+    .report {
+      min-height: 206px;
+    }
+
+    .report-icon {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--lime);
+    }
+
+    .report-details {
+      display: grid;
+      gap: 6px;
+      color: var(--ink-muted);
+      font-weight: 700;
+    }
+
+    .download {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 38px;
+      margin-top: auto;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: var(--cloud);
+      color: var(--ink);
+      font-weight: 800;
+    }
+
+    .download:hover,
+    .download:focus-visible {
+      border-color: var(--indigo);
+      box-shadow: 0 0 0 4px var(--indigo-soft);
+    }
+
+    .footer {
+      margin-top: 34px;
+      padding: 28px 0 34px;
+      border-top: 1px solid var(--ink-line);
+      color: var(--ink-muted);
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .footer strong {
+      color: var(--ink);
+    }
+
+    @media (max-width: 1020px) {
+      .nav-links,
+      .search,
+      .nav-actions .button {
+        display: none;
+      }
+
+      .icon-button {
+        display: inline-flex;
+      }
+
+      .nav {
+        grid-template-columns: auto 1fr;
+      }
+
+      .hero-grid,
+      .tracker {
+        grid-template-columns: 1fr;
+      }
+
+      .command-card {
+        box-shadow: none;
+      }
+
+      .kpi-strip,
+      .dashboard-grid,
+      .card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 680px) {
+      .shell {
+        width: min(100% - 24px, 1180px);
+      }
+
+      .hero {
+        padding-top: 28px;
+      }
+
+      .hero-copy {
+        min-height: 0;
+        padding: 28px;
+      }
+
+      .section-head,
+      .footer-inner {
+        display: grid;
+      }
+
+      .kpi-strip,
+      .dashboard-grid,
+      .card-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .chart {
+        gap: 5px;
+        height: 250px;
+      }
+
+      .bar-item {
+        font-size: 0.68rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to dashboard</a>
+  <header class="topbar" role="banner">
+    <div class="shell nav" aria-label="Primary navigation">
+      <a class="brand" href="#top" aria-label="Terra Sustainability Hub home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c4-3 7-7 7-12V4l-7-2-7 2v6c0 5 3 9 7 12Z"/><path d="M9 12l2 2 4-5"/></svg>
+        </span>
+        <span>Terra Hub</span>
+      </a>
+      <nav aria-label="Desktop">
+        <ul class="nav-links">
+          <li><a href="#dashboard">Dashboard</a></li>
+          <li><a href="#esg">ESG</a></li>
+          <li><a href="#initiatives">Initiatives</a></li>
+          <li><a href="#reports">Reports</a></li>
+          <li><a href="#goals">Goals</a></li>
+        </ul>
+      </nav>
+      <div class="nav-actions">
+        <label class="search">
+          <span class="sr-only">Search sustainability records</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <input type="search" aria-label="Search sustainability records" value="">
+        </label>
+        <a class="button" href="#reports">Export board pack</a>
+        <button class="icon-button" type="button" data-open-menu aria-label="Open menu" aria-controls="mobile-drawer" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="drawer-backdrop" data-close-menu></div>
+  <aside class="drawer" id="mobile-drawer" aria-hidden="true" aria-label="Mobile menu">
+    <div class="drawer-head">
+      <a class="brand" href="#top">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c4-3 7-7 7-12V4l-7-2-7 2v6c0 5 3 9 7 12Z"/><path d="M9 12l2 2 4-5"/></svg></span>
+        <span>Terra Hub</span>
+      </a>
+      <button class="icon-button" type="button" data-close-menu aria-label="Close menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg>
+      </button>
+    </div>
+    <nav aria-label="Mobile">
+      <a href="#dashboard" data-drawer-link>Dashboard</a>
+      <a href="#esg" data-drawer-link>ESG</a>
+      <a href="#initiatives" data-drawer-link>Initiatives</a>
+      <a href="#reports" data-drawer-link>Reports</a>
+      <a href="#goals" data-drawer-link>Goals</a>
+    </nav>
+  </aside>
+
+  <main id="main">
+    <section class="hero shell" id="top" aria-labelledby="hero-title">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow"><span class="pulse" aria-hidden="true"></span> Live ESG command center</span>
+          <h1 id="hero-title">Carbon, impact, and compliance in one executive view.</h1>
+          <p>Terra Sustainability Hub consolidates climate accounting, initiative delivery, and board-ready ESG evidence for teams moving from annual disclosure to continuous performance.</p>
+          <div class="hero-actions">
+            <a class="button" href="#dashboard">View dashboard</a>
+            <a class="button secondary" href="#initiatives">Track initiatives</a>
+          </div>
+        </div>
+        <aside class="command-card" aria-labelledby="assurance-title">
+          <h2 id="assurance-title">Assurance readiness</h2>
+          <ul class="audit-list">
+            <li>
+              <div class="audit-row"><span>Scope 1 and 2 evidence</span><span class="status-pill">Complete</span></div>
+              <div class="mini-meter" aria-hidden="true"><span style="width: 96%"></span></div>
+            </li>
+            <li>
+              <div class="audit-row"><span>Supplier emissions files</span><span class="status-pill">Reviewed</span></div>
+              <div class="mini-meter" aria-hidden="true"><span style="width: 88%"></span></div>
+            </li>
+            <li>
+              <div class="audit-row"><span>Water stewardship data</span><span class="status-pill warn">Needs signoff</span></div>
+              <div class="mini-meter" aria-hidden="true"><span style="width: 64%"></span></div>
+            </li>
+            <li>
+              <div class="audit-row"><span>Board report package</span><span class="status-pill">On track</span></div>
+              <div class="mini-meter" aria-hidden="true"><span style="width: 91%"></span></div>
+            </li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section shell" id="dashboard" aria-labelledby="kpi-title">
+      <div class="section-head">
+        <div>
+          <h2 id="kpi-title">Enterprise KPI strip</h2>
+          <p>Current quarter indicators across decarbonization, resource efficiency, and ESG governance maturity.</p>
+        </div>
+      </div>
+      <div class="kpi-strip">
+        <article class="kpi">
+          <div class="kpi-top"><span class="kpi-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M5 9c4 0 7 3 7 7M19 9c-4 0-7 3-7 7"/></svg></span><span>+6.2 pts</span></div>
+          <strong>38%</strong>
+          <small>Carbon reduction against 2019 baseline</small>
+        </article>
+        <article class="kpi">
+          <div class="kpi-top"><span class="kpi-icon cyan"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h8l-1 8 11-14h-8l1-6Z"/></svg></span><span>4 sites</span></div>
+          <strong>72%</strong>
+          <small>Renewable energy consumption</small>
+        </article>
+        <article class="kpi">
+          <div class="kpi-top"><span class="kpi-icon lime"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4h8v2M6 6l1 14h10l1-14"/></svg></span><span>Healthy</span></div>
+          <strong>84%</strong>
+          <small>Waste diversion rate across operations</small>
+        </article>
+        <article class="kpi">
+          <div class="kpi-top"><span class="kpi-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19V5M4 19h16M8 16l3-4 3 2 4-7"/></svg></span><span>AA</span></div>
+          <strong>91</strong>
+          <small>Composite ESG score for disclosure cycle</small>
+        </article>
+      </div>
+    </section>
+
+    <section class="section shell" id="esg" aria-labelledby="esg-title">
+      <div class="section-head">
+        <div>
+          <h2 id="esg-title">ESG metrics dashboard</h2>
+          <p>Scorecards translate operational evidence into ratings, movements, and audit-ready detail.</p>
+        </div>
+      </div>
+      <div class="dashboard-grid">
+        <article class="score-card">
+          <div class="score-top"><div><h3>Environmental</h3><p>Climate, water, waste, and biodiversity performance.</p></div><span class="rating" style="--score: 88%" data-rating="A"></span></div>
+          <div class="trend up"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17 9 11l4 4 8-8"/><path d="M14 7h7v7"/></svg> Up 7% quarter over quarter</div>
+          <ul class="metric-list"><li><span>Energy intensity</span><strong>-14%</strong></li><li><span>Water reuse</span><strong>41%</strong></li><li><span>Landfill avoidance</span><strong>84%</strong></li></ul>
+        </article>
+        <article class="score-card">
+          <div class="score-top"><div><h3>Social</h3><p>Workforce wellbeing, community investment, and supplier equity.</p></div><span class="rating" style="--score: 82%" data-rating="A-"></span></div>
+          <div class="trend up"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17 9 11l4 4 8-8"/><path d="M14 7h7v7"/></svg> Up 4% quarter over quarter</div>
+          <ul class="metric-list"><li><span>Safety frequency</span><strong>0.21</strong></li><li><span>Training completion</span><strong>97%</strong></li><li><span>Local investment</span><strong>$4.8M</strong></li></ul>
+        </article>
+        <article class="score-card">
+          <div class="score-top"><div><h3>Governance</h3><p>Controls, policies, ethics, and board oversight cadence.</p></div><span class="rating" style="--score: 94%" data-rating="AA"></span></div>
+          <div class="trend up"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17 9 11l4 4 8-8"/><path d="M14 7h7v7"/></svg> Up 3% quarter over quarter</div>
+          <ul class="metric-list"><li><span>Policy attestation</span><strong>99%</strong></li><li><span>Board reviews</span><strong>6</strong></li><li><span>Risk actions closed</span><strong>92%</strong></li></ul>
+        </article>
+      </div>
+    </section>
+
+    <section class="section shell" aria-labelledby="carbon-title">
+      <div class="section-head">
+        <div>
+          <h2 id="carbon-title">Carbon footprint tracker</h2>
+          <p>Monthly emissions show operational progress against the annual decarbonization pathway.</p>
+        </div>
+      </div>
+      <div class="tracker">
+        <article class="chart-panel">
+          <div class="chart-head"><h3>2026 emissions by month</h3><span class="status-pill warn">Target line 42 ktCO2e</span></div>
+          <div class="chart" aria-label="Monthly carbon emissions bar chart">
+            <div class="target-line" aria-hidden="true"><span>Target</span></div>
+            <div class="bar-item"><span class="bar" style="height: 86%"></span><span>Jan</span></div>
+            <div class="bar-item"><span class="bar" style="height: 80%"></span><span>Feb</span></div>
+            <div class="bar-item"><span class="bar" style="height: 74%"></span><span>Mar</span></div>
+            <div class="bar-item"><span class="bar" style="height: 70%"></span><span>Apr</span></div>
+            <div class="bar-item"><span class="bar" style="height: 66%"></span><span>May</span></div>
+            <div class="bar-item"><span class="bar" style="height: 59%"></span><span>Jun</span></div>
+            <div class="bar-item"><span class="bar" style="height: 56%"></span><span>Jul</span></div>
+            <div class="bar-item"><span class="bar" style="height: 52%"></span><span>Aug</span></div>
+            <div class="bar-item"><span class="bar" style="height: 49%"></span><span>Sep</span></div>
+            <div class="bar-item"><span class="bar" style="height: 45%"></span><span>Oct</span></div>
+            <div class="bar-item"><span class="bar" style="height: 42%"></span><span>Nov</span></div>
+            <div class="bar-item"><span class="bar" style="height: 39%"></span><span>Dec</span></div>
+          </div>
+        </article>
+        <aside class="target-panel">
+          <h3>Reduction pathway</h3>
+          <p>Operational teams are ahead of plan after renewable procurement and route optimization lowered energy and logistics emissions.</p>
+          <div class="target-stat"><strong>51 ktCO2e</strong><span>Rolling monthly average</span></div>
+          <div class="target-stat"><strong>18 ktCO2e</strong><span>Remaining annual reduction</span></div>
+          <div class="target-stat"><strong>2030</strong><span>Net-zero operations milestone</span></div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section shell" id="initiatives" aria-labelledby="initiatives-title">
+      <div class="section-head"><div><h2 id="initiatives-title">Green initiatives</h2><p>Portfolio view of active programs, delivery status, and quantified business impact.</p></div></div>
+      <div class="card-grid">
+        <article class="initiative"><div class="card-top"><h3>Solar roof expansion</h3><span class="badge energy">Energy</span></div><p>Status: construction phase across three distribution centers.</p><div class="progress-wrap"><div class="progress-row"><span>Progress</span><strong>78%</strong></div><div class="progress"><span style="width: 78%"></span></div></div><div class="impact"><span>Impact</span><strong>12.4 GWh</strong></div></article>
+        <article class="initiative"><div class="card-top"><h3>Closed-loop packaging</h3><span class="badge waste">Waste</span></div><p>Status: supplier onboarding and recycled-content validation.</p><div class="progress-wrap"><div class="progress-row"><span>Progress</span><strong>64%</strong></div><div class="progress"><span style="width: 64%"></span></div></div><div class="impact"><span>Impact</span><strong>8,600 t</strong></div></article>
+        <article class="initiative"><div class="card-top"><h3>Water reuse upgrade</h3><span class="badge water">Water</span></div><p>Status: membrane systems installed at two priority facilities.</p><div class="progress-wrap"><div class="progress-row"><span>Progress</span><strong>58%</strong></div><div class="progress"><span style="width: 58%"></span></div></div><div class="impact"><span>Impact</span><strong>91 ML</strong></div></article>
+        <article class="initiative"><div class="card-top"><h3>Community resilience fund</h3><span class="badge social">Social</span></div><p>Status: grants issued with impact measurement underway.</p><div class="progress-wrap"><div class="progress-row"><span>Progress</span><strong>83%</strong></div><div class="progress"><span style="width: 83%"></span></div></div><div class="impact"><span>Impact</span><strong>42 sites</strong></div></article>
+        <article class="initiative"><div class="card-top"><h3>Fleet electrification</h3><span class="badge energy">Energy</span></div><p>Status: charging hubs commissioned for regional logistics routes.</p><div class="progress-wrap"><div class="progress-row"><span>Progress</span><strong>71%</strong></div><div class="progress"><span style="width: 71%"></span></div></div><div class="impact"><span>Impact</span><strong>5.1 kt</strong></div></article>
+        <article class="initiative"><div class="card-top"><h3>Supplier climate academy</h3><span class="badge social">Social</span></div><p>Status: cohort training active for strategic suppliers.</p><div class="progress-wrap"><div class="progress-row"><span>Progress</span><strong>89%</strong></div><div class="progress"><span style="width: 89%"></span></div></div><div class="impact"><span>Impact</span><strong>320 firms</strong></div></article>
+      </div>
+    </section>
+
+    <section class="section shell" id="goals" aria-labelledby="goals-title">
+      <div class="section-head"><div><h2 id="goals-title">Sustainability goals</h2><p>Commitments are tracked with target definitions, deadlines, progress, and confidence signals.</p></div></div>
+      <div class="card-grid">
+        <article class="goal"><div class="card-top"><h3>Cut Scope 1 and 2 emissions by 55%</h3><span class="status-pill">On track</span></div><div class="goal-meta"><div><span>Target</span><strong>55%</strong></div><div><span>Deadline</span><strong>Dec 2030</strong></div></div><div class="progress-wrap"><div class="progress-row"><span>Current</span><strong>38%</strong></div><div class="progress"><span style="width: 69%"></span></div></div></article>
+        <article class="goal"><div class="card-top"><h3>Reach 90% waste diversion</h3><span class="status-pill">On track</span></div><div class="goal-meta"><div><span>Target</span><strong>90%</strong></div><div><span>Deadline</span><strong>Jun 2028</strong></div></div><div class="progress-wrap"><div class="progress-row"><span>Current</span><strong>84%</strong></div><div class="progress"><span style="width: 93%"></span></div></div></article>
+        <article class="goal"><div class="card-top"><h3>Transition to 100% renewable power</h3><span class="status-pill warn">Watch</span></div><div class="goal-meta"><div><span>Target</span><strong>100%</strong></div><div><span>Deadline</span><strong>Dec 2027</strong></div></div><div class="progress-wrap"><div class="progress-row"><span>Current</span><strong>72%</strong></div><div class="progress"><span style="width: 72%"></span></div></div></article>
+      </div>
+    </section>
+
+    <section class="section shell" id="reports" aria-labelledby="reports-title">
+      <div class="section-head"><div><h2 id="reports-title">Reports</h2><p>Downloadable disclosure packs for leadership, auditors, investors, and operating teams.</p></div></div>
+      <div class="card-grid">
+        <article class="report"><div class="card-top"><div><h3>Integrated ESG Report</h3><p>Annual external disclosure with assurance notes.</p></div><span class="report-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/></svg></span></div><div class="report-details"><span>Period: FY2026</span><span>Type: Board pack</span><span>Date: 27 May 2026</span></div><a class="download" href="#reports" aria-label="Download Integrated ESG Report">Download</a></article>
+        <article class="report"><div class="card-top"><div><h3>Carbon Inventory Workbook</h3><p>Scope emissions calculations and factor library.</p></div><span class="report-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12"/><path d="m7 10 5 5 5-5"/><path d="M5 21h14"/></svg></span></div><div class="report-details"><span>Period: Q2 2026</span><span>Type: Spreadsheet</span><span>Date: 20 May 2026</span></div><a class="download" href="#reports" aria-label="Download Carbon Inventory Workbook">Download</a></article>
+        <article class="report"><div class="card-top"><div><h3>Initiative Impact Brief</h3><p>Portfolio outcomes for active sustainability investments.</p></div><span class="report-icon"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 5-7"/></svg></span></div><div class="report-details"><span>Period: May 2026</span><span>Type: Executive brief</span><span>Date: 24 May 2026</span></div><a class="download" href="#reports" aria-label="Download Initiative Impact Brief">Download</a></article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" role="contentinfo">
+    <div class="shell footer-inner">
+      <strong>Terra Sustainability Hub — designed by Northstar Systems Studio</strong>
+      <span>ESG reporting skeleton for continuous sustainability operations.</span>
+    </div>
+  </footer>
+
+  <script>
+    const body = document.body;
+    const openButton = document.querySelector('[data-open-menu]');
+    const closeTargets = document.querySelectorAll('[data-close-menu], [data-drawer-link]');
+    const drawer = document.querySelector('#mobile-drawer');
+    const backdrop = document.querySelector('.drawer-backdrop');
+
+    function setDrawer(open) {
+      drawer.setAttribute('aria-hidden', String(!open));
+      openButton.setAttribute('aria-expanded', String(open));
+      backdrop.classList.toggle('active', open);
+      body.classList.toggle('drawer-open', open);
+      if (open) {
+        const firstLink = drawer.querySelector('a, button');
+        firstLink.focus();
+      } else {
+        openButton.focus();
+      }
+    }
+
+    openButton.addEventListener('click', () => setDrawer(true));
+    closeTargets.forEach((item) => item.addEventListener('click', () => setDrawer(false)));
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && drawer.getAttribute('aria-hidden') === 'false') {
+        setDrawer(false);
+      }
+    });
+  </script>
+</body>
+</html>
