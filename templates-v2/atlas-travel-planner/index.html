@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atlas Travel Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+:root{--cloud:#F6F8FC;--ink:#19212B;--indigo:#4F46E5;--cyan:#06B6D4;--lime:#A3E635;--coral:#FB7185;--cloud-soft:rgba(246,248,252,0.74);--cloud-solid:rgba(246,248,252,0.96);--ink-soft:rgba(25,33,43,0.72);--ink-faint:rgba(25,33,43,0.12);--ink-line:rgba(25,33,43,0.08);--indigo-soft:rgba(79,70,229,0.12);--indigo-mid:rgba(79,70,229,0.72);--cyan-soft:rgba(6,182,212,0.15);--lime-soft:rgba(163,230,53,0.25);--coral-soft:rgba(251,113,133,0.17);--shadow:0 24px 70px rgba(25,33,43,0.14);--radius:8px;--max:1180px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--cloud);color:var(--ink);font-family:"Inter",system-ui,sans-serif;min-height:100vh}
+body.drawer-open{overflow:hidden}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit}
+button{cursor:pointer}
+img{max-width:100%;display:block}
+.skip-link{position:absolute;top:-80px;left:20px;z-index:100;background:var(--ink);color:var(--cloud);padding:12px 16px;border-radius:var(--radius);transition:top 180ms ease}
+.skip-link:focus{top:16px}
+:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+.site-header{position:sticky;top:0;z-index:30;background:rgba(246,248,252,0.86);border-bottom:1px solid var(--ink-line);backdrop-filter:blur(18px)}
+.nav-shell{max-width:var(--max);margin:0 auto;min-height:78px;display:grid;grid-template-columns:auto 1fr auto auto;gap:18px;align-items:center;padding:0 24px}
+.brand{display:inline-flex;align-items:center;gap:10px;font-family:"Manrope",sans-serif;font-weight:800;letter-spacing:0}
+.brand-mark{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,var(--indigo),var(--cyan));color:var(--cloud);display:grid;place-items:center;box-shadow:0 12px 30px var(--indigo-soft)}
+.nav-links{display:flex;justify-content:center;gap:6px}
+.nav-links a{padding:10px 12px;border-radius:var(--radius);color:var(--ink-soft);font-size:14px;font-weight:700}
+.nav-links a:hover{background:var(--indigo-soft);color:var(--indigo)}
+.nav-search{width:min(260px,28vw);display:flex;align-items:center;gap:8px;border:1px solid var(--ink-line);background:rgba(246,248,252,0.7);border-radius:999px;padding:10px 14px;color:var(--ink-soft)}
+.nav-search input{min-width:0;border:0;background:transparent;outline:0;color:var(--ink)}
+.icon-button{border:1px solid var(--ink-line);border-radius:999px;background:var(--cloud);color:var(--ink);width:42px;height:42px;display:grid;place-items:center;position:relative}
+.notice-dot{position:absolute;top:8px;right:8px;min-width:16px;height:16px;border-radius:999px;padding:0 4px;background:var(--coral);color:var(--cloud);font-size:10px;font-weight:800;line-height:16px;text-align:center}
+.hamburger{display:none}
+.mobile-panel{position:fixed;inset:0;z-index:60;pointer-events:none}
+.drawer-shade{position:absolute;inset:0;background:rgba(25,33,43,0.28);opacity:0;transition:opacity 220ms ease}
+.drawer{position:absolute;top:0;right:0;width:min(88vw,360px);height:100%;background:var(--cloud);box-shadow:var(--shadow);transform:translateX(102%);transition:transform 240ms ease;padding:22px;display:flex;flex-direction:column;gap:18px}
+.mobile-panel[data-open="true"]{pointer-events:auto}
+.mobile-panel[data-open="true"] .drawer{transform:translateX(0)}
+.mobile-panel[data-open="true"] .drawer-shade{opacity:1}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.drawer nav{display:grid;gap:8px}
+.drawer nav a{padding:14px;border-radius:var(--radius);background:rgba(79,70,229,0.08);font-weight:800}
+main{overflow:hidden}
+.section{max-width:var(--max);margin:0 auto;padding:82px 24px 0}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:28px;margin-bottom:24px}
+.section-kicker{margin:0 0 8px;color:var(--indigo);text-transform:uppercase;font-size:12px;font-weight:800;letter-spacing:0.08em}
+h1,h2,h3{font-family:"Manrope",sans-serif;letter-spacing:0;margin:0;color:var(--ink)}
+h1{font-size:clamp(46px,7vw,82px);line-height:0.96;max-width:790px}
+h2{font-size:clamp(30px,4vw,46px);line-height:1.04}
+h3{font-size:19px;line-height:1.18}
+p{color:var(--ink-soft);line-height:1.65;margin:0}
+.hero{max-width:var(--max);margin:0 auto;padding:70px 24px 0}
+.hero-grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:28px;align-items:stretch}
+.hero-copy{min-height:520px;display:flex;flex-direction:column;justify-content:center;gap:26px}
+.hero-copy>p{max-width:620px;font-size:18px}
+.travel-search{display:grid;grid-template-columns:1.2fr 0.9fr 0.75fr auto;gap:10px;padding:10px;background:var(--cloud-solid);border:1px solid var(--ink-line);border-radius:16px;box-shadow:var(--shadow)}
+.field{display:grid;gap:6px;padding:12px 14px;border-radius:12px;background:rgba(25,33,43,0.04)}
+.field label{font-size:11px;font-weight:800;color:var(--ink-soft);text-transform:uppercase;letter-spacing:0.08em}
+.field input{border:0;min-width:0;outline:0;background:transparent;color:var(--ink);font-weight:800}
+.primary-button,.secondary-button{border:0;border-radius:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 18px}
+.primary-button{background:var(--indigo);color:var(--cloud);box-shadow:0 18px 42px var(--indigo-soft)}
+.secondary-button{background:var(--ink);color:var(--cloud)}
+.hero-board{border-radius:26px;min-height:520px;background:radial-gradient(circle at 20% 20%,rgba(163,230,53,0.7),transparent 24%),radial-gradient(circle at 84% 18%,rgba(6,182,212,0.55),transparent 28%),linear-gradient(145deg,rgba(79,70,229,0.88),rgba(25,33,43,0.96));color:var(--cloud);padding:24px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;position:relative}
+.hero-board::before{content:"";position:absolute;width:360px;height:360px;border:1px solid rgba(246,248,252,0.18);border-radius:999px;right:-120px;bottom:-120px}
+.trip-status{position:relative;display:flex;justify-content:space-between;gap:16px;align-items:start}
+.trip-status strong{display:block;font-size:32px;font-family:"Manrope",sans-serif}
+.trip-status span{color:rgba(246,248,252,0.74);font-weight:700}
+.route-card{position:relative;background:rgba(246,248,252,0.13);border:1px solid rgba(246,248,252,0.2);border-radius:18px;padding:22px;display:grid;gap:18px;backdrop-filter:blur(12px)}
+.route-line{height:6px;border-radius:999px;background:linear-gradient(90deg,var(--lime),var(--cyan),var(--cloud));position:relative}
+.route-stops{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.route-stops div{display:grid;gap:4px}
+.route-stops small{color:rgba(246,248,252,0.68);font-weight:800}
+.route-stops b{font-size:18px}
+.featured-strip{margin-top:26px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.feature-card,.destination-card,.booking-card,.saved-card,.budget-card,.activity-card{border:1px solid var(--ink-line);border-radius:var(--radius);background:var(--cloud-solid);box-shadow:0 14px 42px rgba(25,33,43,0.07)}
+.feature-card{min-height:160px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;position:relative}
+.feature-card::after{content:"";position:absolute;inset:auto -20px -40px auto;width:140px;height:140px;border-radius:999px;background:var(--cyan-soft)}
+.feature-meta,.destination-meta,.booking-meta,.saved-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.chip{display:inline-flex;align-items:center;gap:6px;min-height:28px;border-radius:999px;padding:0 10px;background:var(--indigo-soft);color:var(--indigo);font-size:12px;font-weight:800}
+.chip.cyan{background:var(--cyan-soft);color:var(--ink)}
+.chip.lime{background:var(--lime-soft);color:var(--ink)}
+.chip.coral{background:var(--coral-soft);color:var(--ink)}
+.builder-layout{display:grid;grid-template-columns:0.7fr 1.3fr;gap:22px;align-items:start}
+.day-rail{display:grid;gap:10px;position:sticky;top:100px}
+.day-button{border:1px solid var(--ink-line);background:var(--cloud-solid);border-radius:var(--radius);padding:16px;text-align:left;display:flex;justify-content:space-between;gap:10px;color:var(--ink)}
+.day-button.is-active{background:var(--ink);color:var(--cloud)}
+.day-button span{display:block;font-size:13px;color:currentColor;opacity:0.72;margin-top:4px}
+.timeline{display:grid;gap:14px;position:relative}
+.timeline::before{content:"";position:absolute;left:29px;top:18px;bottom:18px;width:2px;background:linear-gradient(var(--cyan),var(--indigo));opacity:0.34}
+.activity-card{display:grid;grid-template-columns:58px 1fr auto;gap:16px;padding:18px;position:relative;align-items:center}
+.activity-icon{width:42px;height:42px;border-radius:999px;display:grid;place-items:center;background:var(--indigo);color:var(--cloud);font-weight:900;z-index:1}
+.activity-time{color:var(--ink-soft);font-weight:800;font-size:13px}
+.activity-notes{color:var(--ink-soft);font-size:14px;margin-top:6px}
+.discovery-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.destination-card{min-height:260px;padding:18px;color:var(--cloud);display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;position:relative;isolation:isolate}
+.destination-card::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--ink)}
+.destination-card.alpine::before{background:linear-gradient(145deg,var(--indigo),var(--cyan))}
+.destination-card.coast::before{background:linear-gradient(145deg,var(--cyan),var(--ink))}
+.destination-card.city::before{background:linear-gradient(145deg,var(--ink),var(--indigo))}
+.destination-card.island::before{background:linear-gradient(145deg,var(--coral),var(--indigo))}
+.destination-card p,.destination-card h3{color:var(--cloud)}
+.destination-card .chip{background:rgba(246,248,252,0.18);color:var(--cloud)}
+.booking-list{display:grid;gap:12px}
+.booking-card{display:grid;grid-template-columns:54px 1fr auto auto;gap:14px;align-items:center;padding:16px}
+.booking-icon{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;background:var(--cyan-soft);color:var(--ink);font-weight:900}
+.price{font-weight:900;font-size:18px}
+.saved-row{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(230px,280px);gap:16px;overflow-x:auto;padding:6px 4px 18px;scroll-snap-type:x proximity}
+.saved-card{scroll-snap-align:start;overflow:hidden}
+.saved-art{min-height:120px;background:linear-gradient(135deg,rgba(79,70,229,0.82),rgba(6,182,212,0.74)),var(--ink);display:grid;place-items:center;color:var(--cloud);font-family:"Manrope",sans-serif;font-size:42px;font-weight:800}
+.saved-body{padding:16px;display:grid;gap:12px}
+.quick-add{width:100%;border:0;background:var(--indigo);color:var(--cloud);min-height:42px;border-radius:var(--radius);font-weight:900}
+.budget-layout{display:grid;grid-template-columns:0.8fr 1.2fr;gap:22px;align-items:stretch}
+.budget-card{padding:22px}
+.donut-wrap{display:grid;place-items:center;min-height:310px}
+.donut{width:min(260px,70vw);aspect-ratio:1;border-radius:50%;background:conic-gradient( var(--indigo) 0 38%,var(--cyan) 38% 62%,var(--lime) 62% 80%,var(--coral) 80% 91%,rgba(25,33,43,0.1) 91% 100% );position:relative;display:grid;place-items:center;box-shadow:inset 0 0 0 1px var(--ink-line)}
+.donut::after{content:"";width:56%;aspect-ratio:1;border-radius:50%;background:var(--cloud);position:absolute}
+.donut-center{position:relative;z-index:1;text-align:center;display:grid;gap:4px}
+.donut-center strong{font-size:30px;font-family:"Manrope",sans-serif}
+.budget-lines{display:grid;gap:12px}
+.budget-line{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid var(--ink-line)}
+.dot{width:12px;height:12px;border-radius:999px;background:var(--indigo)}
+.dot.cyan{background:var(--cyan)}
+.dot.lime{background:var(--lime)}
+.dot.coral{background:var(--coral)}
+.progress{height:8px;border-radius:999px;background:rgba(25,33,43,0.08);overflow:hidden}
+.progress span{display:block;height:100%;width:var(--value);background:var(--indigo);border-radius:inherit}
+.progress span.cyan{background:var(--cyan)}
+.progress span.lime{background:var(--lime)}
+.progress span.coral{background:var(--coral)}
+.site-footer{margin-top:90px;background:var(--ink);color:var(--cloud);padding:34px 24px}
+.footer-inner{max-width:var(--max);margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
+.footer-inner p{color:rgba(246,248,252,0.72)}
+@media (max-width:1040px){.nav-shell{grid-template-columns:auto 1fr auto}
+.nav-links{display:none}
+.hamburger{display:grid}
+.hero-grid,.builder-layout,.budget-layout{grid-template-columns:1fr}
+.hero-copy,.hero-board{min-height:auto}
+.hero-copy{padding-top:38px}
+.day-rail{position:static;grid-template-columns:repeat(3,1fr)}
+.discovery-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:720px){.nav-shell{min-height:68px;padding:0 16px;gap:10px}
+.nav-search{display:none}
+.hero,.section{padding-left:16px;padding-right:16px}
+.hero{padding-top:20px}
+.section{padding-top:58px}
+.section-head{display:grid}
+.travel-search{grid-template-columns:1fr}
+.featured-strip,.discovery-grid{grid-template-columns:1fr}
+.route-stops,.day-rail{grid-template-columns:1fr}
+.activity-card,.booking-card{grid-template-columns:46px 1fr}
+.activity-card>.chip,.booking-card>.price{grid-column:2}
+.footer-inner{align-items:start}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms !important;animation-iteration-count:1 !important;scroll-behavior:auto !important;transition-duration:0.01ms !important}
+}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="site-header" aria-label="Primary">
+    <div class="nav-shell">
+      <a class="brand" href="#main" aria-label="Atlas Travel Planner home">
+        <span class="brand-mark">A</span>
+        <span>Atlas</span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#explore">Explore</a>
+        <a href="#trips">Trips</a>
+        <a href="#bookings">Bookings</a>
+        <a href="#saved">Saved</a>
+        <a href="#profile">Profile</a>
+      </nav>
+      <form class="nav-search" role="search">
+        <span aria-hidden="true">⌕</span>
+        <label class="sr-only" for="global-search"></label>
+        <input id="global-search" type="search" value="Kyoto spring route" aria-label="Search trips">
+      </form>
+      <button class="icon-button" type="button" aria-label="Open notifications">
+        <span aria-hidden="true">!</span>
+        <span class="notice-dot">3</span>
+      </button>
+      <button class="icon-button hamburger" type="button" aria-label="Open menu" aria-controls="mobile-panel" aria-expanded="false">
+        <span aria-hidden="true">☰</span>
+      </button>
+    </div>
+  </header>
+  <div class="mobile-panel" id="mobile-panel" data-open="false" aria-hidden="true">
+    <button class="drawer-shade" type="button" aria-label="Close menu"></button>
+    <aside class="drawer" aria-label="Mobile navigation">
+      <div class="drawer-head">
+        <span class="brand"><span class="brand-mark">A</span><span>Atlas</span></span>
+        <button class="icon-button drawer-close" type="button" aria-label="Close menu">×</button>
+      </div>
+      <nav>
+        <a href="#explore">Explore</a>
+        <a href="#trips">Trips</a>
+        <a href="#bookings">Bookings</a>
+        <a href="#saved">Saved</a>
+        <a href="#profile">Profile</a>
+      </nav>
+      <form class="field" role="search">
+        <label for="drawer-search">Search trips</label>
+        <input id="drawer-search" type="search" value="Lisbon design hotels">
+      </form>
+    </aside>
+  </div>
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="section-kicker">Travel planning command center</p>
+          <h1 id="hero-title">Build the route, book the moments, keep every trip calm.</h1>
+          <p>Atlas turns scattered ideas into day-by-day plans with discovery, budget health, and bookings in one clean workspace.</p>
+          <form class="travel-search" aria-label="Trip search">
+            <div class="field">
+              <label for="destination">Destination</label>
+              <input id="destination" type="text" value="Tokyo, Japan">
+            </div>
+            <div class="field">
+              <label for="dates">Dates</label>
+              <input id="dates" type="text" value="Apr 12 - Apr 20">
+            </div>
+            <div class="field">
+              <label for="travelers">Travelers</label>
+              <input id="travelers" type="text" value="2 adults">
+            </div>
+            <button class="primary-button" type="submit">Plan trip</button>
+          </form>
+        </div>
+        <aside class="hero-board" aria-label="Current route status">
+          <div class="trip-status">
+            <div>
+              <strong>8 days</strong>
+              <span>Tokyo, Hakone, Kyoto</span>
+            </div>
+            <span class="chip lime">Ready</span>
+          </div>
+          <div class="route-card">
+            <div class="route-line"></div>
+            <div class="route-stops">
+              <div>
+                <small>Day 1-3</small>
+                <b>Tokyo</b>
+              </div>
+              <div>
+                <small>Day 4</small>
+                <b>Hakone</b>
+              </div>
+              <div>
+                <small>Day 5-8</small>
+                <b>Kyoto</b>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+      <div class="featured-strip" id="explore" aria-label="Featured destinations">
+        <article class="feature-card">
+          <div class="feature-meta">
+            <span class="chip">Featured</span>
+            <span class="chip cyan">92% match</span>
+          </div>
+          <h3>Madeira cliff walks</h3>
+          <p>Ocean trails, design stays, and calm weather windows for early summer.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-meta">
+            <span class="chip">Food route</span>
+            <span class="chip lime">Open seats</span>
+          </div>
+          <h3>Seoul after dark</h3>
+          <p>Markets, late galleries, and easy rail hops stitched into three nights.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-meta">
+            <span class="chip">Slow travel</span>
+            <span class="chip coral">Fares rising</span>
+          </div>
+          <h3>Dolomites by train</h3>
+          <p>Scenic transfers, hut lunches, and lake mornings without a car.</p>
+        </article>
+      </div>
+    </section>
+    <section class="section" id="trips" aria-labelledby="itinerary-title">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Itinerary builder</p>
+          <h2 id="itinerary-title">Every day has a rhythm.</h2>
+        </div>
+        <button class="secondary-button" type="button">Add activity</button>
+      </div>
+      <div class="builder-layout">
+        <div class="day-rail" aria-label="Trip days">
+          <button class="day-button is-active" type="button"><b>Day 1</b><span>Arrival and west side</span></button>
+          <button class="day-button" type="button"><b>Day 2</b><span>Museums and ramen</span></button>
+          <button class="day-button" type="button"><b>Day 3</b><span>Design stores</span></button>
+        </div>
+        <div class="timeline">
+          <article class="activity-card">
+            <div class="activity-icon">FL</div>
+            <div>
+              <span class="activity-time">08:35</span>
+              <h3>Land at Haneda Terminal 3</h3>
+              <p class="activity-notes">Forward luggage to Kyoto hotel and pick up transit cards near arrivals.</p>
+            </div>
+            <span class="chip cyan">Transfer</span>
+          </article>
+          <article class="activity-card">
+            <div class="activity-icon">FD</div>
+            <div>
+              <span class="activity-time">12:20</span>
+              <h3>Lunch in Ebisu</h3>
+              <p class="activity-notes">Counter seats confirmed, leave room for the seasonal dessert cart.</p>
+            </div>
+            <span class="chip lime">Booked</span>
+          </article>
+          <article class="activity-card">
+            <div class="activity-icon">AR</div>
+            <div>
+              <span class="activity-time">15:00</span>
+              <h3>Nezu Museum garden loop</h3>
+              <p class="activity-notes">Quiet slot, bring camera batteries and reserve taxis if rain moves in.</p>
+            </div>
+            <span class="chip">Culture</span>
+          </article>
+          <article class="activity-card">
+            <div class="activity-icon">HT</div>
+            <div>
+              <span class="activity-time">18:30</span>
+              <h3>Check in at Aoyama stay</h3>
+              <p class="activity-notes">Ask desk for breakfast window and luggage transfer receipt.</p>
+            </div>
+            <span class="chip coral">Action</span>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="section" aria-labelledby="discovery-title">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Destination discovery</p>
+          <h2 id="discovery-title">Shortlist places with timing built in.</h2>
+        </div>
+        <p>Ratings, season fit, and country signals help narrow the next route without opening six tabs.</p>
+      </div>
+      <div class="discovery-grid">
+        <article class="destination-card alpine">
+          <div class="destination-meta">
+            <span class="chip">Switzerland</span>
+            <span class="chip">4.9</span>
+          </div>
+          <div>
+            <h3>Lauterbrunnen</h3>
+            <p>Best season: June to September</p>
+          </div>
+        </article>
+        <article class="destination-card coast">
+          <div class="destination-meta">
+            <span class="chip">Portugal</span>
+            <span class="chip">4.8</span>
+          </div>
+          <div>
+            <h3>Comporta</h3>
+            <p>Best season: May and October</p>
+          </div>
+        </article>
+        <article class="destination-card city">
+          <div class="destination-meta">
+            <span class="chip">Japan</span>
+            <span class="chip">4.9</span>
+          </div>
+          <div>
+            <h3>Kanazawa</h3>
+            <p>Best season: April and November</p>
+          </div>
+        </article>
+        <article class="destination-card island">
+          <div class="destination-meta">
+            <span class="chip">Greece</span>
+            <span class="chip">4.7</span>
+          </div>
+          <div>
+            <h3>Milos</h3>
+            <p>Best season: September</p>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="section" id="bookings" aria-labelledby="booking-title">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Booking management</p>
+          <h2 id="booking-title">Confirmed, watched, and due soon.</h2>
+        </div>
+        <button class="primary-button" type="button">Import booking</button>
+      </div>
+      <div class="booking-list">
+        <article class="booking-card">
+          <div class="booking-icon">FL</div>
+          <div>
+            <h3>LOT 79 Warsaw to Tokyo</h3>
+            <p>Flight · Apr 12 · Seats 18A and 18B</p>
+          </div>
+          <span class="chip lime">Confirmed</span>
+          <span class="price">$1,420</span>
+        </article>
+        <article class="booking-card">
+          <div class="booking-icon">HT</div>
+          <div>
+            <h3>Aoyama Garden House</h3>
+            <p>Hotel · Apr 12 - Apr 15 · Breakfast included</p>
+          </div>
+          <span class="chip cyan">Paid</span>
+          <span class="price">$860</span>
+        </article>
+        <article class="booking-card">
+          <div class="booking-icon">AC</div>
+          <div>
+            <h3>Kyoto night photography walk</h3>
+            <p>Activity · Apr 18 · Private guide</p>
+          </div>
+          <span class="chip coral">Balance due</span>
+          <span class="price">$180</span>
+        </article>
+      </div>
+    </section>
+    <section class="section" id="saved" aria-labelledby="saved-title">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Saved destinations</p>
+          <h2 id="saved-title">Bookmarks ready for the next itinerary.</h2>
+        </div>
+        <p>Quick-add keeps strong ideas close while the day plan stays focused.</p>
+      </div>
+      <div class="saved-row" aria-label="Saved destination list">
+        <article class="saved-card">
+          <div class="saved-art">TR</div>
+          <div class="saved-body">
+            <div>
+              <h3>Tromso aurora cabins</h3>
+              <p>Norway · Winter light route</p>
+            </div>
+            <button class="quick-add" type="button">Add to trip</button>
+          </div>
+        </article>
+        <article class="saved-card">
+          <div class="saved-art">BC</div>
+          <div class="saved-body">
+            <div>
+              <h3>Barcelona ceramics map</h3>
+              <p>Spain · Studio visits</p>
+            </div>
+            <button class="quick-add" type="button">Add to trip</button>
+          </div>
+        </article>
+        <article class="saved-card">
+          <div class="saved-art">LN</div>
+          <div class="saved-body">
+            <div>
+              <h3>Lake Como ferry loop</h3>
+              <p>Italy · Slow weekend</p>
+            </div>
+            <button class="quick-add" type="button">Add to trip</button>
+          </div>
+        </article>
+        <article class="saved-card">
+          <div class="saved-art">MR</div>
+          <div class="saved-body">
+            <div>
+              <h3>Marrakech riad trail</h3>
+              <p>Morocco · Courtyard stays</p>
+            </div>
+            <button class="quick-add" type="button">Add to trip</button>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="section" aria-labelledby="budget-title">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Trip budget</p>
+          <h2 id="budget-title">Spend is visible before it gets weird.</h2>
+        </div>
+        <p>Flights, hotels, food, activities, and remaining cash stay in one readable split.</p>
+      </div>
+      <div class="budget-layout">
+        <article class="budget-card">
+          <div class="donut-wrap" aria-label="Budget donut showing remaining balance">
+            <div class="donut">
+              <div class="donut-center">
+                <strong>$740</strong>
+                <span>remaining</span>
+              </div>
+            </div>
+          </div>
+        </article>
+        <article class="budget-card">
+          <div class="budget-lines">
+            <div class="budget-line">
+              <span class="dot"></span>
+              <div>
+                <h3>Flights</h3>
+                <div class="progress"><span style="--value: 88%"></span></div>
+              </div>
+              <b>$1,420</b>
+            </div>
+            <div class="budget-line">
+              <span class="dot cyan"></span>
+              <div>
+                <h3>Hotels</h3>
+                <div class="progress"><span class="cyan" style="--value: 68%"></span></div>
+              </div>
+              <b>$1,080</b>
+            </div>
+            <div class="budget-line">
+              <span class="dot lime"></span>
+              <div>
+                <h3>Food</h3>
+                <div class="progress"><span class="lime" style="--value: 44%"></span></div>
+              </div>
+              <b>$520</b>
+            </div>
+            <div class="budget-line">
+              <span class="dot coral"></span>
+              <div>
+                <h3>Activities</h3>
+                <div class="progress"><span class="coral" style="--value: 36%"></span></div>
+              </div>
+              <b>$390</b>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="section" id="profile" aria-labelledby="profile-title">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Profile</p>
+          <h2 id="profile-title">Traveler preferences keep plans personal.</h2>
+        </div>
+        <p>Quiet hotels, rail-first routing, counter dining, and morning museum slots are active for new plans.</p>
+      </div>
+      <div class="featured-strip" aria-label="Traveler preference summary">
+        <article class="feature-card">
+          <div class="feature-meta">
+            <span class="chip">Pace</span>
+            <span class="chip lime">Balanced</span>
+          </div>
+          <h3>Two anchors per day</h3>
+          <p>Plans leave space between fixed bookings so transfers and meals never feel tight.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-meta">
+            <span class="chip">Stay</span>
+            <span class="chip cyan">Quiet</span>
+          </div>
+          <h3>Small hotels near transit</h3>
+          <p>Atlas favors calm rooms, fast rail access, and neighborhoods with evening food options.</p>
+        </article>
+        <article class="feature-card">
+          <div class="feature-meta">
+            <span class="chip">Dining</span>
+            <span class="chip">Local</span>
+          </div>
+          <h3>Counter seats and markets</h3>
+          <p>Food picks lean toward reservations that fit the route instead of detours across town.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <p>Atlas Travel Planner — designed by Northline Studio</p>
+      <p>Cloud routes, calm bookings, clear budgets.</p>
+    </div>
+  </footer>
+  <script>
+    const body = document.body;
+    const panel = document.querySelector("#mobile-panel");
+    const openButton = document.querySelector(".hamburger");
+    const closeButtons = document.querySelectorAll(".drawer-close, .drawer-shade, .drawer a");
+
+    function setDrawer(open) {
+      panel.dataset.open = String(open);
+      panel.setAttribute("aria-hidden", String(!open));
+      openButton.setAttribute("aria-expanded", String(open));
+      body.classList.toggle("drawer-open", open);
+      if (open) {
+        panel.querySelector("a").focus();
+      } else {
+        openButton.focus();
+      }
+    }
+
+    openButton.addEventListener("click", () => setDrawer(true));
+    closeButtons.forEach((item) => item.addEventListener("click", () => setDrawer(false)));
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && panel.dataset.open === "true") {
+        setDrawer(false);
+      }
+    });
+  </script>
+</body>
+</html>
