@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atlas Weather App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {--cloud: #F6F8FC;--ink: #19212B;--indigo: #4F46E5;--cyan: #06B6D4;--lime: #A3E635;--coral: #FB7185;--white: rgba(246, 248, 252, 0.96);--panel: rgba(246, 248, 252, 0.82);--ink-soft: rgba(25, 33, 43, 0.72);--ink-faint: rgba(25, 33, 43, 0.12);--ink-line: rgba(25, 33, 43, 0.16);--indigo-soft: rgba(79, 70, 229, 0.12);--cyan-soft: rgba(6, 182, 212, 0.14);--lime-soft: rgba(163, 230, 53, 0.22);--coral-soft: rgba(251, 113, 133, 0.14);--shadow: 0 24px 70px rgba(25, 33, 43, 0.14);--radius: 8px;--radius-sm: 6px;--max: 1180px;}
+     * {box-sizing: border-box;}
+     html {scroll-behavior: smooth;}
+     body {margin: 0;min-height: 100vh;background: radial-gradient(circle at 18% 0%, rgba(6, 182, 212, 0.18), transparent 28rem), radial-gradient(circle at 86% 14%, rgba(79, 70, 229, 0.16), transparent 34rem), var(--cloud);color: var(--ink);font-family: "Inter", system-ui, sans-serif;letter-spacing: 0;}
+     body.drawer-open {overflow: hidden;}
+     a {color: inherit;text-decoration: none;}
+     button, input {font: inherit;}
+     button {cursor: pointer;}
+     :focus-visible {outline: 3px solid rgba(6, 182, 212, 0.72);outline-offset: 3px;}
+     .skip-link {position: absolute;left: 1rem;top: -4rem;z-index: 20;padding: 0.75rem 1rem;background: var(--ink);color: var(--cloud);border-radius: var(--radius-sm);transition: top 180ms ease;}
+     .skip-link:focus {top: 1rem;}
+     .app-shell {min-height: 100vh;}
+     .topbar {position: sticky;top: 0;z-index: 12;backdrop-filter: blur(22px);background: rgba(246, 248, 252, 0.82);border-bottom: 1px solid var(--ink-faint);}
+     .nav-wrap {width: min(var(--max), calc(100% - 2rem));min-height: 76px;margin: 0 auto;display: grid;grid-template-columns: auto 1fr auto;align-items: center;gap: 1rem;}
+     .brand {display: inline-flex;align-items: center;gap: 0.75rem;min-width: max-content;font-family: "Manrope", system-ui, sans-serif;font-weight: 800;font-size: 1.05rem;}
+     .brand-mark {width: 42px;height: 42px;border-radius: 8px;background: linear-gradient(135deg, var(--indigo), var(--cyan));display: grid;place-items: center;color: var(--cloud);box-shadow: 0 14px 30px rgba(79, 70, 229, 0.26);}
+     .brand-cloud {position: relative;width: 23px;height: 14px;background: currentColor;border-radius: 999px;}
+     .brand-cloud::before, .brand-cloud::after {content: "";position: absolute;background: currentColor;border-radius: 50%;}
+     .brand-cloud::before {width: 12px;height: 12px;left: 4px;top: -7px;}
+     .brand-cloud::after {width: 9px;height: 9px;right: 3px;top: -5px;}
+     .nav-links {justify-self: center;display: flex;align-items: center;gap: 0.3rem;padding: 0.25rem;border: 1px solid var(--ink-faint);border-radius: 999px;background: rgba(246, 248, 252, 0.68);}
+     .nav-links a {padding: 0.62rem 0.85rem;border-radius: 999px;color: var(--ink-soft);font-size: 0.91rem;font-weight: 700;}
+     .nav-links a:hover, .nav-links a:focus-visible {color: var(--ink);background: var(--indigo-soft);}
+     .nav-actions {display: flex;align-items: center;justify-content: flex-end;gap: 0.65rem;}
+     .search-box {display: flex;align-items: center;gap: 0.5rem;width: min(26vw, 260px);min-width: 190px;padding: 0.55rem 0.75rem;border: 1px solid var(--ink-faint);border-radius: 999px;background: rgba(246, 248, 252, 0.74);}
+     .search-box svg {width: 18px;height: 18px;color: var(--indigo);flex: 0 0 auto;}
+     .search-box input {width: 100%;border: 0;outline: 0;background: transparent;color: var(--ink);min-width: 0;}
+     .location-badge {display: inline-flex;align-items: center;gap: 0.45rem;min-width: max-content;padding: 0.62rem 0.8rem;border-radius: 999px;background: var(--ink);color: var(--cloud);font-weight: 800;font-size: 0.9rem;}
+     .live-dot {width: 0.62rem;height: 0.62rem;border-radius: 50%;background: var(--cyan);box-shadow: 0 0 0 5px rgba(6, 182, 212, 0.22);}
+     .menu-button {display: none;width: 44px;height: 44px;border: 1px solid var(--ink-faint);border-radius: 8px;background: rgba(246, 248, 252, 0.88);color: var(--ink);align-items: center;justify-content: center;}
+     .menu-lines, .menu-lines::before, .menu-lines::after {display: block;width: 20px;height: 2px;border-radius: 999px;background: currentColor;transition: transform 180ms ease, opacity 180ms ease;}
+     .menu-lines {position: relative;}
+     .menu-lines::before, .menu-lines::after {content: "";position: absolute;left: 0;}
+     .menu-lines::before {top: -7px;}
+     .menu-lines::after {top: 7px;}
+     .menu-button[aria-expanded="true"] .menu-lines {transform: rotate(45deg);}
+     .menu-button[aria-expanded="true"] .menu-lines::before {transform: translateY(7px) rotate(90deg);}
+     .menu-button[aria-expanded="true"] .menu-lines::after {transform: translateY(-7px);opacity: 0;}
+     .drawer-overlay {position: fixed;inset: 0;z-index: 18;background: rgba(25, 33, 43, 0.48);opacity: 0;pointer-events: none;transition: opacity 200ms ease;}
+     .drawer-overlay.is-open {opacity: 1;pointer-events: auto;}
+     .mobile-drawer {position: fixed;top: 0;right: 0;bottom: 0;z-index: 19;width: min(360px, 86vw);padding: 1.2rem;background: var(--cloud);box-shadow: var(--shadow);transform: translateX(104%);transition: transform 240ms ease;display: flex;flex-direction: column;gap: 1rem;}
+     .mobile-drawer.is-open {transform: translateX(0);}
+     .drawer-head {display: flex;align-items: center;justify-content: space-between;gap: 1rem;padding-bottom: 0.8rem;border-bottom: 1px solid var(--ink-faint);}
+     .drawer-close {width: 42px;height: 42px;border: 1px solid var(--ink-faint);border-radius: 8px;background: transparent;color: var(--ink);font-size: 1.5rem;line-height: 1;}
+     .drawer-links {display: grid;gap: 0.35rem;}
+     .drawer-links a {padding: 0.9rem 0.95rem;border-radius: 8px;font-weight: 800;color: var(--ink);background: rgba(25, 33, 43, 0.04);}
+     .drawer-search {width: 100%;min-width: 0;border-radius: 8px;}
+     main {width: min(var(--max), calc(100% - 2rem));margin: 0 auto;padding: 2rem 0 3rem;}
+     .section-heading {display: flex;align-items: end;justify-content: space-between;gap: 1rem;margin: 0 0 1rem;}
+     .eyebrow {margin: 0 0 0.35rem;color: var(--indigo);font-size: 0.78rem;font-weight: 900;letter-spacing: 0.08em;text-transform: uppercase;}
+     h1, h2, h3 {font-family: "Manrope", system-ui, sans-serif;letter-spacing: 0;margin: 0;}
+     h1 {font-size: clamp(2.1rem, 4vw, 4.8rem);line-height: 0.98;max-width: 740px;}
+     h2 {font-size: clamp(1.35rem, 2vw, 2rem);line-height: 1.1;}
+     h3 {font-size: 1.02rem;line-height: 1.2;}
+     .muted {color: var(--ink-soft);}
+     .hero-grid {display: grid;grid-template-columns: minmax(0, 1.18fr) minmax(320px, 0.82fr);gap: 1rem;align-items: stretch;margin-top: 1.35rem;}
+     .conditions-panel {position: relative;overflow: hidden;min-height: 460px;padding: clamp(1.25rem, 3vw, 2.2rem);border-radius: var(--radius);background: linear-gradient(135deg, rgba(25, 33, 43, 0.96), rgba(79, 70, 229, 0.92)), var(--ink);color: var(--cloud);box-shadow: var(--shadow);}
+     .conditions-panel::after {content: "";position: absolute;inset: auto -8% -24% 34%;height: 58%;border-radius: 50%;background: radial-gradient(circle, rgba(6, 182, 212, 0.54), transparent 66%);pointer-events: none;}
+     .conditions-content {position: relative;z-index: 1;display: grid;min-height: 100%;grid-template-rows: auto 1fr auto;gap: 1.5rem;}
+     .status-row {display: flex;align-items: center;justify-content: space-between;gap: 1rem;}
+     .station-pill {display: inline-flex;align-items: center;gap: 0.55rem;padding: 0.55rem 0.75rem;border-radius: 999px;background: rgba(246, 248, 252, 0.12);border: 1px solid rgba(246, 248, 252, 0.18);color: rgba(246, 248, 252, 0.86);font-weight: 800;font-size: 0.88rem;}
+     .condition-main {display: grid;grid-template-columns: auto 1fr;gap: clamp(1rem, 3vw, 2rem);align-items: center;align-self: center;}
+     .weather-icon {width: clamp(120px, 17vw, 182px);aspect-ratio: 1;position: relative;display: grid;place-items: center;}
+     .sun-core {width: 55%;aspect-ratio: 1;border-radius: 50%;background: var(--lime);box-shadow: 0 0 44px rgba(163, 230, 53, 0.46);transform: translate(-10%, -12%);}
+     .cloud-shape {position: absolute;width: 68%;height: 34%;left: 22%;top: 48%;border-radius: 999px;background: var(--cloud);box-shadow: 0 18px 40px rgba(25, 33, 43, 0.24);}
+     .cloud-shape::before, .cloud-shape::after {content: "";position: absolute;background: var(--cloud);border-radius: 50%;}
+     .cloud-shape::before {width: 42%;aspect-ratio: 1;left: 14%;bottom: 30%;}
+     .cloud-shape::after {width: 32%;aspect-ratio: 1;right: 18%;bottom: 36%;}
+     .temp-display {display: flex;align-items: flex-start;gap: 0.2rem;font-family: "Manrope", system-ui, sans-serif;font-size: clamp(5.2rem, 11vw, 9.5rem);line-height: 0.86;font-weight: 800;}
+     .temp-display sup {font-size: 0.28em;line-height: 1;margin-top: 0.18em;color: rgba(246, 248, 252, 0.82);}
+     .condition-copy {display: grid;gap: 0.55rem;}
+     .condition-copy strong {font-size: clamp(1.1rem, 2vw, 1.45rem);}
+     .condition-copy span {color: rgba(246, 248, 252, 0.76);max-width: 34rem;line-height: 1.6;}
+     .metric-grid {display: grid;grid-template-columns: repeat(4, minmax(0, 1fr));gap: 0.75rem;}
+     .metric-card {min-height: 106px;padding: 0.95rem;border-radius: var(--radius);border: 1px solid rgba(246, 248, 252, 0.18);background: rgba(246, 248, 252, 0.1);display: grid;gap: 0.55rem;align-content: space-between;}
+     .metric-card span {color: rgba(246, 248, 252, 0.68);font-size: 0.82rem;font-weight: 700;}
+     .metric-card strong {font-size: 1.22rem;}
+     .side-panel {display: grid;gap: 1rem;}
+     .summary-card, .aqi-card, .alert-card, .forecast-card, .radar-card {border: 1px solid var(--ink-faint);border-radius: var(--radius);background: var(--panel);box-shadow: 0 18px 48px rgba(25, 33, 43, 0.08);}
+     .summary-card {padding: 1.2rem;display: grid;gap: 1rem;}
+     .sun-track {min-height: 134px;border-radius: var(--radius);background: linear-gradient(180deg, rgba(6, 182, 212, 0.2), rgba(246, 248, 252, 0.26)), linear-gradient(90deg, rgba(79, 70, 229, 0.1), rgba(163, 230, 53, 0.16));border: 1px solid var(--ink-faint);position: relative;overflow: hidden;}
+     .sun-arc {position: absolute;left: 9%;right: 9%;bottom: 24%;height: 64%;border-top: 3px dashed rgba(79, 70, 229, 0.55);border-radius: 50% 50% 0 0;}
+     .sun-marker {position: absolute;left: 54%;top: 25%;width: 28px;height: 28px;border-radius: 50%;background: var(--lime);box-shadow: 0 0 0 8px rgba(163, 230, 53, 0.24);}
+     .sun-labels {position: absolute;left: 1rem;right: 1rem;bottom: 0.8rem;display: flex;justify-content: space-between;color: var(--ink-soft);font-size: 0.82rem;font-weight: 800;}
+     .insight-list {display: grid;gap: 0.7rem;margin: 0;padding: 0;list-style: none;}
+     .insight-list li {display: flex;justify-content: space-between;gap: 1rem;padding: 0.72rem 0;border-bottom: 1px solid var(--ink-faint);color: var(--ink-soft);}
+     .insight-list li:last-child {border-bottom: 0;}
+     .insight-list strong {color: var(--ink);}
+     .content-stack {display: grid;gap: 2.1rem;margin-top: 2.2rem;}
+     .hourly-strip {display: grid;grid-auto-flow: column;grid-auto-columns: minmax(132px, 1fr);gap: 0.75rem;overflow-x: auto;padding: 0.15rem 0 0.9rem;scroll-snap-type: x mandatory;scrollbar-color: var(--indigo) rgba(25, 33, 43, 0.08);}
+     .hour-card {scroll-snap-align: start;min-height: 174px;padding: 1rem;border-radius: var(--radius);background: rgba(246, 248, 252, 0.76);border: 1px solid var(--ink-faint);display: grid;gap: 0.7rem;justify-items: start;}
+     .hour-card.now {background: var(--ink);color: var(--cloud);border-color: transparent;}
+     .weather-mini {width: 44px;height: 44px;border-radius: 50%;position: relative;background: var(--lime);box-shadow: inset -12px -12px 0 rgba(79, 70, 229, 0.15);}
+     .weather-mini.cloudy::after, .weather-mini.rainy::after, .weather-mini.snowy::after {content: "";position: absolute;width: 34px;height: 17px;left: 14px;top: 22px;border-radius: 999px;background: var(--cloud);border: 1px solid rgba(25, 33, 43, 0.12);}
+     .weather-mini.rainy::before {content: "";position: absolute;width: 4px;height: 15px;left: 24px;top: 39px;border-radius: 999px;background: var(--cyan);box-shadow: 12px 0 0 var(--cyan);transform: rotate(18deg);}
+     .weather-mini.snowy::before {content: "";position: absolute;width: 6px;height: 6px;left: 24px;top: 40px;border-radius: 50%;background: var(--cloud);box-shadow: 13px 2px 0 var(--cloud);}
+     .hour-time {font-weight: 900;color: inherit;}
+     .hour-temp {font-size: 1.7rem;font-family: "Manrope", system-ui, sans-serif;font-weight: 800;}
+     .precip {display: inline-flex;align-items: center;gap: 0.38rem;color: var(--cyan);font-weight: 900;font-size: 0.9rem;}
+     .forecast-grid {display: grid;grid-template-columns: minmax(0, 0.92fr) minmax(340px, 1.08fr);gap: 1rem;align-items: start;}
+     .forecast-card {padding: 0.45rem;}
+     .day-row {display: grid;grid-template-columns: 1.2fr auto 1fr 0.7fr 0.75fr;align-items: center;gap: 0.85rem;min-height: 74px;padding: 0.72rem 0.8rem;border-bottom: 1px solid var(--ink-faint);}
+     .day-row:last-child {border-bottom: 0;}
+     .day-name {display: grid;gap: 0.18rem;font-weight: 900;}
+     .day-name span {color: var(--ink-soft);font-size: 0.82rem;font-weight: 700;}
+     .temp-range {display: flex;align-items: center;gap: 0.4rem;min-width: 92px;font-weight: 900;}
+     .low {color: var(--ink-soft);}
+     .range-bar {height: 8px;border-radius: 999px;background: rgba(25, 33, 43, 0.1);overflow: hidden;}
+     .range-fill {height: 100%;border-radius: inherit;background: linear-gradient(90deg, var(--cyan), var(--lime), var(--coral));}
+     .wind, .rain {color: var(--ink-soft);font-weight: 800;font-size: 0.9rem;white-space: nowrap;}
+     .radar-card {overflow: hidden;}
+     .radar-map {min-height: 410px;position: relative;background: radial-gradient(circle at 28% 26%, rgba(6, 182, 212, 0.58) 0 9%, transparent 17%), radial-gradient(circle at 72% 40%, rgba(79, 70, 229, 0.5) 0 8%, transparent 18%), radial-gradient(circle at 52% 70%, rgba(163, 230, 53, 0.38) 0 7%, transparent 17%), repeating-linear-gradient(25deg, rgba(25, 33, 43, 0.08) 0 1px, transparent 1px 38px), linear-gradient(135deg, rgba(6, 182, 212, 0.18), rgba(246, 248, 252, 0.8));}
+     .radar-map::before {content: "";position: absolute;inset: 11%;border: 1px solid rgba(25, 33, 43, 0.12);border-radius: 50%;box-shadow: 0 0 0 64px rgba(25, 33, 43, 0.035), 0 0 0 128px rgba(25, 33, 43, 0.025);}
+     .radar-sweep {position: absolute;inset: 50% auto auto 50%;width: 46%;height: 3px;transform-origin: left center;background: linear-gradient(90deg, rgba(6, 182, 212, 0.9), transparent);animation: sweep 7s linear infinite;}
+     .city-pin {position: absolute;display: inline-flex;align-items: center;gap: 0.35rem;padding: 0.42rem 0.55rem;border-radius: 999px;background: rgba(25, 33, 43, 0.9);color: var(--cloud);font-size: 0.78rem;font-weight: 900;}
+     .city-pin::before {content: "";width: 0.5rem;height: 0.5rem;border-radius: 50%;background: var(--cyan);}
+     .pin-central {left: 45%;top: 46%;}
+     .pin-north {left: 23%;top: 23%;}
+     .pin-east {right: 18%;top: 62%;}
+     .radar-legend {display: flex;flex-wrap: wrap;gap: 0.7rem;padding: 1rem;border-top: 1px solid var(--ink-faint);background: rgba(246, 248, 252, 0.76);}
+     .legend-item {display: inline-flex;align-items: center;gap: 0.45rem;color: var(--ink-soft);font-weight: 800;font-size: 0.88rem;}
+     .legend-swatch {width: 1rem;height: 1rem;border-radius: 4px;}
+     .swatch-rain {background: var(--cyan);}
+     .swatch-snow {background: var(--indigo);}
+     .swatch-clouds {background: rgba(25, 33, 43, 0.22);}
+     .alerts-grid {display: grid;grid-template-columns: repeat(3, minmax(0, 1fr));gap: 1rem;}
+     .alert-card {padding: 1rem;display: grid;gap: 0.75rem;align-content: start;}
+     .severity {justify-self: start;display: inline-flex;align-items: center;gap: 0.38rem;padding: 0.42rem 0.58rem;border-radius: 999px;font-size: 0.74rem;font-weight: 900;text-transform: uppercase;}
+     .severity::before {content: "";width: 0.52rem;height: 0.52rem;border-radius: 50%;background: currentColor;}
+     .severity.warning {color: var(--coral);background: var(--coral-soft);}
+     .severity.watch {color: var(--indigo);background: var(--indigo-soft);}
+     .severity.advisory {color: var(--cyan);background: var(--cyan-soft);}
+     .alert-area {color: var(--ink-soft);font-weight: 800;}
+     .alert-card p {margin: 0;color: var(--ink-soft);line-height: 1.55;}
+     .expires {display: inline-flex;color: var(--ink);font-size: 0.88rem;font-weight: 900;}
+     .aqi-section {display: grid;grid-template-columns: minmax(300px, 0.78fr) minmax(0, 1.22fr);gap: 1rem;align-items: stretch;}
+     .aqi-card {padding: 1.2rem;display: grid;gap: 1rem;}
+     .aqi-gauge-wrap {display: grid;place-items: center;min-height: 250px;}
+     .aqi-gauge {width: min(220px, 68vw);aspect-ratio: 1;border-radius: 50%;display: grid;place-items: center;background: conic-gradient(var(--lime) 0 44%, var(--cyan) 44% 68%, var(--coral) 68% 100%);position: relative;}
+     .aqi-gauge::before {content: "";position: absolute;inset: 14px;border-radius: 50%;background: var(--cloud);box-shadow: inset 0 0 0 1px var(--ink-faint);}
+     .aqi-value {position: relative;z-index: 1;display: grid;place-items: center;gap: 0.2rem;font-family: "Manrope", system-ui, sans-serif;font-weight: 800;}
+     .aqi-value strong {font-size: 4.3rem;line-height: 0.9;}
+     .aqi-value span {color: var(--ink-soft);font-family: "Inter", system-ui, sans-serif;font-size: 0.9rem;}
+     .quality-label {display: inline-flex;justify-self: center;padding: 0.55rem 0.75rem;border-radius: 999px;background: var(--lime-soft);color: var(--ink);font-weight: 900;}
+     .pollutants {display: grid;gap: 0.75rem;}
+     .pollutant-row {display: grid;grid-template-columns: 90px 1fr 56px;align-items: center;gap: 0.75rem;padding: 0.75rem;border-radius: var(--radius);background: rgba(246, 248, 252, 0.78);border: 1px solid var(--ink-faint);}
+     .pollutant-row strong {font-size: 0.92rem;}
+     .meter {height: 9px;border-radius: 999px;background: rgba(25, 33, 43, 0.1);overflow: hidden;}
+     .meter span {display: block;height: 100%;border-radius: inherit;background: linear-gradient(90deg, var(--lime), var(--cyan));}
+     .pollutant-row em {justify-self: end;font-style: normal;color: var(--ink-soft);font-weight: 900;}
+     footer {border-top: 1px solid var(--ink-faint);background: rgba(246, 248, 252, 0.72);}
+     .footer-inner {width: min(var(--max), calc(100% - 2rem));margin: 0 auto;min-height: 92px;display: flex;align-items: center;justify-content: space-between;gap: 1rem;color: var(--ink-soft);font-weight: 700;}
+     .footer-inner strong {color: var(--ink);}
+     
+    @keyframes sweep {to {transform: rotate(360deg);}
+    }
+     
+    @media (prefers-reduced-motion: reduce) {*, *::before, *::after {animation-duration: 0.01ms !important;animation-iteration-count: 1 !important;scroll-behavior: auto !important;transition-duration: 0.01ms !important;}
+    }
+     
+    @media (max-width: 1040px) {.nav-links, .search-box, .location-badge {display: none;}
+     .nav-wrap {grid-template-columns: auto 1fr auto;}
+     .menu-button {display: inline-flex;}
+     .hero-grid, .forecast-grid, .aqi-section {grid-template-columns: 1fr;}
+     .search-box.drawer-search {display: flex;}
+     .alerts-grid {grid-template-columns: 1fr;}
+    }
+     
+    @media (max-width: 720px) {main {width: min(100% - 1rem, var(--max));padding-top: 1rem;}
+     .nav-wrap, .footer-inner {width: min(100% - 1rem, var(--max));}
+     .conditions-panel {min-height: auto;}
+     .condition-main {grid-template-columns: 1fr;}
+     .metric-grid {grid-template-columns: repeat(2, minmax(0, 1fr));}
+     .day-row {grid-template-columns: 1fr auto;grid-template-areas: "day icon" "range range" "rain wind";}
+     .day-name {grid-area: day;}
+     .day-row .weather-mini {grid-area: icon;}
+     .temp-range {grid-area: range;}
+     .range-bar {grid-area: range;align-self: end;margin-top: 2.3rem;}
+     .rain {grid-area: rain;}
+     .wind {grid-area: wind;justify-self: end;}
+     .footer-inner {flex-direction: column;align-items: flex-start;justify-content: center;}
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to weather dashboard</a>
+  <div class="app-shell">
+    <header class="topbar" aria-label="Primary navigation">
+      <nav class="nav-wrap">
+        <a class="brand" href="#today" aria-label="Atlas Weather App home">
+          <span class="brand-mark" aria-hidden="true">
+            <span class="brand-cloud"></span>
+          </span>
+          <span>Atlas Weather</span>
+        </a>
+        <div class="nav-links" aria-label="Weather sections">
+          <a href="#today">Today</a>
+          <a href="#hourly">Hourly</a>
+          <a href="#weekly">Weekly</a>
+          <a href="#radar">Radar</a>
+          <a href="#alerts">Alerts</a>
+        </div>
+        <div class="nav-actions">
+          <label class="search-box" aria-label="Search locations">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M10.8 18.1a7.3 7.3 0 1 1 0-14.6 7.3 7.3 0 0 1 0 14.6Z" stroke="currentColor" stroke-width="2"/>
+              <path d="m16.2 16.2 4.3 4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <input type="search" aria-label="Search city or airport" value="Warsaw">
+          </label>
+          <span class="location-badge">
+            <span class="live-dot" aria-hidden="true"></span>
+            Warsaw, PL
+          </span>
+          <button class="menu-button" type="button" aria-label="Open weather menu" aria-controls="mobile-drawer" aria-expanded="false">
+            <span class="menu-lines" aria-hidden="true"></span>
+          </button>
+        </div>
+      </nav>
+    </header>
+    <div class="drawer-overlay" data-drawer-close hidden></div>
+    <aside class="mobile-drawer" id="mobile-drawer" aria-label="Mobile weather menu" aria-hidden="true">
+      <div class="drawer-head">
+        <a class="brand" href="#today">
+          <span class="brand-mark" aria-hidden="true">
+            <span class="brand-cloud"></span>
+          </span>
+          <span>Atlas Weather</span>
+        </a>
+        <button class="drawer-close" type="button" data-drawer-close aria-label="Close weather menu">×</button>
+      </div>
+      <label class="search-box drawer-search" aria-label="Search locations in menu">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M10.8 18.1a7.3 7.3 0 1 1 0-14.6 7.3 7.3 0 0 1 0 14.6Z" stroke="currentColor" stroke-width="2"/>
+          <path d="m16.2 16.2 4.3 4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input type="search" aria-label="Search city or airport from menu" value="Warsaw">
+      </label>
+      <div class="location-badge">
+        <span class="live-dot" aria-hidden="true"></span>
+        Warsaw, PL
+      </div>
+      <nav class="drawer-links" aria-label="Mobile weather sections">
+        <a href="#today">Today</a>
+        <a href="#hourly">Hourly</a>
+        <a href="#weekly">Weekly</a>
+        <a href="#radar">Radar</a>
+        <a href="#alerts">Alerts</a>
+      </nav>
+    </aside>
+    <main id="main">
+      <section id="today" aria-labelledby="today-title">
+        <p class="eyebrow">Live conditions</p>
+        <h1 id="today-title">Clear breaks, fast updates, and city-scale weather awareness.</h1>
+        <div class="hero-grid">
+          <article class="conditions-panel" aria-label="Current conditions">
+            <div class="conditions-content">
+              <div class="status-row">
+                <span class="station-pill">
+                  <span class="live-dot" aria-hidden="true"></span>
+                  Updated 20:08
+                </span>
+                <span class="station-pill">Station WAW-Centrum</span>
+              </div>
+              <div class="condition-main">
+                <div class="weather-icon" aria-label="Partly cloudy icon" role="img">
+                  <span class="sun-core"></span>
+                  <span class="cloud-shape"></span>
+                </div>
+                <div>
+                  <div class="temp-display">18<sup>°C</sup></div>
+                  <div class="condition-copy">
+                    <strong>Partly cloudy with a clean northwest breeze</strong>
+                    <span>Visibility is strong across the city, with light showers tracking east after midnight.</span>
+                  </div>
+                </div>
+              </div>
+              <div class="metric-grid" aria-label="Current weather metrics">
+                <div class="metric-card">
+                  <span>Feels like</span>
+                  <strong>17°C</strong>
+                </div>
+                <div class="metric-card">
+                  <span>Humidity</span>
+                  <strong>62%</strong>
+                </div>
+                <div class="metric-card">
+                  <span>Wind</span>
+                  <strong>14 km/h</strong>
+                </div>
+                <div class="metric-card">
+                  <span>UV index</span>
+                  <strong>3 Moderate</strong>
+                </div>
+              </div>
+            </div>
+          </article>
+          <aside class="side-panel" aria-label="Daily context">
+            <article class="summary-card">
+              <div>
+                <p class="eyebrow">Sun cycle</p>
+                <h2>Golden hour at 20:29</h2>
+              </div>
+              <div class="sun-track" aria-label="Sunrise and sunset timeline">
+                <span class="sun-arc" aria-hidden="true"></span>
+                <span class="sun-marker" aria-hidden="true"></span>
+                <div class="sun-labels">
+                  <span>04:26</span>
+                  <span>20:46</span>
+                </div>
+              </div>
+              <ul class="insight-list">
+                <li><span>Dew point</span><strong>10°C</strong></li>
+                <li><span>Pressure</span><strong>1016 hPa</strong></li>
+                <li><span>Visibility</span><strong>16 km</strong></li>
+              </ul>
+            </article>
+            <article class="summary-card">
+              <div>
+                <p class="eyebrow">Commuter outlook</p>
+                <h2>Dry roads through late evening</h2>
+              </div>
+              <ul class="insight-list">
+                <li><span>Bike comfort</span><strong>Good</strong></li>
+                <li><span>Rain window</span><strong>01:00-03:00</strong></li>
+                <li><span>River wind</span><strong>Light gusts</strong></li>
+              </ul>
+            </article>
+          </aside>
+        </div>
+      </section>
+      <div class="content-stack">
+        <section id="hourly" aria-labelledby="hourly-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Hourly forecast</p>
+              <h2 id="hourly-title">Next twelve hours</h2>
+            </div>
+            <span class="muted">Scroll sideways</span>
+          </div>
+          <div class="hourly-strip" tabindex="0" aria-label="Hourly forecast cards">
+            <article class="hour-card now">
+              <span class="hour-time">Now</span>
+              <span class="weather-mini cloudy" aria-hidden="true"></span>
+              <strong class="hour-temp">18°</strong>
+              <span class="precip">8% rain</span>
+            </article>
+            <article class="hour-card">
+              <span class="hour-time">21:00</span>
+              <span class="weather-mini cloudy" aria-hidden="true"></span>
+              <strong class="hour-temp">17°</strong>
+              <span class="precip">11% rain</span>
+            </article>
+            <article class="hour-card">
+              <span class="hour-time">22:00</span>
+              <span class="weather-mini cloudy" aria-hidden="true"></span>
+              <strong class="hour-temp">16°</strong>
+              <span class="precip">16% rain</span>
+            </article>
+            <article class="hour-card">
+              <span class="hour-time">23:00</span>
+              <span class="weather-mini rainy" aria-hidden="true"></span>
+              <strong class="hour-temp">15°</strong>
+              <span class="precip">32% rain</span>
+            </article>
+            <article class="hour-card">
+              <span class="hour-time">00:00</span>
+              <span class="weather-mini rainy" aria-hidden="true"></span>
+              <strong class="hour-temp">14°</strong>
+              <span class="precip">46% rain</span>
+            </article>
+            <article class="hour-card">
+              <span class="hour-time">01:00</span>
+              <span class="weather-mini rainy" aria-hidden="true"></span>
+              <strong class="hour-temp">14°</strong>
+              <span class="precip">58% rain</span>
+            </article>
+            <article class="hour-card">
+              <span class="hour-time">02:00</span>
+              <span class="weather-mini rainy" aria-hidden="true"></span>
+              <strong class="hour-temp">13°</strong>
+              <span class="precip">51% rain</span>
+            </article>
+            <article class="hour-card">
+              <span class="hour-time">03:00</span>
+              <span class="weather-mini cloudy" aria-hidden="true"></span>
+              <strong class="hour-temp">13°</strong>
+              <span class="precip">24% rain</span>
+            </article>
+            <article class="hour-card">
+              <span class="hour-time">04:00</span>
+              <span class="weather-mini cloudy" aria-hidden="true"></span>
+              <strong class="hour-temp">12°</strong>
+              <span class="precip">12% rain</span>
+            </article>
+            <article class="hour-card">
+              <span class="hour-time">05:00</span>
+              <span class="weather-mini" aria-hidden="true"></span>
+              <strong class="hour-temp">13°</strong>
+              <span class="precip">5% rain</span>
+            </article>
+            <article class="hour-card">
+              <span class="hour-time">06:00</span>
+              <span class="weather-mini" aria-hidden="true"></span>
+              <strong class="hour-temp">15°</strong>
+              <span class="precip">3% rain</span>
+            </article>
+            <article class="hour-card">
+              <span class="hour-time">07:00</span>
+              <span class="weather-mini" aria-hidden="true"></span>
+              <strong class="hour-temp">17°</strong>
+              <span class="precip">4% rain</span>
+            </article>
+          </div>
+        </section>
+        <section class="forecast-grid" id="weekly" aria-labelledby="weekly-title">
+          <div>
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">7-day forecast</p>
+                <h2 id="weekly-title">Planning window</h2>
+              </div>
+            </div>
+            <div class="forecast-card" aria-label="Seven day forecast rows">
+              <article class="day-row">
+                <div class="day-name">Today<span>Mostly bright</span></div>
+                <span class="weather-mini cloudy" aria-hidden="true"></span>
+                <div class="temp-range"><strong>19°</strong><span class="low">12°</span></div>
+                <div class="range-bar"><span class="range-fill" style="width: 68%"></span></div>
+                <span class="rain">24% rain</span>
+                <span class="wind">NW 14</span>
+              </article>
+              <article class="day-row">
+                <div class="day-name">Thu<span>Morning sun</span></div>
+                <span class="weather-mini" aria-hidden="true"></span>
+                <div class="temp-range"><strong>22°</strong><span class="low">11°</span></div>
+                <div class="range-bar"><span class="range-fill" style="width: 78%"></span></div>
+                <span class="rain">9% rain</span>
+                <span class="wind">W 10</span>
+              </article>
+              <article class="day-row">
+                <div class="day-name">Fri<span>Warm clouds</span></div>
+                <span class="weather-mini cloudy" aria-hidden="true"></span>
+                <div class="temp-range"><strong>24°</strong><span class="low">13°</span></div>
+                <div class="range-bar"><span class="range-fill" style="width: 84%"></span></div>
+                <span class="rain">18% rain</span>
+                <span class="wind">SW 16</span>
+              </article>
+              <article class="day-row">
+                <div class="day-name">Sat<span>Storm chance</span></div>
+                <span class="weather-mini rainy" aria-hidden="true"></span>
+                <div class="temp-range"><strong>21°</strong><span class="low">14°</span></div>
+                <div class="range-bar"><span class="range-fill" style="width: 66%"></span></div>
+                <span class="rain">61% rain</span>
+                <span class="wind">S 22</span>
+              </article>
+              <article class="day-row">
+                <div class="day-name">Sun<span>Cooler air</span></div>
+                <span class="weather-mini rainy" aria-hidden="true"></span>
+                <div class="temp-range"><strong>17°</strong><span class="low">9°</span></div>
+                <div class="range-bar"><span class="range-fill" style="width: 52%"></span></div>
+                <span class="rain">42% rain</span>
+                <span class="wind">N 18</span>
+              </article>
+              <article class="day-row">
+                <div class="day-name">Mon<span>Clear return</span></div>
+                <span class="weather-mini" aria-hidden="true"></span>
+                <div class="temp-range"><strong>20°</strong><span class="low">8°</span></div>
+                <div class="range-bar"><span class="range-fill" style="width: 63%"></span></div>
+                <span class="rain">7% rain</span>
+                <span class="wind">NE 9</span>
+              </article>
+              <article class="day-row">
+                <div class="day-name">Tue<span>Bright spells</span></div>
+                <span class="weather-mini cloudy" aria-hidden="true"></span>
+                <div class="temp-range"><strong>23°</strong><span class="low">10°</span></div>
+                <div class="range-bar"><span class="range-fill" style="width: 74%"></span></div>
+                <span class="rain">13% rain</span>
+                <span class="wind">E 12</span>
+              </article>
+            </div>
+          </div>
+          <article class="radar-card" id="radar" aria-labelledby="radar-title">
+            <div class="section-heading" style="padding: 1rem 1rem 0; margin-bottom: 0.8rem;">
+              <div>
+                <p class="eyebrow">Radar map</p>
+                <h2 id="radar-title">Live precipitation bands</h2>
+              </div>
+            </div>
+            <div class="radar-map" role="img" aria-label="Stylized radar map showing rain, clouds, and snow bands">
+              <span class="radar-sweep" aria-hidden="true"></span>
+              <span class="city-pin pin-central">Centrum</span>
+              <span class="city-pin pin-north">Zoliborz</span>
+              <span class="city-pin pin-east">Praga</span>
+            </div>
+            <div class="radar-legend" aria-label="Radar legend">
+              <span class="legend-item"><span class="legend-swatch swatch-rain"></span>Rain</span>
+              <span class="legend-item"><span class="legend-swatch swatch-snow"></span>Snow</span>
+              <span class="legend-item"><span class="legend-swatch swatch-clouds"></span>Clouds</span>
+            </div>
+          </article>
+        </section>
+        <section id="alerts" aria-labelledby="alerts-title">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Severe weather alerts</p>
+              <h2 id="alerts-title">Regional watches and warnings</h2>
+            </div>
+            <span class="muted">3 active notices</span>
+          </div>
+          <div class="alerts-grid">
+            <article class="alert-card">
+              <span class="severity warning">Warning</span>
+              <h3>Thunderstorm line approaching</h3>
+              <span class="alert-area">Mazowieckie east corridor</span>
+              <p>Strong gusts and short bursts of heavy rain may affect exposed routes late Saturday afternoon.</p>
+              <span class="expires">Expires Sat 18:30</span>
+            </article>
+            <article class="alert-card">
+              <span class="severity watch">Watch</span>
+              <h3>River valley wind watch</h3>
+              <span class="alert-area">Vistula river districts</span>
+              <p>Gusts could increase near open bridges and riverside streets during the evening commute.</p>
+              <span class="expires">Expires Tonight 23:00</span>
+            </article>
+            <article class="alert-card">
+              <span class="severity advisory">Advisory</span>
+              <h3>Patchy overnight showers</h3>
+              <span class="alert-area">Central Warsaw</span>
+              <p>Brief wet pavement is expected after midnight, with clearing before the morning rush.</p>
+              <span class="expires">Expires Thu 05:00</span>
+            </article>
+          </div>
+        </section>
+        <section class="aqi-section" aria-labelledby="aqi-title">
+          <article class="aqi-card">
+            <div>
+              <p class="eyebrow">Air quality</p>
+              <h2 id="aqi-title">Clean evening air</h2>
+            </div>
+            <div class="aqi-gauge-wrap">
+              <div class="aqi-gauge" role="img" aria-label="Air quality index gauge showing 42">
+                <div class="aqi-value">
+                  <strong>42</strong>
+                  <span>AQI</span>
+                </div>
+              </div>
+            </div>
+            <span class="quality-label">Good for outdoor plans</span>
+          </article>
+          <article class="aqi-card" aria-label="Pollutant breakdown">
+            <div>
+              <p class="eyebrow">Pollutants</p>
+              <h2>Measured near street level</h2>
+            </div>
+            <div class="pollutants">
+              <div class="pollutant-row">
+                <strong>PM2.5</strong>
+                <div class="meter"><span style="width: 34%"></span></div>
+                <em>8</em>
+              </div>
+              <div class="pollutant-row">
+                <strong>PM10</strong>
+                <div class="meter"><span style="width: 48%"></span></div>
+                <em>18</em>
+              </div>
+              <div class="pollutant-row">
+                <strong>Ozone</strong>
+                <div class="meter"><span style="width: 42%"></span></div>
+                <em>54</em>
+              </div>
+              <div class="pollutant-row">
+                <strong>NO2</strong>
+                <div class="meter"><span style="width: 29%"></span></div>
+                <em>21</em>
+              </div>
+              <div class="pollutant-row">
+                <strong>SO2</strong>
+                <div class="meter"><span style="width: 18%"></span></div>
+                <em>5</em>
+              </div>
+            </div>
+          </article>
+        </section>
+      </div>
+    </main>
+    <footer>
+      <div class="footer-inner">
+        <span><strong>Atlas Weather App</strong> — designed by Northline Studio</span>
+        <span>Forecast interface for utility teams and daily planning</span>
+      </div>
+    </footer>
+  </div>
+  <script>
+    const body = document.body;
+    const menuButton = document.querySelector(".menu-button");
+    const drawer = document.querySelector(".mobile-drawer");
+    const overlay = document.querySelector(".drawer-overlay");
+    const closeControls = document.querySelectorAll("[data-drawer-close]");
+    const drawerLinks = document.querySelectorAll(".drawer-links a");
+    let lastFocus = null;
+    function openDrawer() {
+      lastFocus = document.activeElement;
+      body.classList.add("drawer-open");
+      drawer.classList.add("is-open");
+      overlay.classList.add("is-open");
+      overlay.hidden = false;
+      drawer.setAttribute("aria-hidden", "false");
+      menuButton.setAttribute("aria-expanded", "true");
+      drawer.querySelector("a, button, input").focus();
+    }
+    function closeDrawer() {
+      body.classList.remove("drawer-open");
+      drawer.classList.remove("is-open");
+      overlay.classList.remove("is-open");
+      drawer.setAttribute("aria-hidden", "true");
+      menuButton.setAttribute("aria-expanded", "false");
+      window.setTimeout(() => {
+        overlay.hidden = true;
+      }, 200);
+      if (lastFocus) {
+        lastFocus.focus();
+      }
+    }
+    menuButton.addEventListener("click", () => {
+      const expanded = menuButton.getAttribute("aria-expanded") === "true";
+      if (expanded) {
+        closeDrawer();
+      } else {
+        openDrawer();
+      }
+    });
+    closeControls.forEach((control) => {
+      control.addEventListener("click", closeDrawer);
+    });
+    drawerLinks.forEach((link) => {
+      link.addEventListener("click", closeDrawer);
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && drawer.classList.contains("is-open")) {
+        closeDrawer();
+      }
+    });
+    drawer.addEventListener("keydown", (event) => {
+      if (event.key !== "Tab") {
+        return;
+      }
+      const focusable = drawer.querySelectorAll("a, button, input");
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+  </script>
+</body>
+</html>
