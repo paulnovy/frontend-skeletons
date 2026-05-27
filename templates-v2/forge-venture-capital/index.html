@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forge Venture Capital Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --indigo: #4F46E5;
+      --cyan: #06B6D4;
+      --lime: #A3E635;
+      --coral: #FB7185;
+      --white: #FFFFFF;
+      --mist: #E6EBF4;
+      --line: #D9E1EC;
+      --muted: #6B7280;
+      --deep: #101820;
+      --shadow: 0 18px 45px rgba(25, 33, 43, 0.10);
+      --soft-shadow: 0 10px 26px rgba(25, 33, 43, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--cloud);
+      color: var(--ink);
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(246, 248, 252, 0.92);
+      border-bottom: 1px solid rgba(217, 225, 236, 0.9);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      min-height: 76px;
+      padding: 0 28px;
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 224px;
+      font-family: "Manrope", sans-serif;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, var(--indigo), var(--cyan));
+      display: grid;
+      place-items: center;
+      color: var(--white);
+      box-shadow: var(--soft-shadow);
+    }
+
+    .brand-mark svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+      line-height: 1.05;
+    }
+
+    .brand-text strong {
+      font-size: 18px;
+    }
+
+    .brand-text span {
+      margin-top: 3px;
+      font-family: "Inter", sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-right: auto;
+    }
+
+    .nav-links a {
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #344052;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .nav-links a:hover {
+      background: var(--white);
+      color: var(--indigo);
+    }
+
+    .search {
+      width: min(300px, 24vw);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+    }
+
+    .search svg {
+      flex: 0 0 18px;
+      color: var(--muted);
+    }
+
+    .search input {
+      width: 100%;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+      font-size: 14px;
+    }
+
+    .primary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--indigo);
+      color: var(--white);
+      padding: 11px 16px;
+      font-weight: 800;
+      box-shadow: 0 12px 22px rgba(79, 70, 229, 0.24);
+      white-space: nowrap;
+    }
+
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: var(--white);
+      color: var(--ink);
+    }
+
+    .mobile-drawer {
+      position: fixed;
+      inset: 0 0 0 auto;
+      z-index: 60;
+      width: min(360px, 86vw);
+      transform: translateX(110%);
+      transition: transform 0.25s ease;
+      background: var(--white);
+      box-shadow: -24px 0 60px rgba(25, 33, 43, 0.18);
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .mobile-drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .drawer-links {
+      display: grid;
+      gap: 10px;
+    }
+
+    .drawer-links a {
+      padding: 13px 12px;
+      border-radius: 8px;
+      background: var(--cloud);
+      font-weight: 800;
+    }
+
+    .drawer-scrim {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      background: rgba(16, 24, 32, 0.36);
+    }
+
+    .drawer-scrim.open {
+      display: block;
+    }
+
+    main {
+      width: 100%;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 28px;
+      display: grid;
+      gap: 28px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      gap: 24px;
+      align-items: stretch;
+    }
+
+    .hero-copy {
+      border-radius: 8px;
+      padding: 30px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      box-shadow: var(--soft-shadow);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 330px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      align-self: flex-start;
+      padding: 7px 10px;
+      border-radius: 8px;
+      background: rgba(6, 182, 212, 0.12);
+      color: #036C7D;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: "Manrope", sans-serif;
+      letter-spacing: 0;
+      margin: 0;
+      color: var(--ink);
+    }
+
+    h1 {
+      margin-top: 22px;
+      max-width: 850px;
+      font-size: clamp(38px, 6vw, 72px);
+      line-height: 0.96;
+    }
+
+    .hero-copy p {
+      max-width: 720px;
+      margin: 20px 0 0;
+      color: #4A5567;
+      font-size: 17px;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+
+    .secondary-btn {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--cloud);
+      color: var(--ink);
+      padding: 11px 15px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .hero-panel {
+      border-radius: 8px;
+      padding: 24px;
+      background: var(--ink);
+      color: var(--white);
+      min-height: 330px;
+      display: grid;
+      gap: 18px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-panel::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(140deg, rgba(79, 70, 229, 0.45), transparent 38%),
+        linear-gradient(320deg, rgba(6, 182, 212, 0.36), transparent 44%);
+      pointer-events: none;
+    }
+
+    .hero-panel > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .close-rate {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .close-rate h2 {
+      color: var(--white);
+      font-size: 19px;
+    }
+
+    .close-rate strong {
+      font-size: 42px;
+      color: var(--lime);
+      font-family: "Manrope", sans-serif;
+    }
+
+    .signal-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .signal {
+      display: grid;
+      grid-template-columns: 42px 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .signal-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: rgba(255, 255, 255, 0.13);
+      color: var(--cyan);
+    }
+
+    .signal b {
+      display: block;
+      font-size: 14px;
+    }
+
+    .signal span {
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 13px;
+    }
+
+    .signal em {
+      font-style: normal;
+      color: var(--lime);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .section {
+      display: grid;
+      gap: 16px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .section-title {
+      display: grid;
+      gap: 5px;
+    }
+
+    .section-title h2 {
+      font-size: clamp(24px, 3vw, 34px);
+    }
+
+    .section-title p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 760px;
+    }
+
+    .filter-tabs {
+      display: inline-flex;
+      gap: 4px;
+      padding: 5px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+    }
+
+    .filter-tabs button {
+      border: 0;
+      border-radius: 7px;
+      background: transparent;
+      padding: 8px 10px;
+      color: #4A5567;
+      font-weight: 800;
+    }
+
+    .filter-tabs button.active {
+      background: var(--indigo);
+      color: var(--white);
+    }
+
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .kpi {
+      border-radius: 8px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      padding: 20px;
+      display: grid;
+      gap: 12px;
+      box-shadow: var(--soft-shadow);
+    }
+
+    .kpi-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .kpi-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: var(--cloud);
+      color: var(--indigo);
+    }
+
+    .kpi small {
+      color: var(--muted);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .kpi strong {
+      font-family: "Manrope", sans-serif;
+      font-size: 34px;
+      line-height: 1;
+    }
+
+    .kpi span {
+      color: #4A5567;
+      font-size: 14px;
+    }
+
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .company-card {
+      border-radius: 8px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+      box-shadow: var(--soft-shadow);
+    }
+
+    .company-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .logo-tile {
+      width: 46px;
+      height: 46px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: var(--white);
+      background: var(--indigo);
+      font-weight: 900;
+    }
+
+    .company-title {
+      display: grid;
+      gap: 4px;
+    }
+
+    .company-title h3 {
+      font-size: 20px;
+    }
+
+    .company-title span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 800;
+      background: var(--cloud);
+      color: #344052;
+      border: 1px solid var(--line);
+    }
+
+    .badge.indigo {
+      background: rgba(79, 70, 229, 0.12);
+      color: var(--indigo);
+      border-color: rgba(79, 70, 229, 0.18);
+    }
+
+    .badge.cyan {
+      background: rgba(6, 182, 212, 0.12);
+      color: #06758A;
+      border-color: rgba(6, 182, 212, 0.18);
+    }
+
+    .badge.lime {
+      background: rgba(163, 230, 53, 0.20);
+      color: #4B6F05;
+      border-color: rgba(163, 230, 53, 0.28);
+    }
+
+    .badge.coral {
+      background: rgba(251, 113, 133, 0.13);
+      color: #BA2F47;
+      border-color: rgba(251, 113, 133, 0.22);
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .metric {
+      padding: 10px;
+      border-radius: 8px;
+      background: var(--cloud);
+      border: 1px solid var(--line);
+      display: grid;
+      gap: 3px;
+    }
+
+    .metric span {
+      font-size: 12px;
+      color: var(--muted);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .metric strong {
+      font-size: 17px;
+    }
+
+    .update {
+      padding-top: 12px;
+      border-top: 1px solid var(--line);
+      display: flex;
+      gap: 10px;
+      color: #4A5567;
+      font-size: 13px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      margin-top: 5px;
+      border-radius: 999px;
+      background: var(--lime);
+      flex: 0 0 auto;
+    }
+
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(210px, 1fr));
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .lane {
+      min-width: 210px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid var(--line);
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+      align-content: start;
+    }
+
+    .lane-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 2px 8px;
+      border-bottom: 1px solid var(--line);
+      font-weight: 900;
+    }
+
+    .count {
+      min-width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: var(--ink);
+      color: var(--white);
+      font-size: 12px;
+    }
+
+    .deal-card {
+      border-radius: 8px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      padding: 12px;
+      display: grid;
+      gap: 10px;
+      box-shadow: 0 8px 18px rgba(25, 33, 43, 0.06);
+    }
+
+    .deal-card h3 {
+      font-size: 16px;
+    }
+
+    .deal-meta {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .deal-meta b {
+      display: block;
+      color: var(--ink);
+      font-size: 13px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      box-shadow: var(--soft-shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 900px;
+    }
+
+    th,
+    td {
+      padding: 15px 16px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: middle;
+      font-size: 14px;
+    }
+
+    th {
+      background: #EEF2F8;
+      color: #4A5567;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-weight: 900;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    td strong {
+      display: block;
+    }
+
+    td span {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .multiple {
+      color: #2F6B08;
+      font-weight: 900;
+    }
+
+    .performance-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.8fr);
+      gap: 16px;
+    }
+
+    .chart-card,
+    .ratio-panel {
+      border-radius: 8px;
+      background: var(--white);
+      border: 1px solid var(--line);
+      padding: 20px;
+      box-shadow: var(--soft-shadow);
+    }
+
+    .chart-card {
+      display: grid;
+      gap: 18px;
+    }
+
+    .chart-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .chart-head h3 {
+      font-size: 20px;
+    }
+
+    .chart-legend {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      background: var(--indigo);
+    }
+
+    .css-chart {
+      height: 310px;
+      border-left: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      background:
+        linear-gradient(to top, rgba(217, 225, 236, 0.55) 1px, transparent 1px) 0 0 / 100% 62px,
+        linear-gradient(to right, rgba(217, 225, 236, 0.42) 1px, transparent 1px) 0 0 / 14.2% 100%;
+      position: relative;
+      overflow: hidden;
+      border-radius: 0 8px 0 0;
+    }
+
+    .bar {
+      position: absolute;
+      bottom: 0;
+      width: 7.6%;
+      border-radius: 8px 8px 0 0;
+      background: linear-gradient(180deg, var(--cyan), var(--indigo));
+      box-shadow: 0 12px 24px rgba(79, 70, 229, 0.22);
+    }
+
+    .bar:nth-child(1) { left: 5%; height: 19%; }
+    .bar:nth-child(2) { left: 18%; height: 28%; }
+    .bar:nth-child(3) { left: 31%; height: 37%; }
+    .bar:nth-child(4) { left: 44%; height: 49%; }
+    .bar:nth-child(5) { left: 57%; height: 61%; }
+    .bar:nth-child(6) { left: 70%; height: 72%; }
+    .bar:nth-child(7) { left: 83%; height: 84%; }
+
+    .line {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(25deg, transparent 10%, var(--coral) 10.4%, var(--coral) 11.2%, transparent 11.6%),
+        linear-gradient(18deg, transparent 24%, var(--coral) 24.4%, var(--coral) 25.2%, transparent 25.6%),
+        linear-gradient(14deg, transparent 39%, var(--coral) 39.4%, var(--coral) 40.2%, transparent 40.6%),
+        linear-gradient(10deg, transparent 55%, var(--coral) 55.4%, var(--coral) 56.2%, transparent 56.6%);
+      opacity: 0.86;
+      pointer-events: none;
+    }
+
+    .chart-axis {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      padding-left: 2px;
+    }
+
+    .ratio-panel {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+
+    .ratio-card {
+      border-radius: 8px;
+      background: var(--cloud);
+      border: 1px solid var(--line);
+      padding: 16px;
+      display: grid;
+      gap: 9px;
+    }
+
+    .ratio-card span {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .ratio-card strong {
+      font-family: "Manrope", sans-serif;
+      font-size: 34px;
+    }
+
+    .ratio-card p {
+      margin: 0;
+      color: #4A5567;
+      font-size: 13px;
+    }
+
+    footer {
+      margin-top: 4px;
+      border-top: 1px solid var(--line);
+      background: var(--white);
+    }
+
+    .footer-inner {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 24px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .footer-inner strong {
+      color: var(--ink);
+    }
+
+    @media (max-width: 1120px) {
+      .nav-links,
+      .search,
+      .topbar .primary-btn {
+        display: none;
+      }
+
+      .icon-btn {
+        display: inline-flex;
+      }
+
+      .nav-inner {
+        justify-content: space-between;
+      }
+
+      .hero,
+      .performance-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .portfolio-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 780px) {
+      .nav-inner,
+      main,
+      .footer-inner {
+        padding-left: 18px;
+        padding-right: 18px;
+      }
+
+      .brand {
+        min-width: 0;
+      }
+
+      .brand-text span {
+        display: none;
+      }
+
+      .hero-copy,
+      .hero-panel {
+        padding: 20px;
+      }
+
+      .kpi-strip,
+      .portfolio-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head,
+      .footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .filter-tabs {
+        width: 100%;
+        overflow-x: auto;
+      }
+
+      .filter-tabs button {
+        white-space: nowrap;
+      }
+
+      .signal {
+        grid-template-columns: 38px 1fr;
+      }
+
+      .signal em {
+        grid-column: 2;
+      }
+
+      .css-chart {
+        height: 240px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="nav-inner">
+        <a class="brand" href="#">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 3L20 7.4V16.6L12 21L4 16.6V7.4L12 3Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M8.5 12H15.5M12 8.5V15.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="brand-text">
+            <strong>Forge VC</strong>
+            <span>Fund command center</span>
+          </span>
+        </a>
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="#portfolio">Portfolio</a>
+          <a href="#deal-flow">Deal Flow</a>
+          <a href="#investments">Investments</a>
+          <a href="#fund-performance">Fund Performance</a>
+        </nav>
+        <label class="search">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+            <path d="M10.8 18.2A7.4 7.4 0 1 0 10.8 3.4a7.4 7.4 0 0 0 0 14.8ZM16.3 16.3L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <input type="search" aria-label="Search companies and deals" value="" autocomplete="off">
+        </label>
+        <button class="primary-btn" type="button">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+            <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Add Deal
+        </button>
+        <button class="icon-btn" id="drawerOpen" type="button" aria-label="Open menu">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+            <path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="drawer-scrim" id="drawerScrim"></div>
+    <aside class="mobile-drawer" id="mobileDrawer" aria-label="Mobile navigation">
+      <div class="drawer-head">
+        <a class="brand" href="#">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 3L20 7.4V16.6L12 21L4 16.6V7.4L12 3Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M8.5 12H15.5M12 8.5V15.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span class="brand-text"><strong>Forge VC</strong><span>Fund command center</span></span>
+        </a>
+        <button class="icon-btn" id="drawerClose" type="button" aria-label="Close menu">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none">
+            <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <nav class="drawer-links">
+        <a href="#portfolio">Portfolio</a>
+        <a href="#deal-flow">Deal Flow</a>
+        <a href="#investments">Investments</a>
+        <a href="#fund-performance">Fund Performance</a>
+      </nav>
+      <button class="primary-btn" type="button">Add Deal</button>
+    </aside>
+
+    <main>
+      <section class="hero" aria-labelledby="dashboard-title">
+        <div class="hero-copy">
+          <div>
+            <span class="eyebrow">Q2 partner meeting ready</span>
+            <h1 id="dashboard-title">Portfolio, pipeline, and fund performance in one operating view.</h1>
+            <p>Forge Venture Capital tracks conviction, ownership, runway, follow-on exposure, and markups across the full investment lifecycle.</p>
+          </div>
+          <div class="hero-actions">
+            <a class="primary-btn" href="#deal-flow">Review Pipeline</a>
+            <a class="secondary-btn" href="#fund-performance">Open Fund Metrics</a>
+          </div>
+        </div>
+        <div class="hero-panel" aria-label="Live fund signals">
+          <div class="close-rate">
+            <h2>Weekly IC close rate</h2>
+            <strong>31%</strong>
+          </div>
+          <div class="signal-list">
+            <div class="signal">
+              <span class="signal-icon">AI</span>
+              <div><b>Applied intelligence</b><span>5 active term sheets, 2 priced rounds</span></div>
+              <em>+18%</em>
+            </div>
+            <div class="signal">
+              <span class="signal-icon">CX</span>
+              <div><b>Climate infrastructure</b><span>Pipeline ask volume reached $42M</span></div>
+              <em>+11%</em>
+            </div>
+            <div class="signal">
+              <span class="signal-icon">FN</span>
+              <div><b>Fintech systems</b><span>Ownership reserve need: $9.4M</span></div>
+              <em>2.8x</em>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="kpi-strip" aria-label="Fund key performance indicators">
+        <article class="kpi">
+          <div class="kpi-top"><small>Fund size</small><span class="kpi-icon">$</span></div>
+          <strong>$250M</strong>
+          <span>Fund III committed capital across 42 LPs.</span>
+        </article>
+        <article class="kpi">
+          <div class="kpi-top"><small>Portfolio count</small><span class="kpi-icon">24</span></div>
+          <strong>24</strong>
+          <span>Active companies with 7 board seats held.</span>
+        </article>
+        <article class="kpi">
+          <div class="kpi-top"><small>Total invested</small><span class="kpi-icon">↗</span></div>
+          <strong>$118M</strong>
+          <span>47% deployed with $62M reserved.</span>
+        </article>
+        <article class="kpi">
+          <div class="kpi-top"><small>Net IRR</small><span class="kpi-icon">%</span></div>
+          <strong>27.4%</strong>
+          <span>Marked at 1.92x TVPI and 0.31x DPI.</span>
+        </article>
+      </section>
+
+      <section class="section" id="portfolio">
+        <div class="section-head">
+          <div class="section-title">
+            <h2>Portfolio Companies</h2>
+            <p>Company cards combine sector, stage, check size, valuation, governance role, and the latest operating note.</p>
+          </div>
+          <div class="filter-tabs" aria-label="Portfolio filters">
+            <button class="active" type="button">All</button>
+            <button type="button">Board Seats</button>
+            <button type="button">Follow-on</button>
+          </div>
+        </div>
+        <div class="portfolio-grid">
+          <article class="company-card">
+            <div class="company-top"><div class="company-title"><h3>Northstar Labs</h3><span>Decision automation for logistics</span></div><span class="logo-tile">NL</span></div>
+            <div class="badge-row"><span class="badge indigo">AI Ops</span><span class="badge cyan">Series A</span><span class="badge lime">Board seat</span></div>
+            <div class="metric-grid"><div class="metric"><span>Investment</span><strong>$6.5M</strong></div><div class="metric"><span>Valuation</span><strong>$84M</strong></div></div>
+            <div class="update"><span class="dot"></span><span>Expanded enterprise ARR 42% quarter over quarter after two Fortune 500 launches.</span></div>
+          </article>
+          <article class="company-card">
+            <div class="company-top"><div class="company-title"><h3>HelioGrid</h3><span>Grid storage orchestration platform</span></div><span class="logo-tile" style="background:var(--cyan)">HG</span></div>
+            <div class="badge-row"><span class="badge cyan">Climate</span><span class="badge indigo">Seed</span><span class="badge">Observer</span></div>
+            <div class="metric-grid"><div class="metric"><span>Investment</span><strong>$3.2M</strong></div><div class="metric"><span>Valuation</span><strong>$38M</strong></div></div>
+            <div class="update"><span class="dot"></span><span>Signed municipal pilot with 120MWh managed capacity and February expansion option.</span></div>
+          </article>
+          <article class="company-card">
+            <div class="company-top"><div class="company-title"><h3>Ledgerline</h3><span>Embedded treasury for marketplaces</span></div><span class="logo-tile" style="background:var(--coral)">LL</span></div>
+            <div class="badge-row"><span class="badge coral">Fintech</span><span class="badge cyan">Series B</span><span class="badge lime">Board seat</span></div>
+            <div class="metric-grid"><div class="metric"><span>Investment</span><strong>$9.8M</strong></div><div class="metric"><span>Valuation</span><strong>$210M</strong></div></div>
+            <div class="update"><span class="dot"></span><span>Reached $14B annualized payment volume with net revenue retention above 128%.</span></div>
+          </article>
+          <article class="company-card">
+            <div class="company-top"><div class="company-title"><h3>Praxis Bio</h3><span>Lab workflow intelligence suite</span></div><span class="logo-tile" style="background:#19212B">PB</span></div>
+            <div class="badge-row"><span class="badge indigo">Health AI</span><span class="badge indigo">Seed</span><span class="badge">No seat</span></div>
+            <div class="metric-grid"><div class="metric"><span>Investment</span><strong>$2.6M</strong></div><div class="metric"><span>Valuation</span><strong>$29M</strong></div></div>
+            <div class="update"><span class="dot"></span><span>Completed security review with three academic medical centers entering procurement.</span></div>
+          </article>
+          <article class="company-card">
+            <div class="company-top"><div class="company-title"><h3>Atlas Foundry</h3><span>Robotics software for machining cells</span></div><span class="logo-tile" style="background:var(--lime);color:var(--ink)">AF</span></div>
+            <div class="badge-row"><span class="badge lime">Industrial</span><span class="badge cyan">Series A</span><span class="badge lime">Board seat</span></div>
+            <div class="metric-grid"><div class="metric"><span>Investment</span><strong>$7.4M</strong></div><div class="metric"><span>Valuation</span><strong>$96M</strong></div></div>
+            <div class="update"><span class="dot"></span><span>Gross margin improved to 61% after deployment tooling reduced integration hours.</span></div>
+          </article>
+          <article class="company-card">
+            <div class="company-top"><div class="company-title"><h3>SignalNest</h3><span>Revenue intelligence for product-led sales</span></div><span class="logo-tile" style="background:var(--indigo)">SN</span></div>
+            <div class="badge-row"><span class="badge indigo">SaaS</span><span class="badge cyan">Seed</span><span class="badge coral">Follow-on watch</span></div>
+            <div class="metric-grid"><div class="metric"><span>Investment</span><strong>$2.1M</strong></div><div class="metric"><span>Valuation</span><strong>$31M</strong></div></div>
+            <div class="update"><span class="dot"></span><span>Pipeline conversion rose after replacing manual lead scoring with account-level intent.</span></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="deal-flow">
+        <div class="section-head">
+          <div class="section-title">
+            <h2>Deal Flow Pipeline</h2>
+            <p>Kanban lanes show active opportunities from screening through diligence, term sheet, invested, and passed decisions.</p>
+          </div>
+          <a class="secondary-btn" href="#investments">View Investment Log</a>
+        </div>
+        <div class="pipeline" aria-label="Deal flow Kanban">
+          <div class="lane">
+            <div class="lane-head"><span>Screening</span><span class="count">4</span></div>
+            <article class="deal-card"><h3>AuroraML</h3><span class="badge indigo">Developer AI</span><div class="deal-meta"><div><span>Ask</span><b>$4.0M</b></div><div><span>Lead</span><b>Maya</b></div></div></article>
+            <article class="deal-card"><h3>Quartz Fleet</h3><span class="badge cyan">Mobility</span><div class="deal-meta"><div><span>Ask</span><b>$3.5M</b></div><div><span>Lead</span><b>Noah</b></div></div></article>
+            <article class="deal-card"><h3>ClinPath</h3><span class="badge coral">Health</span><div class="deal-meta"><div><span>Ask</span><b>$2.8M</b></div><div><span>Lead</span><b>Iris</b></div></div></article>
+          </div>
+          <div class="lane">
+            <div class="lane-head"><span>DD</span><span class="count">3</span></div>
+            <article class="deal-card"><h3>Canopy Carbon</h3><span class="badge cyan">Climate</span><div class="deal-meta"><div><span>Ask</span><b>$6.0M</b></div><div><span>Lead</span><b>Priya</b></div></div></article>
+            <article class="deal-card"><h3>MintLayer</h3><span class="badge coral">Fintech</span><div class="deal-meta"><div><span>Ask</span><b>$5.2M</b></div><div><span>Lead</span><b>Evan</b></div></div></article>
+            <article class="deal-card"><h3>Vector Harbor</h3><span class="badge indigo">Security</span><div class="deal-meta"><div><span>Ask</span><b>$4.6M</b></div><div><span>Lead</span><b>Maya</b></div></div></article>
+          </div>
+          <div class="lane">
+            <div class="lane-head"><span>Term Sheet</span><span class="count">2</span></div>
+            <article class="deal-card"><h3>Keystone Data</h3><span class="badge indigo">Data Infra</span><div class="deal-meta"><div><span>Ask</span><b>$7.5M</b></div><div><span>Lead</span><b>Noah</b></div></div></article>
+            <article class="deal-card"><h3>PulseForge</h3><span class="badge coral">Bio Tools</span><div class="deal-meta"><div><span>Ask</span><b>$4.1M</b></div><div><span>Lead</span><b>Iris</b></div></div></article>
+          </div>
+          <div class="lane">
+            <div class="lane-head"><span>Invested</span><span class="count">2</span></div>
+            <article class="deal-card"><h3>Atlas Foundry</h3><span class="badge lime">Industrial</span><div class="deal-meta"><div><span>Close</span><b>$7.4M</b></div><div><span>Lead</span><b>Priya</b></div></div></article>
+            <article class="deal-card"><h3>Praxis Bio</h3><span class="badge indigo">Health AI</span><div class="deal-meta"><div><span>Close</span><b>$2.6M</b></div><div><span>Lead</span><b>Iris</b></div></div></article>
+          </div>
+          <div class="lane">
+            <div class="lane-head"><span>Passed</span><span class="count">3</span></div>
+            <article class="deal-card"><h3>MarketWake</h3><span class="badge">Martech</span><div class="deal-meta"><div><span>Ask</span><b>$3.0M</b></div><div><span>Lead</span><b>Evan</b></div></div></article>
+            <article class="deal-card"><h3>Orbit Claims</h3><span class="badge">Insurtech</span><div class="deal-meta"><div><span>Ask</span><b>$5.8M</b></div><div><span>Lead</span><b>Maya</b></div></div></article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="investments">
+        <div class="section-head">
+          <div class="section-title">
+            <h2>Investment Tracking</h2>
+            <p>Round-level ledger for deployed capital, ownership, mark value, and realized multiple across current holdings.</p>
+          </div>
+          <div class="filter-tabs" aria-label="Investment view filters"><button class="active" type="button">Current</button><button type="button">Reserve</button><button type="button">Exited</button></div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Company</th><th>Round</th><th>Date</th><th>Amount</th><th>Ownership</th><th>Current Value</th><th>Multiple</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Northstar Labs</strong><span>AI Ops</span></td><td>Series A</td><td>Jan 2026</td><td>$6.5M</td><td>8.2%</td><td>$13.8M</td><td class="multiple">2.12x</td></tr>
+              <tr><td><strong>HelioGrid</strong><span>Climate</span></td><td>Seed</td><td>Nov 2025</td><td>$3.2M</td><td>9.4%</td><td>$4.9M</td><td class="multiple">1.53x</td></tr>
+              <tr><td><strong>Ledgerline</strong><span>Fintech</span></td><td>Series B</td><td>Aug 2025</td><td>$9.8M</td><td>5.6%</td><td>$21.4M</td><td class="multiple">2.18x</td></tr>
+              <tr><td><strong>Praxis Bio</strong><span>Health AI</span></td><td>Seed</td><td>Mar 2026</td><td>$2.6M</td><td>7.9%</td><td>$3.1M</td><td class="multiple">1.19x</td></tr>
+              <tr><td><strong>Atlas Foundry</strong><span>Industrial</span></td><td>Series A</td><td>Apr 2026</td><td>$7.4M</td><td>7.1%</td><td>$10.7M</td><td class="multiple">1.45x</td></tr>
+              <tr><td><strong>SignalNest</strong><span>SaaS</span></td><td>Seed</td><td>Sep 2025</td><td>$2.1M</td><td>6.8%</td><td>$3.7M</td><td class="multiple">1.76x</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section" id="fund-performance">
+        <div class="section-head">
+          <div class="section-title">
+            <h2>Fund Performance</h2>
+            <p>CSS-rendered NAV progression with the core DPI, TVPI, and IRR cards used in quarterly LP updates.</p>
+          </div>
+        </div>
+        <div class="performance-grid">
+          <article class="chart-card">
+            <div class="chart-head">
+              <h3>NAV over time</h3>
+              <div class="chart-legend"><span class="legend-item"><span class="legend-swatch"></span>NAV</span><span class="legend-item"><span class="legend-swatch" style="background:var(--coral)"></span>Markup trend</span></div>
+            </div>
+            <div class="css-chart" aria-label="NAV bar chart from Q4 2024 to Q2 2026">
+              <span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="line"></span>
+            </div>
+            <div class="chart-axis"><span>Q4 24</span><span>Q1 25</span><span>Q2 25</span><span>Q3 25</span><span>Q4 25</span><span>Q1 26</span><span>Q2 26</span></div>
+          </article>
+          <aside class="ratio-panel">
+            <div class="ratio-card"><span>DPI</span><strong>0.31x</strong><p>Realized distributions from two partial secondary sales and one strategic exit.</p></div>
+            <div class="ratio-card"><span>TVPI</span><strong>1.92x</strong><p>Total value reflects audited Q1 marks plus April signed round repricing.</p></div>
+            <div class="ratio-card"><span>IRR</span><strong>27.4%</strong><p>Net of fees, carry, and LP management expense allocations.</p></div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-inner">
+        <strong>Forge Venture Capital — designed by Studio</strong>
+        <span>Portfolio intelligence, investment tracking, and fund performance for modern VC teams.</span>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const openButton = document.getElementById("drawerOpen");
+    const closeButton = document.getElementById("drawerClose");
+    const drawer = document.getElementById("mobileDrawer");
+    const scrim = document.getElementById("drawerScrim");
+    const drawerLinks = drawer.querySelectorAll("a");
+
+    function setDrawer(open) {
+      drawer.classList.toggle("open", open);
+      scrim.classList.toggle("open", open);
+      document.body.style.overflow = open ? "hidden" : "";
+    }
+
+    openButton.addEventListener("click", () => setDrawer(true));
+    closeButton.addEventListener("click", () => setDrawer(false));
+    scrim.addEventListener("click", () => setDrawer(false));
+    drawerLinks.forEach((link) => link.addEventListener("click", () => setDrawer(false)));
+    window.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        setDrawer(false);
+      }
+    });
+  </script>
+</body>
+</html>
