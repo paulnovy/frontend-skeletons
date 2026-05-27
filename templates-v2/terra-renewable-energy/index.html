@@ -1,619 +1,1366 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Terra Renewable Energy</title>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--cloud:#F6F8FC;--ink:#19212B;--indigo:#4F46E5;--cyan:#06B6D4;--lime:#A3E635;--coral:#FB7185}
-body{font-family:'Inter',sans-serif;background:var(--cloud);color:var(--ink);line-height:1.5}
-h1,h2,h3,h4,h5{font-family:'Manrope',sans-serif;font-weight:700}
-a{color:var(--indigo);text-decoration:none}
-button{cursor:pointer;font-family:inherit}
-.skip-link{position:absolute;top:-40px;left:0;background:var(--indigo);color:#fff;padding:8px 16px;z-index:100}
-.skip-link:focus{top:0}
-.top-nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:16px;padding:0 24px;height:60px;background:#fff;border-bottom:1px solid #e5e7eb}
-.nav-brand{font-family:'Manrope',sans-serif;font-weight:800;font-size:1.25rem;color:var(--indigo);display:flex;align-items:center;gap:8px}
-.nav-brand svg{width:28px;height:28px}
-.nav-links{display:flex;gap:4px;margin-left:24px}
-.nav-links a{padding:8px 14px;border-radius:8px;font-size:0.875rem;font-weight:500;color:var(--ink);transition:background 0.15s}
-.nav-links a:hover,.nav-links a[aria-current="page"]{background:var(--cloud);color:var(--indigo)}
-.nav-search{margin-left:auto;position:relative}
-.nav-search input{width:220px;padding:8px 12px 8px 36px;border:1px solid #e5e7eb;border-radius:8px;font-size:0.875rem;background:var(--cloud)}
-.nav-search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:#9ca3af}
-.nav-live{display:flex;align-items:center;gap:6px;font-size:0.8125rem;font-weight:600;color:#059669;margin-left:12px}
-.live-dot{width:8px;height:8px;border-radius:50%;background:#059669;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
-.hamburger{display:none;background:none;border:none;padding:8px}
-.hamburger svg{width:24px;height:24px}
-.drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:60}
-.drawer-overlay.open{display:block}
-.drawer{position:fixed;top:0;left:0;width:280px;height:100%;background:#fff;z-index:70;transform:translateX(-100%);transition:transform 0.25s;padding:24px;overflow-y:auto}
-.drawer.open{transform:translateX(0)}
-.drawer-close{background:none;border:none;font-size:1.5rem;position:absolute;top:16px;right:16px}
-.drawer nav{display:flex;flex-direction:column;gap:4px;margin-top:24px}
-.drawer nav a{padding:10px 14px;border-radius:8px;font-size:0.9375rem}
-@media(max-width:768px){.nav-links,.nav-search,.nav-live{display:none}.hamburger{display:block}.top-nav{padding:0 16px}}
-.kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;padding:24px}
-.kpi-card{background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb}
-.kpi-label{font-size:0.8125rem;color:#6b7280;margin-bottom:4px}
-.kpi-value{font-family:'Manrope',sans-serif;font-size:1.75rem;font-weight:800}
-.kpi-trend{font-size:0.8125rem;margin-top:4px}
-.kpi-trend.up{color:#059669}
-.main{padding:0 24px 48px}
-.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
-.section-header h2{font-size:1.25rem}
-.badge{background:var(--cloud);padding:4px 12px;border-radius:20px;font-size:0.8125rem;font-weight:600}
-.chart-box{background:#fff;border-radius:12px;padding:24px;border:1px solid #e5e7eb;margin-bottom:32px}
-.chart-title{font-size:1rem;margin-bottom:4px}
-.chart-sub{font-size:0.8125rem;color:#6b7280;margin-bottom:20px}
-.bar-chart{display:flex;align-items:flex-end;gap:12px;height:200px;padding-bottom:28px;border-bottom:1px solid #e5e7eb}
-.bar-group{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;justify-content:flex-end}
-.bar-stack{display:flex;flex-direction:column-reverse;width:100%;max-width:40px;gap:2px}
-.bar-seg{border-radius:3px;min-height:4px}
-.bar-lbl{font-size:0.6875rem;color:#6b7280;margin-top:8px}
-.chart-legend{display:flex;gap:16px;margin-top:16px;font-size:0.8125rem}
-.legend-item{display:flex;align-items:center;gap:6px}
-.legend-dot{width:10px;height:10px;border-radius:3px}
-.site-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px;margin-bottom:32px}
-.site-card{background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb}
-.site-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-.site-card h4{font-size:1rem}
-.badge-type{display:inline-block;padding:2px 10px;border-radius:20px;font-size:0.75rem;font-weight:600}
-.type-solar{background:#fef3c7;color:#92400e}
-.type-wind{background:#dbeafe;color:#1d4ed8}
-.type-hydro{background:#d1fae5;color:#065f46}
-.type-battery{background:#ede9fe;color:#5b21b6}
-.site-stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.8125rem;margin-bottom:8px}
-.site-stat-label{color:#6b7280}
-.site-stat-val{font-weight:600}
-.site-bar{height:6px;background:#e5e7eb;border-radius:3px;margin-top:8px}
-.site-bar-fill{height:100%;border-radius:3px}
-.grid-box{background:#fff;border-radius:12px;padding:24px;border:1px solid #e5e7eb;margin-bottom:32px}
-.grid-gauge{display:flex;align-items:center;gap:24px;margin-bottom:24px}
-.gauge-ring{width:120px;height:120px;border-radius:50%;background:conic-gradient(var(--indigo) 0deg,var(--indigo) 122deg,#e5e7eb 122deg,#e5e7eb 360deg);display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.gauge-inner{width:90px;height:90px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center}
-.gauge-val{font-family:'Manrope',sans-serif;font-size:1.5rem;font-weight:800;color:var(--indigo)}
-.gauge-info h4{font-size:1rem;margin-bottom:4px}
-.gauge-info p{font-size:0.875rem;color:#6b7280}
-.grid-bars{display:flex;flex-direction:column;gap:12px}
-.bar-row{display:flex;align-items:center;gap:12px;font-size:0.8125rem}
-.bar-lbl2{width:80px;flex-shrink:0;color:#6b7280}
-.bar-track{flex:1;height:8px;background:#e5e7eb;border-radius:4px}
-.bar-fill2{height:100%;border-radius:4px}
-.bar-val{width:60px;text-align:right;font-weight:600}
-.carbon-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-bottom:32px}
-.carbon-card{background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb}
-.carbon-card h4{font-size:0.9375rem;margin-bottom:8px}
-.carbon-val{font-family:'Manrope',sans-serif;font-size:2rem;font-weight:800}
-.carbon-detail{font-size:0.8125rem;color:#6b7280;margin-top:8px}
-.fcast-tbl{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;margin-bottom:32px}
-.fcast-tbl th{text-align:left;padding:12px 16px;font-size:0.8125rem;color:#6b7280;font-weight:600;border-bottom:1px solid #e5e7eb;background:var(--cloud)}
-.fcast-tbl td{padding:12px 16px;font-size:0.875rem;border-bottom:1px solid #f3f4f6}
-.fcast-tbl tr:last-child td{border-bottom:none}
-.badge-w{display:inline-block;padding:2px 10px;border-radius:20px;font-size:0.75rem;font-weight:600}
-.w-sunny{background:#fef3c7;color:#92400e}
-.w-cloudy{background:#f3f4f6;color:#6b7280}
-.w-windy{background:#dbeafe;color:#1d4ed8}
-.w-rainy{background:#e0e7ff;color:#3730a3}
-.site-footer{padding:32px 24px;text-align:center;font-size:0.8125rem;color:#9ca3af;border-top:1px solid #e5e7eb;margin-top:48px}
-:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
-@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
-@media(max-width:768px){.kpi-strip{grid-template-columns:repeat(2,1fr)}.site-grid,.carbon-grid{grid-template-columns:1fr}.bar-chart{height:150px}.grid-gauge{flex-direction:column}.fcast-tbl th,.fcast-tbl td{padding:8px 10px}}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terra Renewable Energy Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --indigo: #4F46E5;
+      --cyan: #06B6D4;
+      --lime: #A3E635;
+      --coral: #FB7185;
+      --white: #FFFFFF;
+      --muted: #667085;
+      --line: #E2E8F0;
+      --soft-indigo: rgba(79, 70, 229, 0.12);
+      --soft-cyan: rgba(6, 182, 212, 0.13);
+      --soft-lime: rgba(163, 230, 53, 0.18);
+      --soft-coral: rgba(251, 113, 133, 0.15);
+      --shadow: 0 22px 60px rgba(25, 33, 43, 0.08);
+      --radius: 8px;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      font-family: "Inter", sans-serif;
+      background: var(--cloud);
+      color: var(--ink);
+      letter-spacing: 0;
+    }
+    button,
+    input {
+      font: inherit;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    .shell {
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 18px clamp(18px, 4vw, 56px);
+      background: rgba(246, 248, 252, 0.92);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.82);
+      backdrop-filter: blur(18px);
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: max-content;
+    }
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--ink);
+      color: var(--lime);
+      box-shadow: 0 12px 26px rgba(25, 33, 43, 0.16);
+    }
+    .brand-mark svg {
+      width: 22px;
+      height: 22px;
+    }
+    .brand-text {
+      display: grid;
+      gap: 1px;
+    }
+    .brand-name {
+      font-family: "Manrope", sans-serif;
+      font-weight: 800;
+      font-size: 1.02rem;
+      line-height: 1;
+    }
+    .brand-subtitle {
+      font-size: 0.72rem;
+      color: var(--muted);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(14px, 2vw, 28px);
+      flex: 1;
+    }
+    .nav-links a {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #344054;
+      transition: color 160ms ease;
+    }
+    .nav-links a:hover {
+      color: var(--indigo);
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .search {
+      position: relative;
+      width: min(260px, 24vw);
+    }
+    .search svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      width: 16px;
+      height: 16px;
+      transform: translateY(-50%);
+      color: var(--muted);
+      pointer-events: none;
+    }
+    .search input {
+      width: 100%;
+      min-height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 0 12px 0 38px;
+      color: var(--ink);
+      background: var(--white);
+      outline: none;
+      box-shadow: 0 8px 24px rgba(25, 33, 43, 0.04);
+    }
+    .search input:focus {
+      border-color: rgba(79, 70, 229, 0.5);
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.11);
+    }
+    .live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 0 14px;
+      border: 1px solid rgba(6, 182, 212, 0.25);
+      border-radius: 8px;
+      background: var(--soft-cyan);
+      color: #075985;
+      font-size: 0.84rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--lime);
+      box-shadow: 0 0 0 0 rgba(163, 230, 53, 0.7);
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(163, 230, 53, 0.65); }
+      70% { box-shadow: 0 0 0 9px rgba(163, 230, 53, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(163, 230, 53, 0); }
+    }
+    .hamburger {
+      display: none;
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      color: var(--ink);
+      cursor: pointer;
+      place-items: center;
+    }
+    .hamburger svg {
+      width: 22px;
+      height: 22px;
+    }
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      background: rgba(25, 33, 43, 0.34);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+    }
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 90;
+      width: min(88vw, 360px);
+      height: 100vh;
+      padding: 22px;
+      background: var(--white);
+      box-shadow: -20px 0 60px rgba(25, 33, 43, 0.18);
+      transform: translateX(100%);
+      transition: transform 220ms ease;
+    }
+    body.drawer-open .drawer-backdrop {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    body.drawer-open .drawer {
+      transform: translateX(0);
+    }
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+    .close-drawer {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--cloud);
+      color: var(--ink);
+      cursor: pointer;
+    }
+    .drawer-nav {
+      display: grid;
+      gap: 12px;
+    }
+    .drawer-nav a {
+      padding: 14px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      font-weight: 800;
+      background: var(--cloud);
+    }
+    .hero {
+      position: relative;
+      padding: 42px clamp(18px, 4vw, 56px) 18px;
+      background:
+        linear-gradient(120deg, rgba(79, 70, 229, 0.1), transparent 34%),
+        linear-gradient(270deg, rgba(6, 182, 212, 0.12), transparent 45%),
+        var(--cloud);
+    }
+    .hero-inner {
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(320px, 0.95fr);
+      gap: clamp(24px, 4vw, 54px);
+      align-items: stretch;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    .hero-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-height: 360px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      width: fit-content;
+      gap: 8px;
+      margin-bottom: 18px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: var(--soft-lime);
+      color: #3f6212;
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .eyebrow svg {
+      width: 15px;
+      height: 15px;
+    }
+    h1,
+    h2,
+    h3 {
+      font-family: "Manrope", sans-serif;
+      margin: 0;
+      letter-spacing: 0;
+    }
+    h1 {
+      max-width: 760px;
+      font-size: clamp(2.5rem, 5.4vw, 5.8rem);
+      line-height: 0.95;
+      font-weight: 800;
+    }
+    .hero-copy p {
+      max-width: 660px;
+      margin: 22px 0 0;
+      color: #475467;
+      font-size: clamp(1rem, 1.3vw, 1.16rem);
+      line-height: 1.75;
+      font-weight: 500;
+    }
+    .hero-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 28px;
+    }
+    .primary-btn,
+    .secondary-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 46px;
+      padding: 0 18px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .primary-btn {
+      background: var(--ink);
+      color: var(--white);
+      box-shadow: 0 16px 32px rgba(25, 33, 43, 0.18);
+    }
+    .secondary-btn {
+      background: var(--white);
+      color: var(--ink);
+      border-color: var(--line);
+    }
+    .primary-btn svg,
+    .secondary-btn svg {
+      width: 18px;
+      height: 18px;
+    }
+    .operations-panel {
+      position: relative;
+      overflow: hidden;
+      min-height: 440px;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      border-radius: 8px;
+      background: var(--white);
+      box-shadow: var(--shadow);
+    }
+    .map-surface {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(25, 33, 43, 0.04) 1px, transparent 1px),
+        linear-gradient(rgba(25, 33, 43, 0.04) 1px, transparent 1px),
+        radial-gradient(circle at 20% 24%, rgba(163, 230, 53, 0.3), transparent 20%),
+        radial-gradient(circle at 78% 34%, rgba(6, 182, 212, 0.24), transparent 22%),
+        radial-gradient(circle at 56% 74%, rgba(79, 70, 229, 0.17), transparent 22%),
+        #FDFEFF;
+      background-size: 34px 34px, 34px 34px, auto, auto, auto, auto;
+    }
+    .line-route {
+      position: absolute;
+      left: 8%;
+      right: 7%;
+      top: 49%;
+      height: 3px;
+      background: linear-gradient(90deg, var(--lime), var(--cyan), var(--indigo));
+      transform: rotate(-8deg);
+      transform-origin: center;
+      box-shadow: 0 0 18px rgba(6, 182, 212, 0.3);
+    }
+    .node {
+      position: absolute;
+      width: 82px;
+      padding: 10px;
+      border: 1px solid rgba(226, 232, 240, 0.95);
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 12px 32px rgba(25, 33, 43, 0.11);
+      backdrop-filter: blur(12px);
+    }
+    .node strong {
+      display: block;
+      font-size: 0.78rem;
+      line-height: 1.1;
+    }
+    .node span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .node.solar { left: 11%; top: 18%; }
+    .node.wind { right: 12%; top: 26%; }
+    .node.storage { left: 44%; bottom: 14%; }
+    .node.grid { right: 16%; bottom: 20%; }
+    .panel-readout {
+      position: absolute;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+    .readout {
+      padding: 14px;
+      border-radius: 8px;
+      background: rgba(25, 33, 43, 0.88);
+      color: var(--white);
+    }
+    .readout span {
+      display: block;
+      margin-bottom: 6px;
+      color: #CBD5E1;
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .readout strong {
+      font-family: "Manrope", sans-serif;
+      font-size: 1.26rem;
+    }
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 22px clamp(18px, 4vw, 56px) 0;
+    }
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+    .kpi-card {
+      position: relative;
+      overflow: hidden;
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      box-shadow: 0 12px 36px rgba(25, 33, 43, 0.05);
+    }
+    .kpi-card::after {
+      content: "";
+      position: absolute;
+      right: -24px;
+      top: -24px;
+      width: 84px;
+      height: 84px;
+      border-radius: 50%;
+      background: var(--soft-cyan);
+    }
+    .kpi-card:nth-child(2)::after { background: var(--soft-indigo); }
+    .kpi-card:nth-child(3)::after { background: var(--soft-lime); }
+    .kpi-card:nth-child(4)::after { background: var(--soft-coral); }
+    .kpi-label {
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .kpi-value {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-top: 12px;
+      font-family: "Manrope", sans-serif;
+      font-size: clamp(2rem, 4vw, 3.2rem);
+      line-height: 1;
+      font-weight: 800;
+    }
+    .kpi-value small {
+      font-family: "Inter", sans-serif;
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-weight: 800;
+    }
+    .kpi-trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 13px;
+      color: #166534;
+      font-size: 0.82rem;
+      font-weight: 900;
+    }
+    .section-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
+      gap: 20px;
+      align-items: start;
+      margin-bottom: 22px;
+    }
+    .section,
+    .side-panel {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+      box-shadow: 0 12px 36px rgba(25, 33, 43, 0.05);
+    }
+    .section-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 22px 22px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    .section-kicker {
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+    .section-title {
+      margin-top: 6px;
+      font-size: clamp(1.35rem, 2vw, 2rem);
+      line-height: 1.1;
+      font-weight: 800;
+    }
+    .section-note {
+      margin: 7px 0 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.92rem;
+      font-weight: 500;
+    }
+    .chip-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 32px;
+      padding: 0 10px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: var(--cloud);
+      color: #344054;
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+    .chip-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cyan);
+    }
+    .chip.solar .chip-dot { background: var(--lime); }
+    .chip.wind .chip-dot { background: var(--cyan); }
+    .chip.storage .chip-dot { background: var(--indigo); }
+    .chart-wrap {
+      padding: 20px 22px 24px;
+    }
+    .chart {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(68px, 1fr));
+      gap: 16px;
+      min-height: 300px;
+      align-items: end;
+      padding: 18px 8px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .day {
+      display: grid;
+      grid-template-rows: 1fr auto;
+      gap: 12px;
+      min-width: 0;
+    }
+    .stack {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 4px;
+      height: 240px;
+    }
+    .bar {
+      width: 100%;
+      min-height: 10px;
+      border-radius: 6px 6px 3px 3px;
+      transition: transform 180ms ease, filter 180ms ease;
+    }
+    .day:hover .bar {
+      filter: saturate(1.12);
+      transform: translateY(-2px);
+    }
+    .bar.solar { background: linear-gradient(180deg, var(--lime), #65A30D); }
+    .bar.wind { background: linear-gradient(180deg, var(--cyan), #0284C7); }
+    .bar.hydro { background: linear-gradient(180deg, var(--indigo), #3730A3); }
+    .bar.storage { background: linear-gradient(180deg, var(--coral), #E11D48); }
+    .day-label {
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+    .chart-meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .meta-tile {
+      padding: 14px;
+      border-radius: 8px;
+      background: var(--cloud);
+    }
+    .meta-tile span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.75rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .meta-tile strong {
+      display: block;
+      margin-top: 7px;
+      font-family: "Manrope", sans-serif;
+      font-size: 1.35rem;
+    }
+    .forecast-panel {
+      padding: 22px;
+    }
+    .forecast-list {
+      display: grid;
+      gap: 12px;
+      margin-top: 18px;
+    }
+    .forecast-item {
+      display: grid;
+      grid-template-columns: 46px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      border-radius: 8px;
+      background: var(--cloud);
+    }
+    .forecast-icon {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--white);
+      color: var(--indigo);
+      box-shadow: 0 8px 20px rgba(25, 33, 43, 0.05);
+    }
+    .forecast-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+    .forecast-main strong {
+      display: block;
+      font-weight: 900;
+    }
+    .forecast-main span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    .forecast-output {
+      font-family: "Manrope", sans-serif;
+      font-size: 1.15rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .site-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      padding: 20px 22px 24px;
+    }
+    .site-card {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: linear-gradient(180deg, #FFFFFF, #FAFCFF);
+    }
+    .site-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .site-icon {
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--soft-cyan);
+      color: #075985;
+    }
+    .site-card:nth-child(2) .site-icon { background: var(--soft-lime); color: #3f6212; }
+    .site-card:nth-child(3) .site-icon { background: var(--soft-indigo); color: var(--indigo); }
+    .site-card:nth-child(4) .site-icon { background: var(--soft-coral); color: #be123c; }
+    .site-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+    .status-tag {
+      min-height: 28px;
+      padding: 0 9px;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 8px;
+      background: var(--soft-lime);
+      color: #3f6212;
+      font-size: 0.72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .site-card h3 {
+      margin-top: 18px;
+      font-size: 1.12rem;
+      line-height: 1.15;
+    }
+    .site-type {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+    .site-stats {
+      display: grid;
+      gap: 10px;
+      margin-top: 18px;
+    }
+    .site-stat {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.84rem;
+      font-weight: 800;
+    }
+    .site-stat span {
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .progress {
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #E5E7EB;
+    }
+    .progress > i {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--cyan), var(--lime));
+    }
+    .grid-layout {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 20px;
+      padding: 20px 22px 24px;
+    }
+    .gauge-card {
+      padding: 22px;
+      border-radius: 8px;
+      background: var(--ink);
+      color: var(--white);
+    }
+    .gauge {
+      position: relative;
+      width: min(260px, 100%);
+      aspect-ratio: 1;
+      margin: 12px auto 20px;
+      border-radius: 50%;
+      background: conic-gradient(var(--lime) 0 68%, var(--cyan) 68% 86%, rgba(255,255,255,0.16) 86% 100%);
+      display: grid;
+      place-items: center;
+    }
+    .gauge::after {
+      content: "";
+      position: absolute;
+      inset: 22px;
+      border-radius: 50%;
+      background: var(--ink);
+    }
+    .gauge-value {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+    .gauge-value strong {
+      display: block;
+      font-family: "Manrope", sans-serif;
+      font-size: clamp(2.6rem, 5vw, 4rem);
+      line-height: 1;
+    }
+    .gauge-value span {
+      display: block;
+      margin-top: 8px;
+      color: #CBD5E1;
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .grid-metrics {
+      display: grid;
+      gap: 14px;
+    }
+    .metric-row {
+      display: grid;
+      grid-template-columns: 130px 1fr 74px;
+      gap: 12px;
+      align-items: center;
+      padding: 14px;
+      border-radius: 8px;
+      background: var(--cloud);
+    }
+    .metric-row span {
+      color: var(--muted);
+      font-size: 0.84rem;
+      font-weight: 800;
+    }
+    .metric-row strong {
+      text-align: right;
+      font-weight: 900;
+    }
+    .rail {
+      height: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: #E5E7EB;
+    }
+    .rail i {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--indigo), var(--cyan));
+    }
+    .battery-bank {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .battery {
+      min-height: 92px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      gap: 7px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--white);
+    }
+    .battery-fill {
+      border-radius: 6px;
+      background: linear-gradient(180deg, var(--lime), var(--cyan));
+    }
+    .battery span {
+      color: var(--muted);
+      font-size: 0.72rem;
+      font-weight: 900;
+      text-align: center;
+    }
+    .carbon-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px;
+      padding: 20px 22px 24px;
+    }
+    .carbon-card {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--cloud);
+    }
+    .carbon-card h3 {
+      font-size: 1.05rem;
+      line-height: 1.2;
+    }
+    .carbon-value {
+      margin-top: 14px;
+      font-family: "Manrope", sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .carbon-card p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .cert-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .cert-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      background: var(--white);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+    .cert-item span {
+      color: var(--muted);
+      font-weight: 700;
+    }
+    .forecast-wide {
+      margin-bottom: 28px;
+    }
+    .hourly {
+      display: grid;
+      grid-template-columns: repeat(8, minmax(92px, 1fr));
+      gap: 12px;
+      padding: 20px 22px 24px;
+      overflow-x: auto;
+    }
+    .hour-card {
+      min-width: 92px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: linear-gradient(180deg, #FFFFFF, #F8FAFC);
+      text-align: center;
+    }
+    .hour-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 900;
+    }
+    .hour-card svg {
+      width: 24px;
+      height: 24px;
+      margin: 12px auto;
+      color: var(--cyan);
+    }
+    .hour-card strong {
+      display: block;
+      font-family: "Manrope", sans-serif;
+      font-size: 1.12rem;
+    }
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 28px clamp(18px, 4vw, 56px);
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+    .footer-links {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    @media (max-width: 1100px) {
+      .hero-inner,
+      .section-grid,
+      .grid-layout {
+        grid-template-columns: 1fr;
+      }
+      .kpi-strip,
+      .site-grid,
+      .carbon-layout {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .operations-panel {
+        min-height: 390px;
+      }
+      .search {
+        display: none;
+      }
+    }
+    @media (max-width: 820px) {
+      .nav-links,
+      .nav-actions .live-pill {
+        display: none;
+      }
+      .hamburger {
+        display: grid;
+      }
+      .hero {
+        padding-top: 28px;
+      }
+      .hero-copy {
+        min-height: auto;
+      }
+      .chart {
+        overflow-x: auto;
+        grid-template-columns: repeat(7, 82px);
+      }
+      .chart-meta,
+      .panel-readout {
+        grid-template-columns: 1fr;
+      }
+      .panel-readout {
+        position: relative;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        padding: 20px;
+        margin-top: 260px;
+      }
+      .operations-panel {
+        min-height: auto;
+      }
+      .map-surface {
+        height: 260px;
+        bottom: auto;
+      }
+      .footer {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+    @media (max-width: 620px) {
+      .topbar {
+        padding: 14px 16px;
+      }
+      .brand-subtitle {
+        display: none;
+      }
+      .hero,
+      main {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+      .kpi-strip,
+      .site-grid,
+      .carbon-layout {
+        grid-template-columns: 1fr;
+      }
+      .section-header {
+        flex-direction: column;
+      }
+      .chip-row {
+        justify-content: flex-start;
+      }
+      .metric-row {
+        grid-template-columns: 1fr;
+      }
+      .metric-row strong {
+        text-align: left;
+      }
+      .battery-bank {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .forecast-item {
+        grid-template-columns: 42px 1fr;
+      }
+      .forecast-output {
+        grid-column: 2;
+      }
+    }
+  </style>
 </head>
 <body>
-<a href="#main" class="skip-link">Skip to content</a>
-<header class="top-nav">
-  <button class="hamburger" aria-label="Open menu" aria-expanded="false" onclick="document.getElementById('drawer').classList.toggle('open');document.getElementById('overlay').classList.toggle('open');this.setAttribute('aria-expanded',document.getElementById('drawer').classList.contains('open'))">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
-  </button>
-  <a href="#" class="nav-brand">
-    <svg viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="12" stroke="#4F46E5" stroke-width="2"/><circle cx="14" cy="14" r="5" fill="#A3E635"/><path d="M14 2v4M14 22v4M2 14h4M22 14h4" stroke="#06B6D4" stroke-width="1.5"/></svg>
-    Terra Renewable Energy
-  </a>
-  <nav class="nav-links" aria-label="Main">
-    <a href="#" aria-current="page">Dashboard</a>
-    <a href="#production">Production</a>
-    <a href="#sites">Sites</a>
-    <a href="#grid">Grid</a>
-    <a href="#carbon">Carbon</a>
-  </nav>
-  <div class="nav-search">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
-    <input type="search" title="Search sites" aria-label="Search sites">
-  </div>
-  <div class="nav-live"><span class="live-dot"></span>Live</div>
-</header>
-<div class="drawer-overlay" id="overlay" onclick="document.getElementById('drawer').classList.remove('open');this.classList.remove('open')"></div>
-<aside class="drawer" id="drawer" role="dialog" aria-label="Navigation">
-  <button class="drawer-close" aria-label="Close menu" onclick="document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open')">&times;</button>
-  <nav><a href="#">Dashboard</a><a href="#production">Production</a><a href="#sites">Sites</a><a href="#grid">Grid</a><a href="#carbon">Carbon</a></nav>
-</aside>
-<main id="main">
-  <div class="kpi-strip" role="region" aria-label="Key metrics">
-    <div class="kpi-card"><div class="kpi-label">Current Generation</div><div class="kpi-value">247 MW</div><div class="kpi-trend up">↑ 12% vs forecast</div></div>
-    <div class="kpi-card"><div class="kpi-label">Capacity Utilization</div><div class="kpi-value">78%</div><div class="kpi-trend up">↑ 5% from yesterday</div></div>
-    <div class="kpi-card"><div class="kpi-label">Carbon Offset YTD</div><div class="kpi-value">18.4K t</div><div class="kpi-trend up">↑ 2.1K vs target</div></div>
-    <div class="kpi-card"><div class="kpi-label">Grid Contribution</div><div class="kpi-value">34%</div><div class="kpi-trend up">↑ 3% this month</div></div>
-  </div>
-  <div class="main">
-    <section id="production" aria-labelledby="prod-heading">
-      <div class="chart-box">
-        <h3 class="chart-title" id="prod-heading">Energy Production by Source — 7 Day</h3>
-        <div class="chart-sub">MWh generated per day across all sites</div>
-        <div class="bar-chart" role="img" aria-label="Stacked bar chart of solar, wind, hydro production over 7 days">
-          <div class="bar-group"><div class="bar-stack"><div class="bar-seg" style="height:60px;background:var(--lime)"></div><div class="bar-seg" style="height:80px;background:var(--cyan)"></div><div class="bar-seg" style="height:40px;background:var(--indigo)"></div></div><span class="bar-lbl">Mon</span></div>
-          <div class="bar-group"><div class="bar-stack"><div class="bar-seg" style="height:70px;background:var(--lime)"></div><div class="bar-seg" style="height:90px;background:var(--cyan)"></div><div class="bar-seg" style="height:35px;background:var(--indigo)"></div></div><span class="bar-lbl">Tue</span></div>
-          <div class="bar-group"><div class="bar-stack"><div class="bar-seg" style="height:45px;background:var(--lime)"></div><div class="bar-seg" style="height:60px;background:var(--cyan)"></div><div class="bar-seg" style="height:50px;background:var(--indigo)"></div></div><span class="bar-lbl">Wed</span></div>
-          <div class="bar-group"><div class="bar-stack"><div class="bar-seg" style="height:80px;background:var(--lime)"></div><div class="bar-seg" style="height:100px;background:var(--cyan)"></div><div class="bar-seg" style="height:30px;background:var(--indigo)"></div></div><span class="bar-lbl">Thu</span></div>
-          <div class="bar-group"><div class="bar-stack"><div class="bar-seg" style="height:55px;background:var(--lime)"></div><div class="bar-seg" style="height:75px;background:var(--cyan)"></div><div class="bar-seg" style="height:45px;background:var(--indigo)"></div></div><span class="bar-lbl">Fri</span></div>
-          <div class="bar-group"><div class="bar-stack"><div class="bar-seg" style="height:90px;background:var(--lime)"></div><div class="bar-seg" style="height:85px;background:var(--cyan)"></div><div class="bar-seg" style="height:25px;background:var(--indigo)"></div></div><span class="bar-lbl">Sat</span></div>
-          <div class="bar-group"><div class="bar-stack"><div class="bar-seg" style="height:65px;background:var(--lime)"></div><div class="bar-seg" style="height:70px;background:var(--cyan)"></div><div class="bar-seg" style="height:35px;background:var(--indigo)"></div></div><span class="bar-lbl">Sun</span></div>
-        </div>
-        <div class="chart-legend">
-          <div class="legend-item"><span class="legend-dot" style="background:var(--lime)"></span>Solar</div>
-          <div class="legend-item"><span class="legend-dot" style="background:var(--cyan)"></span>Wind</div>
-          <div class="legend-item"><span class="legend-dot" style="background:var(--indigo)"></span>Hydro</div>
-        </div>
+  <div class="shell">
+    <header class="topbar" aria-label="Primary navigation">
+      <a class="brand" href="#top" aria-label="Terra dashboard home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M5 9c4 0 7-3 7-7"/><path d="M19 9c-4 0-7-3-7-7"/><path d="M5 15c4 0 7 3 7 7"/><path d="M19 15c-4 0-7 3-7 7"/></svg>
+        </span>
+        <span class="brand-text">
+          <span class="brand-name">Terra</span>
+          <span class="brand-subtitle">Renewable Energy</span>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Dashboard sections">
+        <a href="#production">Production</a>
+        <a href="#sites">Sites</a>
+        <a href="#grid">Grid</a>
+        <a href="#carbon">Carbon</a>
+      </nav>
+      <div class="nav-actions">
+        <label class="search" aria-label="Search sites">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="search" placeholder="Search assets" />
+        </label>
+        <span class="live-pill"><i class="pulse"></i> Live grid</span>
+        <button class="hamburger" type="button" aria-label="Open navigation" data-open-drawer>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
       </div>
-    </section>
-    <section id="sites" aria-labelledby="sites-heading">
-      <div class="section-header">
-        <h2 id="sites-heading">Site Monitoring</h2>
-        <span class="badge">8 Active Sites</span>
-      </div>
-      <div class="site-grid">
-        <div class="site-card">
-          <div class="site-hdr"><h4>Solaris Alpha Farm</h4><span class="badge-type type-solar">Solar</span></div>
-          <div class="site-stats"><div><span class="site-stat-label">Capacity</span><br><span class="site-stat-val">45 MW</span></div><div><span class="site-stat-label">Output</span><br><span class="site-stat-val">38 MW</span></div><div><span class="site-stat-label">Efficiency</span><br><span class="site-stat-val">84%</span></div><div><span class="site-stat-label">Uptime</span><br><span class="site-stat-val">99.7%</span></div></div>
-          <div class="site-bar"><div class="site-bar-fill" style="width:84%;background:var(--lime)"></div></div>
-        </div>
-        <div class="site-card">
-          <div class="site-hdr"><h4>Zephyr Wind Park</h4><span class="badge-type type-wind">Wind</span></div>
-          <div class="site-stats"><div><span class="site-stat-label">Capacity</span><br><span class="site-stat-val">120 MW</span></div><div><span class="site-stat-label">Output</span><br><span class="site-stat-val">96 MW</span></div><div><span class="site-stat-label">Efficiency</span><br><span class="site-stat-val">80%</span></div><div><span class="site-stat-label">Uptime</span><br><span class="site-stat-val">98.2%</span></div></div>
-          <div class="site-bar"><div class="site-bar-fill" style="width:80%;background:var(--cyan)"></div></div>
-        </div>
-        <div class="site-card">
-          <div class="site-hdr"><h4>AquaFlow Hydro Station</h4><span class="badge-type type-hydro">Hydro</span></div>
-          <div class="site-stats"><div><span class="site-stat-label">Capacity</span><br><span class="site-stat-val">60 MW</span></div><div><span class="site-stat-label">Output</span><br><span class="site-stat-val">52 MW</span></div><div><span class="site-stat-label">Efficiency</span><br><span class="site-stat-val">87%</span></div><div><span class="site-stat-label">Uptime</span><br><span class="site-stat-val">99.9%</span></div></div>
-          <div class="site-bar"><div class="site-bar-fill" style="width:87%;background:var(--indigo)"></div></div>
-        </div>
-        <div class="site-card">
-          <div class="site-hdr"><h4>VoltGrid Battery Hub</h4><span class="badge-type type-battery">Battery</span></div>
-          <div class="site-stats"><div><span class="site-stat-label">Capacity</span><br><span class="site-stat-val">25 MWh</span></div><div><span class="site-stat-label">Stored</span><br><span class="site-stat-val">18 MWh</span></div><div><span class="site-stat-label">Charge Rate</span><br><span class="site-stat-val">72%</span></div><div><span class="site-stat-label">Cycles</span><br><span class="site-stat-val">1,247</span></div></div>
-          <div class="site-bar"><div class="site-bar-fill" style="width:72%;background:#8b5cf6"></div></div>
-        </div>
-        <div class="site-card">
-          <div class="site-hdr"><h4>Helios Solar Array B</h4><span class="badge-type type-solar">Solar</span></div>
-          <div class="site-stats"><div><span class="site-stat-label">Capacity</span><br><span class="site-stat-val">30 MW</span></div><div><span class="site-stat-label">Output</span><br><span class="site-stat-val">27 MW</span></div><div><span class="site-stat-label">Efficiency</span><br><span class="site-stat-val">90%</span></div><div><span class="site-stat-label">Uptime</span><br><span class="site-stat-val">99.8%</span></div></div>
-          <div class="site-bar"><div class="site-bar-fill" style="width:90%;background:var(--lime)"></div></div>
-        </div>
-        <div class="site-card">
-          <div class="site-hdr"><h4>Gale Force Wind Farm B</h4><span class="badge-type type-wind">Wind</span></div>
-          <div class="site-stats"><div><span class="site-stat-label">Capacity</span><br><span class="site-stat-val">85 MW</span></div><div><span class="site-stat-label">Output</span><br><span class="site-stat-val">72 MW</span></div><div><span class="site-stat-label">Efficiency</span><br><span class="site-stat-val">85%</span></div><div><span class="site-stat-label">Uptime</span><br><span class="site-stat-val">97.5%</span></div></div>
-          <div class="site-bar"><div class="site-bar-fill" style="width:85%;background:var(--cyan)"></div></div>
-        </div>
-        <div class="site-card">
-          <div class="site-hdr"><h4>River Delta Hydro B</h4><span class="badge-type type-hydro">Hydro</span></div>
-          <div class="site-stats"><div><span class="site-stat-label">Capacity</span><br><span class="site-stat-val">40 MW</span></div><div><span class="site-stat-label">Output</span><br><span class="site-stat-val">38 MW</span></div><div><span class="site-stat-label">Efficiency</span><br><span class="site-stat-val">95%</span></div><div><span class="site-stat-label">Uptime</span><br><span class="site-stat-val">99.9%</span></div></div>
-          <div class="site-bar"><div class="site-bar-fill" style="width:95%;background:var(--indigo)"></div></div>
-        </div>
-        <div class="site-card">
-          <div class="site-hdr"><h4>PowerVault Grid Storage</h4><span class="badge-type type-battery">Battery</span></div>
-          <div class="site-stats"><div><span class="site-stat-label">Capacity</span><br><span class="site-stat-val">40 MWh</span></div><div><span class="site-stat-label">Stored</span><br><span class="site-stat-val">35 MWh</span></div><div><span class="site-stat-label">Charge Rate</span><br><span class="site-stat-val">88%</span></div><div><span class="site-stat-label">Cycles</span><br><span class="site-stat-val">2,103</span></div></div>
-          <div class="site-bar"><div class="site-bar-fill" style="width:88%;background:#8b5cf6"></div></div>
-        </div>
-      </div>
-    </section>
-    <section id="grid" aria-labelledby="grid-heading">
-      <div class="section-header">
-        <h2 id="grid-heading">Grid Management</h2>
-        <span class="badge">Live</span>
-      </div>
-      <div class="grid-box">
-        <div class="grid-gauge">
-          <div class="gauge-ring"><div class="gauge-inner"><span class="gauge-val">34%</span></div></div>
-          <div class="gauge-info">
-            <h4>Grid Load Contribution</h4>
-            <p>Terra currently supplies 34% of regional grid demand. All renewable sources operating above forecast due to favorable weather conditions across the portfolio.</p>
-          </div>
-        </div>
-        <div class="grid-bars">
-          <div class="bar-row"><span class="bar-lbl2">Solar</span><div class="bar-track"><div class="bar-fill2" style="width:84%;background:var(--lime)"></div></div><span class="bar-val">65 MW</span></div>
-          <div class="bar-row"><span class="bar-lbl2">Wind</span><div class="bar-track"><div class="bar-fill2" style="width:80%;background:var(--cyan)"></div></div><span class="bar-val">168 MW</span></div>
-          <div class="bar-row"><span class="bar-lbl2">Hydro</span><div class="bar-track"><div class="bar-fill2" style="width:90%;background:var(--indigo)"></div></div><span class="bar-val">90 MW</span></div>
-          <div class="bar-row"><span class="bar-lbl2">Battery</span><div class="bar-track"><div class="bar-fill2" style="width:80%;background:#8b5cf6"></div></div><span class="bar-val">53 MWh</span></div>
-          <div class="bar-row"><span class="bar-lbl2">Demand</span><div class="bar-track"><div class="bar-fill2" style="width:100%;background:var(--coral)"></div></div><span class="bar-val">726 MW</span></div>
-        </div>
-      </div>
-    </section>
-    <section id="carbon" aria-labelledby="carbon-heading">
-      <div class="section-header">
-        <h2 id="carbon-heading">Carbon Tracking</h2>
-        <span class="badge">YTD Performance</span>
-      </div>
-      <div class="carbon-grid">
-        <div class="carbon-card"><h4>Total Carbon Offset</h4><div class="carbon-val" style="color:var(--lime)">18,420 t</div><div class="carbon-detail">CO₂ equivalent avoided this year</div></div>
-        <div class="carbon-card"><h4>Monthly Average</h4><div class="carbon-val" style="color:var(--cyan)">2,047 t</div><div class="carbon-detail">Monthly offset rate</div></div>
-        <div class="carbon-card"><h4>Active Projects</h4><div class="carbon-val" style="color:var(--indigo)">12</div><div class="carbon-detail">Offset verification projects</div></div>
-        <div class="carbon-card"><h4>Certifications</h4><div class="carbon-val" style="color:#8b5cf6">3</div><div class="carbon-detail">Gold Standard, VCS, CDM</div></div>
-      </div>
-    </section>
-    <section aria-labelledby="forecast-heading">
-      <div class="section-header">
-        <h2 id="forecast-heading">Energy Forecast</h2>
-        <span class="badge">Next 5 Days</span>
-      </div>
-      <table class="fcast-tbl">
-        <thead><tr><th>Date</th><th>Weather</th><th>Solar</th><th>Wind</th><th>Hydro</th><th>Total</th><th>vs Target</th></tr></thead>
-        <tbody>
-          <tr><td>Feb 11</td><td><span class="badge-w w-sunny">Sunny</span></td><td>42 MW</td><td>85 MW</td><td>55 MW</td><td><strong>182 MW</strong></td><td style="color:#059669">+8%</td></tr>
-          <tr><td>Feb 12</td><td><span class="badge-w w-sunny">Sunny</span></td><td>44 MW</td><td>78 MW</td><td>54 MW</td><td><strong>176 MW</strong></td><td style="color:#059669">+4%</td></tr>
-          <tr><td>Feb 13</td><td><span class="badge-w w-cloudy">Cloudy</span></td><td>28 MW</td><td>92 MW</td><td>56 MW</td><td><strong>176 MW</strong></td><td style="color:#059669">+4%</td></tr>
-          <tr><td>Feb 14</td><td><span class="badge-w w-windy">Windy</span></td><td>32 MW</td><td>110 MW</td><td>55 MW</td><td><strong>197 MW</strong></td><td style="color:#059669">+16%</td></tr>
-          <tr><td>Feb 15</td><td><span class="badge-w w-rainy">Rainy</span></td><td>18 MW</td><td>65 MW</td><td>62 MW</td><td><strong>145 MW</strong></td><td style="color:var(--coral)">-15%</td></tr>
-        </tbody>
-      </table>
-    </section>
-    <section aria-labelledby="impact-heading">
-      <div class="section-header">
-        <h2 id="impact-heading">Environmental Impact</h2>
-        <span class="badge">Lifetime</span>
-      </div>
-      <div class="carbon-grid">
-        <div class="carbon-card"><h4>Homes Powered</h4><div class="carbon-val" style="color:var(--cyan)">52,800</div><div class="carbon-detail">Equivalent homes supplied annually</div></div>
-        <div class="carbon-card"><h4>Trees Equivalent</h4><div class="carbon-val" style="color:var(--lime)">890K</div><div class="carbon-detail">Trees worth of CO₂ absorption</div></div>
-        <div class="carbon-card"><h4>Cars Removed</h4><div class="carbon-val" style="color:var(--indigo)">4,200</div><div class="carbon-detail">Vehicles taken off road equivalent</div></div>
-        <div class="carbon-card"><h4>Water Saved</h4><div class="carbon-val" style="color:#8b5cf6">1.2M gal</div><div class="carbon-detail">Vs traditional power generation</div></div>
-      </div>
-    </section>
-    <section aria-labelledby="maint-heading">
-      <div class="section-header">
-        <h2 id="maint-heading">Maintenance Schedule</h2>
-        <span class="badge">This Month</span>
-      </div>
-      <table class="fcast-tbl">
-        <thead><tr><th>Site</th><th>Task</th><th>Scheduled</th><th>Duration</th><th>Impact</th><th>Status</th></tr></thead>
-        <tbody>
-          <tr><td>Solaris Alpha</td><td>Panel Cleaning</td><td>Feb 12</td><td>4 hours</td><td>-5% output</td><td><span class="badge-w w-sunny">Scheduled</span></td></tr>
-          <tr><td>Zephyr Wind</td><td>Turbine Inspection</td><td>Feb 14</td><td>8 hours</td><td>-12% output</td><td><span class="badge-w w-sunny">Scheduled</span></td></tr>
-          <tr><td>AquaFlow Hydro</td><td>Generator Service</td><td>Feb 18</td><td>6 hours</td><td>-8% output</td><td><span class="badge-w w-cloudy">Pending</span></td></tr>
-          <tr><td>VoltGrid Battery</td><td>Cell Balancing</td><td>Feb 20</td><td>2 hours</td><td>No impact</td><td><span class="badge-w w-cloudy">Pending</span></td></tr>
-          <tr><td>Helios Solar B</td><td>Inverter Replacement</td><td>Feb 22</td><td>3 hours</td><td>-15% output</td><td><span class="badge-w w-windy">Parts ordered</span></td></tr>
-          <tr><td>Gale Force B</td><td>Bearing Lubrication</td><td>Feb 25</td><td>5 hours</td><td>-10% output</td><td><span class="badge-w w-cloudy">Pending</span></td></tr>
-          <tr><td>River Delta B</td><td>Gate Valve Check</td><td>Feb 28</td><td>4 hours</td><td>-3% output</td><td><span class="badge-w w-cloudy">Pending</span></td></tr>
-        </tbody>
-      </table>
-    </section>
-    <section aria-labelledby="alerts-heading">
-      <div class="section-header">
-        <h2 id="alerts-heading">Active Alerts</h2>
-        <span class="badge">4 Active</span>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:32px">
-        <div style="background:#fff;border-radius:8px;padding:12px 16px;border:1px solid #e5e7eb;border-left:4px solid var(--coral);display:flex;align-items:center;gap:12px;font-size:0.875rem">
-          <span style="font-size:1rem">⚠️</span>
-          <div style="flex:1"><strong>Gale Force B</strong> — Turbine #3 vibration above threshold. Inspection recommended.</div>
-          <span style="font-size:0.75rem;color:#9ca3af">2 hours ago</span>
-        </div>
-        <div style="background:#fff;border-radius:8px;padding:12px 16px;border:1px solid #e5e7eb;border-left:4px solid #f59e0b;display:flex;align-items:center;gap:12px;font-size:0.875rem">
-          <span style="font-size:1rem">⚡</span>
-          <div style="flex:1"><strong>VoltGrid Battery</strong> — State of charge below 20%. Grid charging initiated.</div>
-          <span style="font-size:0.75rem;color:#9ca3af">4 hours ago</span>
-        </div>
-        <div style="background:#fff;border-radius:8px;padding:12px 16px;border:1px solid #e5e7eb;border-left:4px solid #059669;display:flex;align-items:center;gap:12px;font-size:0.875rem">
-          <span style="font-size:1rem">✅</span>
-          <div style="flex:1"><strong>Solaris Alpha</strong> — Dust storm warning cleared. Normal operations resumed.</div>
-          <span style="font-size:0.75rem;color:#9ca3af">6 hours ago</span>
-        </div>
-        <div style="background:#fff;border-radius:8px;padding:12px 16px;border:1px solid #e5e7eb;border-left:4px solid var(--coral);display:flex;align-items:center;gap:12px;font-size:0.875rem">
-          <span style="font-size:1rem">🌡️</span>
-          <div style="flex:1"><strong>Helios Solar B</strong> — Inverter temperature above normal. Monitoring closely.</div>
-          <span style="font-size:0.75rem;color:#9ca3af">8 hours ago</span>
-        </div>
-      </div>
-    </section>
-    <section aria-labelledby="revenue-heading">
-      <div class="section-header">
-        <h2 id="revenue-heading">Revenue & Economics</h2>
-        <span class="badge">This Quarter</span>
-      </div>
-      <div class="carbon-grid">
-        <div class="carbon-card"><h4>Energy Revenue</h4><div class="carbon-val" style="color:var(--indigo)">$3.2M</div><div class="carbon-detail">Power purchase agreements + spot market</div></div>
-        <div class="carbon-card"><h4>Carbon Credits</h4><div class="carbon-val" style="color:var(--lime)">$420K</div><div class="carbon-detail">Credits sold on voluntary market</div></div>
-        <div class="carbon-card"><h4>Operating Costs</h4><div class="carbon-val" style="color:var(--coral)">$890K</div><div class="carbon-detail">Maintenance, staffing, insurance</div></div>
-        <div class="carbon-card"><h4>Net Margin</h4><div class="carbon-val" style="color:#059669">73%</div><div class="carbon-detail">Industry-leading efficiency</div></div>
-      </div>
-    </section>
-  </div>
-</main>
-<!-- EXPANDED SECTIONS TO REACH LINE COUNT -->
-<div style="padding:0 24px 48px">
-  <section aria-labelledby="hourly-heading">
-    <div class="section-header">
-      <h2 id="hourly-heading">Hourly Generation Breakdown</h2>
-      <span class="badge">Today</span>
-    </div>
-    <table class="fcast-tbl">
-      <thead>
-        <tr>
-          <th>Hour</th>
-          <th>Solar (MW)</th>
-          <th>Wind (MW)</th>
-          <th>Hydro (MW)</th>
-          <th>Battery (MWh)</th>
-          <th>Total (MW)</th>
-          <th>Demand (MW)</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr><td>00:00</td><td>0</td><td>42</td><td>48</td><td>+5</td><td><strong>90</strong></td><td>312</td><td><span class="badge-w w-cloudy">Low</span></td></tr>
-        <tr><td>02:00</td><td>0</td><td>38</td><td>46</td><td>+3</td><td><strong>84</strong></td><td>285</td><td><span class="badge-w w-cloudy">Low</span></td></tr>
-        <tr><td>04:00</td><td>0</td><td>35</td><td>47</td><td>+2</td><td><strong>82</strong></td><td>278</td><td><span class="badge-w w-cloudy">Low</span></td></tr>
-        <tr><td>06:00</td><td>12</td><td>40</td><td>50</td><td>0</td><td><strong>102</strong></td><td>345</td><td><span class="badge-w w-windy">Rising</span></td></tr>
-        <tr><td>08:00</td><td>35</td><td>52</td><td>52</td><td>-3</td><td><strong>139</strong></td><td>420</td><td><span class="badge-w w-sunny">Good</span></td></tr>
-        <tr><td>10:00</td><td>58</td><td>65</td><td>54</td><td>-5</td><td><strong>177</strong></td><td>485</td><td><span class="badge-w w-sunny">Good</span></td></tr>
-        <tr><td>12:00</td><td>65</td><td>70</td><td>55</td><td>-8</td><td><strong>190</strong></td><td>510</td><td><span class="badge-w w-sunny">Peak</span></td></tr>
-        <tr><td>14:00</td><td>62</td><td>68</td><td>54</td><td>-6</td><td><strong>184</strong></td><td>498</td><td><span class="badge-w w-sunny">Good</span></td></tr>
-        <tr><td>16:00</td><td>45</td><td>60</td><td>52</td><td>-2</td><td><strong>157</strong></td><td>465</td><td><span class="badge-w w-windy">Moderate</span></td></tr>
-        <tr><td>18:00</td><td>18</td><td>55</td><td>50</td><td>+4</td><td><strong>123</strong></td><td>430</td><td><span class="badge-w w-cloudy">Declining</span></td></tr>
-        <tr><td>20:00</td><td>0</td><td>48</td><td>48</td><td>+6</td><td><strong>96</strong></td><td>380</td><td><span class="badge-w w-cloudy">Low</span></td></tr>
-        <tr><td>22:00</td><td>0</td><td>44</td><td>47</td><td>+5</td><td><strong>91</strong></td><td>340</td><td><span class="badge-w w-cloudy">Low</span></td></tr>
-      </tbody>
-    </table>
-  </section>
-  <section aria-labelledby="perf-heading">
-    <div class="section-header">
-      <h2 id="perf-heading">Site Performance Ranking</h2>
-      <span class="badge">This Month</span>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:32px">
-      <div style="background:#fff;border-radius:8px;padding:16px;border:1px solid #e5e7eb;display:flex;align-items:center;gap:16px">
-        <span style="font-family:'Manrope',sans-serif;font-weight:800;font-size:1.25rem;color:var(--lime)">#1</span>
-        <div style="flex:1"><strong>River Delta Hydro B</strong><br><span style="font-size:0.8125rem;color:#6b7280">95% efficiency · 99.9% uptime</span></div>
-        <div style="width:120px;height:6px;background:#e5e7eb;border-radius:3px"><div style="height:100%;border-radius:3px;background:var(--lime);width:95%"></div></div>
-      </div>
-      <div style="background:#fff;border-radius:8px;padding:16px;border:1px solid #e5e7eb;display:flex;align-items:center;gap:16px">
-        <span style="font-family:'Manrope',sans-serif;font-weight:800;font-size:1.25rem;color:var(--cyan)">#2</span>
-        <div style="flex:1"><strong>Helios Solar Array B</strong><br><span style="font-size:0.8125rem;color:#6b7280">90% efficiency · 99.8% uptime</span></div>
-        <div style="width:120px;height:6px;background:#e5e7eb;border-radius:3px"><div style="height:100%;border-radius:3px;background:var(--cyan);width:90%"></div></div>
-      </div>
-      <div style="background:#fff;border-radius:8px;padding:16px;border:1px solid #e5e7eb;display:flex;align-items:center;gap:16px">
-        <span style="font-family:'Manrope',sans-serif;font-weight:800;font-size:1.25rem;color:var(--indigo)">#3</span>
-        <div style="flex:1"><strong>AquaFlow Hydro Station</strong><br><span style="font-size:0.8125rem;color:#6b7280">87% efficiency · 99.9% uptime</span></div>
-        <div style="width:120px;height:6px;background:#e5e7eb;border-radius:3px"><div style="height:100%;border-radius:3px;background:var(--indigo);width:87%"></div></div>
-      </div>
-      <div style="background:#fff;border-radius:8px;padding:16px;border:1px solid #e5e7eb;display:flex;align-items:center;gap:16px">
-        <span style="font-family:'Manrope',sans-serif;font-weight:800;font-size:1.25rem;color:#f59e0b">#4</span>
-        <div style="flex:1"><strong>Gale Force Wind Farm B</strong><br><span style="font-size:0.8125rem;color:#6b7280">85% efficiency · 97.5% uptime</span></div>
-        <div style="width:120px;height:6px;background:#e5e7eb;border-radius:3px"><div style="height:100%;border-radius:3px;background:#f59e0b;width:85%"></div></div>
-      </div>
-      <div style="background:#fff;border-radius:8px;padding:16px;border:1px solid #e5e7eb;display:flex;align-items:center;gap:16px">
-        <span style="font-family:'Manrope',sans-serif;font-weight:800;font-size:1.25rem;color:#f59e0b">#5</span>
-        <div style="flex:1"><strong>Solaris Alpha Farm</strong><br><span style="font-size:0.8125rem;color:#6b7280">84% efficiency · 99.7% uptime</span></div>
-        <div style="width:120px;height:6px;background:#e5e7eb;border-radius:3px"><div style="height:100%;border-radius:3px;background:#f59e0b;width:84%"></div></div>
-      </div>
-      <div style="background:#fff;border-radius:8px;padding:16px;border:1px solid #e5e7eb;display:flex;align-items:center;gap:16px">
-        <span style="font-family:'Manrope',sans-serif;font-weight:800;font-size:1.25rem;color:var(--coral)">#6</span>
-        <div style="flex:1"><strong>Zephyr Wind Park</strong><br><span style="font-size:0.8125rem;color:#6b7280">80% efficiency · 98.2% uptime</span></div>
-        <div style="width:120px;height:6px;background:#e5e7eb;border-radius:3px"><div style="height:100%;border-radius:3px;background:var(--coral);width:80%"></div></div>
-      </div>
-      <div style="background:#fff;border-radius:8px;padding:16px;border:1px solid #e5e7eb;display:flex;align-items:center;gap:16px">
-        <span style="font-family:'Manrope',sans-serif;font-weight:800;font-size:1.25rem;color:var(--coral)">#7</span>
-        <div style="flex:1"><strong>VoltGrid Battery Hub</strong><br><span style="font-size:0.8125rem;color:#6b7280">72% charge rate · 1,247 cycles</span></div>
-        <div style="width:120px;height:6px;background:#e5e7eb;border-radius:3px"><div style="height:100%;border-radius:3px;background:var(--coral);width:72%"></div></div>
-      </div>
-      <div style="background:#fff;border-radius:8px;padding:16px;border:1px solid #e5e7eb;display:flex;align-items:center;gap:16px">
-        <span style="font-family:'Manrope',sans-serif;font-weight:800;font-size:1.25rem;color:var(--coral)">#8</span>
-        <div style="flex:1"><strong>PowerVault Grid Storage</strong><br><span style="font-size:0.8125rem;color:#6b7280">88% charge rate · 2,103 cycles</span></div>
-        <div style="width:120px;height:6px;background:#e5e7eb;border-radius:3px"><div style="height:100%;border-radius:3px;background:#8b5cf6;width:88%"></div></div>
-      </div>
-    </div>
-  </section>
-  <section aria-labelledby="policy-heading">
-    <div class="section-header">
-      <h2 id="policy-heading">Grid Policy & Compliance</h2>
-    </div>
-    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:32px">
-      <div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb">
-        <h4 style="font-size:0.9375rem;margin-bottom:8px">Renewable Portfolio Standard</h4>
-        <p style="font-size:0.8125rem;color:#6b7280;margin-bottom:8px">State requires 40% renewable by 2025. Current portfolio at 34% — on track with 6 months remaining.</p>
-        <div style="height:6px;background:#e5e7eb;border-radius:3px"><div style="height:100%;border-radius:3px;background:var(--indigo);width:85%"></div></div>
-      </div>
-      <div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb">
-        <h4 style="font-size:0.9375rem;margin-bottom:8px">Grid Interconnection</h4>
-        <p style="font-size:0.8125rem;color:#6b7280;margin-bottom:8px">All 8 sites meet IEEE 1547 interconnection standards. Annual compliance audit scheduled for March.</p>
-        <div style="height:6px;background:#e5e7eb;border-radius:3px"><div style="height:100%;border-radius:3px;background:#059669;width:100%"></div></div>
-      </div>
-      <div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb">
-        <h4 style="font-size:0.9375rem;margin-bottom:8px">Environmental Permit Status</h4>
-        <p style="font-size:0.8125rem;color:#6b7280;margin-bottom:8px">All environmental permits current. Next review for AquaFlow water usage permit in Q3 2025.</p>
-        <div style="height:6px;background:#e5e7eb;border-radius:3px"><div style="height:100%;border-radius:3px;background:#059669;width:100%"></div></div>
-      </div>
-    </div>
-  </section>
-</div>
+    </header>
 
-    <section aria-labelledby="storage-heading">
-      <div class="section-header">
-        <h2 id="storage-heading">Energy Storage Status</h2>
-        <span class="badge">Real-Time</span>
+    <div class="drawer-backdrop" data-close-drawer></div>
+    <aside class="drawer" aria-label="Mobile navigation">
+      <div class="drawer-head">
+        <span class="brand">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20"/><path d="M5 9c4 0 7-3 7-7"/><path d="M19 9c-4 0-7-3-7-7"/></svg>
+          </span>
+          <span class="brand-text"><span class="brand-name">Terra</span><span class="brand-subtitle">Renewable Energy</span></span>
+        </span>
+        <button class="close-drawer" type="button" aria-label="Close navigation" data-close-drawer>×</button>
       </div>
-      <div class="site-grid">
-        <div class="site-card">
-          <div class="site-hdr"><h4>VoltGrid Li-Ion Pack A</h4><span class="badge-type type-battery">Li-Ion</span></div>
-          <div class="site-stats">
-            <div><span class="site-stat-label">Capacity</span><br><span class="site-stat-val">10 MWh</span></div>
-            <div><span class="site-stat-label">Stored</span><br><span class="site-stat-val">7.2 MWh</span></div>
-            <div><span class="site-stat-label">Charge</span><br><span class="site-stat-val">72%</span></div>
-            <div><span class="site-stat-label">Health</span><br><span class="site-stat-val">96%</span></div>
+      <nav class="drawer-nav">
+        <a href="#production" data-close-drawer>Production</a>
+        <a href="#sites" data-close-drawer>Sites</a>
+        <a href="#grid" data-close-drawer>Grid</a>
+        <a href="#carbon" data-close-drawer>Carbon</a>
+      </nav>
+    </aside>
+
+    <section class="hero" id="top">
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <span class="eyebrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h8l-1 8 11-14h-8l0-6Z"/></svg>
+            Real-time renewable command
+          </span>
+          <h1>Renewable operations, grid balance, and carbon impact in one view.</h1>
+          <p>Monitor distributed solar, wind, storage, and grid demand across active sites with fast operational signals for production teams, asset managers, and sustainability leads.</p>
+          <div class="hero-controls">
+            <a class="primary-btn" href="#production">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+              View production
+            </a>
+            <a class="secondary-btn" href="#grid">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20"/><path d="M2 12h20"/><path d="m4.93 4.93 14.14 14.14"/><path d="m19.07 4.93-14.14 14.14"/></svg>
+              Balance grid
+            </a>
           </div>
-          <div class="site-bar"><div class="site-bar-fill" style="width:72%;background:#8b5cf6"></div></div>
         </div>
-        <div class="site-card">
-          <div class="site-hdr"><h4>VoltGrid Li-Ion Pack B</h4><span class="badge-type type-battery">Li-Ion</span></div>
-          <div class="site-stats">
-            <div><span class="site-stat-label">Capacity</span><br><span class="site-stat-val">10 MWh</span></div>
-            <div><span class="site-stat-label">Stored</span><br><span class="site-stat-val">8.5 MWh</span></div>
-            <div><span class="site-stat-label">Charge</span><br><span class="site-stat-val">85%</span></div>
-            <div><span class="site-stat-label">Health</span><br><span class="site-stat-val">94%</span></div>
+        <div class="operations-panel" aria-label="Energy network map">
+          <div class="map-surface"></div>
+          <div class="line-route"></div>
+          <div class="node solar"><strong>Solar North</strong><span>181 MW</span></div>
+          <div class="node wind"><strong>Wind Ridge</strong><span>224 MW</span></div>
+          <div class="node storage"><strong>Battery B</strong><span>84%</span></div>
+          <div class="node grid"><strong>Grid Hub</strong><span>97.2%</span></div>
+          <div class="panel-readout">
+            <div class="readout"><span>Frequency</span><strong>50.02 Hz</strong></div>
+            <div class="readout"><span>Export</span><strong>318 MW</strong></div>
+            <div class="readout"><span>Storage</span><strong>412 MWh</strong></div>
           </div>
-          <div class="site-bar"><div class="site-bar-fill" style="width:85%;background:#8b5cf6"></div></div>
-        </div>
-        <div class="site-card">
-          <div class="site-hdr"><h4>PowerVault Flow Battery</h4><span class="badge-type type-battery">Flow</span></div>
-          <div class="site-stats">
-            <div><span class="site-stat-label">Capacity</span><br><span class="site-stat-val">20 MWh</span></div>
-            <div><span class="site-stat-label">Stored</span><br><span class="site-stat-val">18 MWh</span></div>
-            <div><span class="site-stat-label">Charge</span><br><span class="site-stat-val">90%</span></div>
-            <div><span class="site-stat-label">Health</span><br><span class="site-stat-val">99%</span></div>
-          </div>
-          <div class="site-bar"><div class="site-bar-fill" style="width:90%;background:#8b5cf6"></div></div>
-        </div>
-        <div class="site-card">
-          <div class="site-hdr"><h4>PowerVault Flow Battery B</h4><span class="badge-type type-battery">Flow</span></div>
-          <div class="site-stats">
-            <div><span class="site-stat-label">Capacity</span><br><span class="site-stat-val">20 MWh</span></div>
-            <div><span class="site-stat-label">Stored</span><br><span class="site-stat-val">17 MWh</span></div>
-            <div><span class="site-stat-label">Charge</span><br><span class="site-stat-val">85%</span></div>
-            <div><span class="site-stat-label">Health</span><br><span class="site-stat-val">98%</span></div>
-          </div>
-          <div class="site-bar"><div class="site-bar-fill" style="width:85%;background:#8b5cf6"></div></div>
         </div>
       </div>
     </section>
-    <section aria-labelledby="dispatch-heading">
-      <div class="section-header">
-        <h2 id="dispatch-heading">Dispatch Schedule</h2>
-        <span class="badge">Next 24 Hours</span>
+
+    <main>
+      <section class="kpi-strip" aria-label="Key performance indicators">
+        <article class="kpi-card">
+          <div class="kpi-label">Generation</div>
+          <div class="kpi-value">642<small>MW</small></div>
+          <div class="kpi-trend">↗ 12.4% above plan</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-label">Capacity</div>
+          <div class="kpi-value">88<small>%</small></div>
+          <div class="kpi-trend">↗ Peak window active</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-label">Carbon offset</div>
+          <div class="kpi-value">4.8<small>kt</small></div>
+          <div class="kpi-trend">↗ 312 homes matched</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-label">Grid health</div>
+          <div class="kpi-value">97<small>%</small></div>
+          <div class="kpi-trend">↗ Stable dispatch</div>
+        </article>
+      </section>
+
+      <div class="section-grid" id="production">
+        <section class="section">
+          <div class="section-header">
+            <div>
+              <div class="section-kicker">Production chart</div>
+              <h2 class="section-title">Seven-day output by source</h2>
+              <p class="section-note">Stacked generation bars combine solar, wind, hydro, and storage dispatch for the operating portfolio.</p>
+            </div>
+            <div class="chip-row">
+              <span class="chip solar"><i class="chip-dot"></i> Solar</span>
+              <span class="chip wind"><i class="chip-dot"></i> Wind</span>
+              <span class="chip storage"><i class="chip-dot"></i> Storage</span>
+            </div>
+          </div>
+          <div class="chart-wrap">
+            <div class="chart" aria-label="Seven day renewable production chart">
+              <div class="day"><div class="stack"><span class="bar solar" style="height: 76px"></span><span class="bar wind" style="height: 102px"></span><span class="bar hydro" style="height: 32px"></span><span class="bar storage" style="height: 18px"></span></div><span class="day-label">Mon</span></div>
+              <div class="day"><div class="stack"><span class="bar solar" style="height: 92px"></span><span class="bar wind" style="height: 114px"></span><span class="bar hydro" style="height: 28px"></span><span class="bar storage" style="height: 23px"></span></div><span class="day-label">Tue</span></div>
+              <div class="day"><div class="stack"><span class="bar solar" style="height: 108px"></span><span class="bar wind" style="height: 94px"></span><span class="bar hydro" style="height: 34px"></span><span class="bar storage" style="height: 30px"></span></div><span class="day-label">Wed</span></div>
+              <div class="day"><div class="stack"><span class="bar solar" style="height: 118px"></span><span class="bar wind" style="height: 121px"></span><span class="bar hydro" style="height: 36px"></span><span class="bar storage" style="height: 26px"></span></div><span class="day-label">Thu</span></div>
+              <div class="day"><div class="stack"><span class="bar solar" style="height: 104px"></span><span class="bar wind" style="height: 132px"></span><span class="bar hydro" style="height: 31px"></span><span class="bar storage" style="height: 34px"></span></div><span class="day-label">Fri</span></div>
+              <div class="day"><div class="stack"><span class="bar solar" style="height: 88px"></span><span class="bar wind" style="height: 108px"></span><span class="bar hydro" style="height: 27px"></span><span class="bar storage" style="height: 42px"></span></div><span class="day-label">Sat</span></div>
+              <div class="day"><div class="stack"><span class="bar solar" style="height: 96px"></span><span class="bar wind" style="height: 117px"></span><span class="bar hydro" style="height: 30px"></span><span class="bar storage" style="height: 38px"></span></div><span class="day-label">Sun</span></div>
+            </div>
+            <div class="chart-meta">
+              <div class="meta-tile"><span>Weekly production</span><strong>95.4 GWh</strong></div>
+              <div class="meta-tile"><span>Best source</span><strong>Wind 42%</strong></div>
+              <div class="meta-tile"><span>Curtailment</span><strong>1.8%</strong></div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="side-panel forecast-panel">
+          <div class="section-kicker">Energy forecast</div>
+          <h2 class="section-title">Next operating windows</h2>
+          <p class="section-note">Short-range production guidance updates the dispatch desk every fifteen minutes.</p>
+          <div class="forecast-list">
+            <div class="forecast-item"><span class="forecast-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg></span><span class="forecast-main"><strong>High irradiance</strong><span>11:00-14:00 across south arrays</span></span><span class="forecast-output">+86 MW</span></div>
+            <div class="forecast-item"><span class="forecast-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"/><path d="M9.6 4.6A2 2 0 1 1 11 8H2"/><path d="M12.6 19.4A2 2 0 1 0 14 16H2"/></svg></span><span class="forecast-main"><strong>Wind ramp</strong><span>Coastal corridor strengthening</span></span><span class="forecast-output">+124 MW</span></div>
+            <div class="forecast-item"><span class="forecast-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 7h10v10H7z"/><path d="M7 12H3M21 12h-4M12 7V3M12 21v-4"/></svg></span><span class="forecast-main"><strong>Storage reserve</strong><span>Evening peak discharge plan</span></span><span class="forecast-output">312 MWh</span></div>
+          </div>
+        </aside>
       </div>
-      <table class="fcast-tbl">
-        <thead>
-          <tr>
-            <th>Time Window</th>
-            <th>Source</th>
-            <th>Action</th>
-            <th>Capacity</th>
-            <th>Reason</th>
-            <th>Priority</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>00:00–04:00</td><td>Wind Fleet</td><td>Full output</td><td>168 MW</td><td>Peak wind hours</td><td><span class="badge-w w-windy">High</span></td></tr>
-          <tr><td>00:00–06:00</td><td>Battery Fleet</td><td>Charging</td><td>65 MWh</td><td>Low demand, cheap grid</td><td><span class="badge-w w-cloudy">Normal</span></td></tr>
-          <tr><td>06:00–10:00</td><td>Solar Fleet</td><td>Ramp up</td><td>65 MW</td><td>Morning irradiance</td><td><span class="badge-w w-sunny">High</span></td></tr>
-          <tr><td>08:00–12:00</td><td>Hydro Fleet</td><td>Full output</td><td>90 MW</td><td>Morning peak demand</td><td><span class="badge-w w-sunny">High</span></td></tr>
-          <tr><td>10:00–14:00</td><td>Solar + Wind</td><td>Maximum export</td><td>247 MW</td><td>Midday peak generation</td><td><span class="badge-w w-sunny">Critical</span></td></tr>
-          <tr><td>14:00–18:00</td><td>Battery Fleet</td><td>Discharging</td><td>53 MWh</td><td>Afternoon demand peak</td><td><span class="badge-w w-windy">High</span></td></tr>
-          <tr><td>18:00–22:00</td><td>Hydro + Battery</td><td>Peaking</td><td>90 MW</td><td>Evening demand spike</td><td><span class="badge-w w-sunny">Critical</span></td></tr>
-          <tr><td>22:00–00:00</td><td>Wind Fleet</td><td>Ramp down</td><td>80 MW</td><td>Demand declining</td><td><span class="badge-w w-cloudy">Normal</span></td></tr>
-        </tbody>
-      </table>
-    </section>
-    <section aria-labelledby="weather-heading">
-      <div class="section-header">
-        <h2 id="weather-heading">Weather Station Data</h2>
-        <span class="badge">Live Feed</span>
-      </div>
-      <div class="carbon-grid">
-        <div class="carbon-card"><h4>Solar Irradiance</h4><div class="carbon-val" style="color:var(--lime)">842 W/m²</div><div class="carbon-detail">Peak: 1,050 W/m² at 12:30</div></div>
-        <div class="carbon-card"><h4>Wind Speed Avg</h4><div class="carbon-val" style="color:var(--cyan)">14.2 m/s</div><div class="carbon-detail">Gusts up to 22 m/s</div></div>
-        <div class="carbon-card"><h4>Ambient Temp</h4><div class="carbon-val" style="color:var(--indigo)">18°C</div><div class="carbon-detail">Optimal for panel efficiency</div></div>
-        <div class="carbon-card"><h4>Water Flow Rate</h4><div class="carbon-val" style="color:#8b5cf6">340 m³/s</div><div class="carbon-detail">River level: Normal</div></div>
-      </div>
-    </section>
+
+      <section class="section" id="sites">
+        <div class="section-header">
+          <div>
+            <div class="section-kicker">Site monitoring</div>
+            <h2 class="section-title">Active renewable assets</h2>
+            <p class="section-note">Each site card combines asset type, installed capacity, current output, and operating efficiency.</p>
+          </div>
+          <span class="live-pill"><i class="pulse"></i> 24 sites reporting</span>
+        </div>
+        <div class="site-grid">
+          <article class="site-card">
+            <div class="site-top"><span class="site-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg></span><span class="status-tag">Online</span></div>
+            <h3>Aurora Solar Field</h3>
+            <div class="site-type">Solar photovoltaic farm</div>
+            <div class="site-stats"><div class="site-stat"><span>Capacity</span><strong>210 MW</strong></div><div class="site-stat"><span>Output</span><strong>181 MW</strong></div><div class="site-stat"><span>Efficiency</span><strong>86%</strong></div><div class="progress"><i style="width:86%"></i></div></div>
+          </article>
+          <article class="site-card">
+            <div class="site-top"><span class="site-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 13V3"/><path d="M8 21h8"/><path d="M12 13 4 8"/><path d="M12 13l8-5"/><path d="M12 13v8"/></svg></span><span class="status-tag">Online</span></div>
+            <h3>Mistral Wind Ridge</h3>
+            <div class="site-type">Onshore wind cluster</div>
+            <div class="site-stats"><div class="site-stat"><span>Capacity</span><strong>260 MW</strong></div><div class="site-stat"><span>Output</span><strong>224 MW</strong></div><div class="site-stat"><span>Efficiency</span><strong>91%</strong></div><div class="progress"><i style="width:91%"></i></div></div>
+          </article>
+          <article class="site-card">
+            <div class="site-top"><span class="site-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18v10H3z"/><path d="M7 11h6"/><path d="M21 11h2"/></svg></span><span class="status-tag">Online</span></div>
+            <h3>Harbor Battery Bank</h3>
+            <div class="site-type">Lithium storage reserve</div>
+            <div class="site-stats"><div class="site-stat"><span>Capacity</span><strong>490 MWh</strong></div><div class="site-stat"><span>Output</span><strong>72 MW</strong></div><div class="site-stat"><span>Charge</span><strong>84%</strong></div><div class="progress"><i style="width:84%"></i></div></div>
+          </article>
+          <article class="site-card">
+            <div class="site-top"><span class="site-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18"/><path d="M5 8h14"/><path d="M7 16h10"/><path d="M4 4h16v16H4z"/></svg></span><span class="status-tag">Online</span></div>
+            <h3>Riverbend Hydro</h3>
+            <div class="site-type">Run-of-river turbine</div>
+            <div class="site-stats"><div class="site-stat"><span>Capacity</span><strong>74 MW</strong></div><div class="site-stat"><span>Output</span><strong>61 MW</strong></div><div class="site-stat"><span>Efficiency</span><strong>82%</strong></div><div class="progress"><i style="width:82%"></i></div></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="grid">
+        <div class="section-header">
+          <div>
+            <div class="section-kicker">Grid management</div>
+            <h2 class="section-title">Load, demand, supply, and storage</h2>
+            <p class="section-note">Dispatch teams can track grid load while comparing renewable supply, market demand, and battery headroom.</p>
+          </div>
+          <div class="chip-row"><span class="chip"><i class="chip-dot"></i> Frequency stable</span><span class="chip"><i class="chip-dot"></i> Reserve ready</span></div>
+        </div>
+        <div class="grid-layout">
+          <div class="gauge-card">
+            <div class="section-kicker">Load gauge</div>
+            <div class="gauge"><div class="gauge-value"><strong>68%</strong><span>Current load</span></div></div>
+            <p class="section-note" style="color:#CBD5E1">Grid load remains inside the preferred operating envelope with automated battery discharge armed for the evening peak.</p>
+          </div>
+          <div>
+            <div class="grid-metrics">
+              <div class="metric-row"><span>Demand</span><div class="rail"><i style="width:72%"></i></div><strong>524 MW</strong></div>
+              <div class="metric-row"><span>Supply</span><div class="rail"><i style="width:88%"></i></div><strong>642 MW</strong></div>
+              <div class="metric-row"><span>Export</span><div class="rail"><i style="width:61%"></i></div><strong>118 MW</strong></div>
+              <div class="metric-row"><span>Battery</span><div class="rail"><i style="width:84%"></i></div><strong>84%</strong></div>
+            </div>
+            <div class="battery-bank" aria-label="Battery storage levels">
+              <div class="battery"><div class="battery-fill" style="height:78%"></div><span>B1 78%</span></div>
+              <div class="battery"><div class="battery-fill" style="height:84%"></div><span>B2 84%</span></div>
+              <div class="battery"><div class="battery-fill" style="height:91%"></div><span>B3 91%</span></div>
+              <div class="battery"><div class="battery-fill" style="height:66%"></div><span>B4 66%</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="carbon">
+        <div class="section-header">
+          <div>
+            <div class="section-kicker">Carbon tracking</div>
+            <h2 class="section-title">Offset impact and certified projects</h2>
+            <p class="section-note">Sustainability teams can follow avoided emissions, project allocation, and verification status from the same operations surface.</p>
+          </div>
+          <span class="chip"><i class="chip-dot"></i> Verified ledger</span>
+        </div>
+        <div class="carbon-layout">
+          <article class="carbon-card"><h3>Avoided emissions</h3><div class="carbon-value">4,820 t</div><p>Daily avoided CO2e from renewable generation compared with the regional fossil baseline.</p></article>
+          <article class="carbon-card"><h3>Project allocation</h3><div class="carbon-value">7 active</div><p>Offsets are allocated across reforestation, community solar access, clean cooking, and habitat recovery programs.</p></article>
+          <article class="carbon-card"><h3>Certifications</h3><div class="cert-list"><div class="cert-item">Gold Standard <span>Current</span></div><div class="cert-item">REC Registry <span>Synced</span></div><div class="cert-item">ISO 14064 <span>Audited</span></div></div></article>
+        </div>
+      </section>
+
+      <section class="section forecast-wide">
+        <div class="section-header">
+          <div>
+            <div class="section-kicker">Energy forecast</div>
+            <h2 class="section-title">Hourly production outlook</h2>
+            <p class="section-note">Expected renewable output by operating window for scheduling grid support and battery dispatch.</p>
+          </div>
+        </div>
+        <div class="hourly">
+          <div class="hour-card"><span>08:00</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M2 12h2M20 12h2M12 20v2"/></svg><strong>498 MW</strong></div>
+          <div class="hour-card"><span>10:00</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M2 12h2M20 12h2M12 20v2"/></svg><strong>574 MW</strong></div>
+          <div class="hour-card"><span>12:00</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M2 12h2M20 12h2M12 20v2"/></svg><strong>681 MW</strong></div>
+          <div class="hour-card"><span>14:00</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"/><path d="M9.6 4.6A2 2 0 1 1 11 8H2"/></svg><strong>704 MW</strong></div>
+          <div class="hour-card"><span>16:00</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"/><path d="M12.6 19.4A2 2 0 1 0 14 16H2"/></svg><strong>638 MW</strong></div>
+          <div class="hour-card"><span>18:00</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18v10H3z"/><path d="M7 11h6"/><path d="M21 11h2"/></svg><strong>590 MW</strong></div>
+          <div class="hour-card"><span>20:00</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7h18v10H3z"/><path d="M7 11h6"/><path d="M21 11h2"/></svg><strong>552 MW</strong></div>
+          <div class="hour-card"><span>22:00</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3a6 6 0 0 0 9 7.5A9 9 0 1 1 12 3Z"/></svg><strong>431 MW</strong></div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <span>Terra Renewable Energy — designed by Studio</span>
+      <div class="footer-links"><a href="#production">Production</a><a href="#sites">Sites</a><a href="#grid">Grid</a><a href="#carbon">Carbon</a></div>
+    </footer>
   </div>
-</main>
-    <section aria-labelledby="compare-heading">
-      <div class="section-header">
-        <h2 id="compare-heading">Year Over Year Comparison</h2>
-        <span class="badge">2024 vs 2025</span>
-      </div>
-      <table class="fcast-tbl">
-        <thead><tr><th>Metric</th><th>2024</th><th>2025</th><th>Change</th><th>Target</th><th>Status</th></tr></thead>
-        <tbody>
-          <tr><td>Total Generation</td><td>720 GWh</td><td>812 GWh</td><td style="color:#059669">+12.8%</td><td>800 GWh</td><td><span class="badge-w w-sunny">On Track</span></td></tr>
-          <tr><td>Capacity Factor</td><td>31%</td><td>34%</td><td style="color:#059669">+3%</td><td>35%</td><td><span class="badge-w w-windy">Close</span></td></tr>
-          <tr><td>Carbon Offset</td><td>14,200 t</td><td>18,420 t</td><td style="color:#059669">+29.7%</td><td>16,000 t</td><td><span class="badge-w w-sunny">Exceeded</span></td></tr>
-          <tr><td>Revenue</td><td>$11.2M</td><td>$12.8M</td><td style="color:#059669">+14.3%</td><td>$12M</td><td><span class="badge-w w-sunny">On Track</span></td></tr>
-          <tr><td>Uptime Avg</td><td>97.8%</td><td>98.5%</td><td style="color:#059669">+0.7%</td><td>99%</td><td><span class="badge-w w-windy">Close</span></td></tr>
-          <tr><td>Maintenance Cost</td><td>$1.1M</td><td>$890K</td><td style="color:#059669">-19.1%</td><td>$950K</td><td><span class="badge-w w-sunny">Below Target</span></td></tr>
-          <tr><td>Safety Incidents</td><td>3</td><td>1</td><td style="color:#059669">-66.7%</td><td>0</td><td><span class="badge-w w-windy">Improving</span></td></tr>
-          <tr><td>New Sites Online</td><td>2</td><td>3</td><td style="color:#059669">+50%</td><td>2</td><td><span class="badge-w w-sunny">Exceeded</span></td></tr>
-        </tbody>
-      </table>
-    </section>
-    <section aria-labelledby="investor-heading">
-      <div class="section-header">
-        <h2 id="investor-heading">Investor Highlights</h2>
-      </div>
-      <div class="carbon-grid">
-        <div class="carbon-card"><h4>Portfolio Value</h4><div class="carbon-val" style="color:var(--indigo)">$48.5M</div><div class="carbon-detail">Total installed capacity value</div></div>
-        <div class="carbon-card"><h4>IRR</h4><div class="carbon-val" style="color:#059669">14.2%</div><div class="carbon-detail">Internal rate of return</div></div>
-        <div class="carbon-card"><h4>Payback Period</h4><div class="carbon-val" style="color:var(--cyan)">6.8 yr</div><div class="carbon-detail">Years to full cost recovery</div></div>
-        <div class="carbon-card"><h4>Dividend Yield</h4><div class="carbon-val" style="color:var(--lime)">3.8%</div><div class="carbon-detail">Annual distribution rate</div></div>
-      </div>
-    </section>
-  </div>
-</main>
-    <section aria-labelledby="team-heading">
-      <div class="section-header">
-        <h2 id="team-heading">Operations Team</h2>
-        <span class="badge">12 Members</span>
-      </div>
-      <div class="site-grid">
-        <div class="site-card">
-          <h4 style="margin-bottom:4px">Control Room — Shift A</h4>
-          <p style="font-size:0.8125rem;color:#6b7280">4 operators monitoring all 8 sites. 24/7 coverage. Response time &lt;2 min for critical alerts.</p>
-          <div style="margin-top:8px;font-size:0.8125rem"><strong style="color:#059669">● On Duty</strong></div>
-        </div>
-        <div class="site-card">
-          <h4 style="margin-bottom:4px">Field Maintenance Crew</h4>
-          <p style="font-size:0.8125rem;color:#6b7280">6 technicians covering solar panel cleaning, turbine service, and hydro generator maintenance.</p>
-          <div style="margin-top:8px;font-size:0.8125rem"><strong style="color:#f59e0b">● 2 on call</strong></div>
-        </div>
-        <div class="site-card">
-          <h4 style="margin-bottom:4px">Data Analytics Team</h4>
-          <p style="font-size:0.8125rem;color:#6b7280">2 data scientists optimizing forecasting models and predictive maintenance algorithms.</p>
-          <div style="margin-top:8px;font-size:0.8125rem"><strong style="color:#059669">● Active</strong></div>
-        </div>
-      </div>
-    </section>
-    <section aria-labelledby="comms-heading">
-      <div class="section-header">
-        <h2 id="comms-heading">Grid Communications Log</h2>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:8px;margin-bottom:32px">
-        <div style="background:#fff;border-radius:8px;padding:12px 16px;border:1px solid #e5e7eb;display:flex;gap:12px;font-size:0.875rem">
-          <span style="font-size:1rem">📡</span>
-          <div style="flex:1"><strong>Grid Operator</strong> — Requesting 15% curtailment on Zephyr Wind Park due to transmission constraint. Duration: 2 hours.</div>
-          <span style="font-size:0.75rem;color:#9ca3af">11:42</span>
-        </div>
-        <div style="background:#fff;border-radius:8px;padding:12px 16px;border:1px solid #e5e7eb;display:flex;gap:12px;font-size:0.875rem">
-          <span style="font-size:1rem">☀️</span>
-          <div style="flex:1"><strong>Terra Dispatch</strong> — Acknowledged. Curtailing Zephyr by 14 MW. Redirecting excess to VoltGrid battery charging.</div>
-          <span style="font-size:0.75rem;color:#9ca3af">11:44</span>
-        </div>
-        <div style="background:#fff;border-radius:8px;padding:12px 16px;border:1px solid #e5e7eb;display:flex;gap:12px;font-size:0.875rem">
-          <span style="font-size:1rem">⚡</span>
-          <div style="flex:1"><strong>Grid Operator</strong> — Constraint lifted. Zephyr may resume full output. Thank you for the quick response.</div>
-          <span style="font-size:0.75rem;color:#9ca3af">13:20</span>
-        </div>
-        <div style="background:#fff;border-radius:8px;padding:12px 16px;border:1px solid #e5e7eb;display:flex;gap:12px;font-size:0.875rem">
-          <span style="font-size:1rem">🔋</span>
-          <div style="flex:1"><strong>Terra Dispatch</strong> — Battery fleet fully charged. Ready for evening peak dispatch at 18:00.</div>
-          <span style="font-size:0.75rem;color:#9ca3af">15:30</span>
-        </div>
-      </div>
-    </section>
-  </div>
-</main>
-<footer class="site-footer">
-  Terra Renewable Energy — designed by Studio · Standalone prototype · Not affiliated with any energy provider
-</footer>
+
+  <script>
+    const openDrawer = document.querySelector('[data-open-drawer]');
+    const closeTargets = document.querySelectorAll('[data-close-drawer]');
+    openDrawer?.addEventListener('click', () => document.body.classList.add('drawer-open'));
+    closeTargets.forEach((target) => {
+      target.addEventListener('click', () => document.body.classList.remove('drawer-open'));
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        document.body.classList.remove('drawer-open');
+      }
+    });
+  </script>
 </body>
 </html>
