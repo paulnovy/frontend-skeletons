@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tempo Productivity Suite is a focused work operating system skeleton for daily plans, tasks, calendar, focus sessions, and workload health.">
+  <title>Tempo Productivity Suite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --paper:#F8F5EF;
+      --paper-2:#FFFDF8;
+      --ink:#1E2528;
+      --ink-soft:#627073;
+      --cobalt:#2F5BEA;
+      --cobalt-2:#E7ECFF;
+      --mint:#7DD3AC;
+      --mint-2:#E8F8F0;
+      --coral:#FF8A70;
+      --coral-2:#FFE9E3;
+      --lemon:#F7D65A;
+      --lemon-2:#FFF5BD;
+      --white:#FFFFFF;
+      --line:rgba(30,37,40,0.12);
+      --line-strong:rgba(30,37,40,0.22);
+      --shadow-soft:0 20px 60px rgba(30,37,40,0.10);
+      --shadow-card:0 12px 34px rgba(30,37,40,0.08);
+      --font-heading:"Space Grotesk",system-ui,sans-serif;
+      --font-ui:"Inter",system-ui,sans-serif;
+      --radius-xs:6px;
+      --radius-sm:8px;
+      --radius-md:12px;
+      --content-max:1480px;
+      --motion-fast:160ms ease;
+      --motion-med:260ms ease
+    }
+    *{box-sizing:border-box}
+    html{color-scheme:light;scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;background:linear-gradient(135deg,rgba(47,91,234,0.12),transparent 28rem),linear-gradient(225deg,rgba(125,211,172,0.20),transparent 34rem),var(--paper);color:var(--ink);font-family:var(--font-ui);line-height:1.5;overflow-x:hidden}
+    body.nav-open,body.drawer-open{overflow:hidden}
+    a{color:inherit;text-decoration:none}
+    button,input,select,textarea{font:inherit}
+    button{border:0;cursor:pointer}
+    [hidden]{display:none !important}
+    :focus-visible{outline:3px solid var(--lemon);outline-offset:3px;border-radius:var(--radius-xs)}
+    .skip-link{position:fixed;top:16px;left:16px;z-index:100;transform:translateY(-160%);padding:10px 14px;border-radius:var(--radius-sm);background:var(--ink);color:var(--paper);font-weight:800;transition:transform var(--motion-fast)}
+    .skip-link:focus{transform:translateY(0)}
+    .shell{width:min(100%,var(--content-max));margin:0 auto;padding:20px}
+    .topbar{position:sticky;top:14px;z-index:50;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:18px;padding:12px;border:1px solid var(--line);border-radius:var(--radius-md);background:rgba(255,253,248,0.92);box-shadow:var(--shadow-card);backdrop-filter:blur(18px)}
+    .brand{display:flex;align-items:center;gap:12px;min-width:240px}
+    .brand-mark{width:44px;height:44px;display:grid;place-items:center;border-radius:var(--radius-sm);background:var(--cobalt);color:var(--white);font-family:var(--font-heading);font-size:1.15rem;font-weight:800}
+    .brand-title{display:block;font-family:var(--font-heading);font-weight:800;letter-spacing:0}
+    .brand-meta{display:block;color:var(--ink-soft);font-size:0.78rem;font-weight:600}
+    .nav{justify-self:center}
+    .nav-list{display:flex;align-items:center;gap:6px;margin:0;padding:0;list-style:none}
+    .nav-link{min-height:40px;display:inline-flex;align-items:center;padding:0 14px;border-radius:var(--radius-sm);color:var(--ink-soft);font-size:0.92rem;font-weight:800;transition:background var(--motion-fast),color var(--motion-fast)}
+    .nav-link:hover,.nav-link.active{background:var(--cobalt-2);color:var(--cobalt)}
+    .top-actions{display:flex;align-items:center;gap:8px}
+    .icon-button,.hamburger{width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--white);color:var(--ink);font-weight:900}
+    .hamburger{display:none;position:relative}
+    .hamburger span,.hamburger::before,.hamburger::after{content:"";width:18px;height:2px;border-radius:999px;background:currentColor;transition:transform var(--motion-fast),opacity var(--motion-fast)}
+    .hamburger::before{position:absolute;transform:translateY(-7px)}
+    .hamburger::after{position:absolute;transform:translateY(7px)}
+    .nav-open .hamburger span{opacity:0}
+    .nav-open .hamburger::before{transform:rotate(45deg)}
+    .nav-open .hamburger::after{transform:rotate(-45deg)}
+    .primary-button,.secondary-button,.ghost-button{min-height:42px;display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:0 14px;border-radius:var(--radius-sm);font-weight:800;white-space:nowrap}
+    .primary-button{background:var(--ink);color:var(--paper);box-shadow:0 12px 28px rgba(30,37,40,0.20)}
+    .secondary-button{border:1px solid rgba(47,91,234,0.16);background:var(--cobalt-2);color:var(--cobalt)}
+    .ghost-button{border:1px solid var(--line);background:var(--white);color:var(--ink)}
+    .page{display:grid;gap:18px;padding-top:18px}
+    .hero-grid{display:grid;grid-template-columns:minmax(0,1.18fr) repeat(3,minmax(176px,0.46fr));gap:14px;align-items:stretch}
+    .panel{border:1px solid var(--line);border-radius:var(--radius-md);background:rgba(255,253,248,0.90);box-shadow:var(--shadow-card);overflow:hidden}
+    .panel-pad{padding:20px}
+    .command-panel{min-height:286px;display:grid;align-content:space-between;gap:22px;background:linear-gradient(135deg,rgba(30,37,40,0.98),rgba(47,91,234,0.88)),var(--ink);color:var(--paper)}
+    .eyebrow{margin:0 0 8px;color:var(--cobalt);font-size:0.75rem;font-weight:900;letter-spacing:0.08em;text-transform:uppercase}
+    .command-panel .eyebrow{color:var(--mint)}
+    h1,h2,h3{margin:0;font-family:var(--font-heading);line-height:1.05;letter-spacing:0}
+    h1{max-width:780px;font-size:clamp(2.25rem,4.5vw,5.15rem);font-weight:800}
+    h2{font-size:clamp(1.42rem,2.2vw,2.35rem);font-weight:800}
+    h3{font-size:1.05rem;font-weight:800}
+    p{margin:0}
+    .hero-copy{max-width:720px;color:rgba(248,245,239,0.82);font-size:1rem}
+    .hero-actions,.inline-actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+    .metric-card{min-height:170px;display:grid;gap:12px}
+    .metric-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .metric-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:var(--radius-sm);background:var(--cobalt-2);color:var(--cobalt);font-weight:900}
+    .metric-label{color:var(--ink-soft);font-size:0.78rem;font-weight:800;text-transform:uppercase;letter-spacing:0.06em}
+    .metric-value{font-family:var(--font-heading);font-size:2.25rem;font-weight:800;line-height:1}
+    .metric-note{color:var(--ink-soft);font-size:0.9rem}
+    .trend{display:inline-flex;align-items:center;gap:6px;width:fit-content;padding:6px 9px;border-radius:999px;background:var(--mint-2);color:#1F6D4B;font-size:0.78rem;font-weight:900}
+    .workspace{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:18px;align-items:start}
+    .main-stack,.side-stack{display:grid;gap:18px}
+    .section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:18px 20px 0}
+    .section-title{display:grid;gap:6px}
+    .section-title p{color:var(--ink-soft);font-size:0.92rem}
+    .filter-row{display:flex;flex-wrap:wrap;gap:8px;padding:14px 20px 0}
+    .filter-chip{min-height:34px;padding:0 11px;border:1px solid var(--line);border-radius:999px;background:var(--white);color:var(--ink-soft);font-size:0.82rem;font-weight:800}
+    .filter-chip.active{border-color:transparent;background:var(--ink);color:var(--paper)}
+    .task-board{display:grid;grid-template-columns:repeat(4,minmax(208px,1fr));gap:12px;padding:16px 20px 20px;overflow-x:auto}
+    .lane{min-width:208px;display:grid;align-content:start;gap:10px;padding:12px;border:1px solid var(--line);border-radius:var(--radius-sm);background:rgba(248,245,239,0.78)}
+    .lane-head{display:flex;align-items:center;justify-content:space-between;gap:8px}
+    .lane-name{font-weight:900}
+    .lane-count{min-width:28px;min-height:28px;display:grid;place-items:center;border-radius:999px;background:var(--cobalt-2);color:var(--cobalt);font-size:0.78rem;font-weight:900}
+    .task-card{display:grid;gap:10px;width:100%;padding:13px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--white);color:var(--ink);text-align:left;box-shadow:0 8px 22px rgba(30,37,40,0.06);transition:transform var(--motion-fast),box-shadow var(--motion-fast),border-color var(--motion-fast)}
+    .task-card:hover{transform:translateY(-2px);border-color:var(--line-strong);box-shadow:var(--shadow-card)}
+    .task-card[data-priority="high"]{border-left:4px solid var(--coral)}
+    .task-card[data-priority="medium"]{border-left:4px solid var(--lemon)}
+    .task-card[data-priority="low"]{border-left:4px solid var(--mint)}
+    .task-title{font-weight:900;line-height:1.25}
+    .task-meta{display:flex;align-items:center;flex-wrap:wrap;gap:6px}
+    .pill{display:inline-flex;align-items:center;min-height:24px;padding:0 8px;border-radius:999px;background:var(--paper);color:var(--ink-soft);font-size:0.74rem;font-weight:900}
+    .pill.blocked{background:var(--coral-2);color:#A33924}
+    .pill.focus{background:var(--mint-2);color:#1F6D4B}
+    .task-next{color:var(--ink-soft);font-size:0.86rem}
+    .calendar-list,.automation-list,.health-list,.project-list{display:grid;gap:10px;padding:16px 20px 20px}
+    .calendar-item,.automation-item,.health-item,.project-item{display:grid;gap:8px;padding:13px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--white)}
+    .calendar-item{grid-template-columns:64px minmax(0,1fr);align-items:start}
+    .time{display:grid;place-items:center;min-height:50px;border-radius:var(--radius-sm);background:var(--ink);color:var(--paper);font-weight:900}
+    .item-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .muted{color:var(--ink-soft);font-size:0.88rem}
+    .focus-panel{display:grid;gap:18px;padding:20px;background:linear-gradient(135deg,var(--cobalt),#2445B7);color:var(--white)}
+    .timer-ring{width:178px;height:178px;display:grid;place-items:center;justify-self:center;border-radius:50%;background:conic-gradient(var(--lemon) 68%,rgba(255,255,255,0.22) 0);box-shadow:inset 0 0 0 12px rgba(255,255,255,0.16)}
+    .timer-inner{width:132px;height:132px;display:grid;place-items:center;border-radius:50%;background:rgba(30,37,40,0.28);text-align:center}
+    .timer-value{display:block;font-family:var(--font-heading);font-size:2.1rem;font-weight:800;line-height:1}
+    .timer-label{display:block;margin-top:6px;color:rgba(255,255,255,0.76);font-size:0.78rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em}
+    .focus-panel .ghost-button{background:rgba(255,255,255,0.14);color:var(--white);border-color:rgba(255,255,255,0.28)}
+    .capture-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;padding:16px 20px 20px}
+    .capture-input{min-height:44px;width:100%;padding:0 13px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--white);color:var(--ink);outline:none}
+    .capture-input:focus{border-color:var(--cobalt);box-shadow:0 0 0 4px rgba(47,91,234,0.12)}
+    .progress-track{height:9px;overflow:hidden;border-radius:999px;background:var(--paper)}
+    .progress-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--mint),var(--cobalt))}
+    .workload-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:0 20px 20px}
+    .workload-cell{min-height:72px;display:grid;place-items:center;border-radius:var(--radius-sm);background:var(--paper);color:var(--ink-soft);font-size:0.78rem;font-weight:900;text-align:center}
+    .workload-cell.hot{background:var(--coral-2);color:#A33924}
+    .workload-cell.clear{background:var(--mint-2);color:#1F6D4B}
+    .insight-strip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+    .insight-card{display:grid;gap:14px;min-height:170px;padding:18px;border:1px solid var(--line);border-radius:var(--radius-md);background:var(--white);box-shadow:var(--shadow-card)}
+    .sparkline{height:62px;display:flex;align-items:end;gap:6px}
+    .sparkline i{flex:1;border-radius:5px 5px 0 0;background:linear-gradient(180deg,var(--cobalt),var(--mint))}
+    .drawer-backdrop{position:fixed;inset:0;z-index:80;background:rgba(30,37,40,0.36);opacity:0;pointer-events:none;transition:opacity var(--motion-med)}
+    .drawer{position:fixed;top:0;right:0;z-index:90;width:min(100%,440px);height:100vh;display:grid;grid-template-rows:auto minmax(0,1fr);background:var(--paper-2);box-shadow:-22px 0 60px rgba(30,37,40,0.18);transform:translateX(104%);transition:transform var(--motion-med)}
+    .drawer-open .drawer-backdrop{opacity:1;pointer-events:auto}
+    .drawer-open .drawer{transform:translateX(0)}
+    .drawer-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px;padding:22px;border-bottom:1px solid var(--line)}
+    .drawer-body{display:grid;align-content:start;gap:14px;overflow:auto;padding:22px}
+    .detail-card{display:grid;gap:8px;padding:14px;border:1px solid var(--line);border-radius:var(--radius-sm);background:var(--white)}
+    .toast{position:fixed;left:50%;bottom:22px;z-index:120;min-width:min(92vw,360px);transform:translate(-50%,120%);padding:13px 16px;border-radius:var(--radius-sm);background:var(--ink);color:var(--paper);box-shadow:var(--shadow-soft);font-weight:800;text-align:center;transition:transform var(--motion-med)}
+    .toast.visible{transform:translate(-50%,0)}
+    .site-footer{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:18px;padding:22px 2px 4px;color:var(--ink-soft);font-size:0.88rem}
+    @media (max-width:1120px){.hero-grid{grid-template-columns:1fr 1fr}
+    .command-panel{grid-column:1 / -1}
+    .workspace{grid-template-columns:1fr}
+    .side-stack{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .focus-panel{grid-column:1 / -1}
+    }
+    @media (max-width:820px){.shell{padding:14px}
+    .topbar{top:8px;grid-template-columns:auto auto;justify-content:space-between}
+    .brand{min-width:0}
+    .nav{position:fixed;inset:82px 14px auto 14px;display:none;justify-self:stretch;border:1px solid var(--line);border-radius:var(--radius-md);background:var(--paper-2);box-shadow:var(--shadow-soft)}
+    .nav-open .nav{display:block}
+    .nav-list{display:grid;gap:0;padding:8px}
+    .nav-link{min-height:46px}
+    .top-actions .primary-button,.top-actions .secondary-button{display:none}
+    .hamburger{display:grid}
+    .hero-grid,.side-stack,.insight-strip{grid-template-columns:1fr}
+    .task-board{grid-template-columns:1fr;overflow:visible}
+    .lane{min-width:0}
+    }
+    @media (max-width:560px){.section-head,.site-footer{flex-direction:column;align-items:flex-start}
+    .panel-pad,.focus-panel{padding:16px}
+    .calendar-item{grid-template-columns:1fr}
+    .capture-form{grid-template-columns:1fr}
+    .capture-form .primary-button{width:100%}
+    .workload-grid{grid-template-columns:1fr}
+    h1{font-size:clamp(2.2rem,14vw,3.4rem)}
+    }
+    @media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto !important;transition:none !important;animation:none !important}
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to workspace</a>
+  <div class="shell">
+    <header class="topbar" aria-label="Primary navigation">
+      <a class="brand" href="#overview" aria-label="Tempo home">
+        <span class="brand-mark">T</span>
+        <span>
+          <span class="brand-title">Tempo Productivity Suite</span>
+          <span class="brand-meta">Focused work control room</span>
+        </span>
+      </a>
+      <nav class="nav" aria-label="Workspace sections">
+        <ul class="nav-list">
+          <li><a class="nav-link active" href="#overview">Overview</a></li>
+          <li><a class="nav-link" href="#tasks">Tasks</a></li>
+          <li><a class="nav-link" href="#calendar">Calendar</a></li>
+          <li><a class="nav-link" href="#health">Health</a></li>
+        </ul>
+      </nav>
+      <div class="top-actions">
+        <button class="secondary-button" type="button" data-action="sync">Sync plan</button>
+        <button class="primary-button" type="button" data-action="focus">Start focus</button>
+        <button class="icon-button" type="button" aria-label="Open command palette" data-action="command">⌘</button>
+        <button class="hamburger" type="button" aria-label="Toggle navigation" aria-expanded="false"><span></span></button>
+      </div>
+    </header>
+    <main id="main" class="page">
+      <section id="overview" class="hero-grid" aria-labelledby="hero-title">
+        <div class="panel command-panel panel-pad">
+          <div>
+            <p class="eyebrow">Today command center</p>
+            <h1 id="hero-title">Plan the day around attention, not inbox noise.</h1>
+            <p class="hero-copy">Tempo brings projects, calendar pressure, blocked work, focus time, and personal workload into one operating surface so the next action is always obvious.</p>
+          </div>
+          <div class="hero-actions">
+            <button class="primary-button" type="button" data-action="focus">Run 45 minute focus</button>
+            <button class="ghost-button" type="button" data-action="capture">Quick capture</button>
+          </div>
+        </div>
+        <article class="panel metric-card panel-pad" aria-label="Planned focus time">
+          <div class="metric-top">
+            <span class="metric-label">Focus planned</span>
+            <span class="metric-icon">F</span>
+          </div>
+          <strong class="metric-value">4.5h</strong>
+          <p class="metric-note">Two deep blocks protected before meetings start.</p>
+          <span class="trend">+38 min recovered</span>
+        </article>
+        <article class="panel metric-card panel-pad" aria-label="Blocked task count">
+          <div class="metric-top">
+            <span class="metric-label">Blocked</span>
+            <span class="metric-icon">B</span>
+          </div>
+          <strong class="metric-value">3</strong>
+          <p class="metric-note">All blockers have named owners and next pings.</p>
+          <span class="trend">1 cleared today</span>
+        </article>
+        <article class="panel metric-card panel-pad" aria-label="Plan confidence">
+          <div class="metric-top">
+            <span class="metric-label">Plan health</span>
+            <span class="metric-icon">H</span>
+          </div>
+          <strong class="metric-value">87%</strong>
+          <p class="metric-note">Capacity holds if the 15:30 review stays async.</p>
+          <span class="trend">Good load</span>
+        </article>
+      </section>
+      <section class="insight-strip" aria-label="Productivity insights">
+        <article class="insight-card">
+          <div class="item-top">
+            <h3>Energy curve</h3>
+            <span class="pill focus">Best 09:00</span>
+          </div>
+          <div class="sparkline" aria-hidden="true">
+            <i style="height:42%"></i><i style="height:74%"></i><i style="height:92%"></i><i style="height:78%"></i><i style="height:54%"></i><i style="height:46%"></i>
+          </div>
+          <p class="muted">Creative work should happen before the customer calls.</p>
+        </article>
+        <article class="insight-card">
+          <div class="item-top">
+            <h3>Context switches</h3>
+            <span class="pill blocked">Too many</span>
+          </div>
+          <div class="sparkline" aria-hidden="true">
+            <i style="height:38%"></i><i style="height:52%"></i><i style="height:88%"></i><i style="height:82%"></i><i style="height:44%"></i><i style="height:50%"></i>
+          </div>
+          <p class="muted">Batch Slack and finance approvals into one admin block.</p>
+        </article>
+        <article class="insight-card">
+          <div class="item-top">
+            <h3>Delivery risk</h3>
+            <span class="pill">Moderate</span>
+          </div>
+          <div class="sparkline" aria-hidden="true">
+            <i style="height:78%"></i><i style="height:66%"></i><i style="height:58%"></i><i style="height:42%"></i><i style="height:36%"></i><i style="height:28%"></i>
+          </div>
+          <p class="muted">Roadmap launch is safe after copy review lands.</p>
+        </article>
+      </section>
+      <div class="workspace">
+        <div class="main-stack">
+          <section id="tasks" class="panel" aria-labelledby="tasks-title">
+            <div class="section-head">
+              <div class="section-title">
+                <p class="eyebrow">Task board</p>
+                <h2 id="tasks-title">Work grouped by actual decision state.</h2>
+                <p>Cards expose owner, energy, blocker, and next action without forcing a detail view.</p>
+              </div>
+              <button class="ghost-button" type="button" data-action="rebalance">Rebalance load</button>
+            </div>
+            <div class="filter-row" aria-label="Task filters">
+              <button class="filter-chip active" type="button" data-filter="all">All</button>
+              <button class="filter-chip" type="button" data-filter="high">High priority</button>
+              <button class="filter-chip" type="button" data-filter="blocked">Blocked</button>
+              <button class="filter-chip" type="button" data-filter="focus">Focus work</button>
+            </div>
+            <div class="task-board">
+              <div class="lane" aria-label="Plan lane">
+                <div class="lane-head"><span class="lane-name">Plan</span><span class="lane-count">3</span></div>
+                <button class="task-card" type="button" data-priority="high" data-state="focus" data-task="roadmap">
+                  <span class="task-title">Finalize Q3 roadmap cuts</span>
+                  <span class="task-meta"><span class="pill">Marta</span><span class="pill focus">Deep work</span></span>
+                  <span class="task-next">Next: remove two unfunded projects before 11:00.</span>
+                </button>
+                <button class="task-card" type="button" data-priority="medium" data-state="normal" data-task="brief">
+                  <span class="task-title">Draft launch comms brief</span>
+                  <span class="task-meta"><span class="pill">Paweł</span><span class="pill">60 min</span></span>
+                  <span class="task-next">Next: outline customer promise and objection handling.</span>
+                </button>
+                <button class="task-card" type="button" data-priority="low" data-state="normal" data-task="cleanup">
+                  <span class="task-title">Archive stale planning docs</span>
+                  <span class="task-meta"><span class="pill">Ops</span><span class="pill">Low energy</span></span>
+                  <span class="task-next">Next: move duplicates after the weekly review.</span>
+                </button>
+              </div>
+              <div class="lane" aria-label="Doing lane">
+                <div class="lane-head"><span class="lane-name">Doing</span><span class="lane-count">3</span></div>
+                <button class="task-card" type="button" data-priority="high" data-state="blocked focus" data-task="billing">
+                  <span class="task-title">Unblock billing export QA</span>
+                  <span class="task-meta"><span class="pill">Anika</span><span class="pill blocked">Waiting</span></span>
+                  <span class="task-next">Next: get sample CSV from finance owner.</span>
+                </button>
+                <button class="task-card" type="button" data-priority="medium" data-state="focus" data-task="prototype">
+                  <span class="task-title">Prototype command palette</span>
+                  <span class="task-meta"><span class="pill">Design</span><span class="pill focus">Flow</span></span>
+                  <span class="task-next">Next: wire keyboard navigation for saved views.</span>
+                </button>
+                <button class="task-card" type="button" data-priority="medium" data-state="normal" data-task="partner">
+                  <span class="task-title">Review partner security notes</span>
+                  <span class="task-meta"><span class="pill">Legal</span><span class="pill">30 min</span></span>
+                  <span class="task-next">Next: tag open clauses before counsel call.</span>
+                </button>
+              </div>
+              <div class="lane" aria-label="Review lane">
+                <div class="lane-head"><span class="lane-name">Review</span><span class="lane-count">2</span></div>
+                <button class="task-card" type="button" data-priority="high" data-state="blocked" data-task="analytics">
+                  <span class="task-title">Approve analytics taxonomy</span>
+                  <span class="task-meta"><span class="pill">Data</span><span class="pill blocked">Owner needed</span></span>
+                  <span class="task-next">Next: choose final event naming convention.</span>
+                </button>
+                <button class="task-card" type="button" data-priority="low" data-state="normal" data-task="invoice">
+                  <span class="task-title">Check vendor invoice batch</span>
+                  <span class="task-meta"><span class="pill">Finance</span><span class="pill">Admin</span></span>
+                  <span class="task-next">Next: approve three recurring software renewals.</span>
+                </button>
+              </div>
+              <div class="lane" aria-label="Done lane">
+                <div class="lane-head"><span class="lane-name">Done</span><span class="lane-count">2</span></div>
+                <button class="task-card" type="button" data-priority="low" data-state="normal" data-task="retro">
+                  <span class="task-title">Publish sprint retro notes</span>
+                  <span class="task-meta"><span class="pill">Team</span><span class="pill">Shipped</span></span>
+                  <span class="task-next">Next: monitor two action items next Monday.</span>
+                </button>
+                <button class="task-card" type="button" data-priority="medium" data-state="normal" data-task="hiring">
+                  <span class="task-title">Close interview scorecards</span>
+                  <span class="task-meta"><span class="pill">People</span><span class="pill">Complete</span></span>
+                  <span class="task-next">Next: send decision packet to recruiter.</span>
+                </button>
+              </div>
+            </div>
+          </section>
+          <section id="health" class="panel" aria-labelledby="health-title">
+            <div class="section-head">
+              <div class="section-title">
+                <p class="eyebrow">Load health</p>
+                <h2 id="health-title">Capacity signals before the calendar collapses.</h2>
+                <p>Tempo tracks workload across people, projects, and cognitive mode.</p>
+              </div>
+            </div>
+            <div class="workload-grid" aria-label="Workload heat map">
+              <div class="workload-cell clear">Paweł<br>Clear</div>
+              <div class="workload-cell hot">Marta<br>Overloaded</div>
+              <div class="workload-cell">Anika<br>Watch</div>
+              <div class="workload-cell clear">Design<br>Clear</div>
+              <div class="workload-cell">Data<br>Watch</div>
+              <div class="workload-cell hot">Finance<br>Blocked</div>
+            </div>
+          </section>
+        </div>
+        <aside class="side-stack" aria-label="Today side panels">
+          <section class="panel focus-panel" aria-labelledby="focus-title">
+            <div>
+              <p class="eyebrow">Focus timer</p>
+              <h2 id="focus-title">Roadmap edit block</h2>
+            </div>
+            <div class="timer-ring" aria-label="Focus session 31 minutes remaining">
+              <div class="timer-inner">
+                <span>
+                  <span id="timerValue" class="timer-value">31:00</span>
+                  <span class="timer-label">Remaining</span>
+                </span>
+              </div>
+            </div>
+            <div class="inline-actions">
+              <button class="ghost-button" type="button" data-action="timer">Pause</button>
+              <button class="ghost-button" type="button" data-action="protect">Protect block</button>
+            </div>
+          </section>
+          <section id="calendar" class="panel" aria-labelledby="calendar-title">
+            <div class="section-head">
+              <div class="section-title">
+                <p class="eyebrow">Agenda</p>
+                <h2 id="calendar-title">Today</h2>
+              </div>
+            </div>
+            <div class="calendar-list">
+              <article class="calendar-item">
+                <span class="time">09:00</span>
+                <div><h3>Roadmap focus</h3><p class="muted">Protected. Notifications muted.</p></div>
+              </article>
+              <article class="calendar-item">
+                <span class="time">12:30</span>
+                <div><h3>Customer escalation</h3><p class="muted">Prep notes ready, owner assigned.</p></div>
+              </article>
+              <article class="calendar-item">
+                <span class="time">15:30</span>
+                <div><h3>Launch review</h3><p class="muted">Recommendation: move async.</p></div>
+              </article>
+            </div>
+          </section>
+          <section class="panel" aria-labelledby="capture-title">
+            <div class="section-head">
+              <div class="section-title">
+                <p class="eyebrow">Quick capture</p>
+                <h2 id="capture-title">Drop the thought, keep moving.</h2>
+              </div>
+            </div>
+            <form class="capture-form">
+              <label class="sr-only" for="captureInput" hidden>Capture task</label>
+              <input id="captureInput" class="capture-input" type="text" aria-label="Capture a task">
+              <button class="primary-button" type="submit">Add</button>
+            </form>
+          </section>
+          <section class="panel" aria-labelledby="projects-title">
+            <div class="section-head">
+              <div class="section-title">
+                <p class="eyebrow">Projects</p>
+                <h2 id="projects-title">Progress</h2>
+              </div>
+            </div>
+            <div class="project-list">
+              <article class="project-item">
+                <div class="item-top"><h3>Command palette</h3><span class="pill">64%</span></div>
+                <div class="progress-track"><div class="progress-fill" style="width:64%"></div></div>
+              </article>
+              <article class="project-item">
+                <div class="item-top"><h3>Billing export</h3><span class="pill blocked">42%</span></div>
+                <div class="progress-track"><div class="progress-fill" style="width:42%"></div></div>
+              </article>
+              <article class="project-item">
+                <div class="item-top"><h3>Launch package</h3><span class="pill">78%</span></div>
+                <div class="progress-track"><div class="progress-fill" style="width:78%"></div></div>
+              </article>
+            </div>
+          </section>
+          <section class="panel" aria-labelledby="automations-title">
+            <div class="section-head">
+              <div class="section-title">
+                <p class="eyebrow">Automations</p>
+                <h2 id="automations-title">Running</h2>
+              </div>
+            </div>
+            <div class="automation-list">
+              <article class="automation-item"><div class="item-top"><h3>Meeting prep packets</h3><span class="pill focus">Active</span></div><p class="muted">Summaries land 20 minutes before every customer call.</p></article>
+              <article class="automation-item"><div class="item-top"><h3>Blocker digest</h3><span class="pill">16:00</span></div><p class="muted">Sends owners one consolidated prompt instead of six pings.</p></article>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+    <footer class="site-footer">
+      <span>Tempo Productivity Suite</span>
+      <span>Built with Frontend Skeletons</span>
+    </footer>
+  </div>
+  <div class="drawer-backdrop" aria-hidden="true"></div>
+  <aside class="drawer" aria-hidden="true" aria-labelledby="drawerTitle">
+    <div class="drawer-head">
+      <div>
+        <p class="eyebrow">Task detail</p>
+        <h2 id="drawerTitle">Finalize Q3 roadmap cuts</h2>
+      </div>
+      <button class="icon-button" type="button" aria-label="Close task detail" data-close-drawer>×</button>
+    </div>
+    <div class="drawer-body" id="drawerBody"></div>
+  </aside>
+  <div class="toast" role="status" aria-live="polite"></div>
+  <script>
+    const body=document.body;
+    const hamburger=document.querySelector(".hamburger");
+    const navLinks=[...document.querySelectorAll(".nav-link")];
+    const toast=document.querySelector(".toast");
+    const drawer=document.querySelector(".drawer");
+    const drawerBackdrop=document.querySelector(".drawer-backdrop");
+    const drawerTitle=document.querySelector("#drawerTitle");
+    const drawerBody=document.querySelector("#drawerBody");
+    const taskCards=[...document.querySelectorAll(".task-card")];
+    const filterChips=[...document.querySelectorAll(".filter-chip")];
+    const captureInput=document.querySelector("#captureInput");
+    const taskDetails={
+      roadmap:["Owner: Marta and Paweł","Priority: high","Energy: deep focus","Blocker: two unfunded requests still attached","Next action: remove low-confidence projects and publish decision notes."],
+      brief:["Owner: Paweł","Priority: medium","Energy: writing","Blocker: value proposition needs one sharper sentence","Next action: draft customer promise before design review."],
+      cleanup:["Owner: Ops","Priority: low","Energy: shallow","Blocker: none","Next action: archive duplicate planning notes after weekly review."],
+      billing:["Owner: Anika","Priority: high","Energy: analytical","Blocker: finance sample CSV missing","Next action: request clean sample and rerun export QA."],
+      prototype:["Owner: Design","Priority: medium","Energy: flow","Blocker: saved-view shortcuts undecided","Next action: wire arrow navigation and command search."],
+      partner:["Owner: Legal","Priority: medium","Energy: review","Blocker: counsel response pending","Next action: tag open clauses before partner call."],
+      analytics:["Owner: Data","Priority: high","Energy: decision","Blocker: event naming convention split","Next action: choose final taxonomy and freeze instrumentation."],
+      invoice:["Owner: Finance","Priority: low","Energy: admin","Blocker: none","Next action: approve three recurring software renewals."],
+      retro:["Owner: Team","Priority: low","Energy: async","Blocker: none","Next action: monitor two retro actions next Monday."],
+      hiring:["Owner: People","Priority: medium","Energy: async","Blocker: none","Next action: send decision packet to recruiter."]
+    };
+    function showToast(message){
+      toast.textContent=message;
+      toast.classList.add("visible");
+      window.clearTimeout(showToast.timer);
+      showToast.timer=window.setTimeout(()=>toast.classList.remove("visible"),2600);
+    }
+    function closeNav(){
+      body.classList.remove("nav-open");
+      hamburger.setAttribute("aria-expanded","false");
+    }
+    hamburger.addEventListener("click",()=>{
+      const open=body.classList.toggle("nav-open");
+      hamburger.setAttribute("aria-expanded",String(open));
+    });
+    navLinks.forEach(link=>{
+      link.addEventListener("click",()=>{
+        navLinks.forEach(item=>item.classList.remove("active"));
+        link.classList.add("active");
+        closeNav();
+      });
+    });
+    function openDrawer(card){
+      const key=card.dataset.task;
+      drawerTitle.textContent=card.querySelector(".task-title").textContent;
+      drawerBody.innerHTML=taskDetails[key].map(item=>`<div class="detail-card"><strong>${item.split(":")[0]}</strong><span class="muted">${item.split(":").slice(1).join(":").trim()}</span></div>`).join("");
+      body.classList.add("drawer-open");
+      drawer.setAttribute("aria-hidden","false");
+      document.querySelector("[data-close-drawer]").focus();
+    }
+    function closeDrawer(){
+      body.classList.remove("drawer-open");
+      drawer.setAttribute("aria-hidden","true");
+    }
+    taskCards.forEach((card,index)=>{
+      card.addEventListener("click",()=>openDrawer(card));
+      card.addEventListener("keydown",event=>{
+        if(event.key==="ArrowRight"){
+          event.preventDefault();
+          taskCards[Math.min(index+1,taskCards.length-1)].focus();
+        }
+        if(event.key==="ArrowLeft"){
+          event.preventDefault();
+          taskCards[Math.max(index-1,0)].focus();
+        }
+      });
+    });
+    document.querySelector("[data-close-drawer]").addEventListener("click",closeDrawer);
+    drawerBackdrop.addEventListener("click",closeDrawer);
+    filterChips.forEach(chip=>{
+      chip.addEventListener("click",()=>{
+        filterChips.forEach(item=>item.classList.remove("active"));
+        chip.classList.add("active");
+        const filter=chip.dataset.filter;
+        taskCards.forEach(card=>{
+          const match=filter==="all"||card.dataset.priority===filter||card.dataset.state.includes(filter);
+          card.hidden=!match;
+        });
+        showToast(filter==="all"?"All tasks visible":`${chip.textContent} filter applied`);
+      });
+    });
+    document.querySelector(".capture-form").addEventListener("submit",event=>{
+      event.preventDefault();
+      const value=captureInput.value.trim();
+      if(!value){
+        showToast("Capture needs a task title.");
+        captureInput.focus();
+        return;
+      }
+      showToast(`Captured: ${value}`);
+      captureInput.value="";
+    });
+    document.querySelectorAll("[data-action]").forEach(button=>{
+      button.addEventListener("click",()=>{
+        const messages={
+          sync:"Plan synced across calendar and task board.",
+          focus:"Focus block started. Low-value interruptions muted.",
+          command:"Command palette would open here.",
+          capture:"Quick capture is ready.",
+          rebalance:"Workload suggestions refreshed.",
+          timer:"Focus timer paused.",
+          protect:"Calendar block protected from meeting drift."
+        };
+        showToast(messages[button.dataset.action]||"Action queued.");
+        if(button.dataset.action==="capture"){
+          captureInput.focus();
+        }
+      });
+    });
+    document.addEventListener("keydown",event=>{
+      if(event.key==="Escape"){
+        closeDrawer();
+        closeNav();
+      }
+    });
+  </script>
+</body>
+</html>
