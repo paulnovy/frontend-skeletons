@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bolt Booking Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+:root{--cloud:#F6F8FC;--ink:#19212B;--indigo:#4F46E5;--cyan:#06B6D4;--lime:#A3E635;--coral:#FB7185;--cloud-strong:color-mix(in srgb,var(--cloud) 88%,var(--ink));--cloud-soft:color-mix(in srgb,var(--cloud) 94%,var(--cyan));--ink-muted:color-mix(in srgb,var(--ink) 68%,var(--cloud));--ink-soft:color-mix(in srgb,var(--ink) 20%,var(--cloud));--indigo-soft:color-mix(in srgb,var(--indigo) 14%,var(--cloud));--cyan-soft:color-mix(in srgb,var(--cyan) 13%,var(--cloud));--lime-soft:color-mix(in srgb,var(--lime) 24%,var(--cloud));--coral-soft:color-mix(in srgb,var(--coral) 15%,var(--cloud));--panel:color-mix(in srgb,var(--cloud) 95%,var(--indigo));--line:color-mix(in srgb,var(--ink) 12%,var(--cloud));--shadow:0 24px 70px rgba(25,33,43,0.12);--radius:8px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;min-height:100vh;background:var(--cloud);color:var(--ink);font-family:"Inter",system-ui,sans-serif}
+body.drawer-open{overflow:hidden}
+a{color:inherit;text-decoration:none}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+.shell{width:min(1180px,calc(100% - 40px));margin:0 auto}
+.topbar{position:sticky;top:0;z-index:50;border-bottom:1px solid var(--line);background:color-mix(in srgb,var(--cloud) 92%,transparent);backdrop-filter:blur(18px)}
+.topbar__inner{display:grid;grid-template-columns:auto 1fr auto auto;gap:18px;align-items:center;min-height:76px}
+.brand{display:inline-flex;align-items:center;gap:10px;font-family:"Manrope",system-ui,sans-serif;font-weight:800;letter-spacing:0}
+.brand__mark{display:grid;place-items:center;width:38px;height:38px;border-radius:var(--radius);background:linear-gradient(135deg,var(--indigo),var(--cyan));color:var(--cloud);box-shadow:0 14px 30px rgba(79,70,229,0.28)}
+.navlinks{display:flex;align-items:center;justify-content:center;gap:6px}
+.navlinks a{border-radius:var(--radius);padding:10px 12px;color:var(--ink-muted);font-size:14px;font-weight:700}
+.navlinks a:hover,.navlinks a:focus-visible{background:var(--indigo-soft);color:var(--indigo)}
+.search{position:relative;width:min(280px,28vw)}
+.search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:17px;height:17px;color:var(--ink-muted)}
+.search input{width:100%;border:1px solid var(--line);border-radius:var(--radius);padding:11px 12px 11px 38px;background:var(--panel);color:var(--ink);font-weight:700}
+.top-actions{display:inline-flex;align-items:center;gap:10px}
+.icon-button{position:relative;display:inline-grid;place-items:center;width:42px;height:42px;border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);color:var(--ink)}
+.icon-button svg{width:19px;height:19px}
+.badge{position:absolute;top:-6px;right:-6px;display:grid;place-items:center;min-width:20px;height:20px;border-radius:999px;background:var(--coral);color:var(--cloud);font-size:11px;font-weight:800}
+.hamburger{display:none}
+.drawer-backdrop{position:fixed;inset:0;z-index:80;background:rgba(25,33,43,0.42);opacity:0;pointer-events:none;transition:opacity 180ms ease}
+.drawer-backdrop.is-open{opacity:1;pointer-events:auto}
+.drawer{position:fixed;top:0;right:0;z-index:90;display:flex;flex-direction:column;gap:18px;width:min(340px,86vw);height:100vh;padding:20px;background:var(--cloud);box-shadow:var(--shadow);transform:translateX(100%);transition:transform 220ms ease}
+.drawer.is-open{transform:translateX(0)}
+.drawer__head{display:flex;align-items:center;justify-content:space-between}
+.drawer__links{display:grid;gap:8px}
+.drawer__links a{border:1px solid var(--line);border-radius:var(--radius);padding:13px 14px;background:var(--panel);font-weight:800}
+main{display:grid;gap:26px;padding:30px 0 24px}
+.hero{display:grid;grid-template-columns:minmax(0,1.06fr) minmax(340px,0.94fr);gap:22px;align-items:stretch}
+.hero-copy,.dispatch-panel,.section-card,.booking-flow,.table-card{border:1px solid var(--line);border-radius:var(--radius);background:var(--panel);box-shadow:var(--shadow)}
+.hero-copy{display:grid;align-content:space-between;min-height:330px;padding:30px;background:radial-gradient(circle at 12% 18%,color-mix(in srgb,var(--cyan) 24%,transparent),transparent 34%),linear-gradient(135deg,var(--ink),color-mix(in srgb,var(--ink) 86%,var(--indigo)));color:var(--cloud);overflow:hidden}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;width:fit-content;border:1px solid rgba(246,248,252,0.22);border-radius:999px;padding:7px 11px;background:rgba(246,248,252,0.08);color:color-mix(in srgb,var(--cloud) 82%,var(--cyan));font-size:12px;font-weight:800;text-transform:uppercase}
+.pulse{width:8px;height:8px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 7px rgba(163,230,53,0.12)}
+h1,h2,h3{margin:0;font-family:"Manrope",system-ui,sans-serif;letter-spacing:0}
+h1{max-width:780px;margin-top:20px;font-size:clamp(40px,5vw,68px);line-height:0.98}
+.hero-copy p{max-width:620px;margin:18px 0 0;color:color-mix(in srgb,var(--cloud) 78%,var(--cyan));font-size:17px;line-height:1.7}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
+.button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:42px;border:1px solid transparent;border-radius:var(--radius);padding:11px 15px;font-weight:800}
+.button--primary{background:var(--indigo);color:var(--cloud)}
+.button--secondary{border-color:rgba(246,248,252,0.24);background:rgba(246,248,252,0.09);color:var(--cloud)}
+.button--light{border-color:var(--line);background:var(--cloud);color:var(--ink)}
+.dispatch-panel{display:grid;gap:16px;padding:22px}
+.dispatch-panel__head,.section-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px}
+.section-head p,.dispatch-panel__head p{margin:6px 0 0;color:var(--ink-muted);line-height:1.55}
+.live-chip{display:inline-flex;align-items:center;gap:7px;border-radius:999px;padding:7px 10px;background:var(--cyan-soft);color:var(--cyan);font-size:12px;font-weight:900;white-space:nowrap}
+.queue-list{display:grid;gap:10px}
+.queue-item{display:grid;grid-template-columns:46px 1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:var(--radius);padding:12px;background:var(--cloud)}
+.queue-time{display:grid;place-items:center;width:46px;height:46px;border-radius:var(--radius);background:var(--ink);color:var(--cloud);font-weight:900;font-size:13px}
+.queue-item strong{display:block;margin-bottom:4px}
+.queue-item span{color:var(--ink-muted);font-size:13px;font-weight:700}
+.status-dot{width:11px;height:11px;border-radius:50%;background:var(--lime)}
+.status-dot--hot{background:var(--coral)}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.kpi{border:1px solid var(--line);border-radius:var(--radius);padding:18px;background:var(--panel)}
+.kpi span{color:var(--ink-muted);font-size:13px;font-weight:800}
+.kpi strong{display:block;margin-top:8px;font-family:"Manrope",system-ui,sans-serif;font-size:32px;line-height:1}
+.kpi small{display:inline-flex;margin-top:10px;border-radius:999px;padding:5px 8px;background:var(--lime-soft);color:color-mix(in srgb,var(--ink) 76%,var(--lime));font-weight:900}
+.section-card{padding:22px}
+.calendar-wrap{margin-top:18px;overflow-x:auto;padding-bottom:4px}
+.calendar-grid{display:grid;grid-template-columns:76px repeat(7,minmax(116px,1fr));min-width:920px;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.calendar-cell{min-height:72px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:9px;background:var(--cloud)}
+.calendar-cell:nth-child(8n),.calendar-cell:last-child{border-right:0}
+.calendar-cell--head,.calendar-cell--time{min-height:54px;background:var(--ink);color:var(--cloud);font-weight:900}
+.calendar-cell--time{display:flex;align-items:center;justify-content:center;color:color-mix(in srgb,var(--cloud) 82%,var(--cyan));font-size:12px}
+.day-title{display:block;font-size:12px;text-transform:uppercase}
+.day-date{display:block;margin-top:4px;color:color-mix(in srgb,var(--cloud) 72%,var(--cyan));font-size:12px}
+.slot{display:grid;gap:4px;height:100%;border-radius:var(--radius);padding:9px;font-size:12px;font-weight:800}
+.slot--available{border:1px dashed color-mix(in srgb,var(--cyan) 46%,var(--cloud));background:var(--cyan-soft);color:color-mix(in srgb,var(--ink) 72%,var(--cyan))}
+.slot--booked{background:var(--indigo);color:var(--cloud)}
+.slot--priority{background:var(--coral);color:var(--cloud)}
+.slot--ready{background:color-mix(in srgb,var(--lime) 58%,var(--ink));color:var(--cloud)}
+.slot small{color:inherit;opacity:0.78;font-weight:700}
+.provider-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px}
+.provider-card{border:1px solid var(--line);border-radius:var(--radius);padding:16px;background:var(--cloud)}
+.avatar{display:grid;place-items:center;width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,var(--indigo),var(--cyan));color:var(--cloud);font-family:"Manrope",system-ui,sans-serif;font-size:18px;font-weight:900}
+.provider-card h3{margin-top:14px;font-size:18px}
+.provider-card p{margin:6px 0 12px;color:var(--ink-muted);line-height:1.5}
+.stars{color:color-mix(in srgb,var(--lime) 74%,var(--ink));font-weight:900;letter-spacing:0}
+.availability{display:inline-flex;margin-top:12px;border-radius:999px;padding:7px 10px;background:var(--lime-soft);color:color-mix(in srgb,var(--ink) 70%,var(--lime));font-size:12px;font-weight:900}
+.catalog-list{display:grid;gap:10px;margin-top:18px}
+.service-row{display:grid;grid-template-columns:1.4fr 0.7fr 0.7fr 0.7fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:var(--radius);padding:14px;background:var(--cloud)}
+.service-name strong{display:block;margin-bottom:5px}
+.service-name span,.service-row>span{color:var(--ink-muted);font-size:13px;font-weight:800}
+.tag{display:inline-flex;width:fit-content;border-radius:999px;padding:6px 9px;background:var(--indigo-soft);color:var(--indigo);font-size:12px;font-weight:900}
+.booking-flow{padding:22px}
+.progress{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:18px 0}
+.progress-step{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:var(--radius);padding:11px;background:var(--cloud);color:var(--ink-muted);font-weight:900}
+.progress-step span{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--ink-soft);color:var(--ink);font-size:13px}
+.progress-step.is-active{border-color:color-mix(in srgb,var(--indigo) 42%,var(--cloud));background:var(--indigo-soft);color:var(--indigo)}
+.progress-step.is-active span{background:var(--indigo);color:var(--cloud)}
+.flow-panels{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.flow-panel{border:1px solid var(--line);border-radius:var(--radius);padding:16px;background:var(--cloud)}
+.flow-panel h3{font-size:18px}
+.field{display:grid;gap:7px;margin-top:12px}
+.field label{color:var(--ink-muted);font-size:12px;font-weight:900;text-transform:uppercase}
+.field select,.field input,.field textarea{width:100%;border:1px solid var(--line);border-radius:var(--radius);padding:11px 12px;background:var(--panel);color:var(--ink);font-weight:700}
+.field textarea{min-height:96px;resize:vertical}
+.time-options{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
+.time-options button{border:1px solid var(--line);border-radius:var(--radius);padding:10px 8px;background:var(--panel);color:var(--ink);font-weight:900}
+.time-options button.is-selected{border-color:var(--indigo);background:var(--indigo);color:var(--cloud)}
+.summary-box{display:grid;gap:10px;margin-top:12px;border-radius:var(--radius);padding:14px;background:var(--ink);color:var(--cloud)}
+.summary-box span{color:color-mix(in srgb,var(--cloud) 72%,var(--cyan));font-size:13px;font-weight:800}
+.table-card{padding:22px;overflow:hidden}
+.table-wrap{margin-top:18px;overflow-x:auto}
+table{width:100%;min-width:760px;border-collapse:collapse}
+th,td{border-bottom:1px solid var(--line);padding:14px 12px;text-align:left}
+th{color:var(--ink-muted);font-size:12px;font-weight:900;text-transform:uppercase}
+td{font-weight:700}
+.status{display:inline-flex;border-radius:999px;padding:6px 10px;font-size:12px;font-weight:900}
+.status--confirmed{background:var(--lime-soft);color:color-mix(in srgb,var(--ink) 70%,var(--lime))}
+.status--pending{background:var(--cyan-soft);color:color-mix(in srgb,var(--ink) 68%,var(--cyan))}
+.status--cancelled{background:var(--coral-soft);color:color-mix(in srgb,var(--ink) 58%,var(--coral))}
+.footer{border-top:1px solid var(--line);padding:26px 0 32px;color:var(--ink-muted);font-weight:800}
+@media (max-width:1040px){.topbar__inner{grid-template-columns:auto 1fr auto}
+.navlinks{display:none}
+.search{justify-self:end;width:min(280px,36vw)}
+.hamburger{display:inline-grid}
+.hero,.flow-panels{grid-template-columns:1fr}
+.kpis,.provider-grid{grid-template-columns:repeat(2,1fr)}
+.service-row{grid-template-columns:1fr 0.7fr auto}
+.service-row .tag,.service-row .price{grid-column:auto}
+}
+@media (max-width:680px){.shell{width:min(100% - 24px,1180px)}
+.topbar__inner{grid-template-columns:auto auto;justify-content:space-between;min-height:68px}
+.search,.top-actions .icon-button:first-child{display:none}
+.brand__text{max-width:134px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+main{gap:18px;padding-top:18px}
+.hero-copy,.dispatch-panel,.section-card,.booking-flow,.table-card{padding:16px}
+.hero-copy{min-height:360px}
+h1{font-size:39px}
+.kpis,.provider-grid,.progress{grid-template-columns:1fr}
+.queue-item{grid-template-columns:42px 1fr}
+.queue-item .status-dot{display:none}
+.service-row{grid-template-columns:1fr;align-items:stretch}
+.service-row .button{width:100%}
+.time-options{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto !important;transition-duration:0.01ms !important;animation-duration:0.01ms !important}
+}
+
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell topbar__inner">
+      <a class="brand" href="#bookings" aria-label="Bolt Booking Engine home">
+        <span class="brand__mark" aria-hidden="true">B</span>
+        <span class="brand__text">Bolt Booking Engine</span>
+      </a>
+      <nav class="navlinks" aria-label="Primary navigation">
+        <a href="#bookings">Bookings</a>
+        <a href="#providers">Providers</a>
+        <a href="#services">Services</a>
+        <a href="#calendar">Calendar</a>
+        <a href="#settings">Settings</a>
+      </nav>
+      <form class="search" role="search" aria-label="Search bookings">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+          <path d="m21 21-4.7-4.7m2.2-5.3a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <label class="sr-only" for="global-search">Search</label>
+        <input id="global-search" type="search" value="Today, cardiology, Ada" aria-label="Search terms">
+      </form>
+      <div class="top-actions">
+        <button class="icon-button" type="button" aria-label="Open notifications">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+            <path d="M18 9a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M13.7 21a2 2 0 0 1-3.4 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span class="badge">6</span>
+        </button>
+        <button class="icon-button hamburger" id="menuButton" type="button" aria-label="Open menu" aria-controls="mobileDrawer" aria-expanded="false">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+            <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+  <aside class="drawer" id="mobileDrawer" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="drawer__head">
+      <a class="brand" href="#bookings">
+        <span class="brand__mark" aria-hidden="true">B</span>
+        <span>Bolt</span>
+      </a>
+      <button class="icon-button" id="closeDrawer" type="button" aria-label="Close menu">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+          <path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <nav class="drawer__links" aria-label="Mobile links">
+      <a href="#bookings">Bookings</a>
+      <a href="#providers">Providers</a>
+      <a href="#services">Services</a>
+      <a href="#calendar">Calendar</a>
+      <a href="#settings">Settings</a>
+    </nav>
+    <form class="field" role="search" aria-label="Mobile search">
+      <label for="drawer-search">Find appointment</label>
+      <input id="drawer-search" type="search" value="Dermatology Friday">
+    </form>
+  </aside>
+
+  <main id="bookings">
+    <section class="shell hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <div>
+          <span class="eyebrow"><span class="pulse" aria-hidden="true"></span>Live capacity engine</span>
+          <h1 id="hero-title">Appointments, providers, and calendar pressure in one command surface.</h1>
+          <p>Route high-value bookings, rebalance specialist availability, and move clients from selection to confirmation without leaving the schedule.</p>
+          <div class="hero-actions">
+            <a class="button button--primary" href="#flow">Start booking</a>
+            <a class="button button--secondary" href="#calendar">Review week</a>
+          </div>
+        </div>
+      </div>
+      <aside class="dispatch-panel" aria-labelledby="dispatch-title">
+        <div class="dispatch-panel__head">
+          <div>
+            <h2 id="dispatch-title">Next dispatch</h2>
+            <p>Front desk queue with real-time provider readiness.</p>
+          </div>
+          <span class="live-chip"><span class="pulse" aria-hidden="true"></span>Synced</span>
+        </div>
+        <div class="queue-list">
+          <article class="queue-item">
+            <span class="queue-time">09:30</span>
+            <div>
+              <strong>Mara Evans</strong>
+              <span>Cardiology intake with Dr. Chen</span>
+            </div>
+            <span class="status-dot" aria-label="Ready"></span>
+          </article>
+          <article class="queue-item">
+            <span class="queue-time">10:15</span>
+            <div>
+              <strong>Noah Stein</strong>
+              <span>Physio recovery with Lin Novak</span>
+            </div>
+            <span class="status-dot" aria-label="Ready"></span>
+          </article>
+          <article class="queue-item">
+            <span class="queue-time">11:00</span>
+            <div>
+              <strong>Iris Nolan</strong>
+              <span>Urgent dermatology review</span>
+            </div>
+            <span class="status-dot status-dot--hot" aria-label="Attention needed"></span>
+          </article>
+        </div>
+      </aside>
+    </section>
+
+    <section class="shell kpis" aria-label="Booking performance">
+      <article class="kpi">
+        <span>Bookings today</span>
+        <strong>48</strong>
+        <small>+12 from Monday</small>
+      </article>
+      <article class="kpi">
+        <span>Upcoming this week</span>
+        <strong>312</strong>
+        <small>87% capacity</small>
+      </article>
+      <article class="kpi">
+        <span>Cancellation rate</span>
+        <strong>4.8%</strong>
+        <small>1.6 below target</small>
+      </article>
+      <article class="kpi">
+        <span>Avg rating</span>
+        <strong>4.92</strong>
+        <small>1,284 reviews</small>
+      </article>
+    </section>
+
+    <section class="shell section-card" id="calendar" aria-labelledby="calendar-title">
+      <div class="section-head">
+        <div>
+          <h2 id="calendar-title">Weekly calendar</h2>
+          <p>Booked slots use strong color, empty slots stay visibly available for fast scanning.</p>
+        </div>
+        <button class="button button--light" type="button">Export week</button>
+      </div>
+      <div class="calendar-wrap">
+        <div class="calendar-grid" role="grid" aria-label="Weekly booking calendar">
+          <div class="calendar-cell calendar-cell--head" role="columnheader">Time</div>
+          <div class="calendar-cell calendar-cell--head" role="columnheader"><span class="day-title">Mon</span><span class="day-date">May 25</span></div>
+          <div class="calendar-cell calendar-cell--head" role="columnheader"><span class="day-title">Tue</span><span class="day-date">May 26</span></div>
+          <div class="calendar-cell calendar-cell--head" role="columnheader"><span class="day-title">Wed</span><span class="day-date">May 27</span></div>
+          <div class="calendar-cell calendar-cell--head" role="columnheader"><span class="day-title">Thu</span><span class="day-date">May 28</span></div>
+          <div class="calendar-cell calendar-cell--head" role="columnheader"><span class="day-title">Fri</span><span class="day-date">May 29</span></div>
+          <div class="calendar-cell calendar-cell--head" role="columnheader"><span class="day-title">Sat</span><span class="day-date">May 30</span></div>
+          <div class="calendar-cell calendar-cell--head" role="columnheader"><span class="day-title">Sun</span><span class="day-date">May 31</span></div>
+          <div class="calendar-cell calendar-cell--time" role="rowheader">09:00</div>
+          <div class="calendar-cell"><div class="slot slot--booked">Dental exam<small>Dr. Vale</small></div></div>
+          <div class="calendar-cell"><div class="slot slot--available">Open<small>2 rooms</small></div></div>
+          <div class="calendar-cell"><div class="slot slot--ready">Physio block<small>Lin Novak</small></div></div>
+          <div class="calendar-cell"><div class="slot slot--booked">Skin consult<small>Ada Brooks</small></div></div>
+          <div class="calendar-cell"><div class="slot slot--available">Open<small>West wing</small></div></div>
+          <div class="calendar-cell"><div class="slot slot--booked">Follow-up<small>Dr. Chen</small></div></div>
+          <div class="calendar-cell"><div class="slot slot--available">Open<small>Remote</small></div></div>
+          <div class="calendar-cell calendar-cell--time" role="rowheader">11:00</div>
+          <div class="calendar-cell"><div class="slot slot--available">Open<small>Room 4</small></div></div>
+          <div class="calendar-cell"><div class="slot slot--booked">Cardiology<small>Dr. Chen</small></div></div>
+          <div class="calendar-cell"><div class="slot slot--priority">Urgent review<small>Ada Brooks</small></div></div>
+          <div class="calendar-cell"><div class="slot slot--available">Open<small>Room 2</small></div></div>
+          <div class="calendar-cell"><div class="slot slot--ready">Massage therapy<small>Milo Hart</small></div></div>
+          <div class="calendar-cell"><div class="slot slot--available">Open<small>2 rooms</small></div></div>
+          <div class="calendar-cell"><div class="slot slot--booked">Virtual consult<small>Dr. Chen</small></div></div>
+          <div class="calendar-cell calendar-cell--time" role="rowheader">14:00</div>
+          <div class="calendar-cell"><div class="slot slot--ready">Rehab circuit<small>Lin Novak</small></div></div>
+          <div class="calendar-cell"><div class="slot slot--available">Open<small>Room 1</small></div></div>
+          <div class="calendar-cell"><div class="slot slot--booked">Wellness plan<small>Milo Hart</small></div></div>
+          <div class="calendar-cell"><div class="slot slot--available">Open<small>Remote</small></div></div>
+          <div class="calendar-cell"><div class="slot slot--booked">Dental exam<small>Dr. Vale</small></div></div>
+          <div class="calendar-cell"><div class="slot slot--priority">Waitlist fill<small>Front desk</small></div></div>
+          <div class="calendar-cell"><div class="slot slot--available">Open<small>Room 3</small></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="shell section-card" id="providers" aria-labelledby="providers-title">
+      <div class="section-head">
+        <div>
+          <h2 id="providers-title">Provider profiles</h2>
+          <p>Specialist cards surface trust, focus area, rating, and next bookable slot.</p>
+        </div>
+        <button class="button button--light" type="button">Manage roster</button>
+      </div>
+      <div class="provider-grid">
+        <article class="provider-card">
+          <div class="avatar" aria-hidden="true">EC</div>
+          <h3>Dr. Elena Chen</h3>
+          <p>Cardiology and preventative heart health.</p>
+          <div class="stars" aria-label="Rating 4.9 out of 5">★★★★★ 4.9</div>
+          <span class="availability">Next: Wed 15:30</span>
+        </article>
+        <article class="provider-card">
+          <div class="avatar" aria-hidden="true">AB</div>
+          <h3>Ada Brooks</h3>
+          <p>Dermatology, mole mapping, acne care.</p>
+          <div class="stars" aria-label="Rating 4.8 out of 5">★★★★★ 4.8</div>
+          <span class="availability">Next: Thu 09:45</span>
+        </article>
+        <article class="provider-card">
+          <div class="avatar" aria-hidden="true">LN</div>
+          <h3>Lin Novak</h3>
+          <p>Sports physiotherapy and post-op rehab.</p>
+          <div class="stars" aria-label="Rating 5.0 out of 5">★★★★★ 5.0</div>
+          <span class="availability">Next: Today 16:00</span>
+        </article>
+        <article class="provider-card">
+          <div class="avatar" aria-hidden="true">MV</div>
+          <h3>Dr. Mira Vale</h3>
+          <p>Dental hygiene and restorative care.</p>
+          <div class="stars" aria-label="Rating 4.9 out of 5">★★★★★ 4.9</div>
+          <span class="availability">Next: Fri 10:20</span>
+        </article>
+      </div>
+    </section>
+
+    <section class="shell section-card" id="services" aria-labelledby="services-title">
+      <div class="section-head">
+        <div>
+          <h2 id="services-title">Service catalog</h2>
+          <p>Bookable offers with duration, transparent pricing, and operational category.</p>
+        </div>
+        <button class="button button--light" type="button">Add service</button>
+      </div>
+      <div class="catalog-list">
+        <article class="service-row">
+          <div class="service-name"><strong>Cardiology intake</strong><span>Risk profile, ECG review, treatment plan</span></div>
+          <span>45 min</span>
+          <span class="price">$180</span>
+          <span class="tag">Specialist</span>
+          <button class="button button--primary service-book" type="button" data-service="Cardiology intake">Book</button>
+        </article>
+        <article class="service-row">
+          <div class="service-name"><strong>Physio recovery session</strong><span>Mobility assessment and guided therapy</span></div>
+          <span>60 min</span>
+          <span class="price">$120</span>
+          <span class="tag">Rehab</span>
+          <button class="button button--primary service-book" type="button" data-service="Physio recovery session">Book</button>
+        </article>
+        <article class="service-row">
+          <div class="service-name"><strong>Dermatology review</strong><span>Skin scan, care protocol, digital record</span></div>
+          <span>30 min</span>
+          <span class="price">$140</span>
+          <span class="tag">Consult</span>
+          <button class="button button--primary service-book" type="button" data-service="Dermatology review">Book</button>
+        </article>
+        <article class="service-row">
+          <div class="service-name"><strong>Dental hygiene visit</strong><span>Cleaning, polish, oral health coaching</span></div>
+          <span>50 min</span>
+          <span class="price">$95</span>
+          <span class="tag">Preventive</span>
+          <button class="button button--primary service-book" type="button" data-service="Dental hygiene visit">Book</button>
+        </article>
+      </div>
+    </section>
+
+    <section class="shell booking-flow" id="flow" aria-labelledby="flow-title">
+      <div class="section-head">
+        <div>
+          <h2 id="flow-title">Booking flow</h2>
+          <p>Three focused steps: choose the service, pick a high-confidence slot, confirm client details.</p>
+        </div>
+        <span class="live-chip">3 steps</span>
+      </div>
+      <div class="progress" aria-label="Booking progress">
+        <div class="progress-step is-active"><span>1</span>Select Service</div>
+        <div class="progress-step is-active"><span>2</span>Pick Time</div>
+        <div class="progress-step"><span>3</span>Confirm Details</div>
+      </div>
+      <form class="flow-panels">
+        <fieldset class="flow-panel">
+          <legend><h3>Select Service</h3></legend>
+          <div class="field">
+            <label for="service-choice">Service</label>
+            <select id="service-choice">
+              <option>Cardiology intake</option>
+              <option>Physio recovery session</option>
+              <option>Dermatology review</option>
+              <option>Dental hygiene visit</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="provider-choice">Provider</label>
+            <select id="provider-choice">
+              <option>Dr. Elena Chen</option>
+              <option>Ada Brooks</option>
+              <option>Lin Novak</option>
+              <option>Dr. Mira Vale</option>
+            </select>
+          </div>
+        </fieldset>
+        <fieldset class="flow-panel">
+          <legend><h3>Pick Time</h3></legend>
+          <div class="field">
+            <label for="booking-date">Date</label>
+            <input id="booking-date" type="date" value="2026-05-27">
+          </div>
+          <div class="time-options" aria-label="Available times">
+            <button type="button">09:30</button>
+            <button class="is-selected" type="button">11:00</button>
+            <button type="button">14:00</button>
+            <button type="button">16:30</button>
+          </div>
+        </fieldset>
+        <fieldset class="flow-panel">
+          <legend><h3>Confirm Details</h3></legend>
+          <div class="field">
+            <label for="client-name">Client</label>
+            <input id="client-name" type="text" value="Mara Evans">
+          </div>
+          <div class="field">
+            <label for="client-notes">Visit notes</label>
+            <textarea id="client-notes">Prefers SMS confirmation and a quiet waiting area.</textarea>
+          </div>
+          <div class="summary-box" aria-live="polite">
+            <strong id="booking-summary">Cardiology intake at 11:00</strong>
+            <span>Confirmation ready for Mara Evans</span>
+          </div>
+        </fieldset>
+      </form>
+    </section>
+
+    <section class="shell table-card" aria-labelledby="recent-title">
+      <div class="section-head">
+        <div>
+          <h2 id="recent-title">Recent bookings</h2>
+          <p>Operational ledger for front desk confirmation, billing readiness, and status drift.</p>
+        </div>
+        <button class="button button--light" type="button">Download CSV</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Client</th>
+              <th scope="col">Service</th>
+              <th scope="col">Provider</th>
+              <th scope="col">Date / time</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Mara Evans</td>
+              <td>Cardiology intake</td>
+              <td>Dr. Elena Chen</td>
+              <td>May 27, 11:00</td>
+              <td><span class="status status--confirmed">Confirmed</span></td>
+            </tr>
+            <tr>
+              <td>Noah Stein</td>
+              <td>Physio recovery session</td>
+              <td>Lin Novak</td>
+              <td>May 27, 10:15</td>
+              <td><span class="status status--pending">Pending</span></td>
+            </tr>
+            <tr>
+              <td>Iris Nolan</td>
+              <td>Dermatology review</td>
+              <td>Ada Brooks</td>
+              <td>May 27, 11:00</td>
+              <td><span class="status status--confirmed">Confirmed</span></td>
+            </tr>
+            <tr>
+              <td>Owen Clarke</td>
+              <td>Dental hygiene visit</td>
+              <td>Dr. Mira Vale</td>
+              <td>May 26, 15:40</td>
+              <td><span class="status status--cancelled">Cancelled</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer" id="settings">
+    <div class="shell">Bolt Booking Engine — designed by Northline Studio</div>
+  </footer>
+
+  <script>
+const menuButton = document.querySelector("#menuButton");
+const closeDrawer = document.querySelector("#closeDrawer");
+const drawer = document.querySelector("#mobileDrawer");
+const backdrop = document.querySelector("#drawerBackdrop");
+const drawerLinks = drawer.querySelectorAll("a");
+let lastFocus = null;
+function openDrawer() {
+lastFocus = document.activeElement;
+drawer.classList.add("is-open");
+backdrop.classList.add("is-open");
+backdrop.hidden = false;
+drawer.setAttribute("aria-hidden", "false");
+menuButton.setAttribute("aria-expanded", "true");
+document.body.classList.add("drawer-open");
+closeDrawer.focus();
+}
+function shutDrawer() {
+drawer.classList.remove("is-open");
+backdrop.classList.remove("is-open");
+drawer.setAttribute("aria-hidden", "true");
+menuButton.setAttribute("aria-expanded", "false");
+document.body.classList.remove("drawer-open");
+window.setTimeout(() => {
+backdrop.hidden = true;
+}, 180);
+if (lastFocus) {
+lastFocus.focus();
+}
+}
+menuButton.addEventListener("click", openDrawer);
+closeDrawer.addEventListener("click", shutDrawer);
+backdrop.addEventListener("click", shutDrawer);
+drawerLinks.forEach((link) => link.addEventListener("click", shutDrawer));
+document.addEventListener("keydown", (event) => {
+if (event.key === "Escape" && drawer.classList.contains("is-open")) {
+shutDrawer();
+}
+if (event.key === "Tab" && drawer.classList.contains("is-open")) {
+const focusable = drawer.querySelectorAll("a, button, input, select, textarea, [tabindex]:not([tabindex='-1'])");
+const first = focusable[0];
+const last = focusable[focusable.length - 1];
+if (event.shiftKey && document.activeElement === first) {
+event.preventDefault();
+last.focus();
+} else if (!event.shiftKey && document.activeElement === last) {
+event.preventDefault();
+first.focus();
+}
+}
+});
+const serviceChoice = document.querySelector("#service-choice");
+const summary = document.querySelector("#booking-summary");
+const timeButtons = document.querySelectorAll(".time-options button");
+let selectedTime = "11:00";
+function updateSummary() {
+summary.textContent = `${serviceChoice.value} at ${selectedTime}`;
+}
+serviceChoice.addEventListener("change", updateSummary);
+timeButtons.forEach((button) => {
+button.addEventListener("click", () => {
+timeButtons.forEach((item) => item.classList.remove("is-selected"));
+button.classList.add("is-selected");
+selectedTime = button.textContent.trim();
+updateSummary();
+});
+});
+document.querySelectorAll(".service-book").forEach((button) => {
+button.addEventListener("click", () => {
+serviceChoice.value = button.dataset.service;
+updateSummary();
+document.querySelector("#flow").scrollIntoView({ behavior: "smooth", block: "start" });
+});
+});
+  </script>
+</body>
+</html>
