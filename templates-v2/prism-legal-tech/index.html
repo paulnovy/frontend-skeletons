@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prism Legal Tech</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --indigo: #4F46E5;
+      --cyan: #06B6D4;
+      --lime: #A3E635;
+      --coral: #FB7185;
+      --white: rgba(255, 255, 255, 0.92);
+      --ink-80: rgba(25, 33, 43, 0.8);
+      --ink-70: rgba(25, 33, 43, 0.7);
+      --ink-60: rgba(25, 33, 43, 0.6);
+      --ink-50: rgba(25, 33, 43, 0.5);
+      --ink-15: rgba(25, 33, 43, 0.15);
+      --ink-10: rgba(25, 33, 43, 0.1);
+      --ink-06: rgba(25, 33, 43, 0.06);
+      --indigo-12: rgba(79, 70, 229, 0.12);
+      --indigo-18: rgba(79, 70, 229, 0.18);
+      --cyan-12: rgba(6, 182, 212, 0.12);
+      --cyan-18: rgba(6, 182, 212, 0.18);
+      --lime-14: rgba(163, 230, 53, 0.14);
+      --lime-30: rgba(163, 230, 53, 0.3);
+      --coral-12: rgba(251, 113, 133, 0.12);
+      --coral-18: rgba(251, 113, 133, 0.18);
+      --shadow: 0 22px 50px rgba(25, 33, 43, 0.1);
+      --soft-shadow: 0 14px 32px rgba(25, 33, 43, 0.08);
+      --radius: 8px;
+      --max: 1440px;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        linear-gradient(180deg, rgba(79, 70, 229, 0.06), rgba(6, 182, 212, 0.04) 44%, transparent 78%),
+        var(--cloud);
+      min-height: 100vh;
+    }
+    body.drawer-open {
+      overflow: hidden;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    button,
+    input {
+      font: inherit;
+    }
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+    img,
+    svg {
+      display: block;
+    }
+    .app-shell {
+      width: min(100%, var(--max));
+      margin: 0 auto;
+      padding: 0 28px 40px;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      margin: 0 -28px;
+      padding: 14px 28px;
+      border-bottom: 1px solid var(--ink-10);
+      background: rgba(246, 248, 252, 0.88);
+      backdrop-filter: blur(18px);
+    }
+    .topbar-inner {
+      width: min(100%, var(--max));
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 22px;
+      align-items: center;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: max-content;
+    }
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      color: white;
+      background: linear-gradient(135deg, var(--ink), var(--indigo));
+      box-shadow: 0 10px 24px var(--indigo-18);
+      font-family: "Manrope", sans-serif;
+      font-weight: 800;
+    }
+    .brand-text {
+      font-family: "Manrope", sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      letter-spacing: 0;
+    }
+    .primary-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+    .primary-nav a {
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      color: var(--ink-70);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    .primary-nav a:hover,
+    .primary-nav a:focus-visible {
+      color: var(--indigo);
+      background: var(--indigo-12);
+    }
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 250px;
+      padding: 10px 12px;
+      border: 1px solid var(--ink-10);
+      border-radius: var(--radius);
+      background: var(--white);
+      color: var(--ink-60);
+    }
+    .search input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+      min-width: 0;
+    }
+    .icon-button {
+      position: relative;
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--ink-10);
+      border-radius: var(--radius);
+      background: var(--white);
+      color: var(--ink);
+    }
+    .icon-button:hover,
+    .icon-button:focus-visible {
+      border-color: var(--indigo);
+      color: var(--indigo);
+    }
+    .badge-count {
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 5px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: var(--coral);
+      color: white;
+      font-size: 0.72rem;
+      font-weight: 800;
+      border: 2px solid var(--cloud);
+    }
+    .hamburger {
+      display: none;
+    }
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      background: rgba(25, 33, 43, 0.5);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+    }
+    .drawer-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .mobile-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 80;
+      width: min(360px, 86vw);
+      height: 100dvh;
+      padding: 22px;
+      background: var(--cloud);
+      border-left: 1px solid var(--ink-10);
+      transform: translateX(100%);
+      transition: transform 220ms ease;
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .mobile-drawer.active {
+      transform: translateX(0);
+    }
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .drawer-links {
+      display: grid;
+      gap: 8px;
+    }
+    .drawer-links a {
+      padding: 13px 12px;
+      border-radius: var(--radius);
+      background: var(--white);
+      border: 1px solid var(--ink-10);
+      font-weight: 800;
+    }
+    .hero {
+      padding: 44px 0 24px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: 28px;
+      align-items: stretch;
+    }
+    .hero-copy {
+      min-height: 320px;
+      padding: 36px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      position: relative;
+    }
+    .hero-copy::after {
+      content: "";
+      position: absolute;
+      inset: auto -8% -24% 46%;
+      height: 220px;
+      background: radial-gradient(circle, var(--cyan-18), transparent 65%);
+      pointer-events: none;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: max-content;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+    .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 0 6px rgba(6, 182, 212, 0.18);
+    }
+    h1,
+    h2,
+    h3 {
+      font-family: "Manrope", sans-serif;
+      letter-spacing: 0;
+      margin: 0;
+    }
+    h1 {
+      max-width: 780px;
+      margin-top: 28px;
+      font-size: clamp(2.45rem, 6vw, 5.4rem);
+      line-height: 0.95;
+    }
+    .hero-copy p {
+      max-width: 650px;
+      margin: 22px 0 0;
+      color: rgba(255, 255, 255, 0.75);
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+    .hero-actions {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 28px;
+    }
+    .button {
+      min-height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 11px 14px;
+      border-radius: var(--radius);
+      font-weight: 800;
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+    }
+    .button:hover {
+      transform: translateY(-1px);
+    }
+    .button.primary {
+      color: white;
+      background: var(--indigo);
+      box-shadow: 0 14px 28px var(--indigo-18);
+    }
+    .button.secondary {
+      color: white;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+    .brief-panel {
+      border-radius: var(--radius);
+      padding: 22px;
+      background: var(--white);
+      border: 1px solid var(--ink-10);
+      box-shadow: var(--soft-shadow);
+      display: grid;
+      gap: 18px;
+    }
+    .brief-row {
+      display: grid;
+      grid-template-columns: 44px 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 14px;
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.68);
+      border: 1px solid var(--ink-06);
+    }
+    .brief-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      color: var(--indigo);
+      background: var(--indigo-12);
+    }
+    .brief-row strong {
+      display: block;
+      font-size: 0.95rem;
+    }
+    .brief-row span {
+      color: var(--ink-60);
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    .status-pill {
+      padding: 7px 9px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .status-pill.ok {
+      background: var(--lime-14);
+      color: var(--ink);
+    }
+    .status-pill.live {
+      background: var(--cyan-12);
+      color: var(--ink);
+    }
+    .status-pill.risk {
+      background: var(--coral-12);
+      color: var(--ink);
+    }
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin: 8px 0 26px;
+    }
+    .kpi-card {
+      padding: 20px;
+      border: 1px solid var(--ink-10);
+      border-radius: var(--radius);
+      background: var(--white);
+      box-shadow: 0 8px 20px rgba(25, 33, 43, 0.04);
+    }
+    .kpi-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--ink-60);
+      font-size: 0.82rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+    .kpi-value {
+      margin-top: 12px;
+      font-family: "Manrope", sans-serif;
+      font-size: 2.05rem;
+      font-weight: 800;
+    }
+    .kpi-trend {
+      margin-top: 6px;
+      color: var(--ink-60);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+    .section {
+      margin-top: 28px;
+    }
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .section-heading h2 {
+      font-size: clamp(1.4rem, 2vw, 2rem);
+    }
+    .section-heading p {
+      max-width: 620px;
+      margin: 6px 0 0;
+      color: var(--ink-60);
+      line-height: 1.6;
+    }
+    .panel {
+      border: 1px solid var(--ink-10);
+      border-radius: var(--radius);
+      background: var(--white);
+      box-shadow: var(--soft-shadow);
+    }
+    .case-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(240px, 1fr));
+      gap: 14px;
+    }
+    .case-card {
+      min-height: 270px;
+      padding: 18px;
+      border-radius: var(--radius);
+      border: 1px solid var(--ink-10);
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+      box-shadow: 0 10px 24px rgba(25, 33, 43, 0.05);
+    }
+    .case-top {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .case-number {
+      color: var(--ink-50);
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+    .case-client {
+      margin-top: 8px;
+      font-family: "Manrope", sans-serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+    }
+    .case-type {
+      padding: 7px 9px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 900;
+      background: var(--indigo-12);
+      color: var(--ink);
+    }
+    .case-type.civil {
+      background: var(--cyan-12);
+    }
+    .case-type.criminal {
+      background: var(--coral-12);
+    }
+    .case-type.corporate {
+      background: var(--indigo-12);
+    }
+    .case-type.family {
+      background: var(--lime-14);
+    }
+    .case-meta {
+      display: grid;
+      gap: 12px;
+    }
+    .meta-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--ink-60);
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+    .meta-line strong {
+      color: var(--ink);
+      text-align: right;
+    }
+    .progress-track {
+      height: 8px;
+      border-radius: 999px;
+      background: var(--ink-06);
+      overflow: hidden;
+    }
+    .progress-track span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--indigo), var(--cyan));
+    }
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    .data-table th,
+    .data-table td {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--ink-10);
+      text-align: left;
+      vertical-align: middle;
+    }
+    .data-table th {
+      color: var(--ink-60);
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      background: rgba(255, 255, 255, 0.52);
+    }
+    .data-table tr:last-child td {
+      border-bottom: 0;
+    }
+    .table-title {
+      display: block;
+      font-weight: 900;
+    }
+    .table-subtitle {
+      display: block;
+      margin-top: 3px;
+      color: var(--ink-60);
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    .mini-button {
+      min-height: 34px;
+      padding: 8px 10px;
+      border-radius: var(--radius);
+      background: var(--indigo);
+      color: white;
+      font-size: 0.82rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .mini-button.light {
+      background: var(--indigo-12);
+      color: var(--indigo);
+    }
+    .two-column {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+      gap: 16px;
+    }
+    .calendar-panel {
+      padding: 18px;
+    }
+    .calendar-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .calendar-head h3 {
+      font-size: 1.2rem;
+    }
+    .calendar-controls {
+      display: flex;
+      gap: 6px;
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 6px;
+    }
+    .day-name,
+    .day-cell {
+      min-height: 42px;
+      border-radius: var(--radius);
+      padding: 8px;
+    }
+    .day-name {
+      min-height: auto;
+      color: var(--ink-50);
+      font-size: 0.75rem;
+      font-weight: 900;
+      text-align: center;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+    .day-cell {
+      min-height: 86px;
+      background: rgba(255, 255, 255, 0.62);
+      border: 1px solid var(--ink-06);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--ink-70);
+      font-weight: 800;
+    }
+    .day-cell.muted {
+      opacity: 0.45;
+    }
+    .day-cell.today {
+      border-color: var(--indigo);
+      box-shadow: inset 0 0 0 1px var(--indigo);
+    }
+    .event-dots {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .event-dots i {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cyan);
+    }
+    .event-dots i.critical {
+      background: var(--coral);
+    }
+    .event-dots i.ok {
+      background: var(--lime);
+    }
+    .deadline-sidebar {
+      padding: 18px;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+    .deadline-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      padding: 14px;
+      border: 1px solid var(--ink-06);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.6);
+    }
+    .date-chip {
+      width: 52px;
+      border-radius: var(--radius);
+      overflow: hidden;
+      border: 1px solid var(--ink-10);
+      text-align: center;
+      font-weight: 900;
+      background: white;
+    }
+    .date-chip span {
+      display: block;
+      padding: 4px;
+      background: var(--ink);
+      color: white;
+      font-size: 0.7rem;
+    }
+    .date-chip strong {
+      display: block;
+      padding: 8px 4px;
+      font-size: 1.1rem;
+    }
+    .deadline-item h3 {
+      font-size: 0.98rem;
+    }
+    .deadline-item p {
+      margin: 4px 0 0;
+      color: var(--ink-60);
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+    .client-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(220px, 1fr));
+      gap: 14px;
+    }
+    .client-card {
+      padding: 18px;
+      border-radius: var(--radius);
+      background: var(--white);
+      border: 1px solid var(--ink-10);
+      box-shadow: 0 10px 24px rgba(25, 33, 43, 0.05);
+    }
+    .client-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      color: white;
+      background: linear-gradient(135deg, var(--indigo), var(--cyan));
+      font-weight: 900;
+    }
+    .client-card h3 {
+      margin-top: 14px;
+      font-size: 1.06rem;
+    }
+    .client-card p {
+      margin: 4px 0 14px;
+      color: var(--ink-60);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+    .client-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .stat-box {
+      padding: 12px;
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.65);
+      border: 1px solid var(--ink-06);
+    }
+    .stat-box span {
+      display: block;
+      color: var(--ink-60);
+      font-size: 0.72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+    .stat-box strong {
+      display: block;
+      margin-top: 5px;
+      font-size: 1.05rem;
+    }
+    .footer {
+      margin-top: 44px;
+      padding: 26px 0 4px;
+      border-top: 1px solid var(--ink-10);
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      color: var(--ink-60);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    :focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 3px;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+    @media (max-width: 1180px) {
+      .topbar-inner {
+        grid-template-columns: auto 1fr auto;
+      }
+      .primary-nav {
+        display: none;
+      }
+      .hamburger {
+        display: grid;
+      }
+      .case-grid,
+      .client-grid {
+        grid-template-columns: repeat(2, minmax(240px, 1fr));
+      }
+      .kpi-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 860px) {
+      .app-shell {
+        padding: 0 18px 30px;
+      }
+      .topbar {
+        margin: 0 -18px;
+        padding: 12px 18px;
+      }
+      .search {
+        display: none;
+      }
+      .hero,
+      .two-column {
+        grid-template-columns: 1fr;
+      }
+      .hero-copy {
+        min-height: 420px;
+        padding: 26px;
+      }
+      .section-heading {
+        align-items: start;
+        flex-direction: column;
+      }
+      .panel.table-panel {
+        overflow-x: auto;
+      }
+      .data-table {
+        min-width: 780px;
+      }
+    }
+    @media (max-width: 620px) {
+      .brand-text {
+        display: none;
+      }
+      .kpi-strip,
+      .case-grid,
+      .client-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero-copy {
+        min-height: 500px;
+      }
+      .calendar-grid {
+        gap: 4px;
+      }
+      .day-cell {
+        min-height: 62px;
+        padding: 6px;
+        font-size: 0.78rem;
+      }
+      .footer {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="drawer-backdrop" data-drawer-close tabindex="-1" aria-hidden="true"></div>
+  <aside class="mobile-drawer" id="mobileDrawer" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="drawer-header">
+      <a class="brand" href="#dashboard" aria-label="Prism Legal Tech home">
+        <span class="brand-mark">P</span>
+        <span class="brand-text">Prism Legal Tech</span>
+      </a>
+      <button class="icon-button" type="button" data-drawer-close aria-label="Close menu">
+        <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <nav class="drawer-links" aria-label="Mobile primary">
+      <a href="#dashboard">Dashboard</a>
+      <a href="#cases">Cases</a>
+      <a href="#documents">Documents</a>
+      <a href="#calendar">Calendar</a>
+      <a href="#billing">Billing</a>
+      <a href="#clients">Clients</a>
+    </nav>
+    <label class="search" aria-label="Search matters and clients">
+      <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M10.5 18a7.5 7.5 0 1 1 5.3-12.8A7.5 7.5 0 0 1 10.5 18Zm5.5-2 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <input type="search" aria-label="Search drawer" value="">
+    </label>
+  </aside>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="#dashboard" aria-label="Prism Legal Tech home">
+          <span class="brand-mark">P</span>
+          <span class="brand-text">Prism Legal Tech</span>
+        </a>
+        <nav class="primary-nav" aria-label="Primary">
+          <a href="#dashboard">Dashboard</a>
+          <a href="#cases">Cases</a>
+          <a href="#documents">Documents</a>
+          <a href="#calendar">Calendar</a>
+          <a href="#billing">Billing</a>
+          <a href="#clients">Clients</a>
+        </nav>
+        <div class="top-actions">
+          <label class="search" aria-label="Search matters and clients">
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10.5 18a7.5 7.5 0 1 1 5.3-12.8A7.5 7.5 0 0 1 10.5 18Zm5.5-2 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <input type="search" aria-label="Search dashboard" value="">
+          </label>
+          <button class="icon-button" type="button" aria-label="Notifications">
+            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 7h18s-3 0-3-7M10 19a2 2 0 0 0 4 0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="badge-count">7</span>
+          </button>
+          <button class="icon-button hamburger" type="button" data-drawer-open aria-controls="mobileDrawer" aria-expanded="false" aria-label="Open menu">
+            <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+    <main id="dashboard">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <div>
+            <span class="eyebrow"><span class="pulse"></span>Live firm command center</span>
+            <h1 id="hero-title">Matter control for ambitious legal teams</h1>
+            <p>Track case progress, assemble documents, coordinate court calendars, and move approved time entries into billing from one focused legal operations workspace.</p>
+          </div>
+          <div class="hero-actions">
+            <a class="button primary" href="#cases">
+              <span>Review cases</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M5 12h14M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </a>
+            <a class="button secondary" href="#documents">Generate document</a>
+          </div>
+        </div>
+        <aside class="brief-panel" aria-label="Today at the firm">
+          <div class="brief-row">
+            <span class="brief-icon">
+              <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 19.5V6a2 2 0 0 1 2-2h10l4 4v11.5a.5.5 0 0 1-.5.5H6a2 2 0 0 1-2-2Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </span>
+            <span><strong>Document queue</strong><span>12 templates ready for assembly</span></span>
+            <span class="status-pill live">Live</span>
+          </div>
+          <div class="brief-row">
+            <span class="brief-icon">
+              <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8 2v4M16 2v4M3 10h18M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </span>
+            <span><strong>Calendar pressure</strong><span>4 filings due inside 72 hours</span></span>
+            <span class="status-pill risk">Urgent</span>
+          </div>
+          <div class="brief-row">
+            <span class="brief-icon">
+              <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+            </span>
+            <span><strong>Billing sync</strong><span>28.4 hours awaiting partner review</span></span>
+            <span class="status-pill ok">Healthy</span>
+          </div>
+          <div class="brief-row">
+            <span class="brief-icon">
+              <svg width="21" height="21" viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M16 11a4 4 0 1 0-8 0v2H5v8h14v-8h-3v-2Z" fill="none" stroke="currentColor" stroke-width="2"/>
+              </svg>
+            </span>
+            <span><strong>Access controls</strong><span>Client portals protected by role</span></span>
+            <span class="status-pill ok">OK</span>
+          </div>
+        </aside>
+      </section>
+      <section class="kpi-strip" aria-label="Firm metrics">
+        <article class="kpi-card">
+          <div class="kpi-label">Active cases <span class="pulse"></span></div>
+          <div class="kpi-value">142</div>
+          <div class="kpi-trend">18 opened this month</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-label">Upcoming deadlines <span class="status-pill risk">12</span></div>
+          <div class="kpi-value">31</div>
+          <div class="kpi-trend">4 due inside 72 hours</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-label">Unbilled hours <span class="status-pill live">Review</span></div>
+          <div class="kpi-value">286.5</div>
+          <div class="kpi-trend">$91.7k in draft value</div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-label">Outstanding invoices <span class="status-pill ok">Synced</span></div>
+          <div class="kpi-value">$418k</div>
+          <div class="kpi-trend">74% current within terms</div>
+        </article>
+      </section>
+      <section class="section" id="cases" aria-labelledby="cases-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="cases-title">Case tracking</h2>
+            <p>Prioritized matter cards show ownership, stage, risk, and the next date that needs attention.</p>
+          </div>
+          <a class="button primary" href="#billing">Open billing queue</a>
+        </div>
+        <div class="case-grid">
+          <article class="case-card">
+            <div class="case-top">
+              <div>
+                <span class="case-number">CV-2026-1842</span>
+                <div class="case-client">Northstar Holdings</div>
+              </div>
+              <span class="case-type civil">Civil</span>
+            </div>
+            <div class="case-meta">
+              <div class="meta-line"><span>Status</span><strong>Discovery response</strong></div>
+              <div class="meta-line"><span>Attorney</span><strong>Avery Chen</strong></div>
+              <div class="meta-line"><span>Next deadline</span><strong>May 30, 2026</strong></div>
+              <div class="progress-track" aria-label="Case progress 68 percent"><span style="width:68%"></span></div>
+            </div>
+          </article>
+          <article class="case-card">
+            <div class="case-top">
+              <div>
+                <span class="case-number">CR-2026-0917</span>
+                <div class="case-client">State v. Keller</div>
+              </div>
+              <span class="case-type criminal">Criminal</span>
+            </div>
+            <div class="case-meta">
+              <div class="meta-line"><span>Status</span><strong>Motion hearing</strong></div>
+              <div class="meta-line"><span>Attorney</span><strong>Jordan Malik</strong></div>
+              <div class="meta-line"><span>Next deadline</span><strong>June 2, 2026</strong></div>
+              <div class="progress-track" aria-label="Case progress 42 percent"><span style="width:42%"></span></div>
+            </div>
+          </article>
+          <article class="case-card">
+            <div class="case-top">
+              <div>
+                <span class="case-number">CO-2026-1174</span>
+                <div class="case-client">Meridian BioWorks</div>
+              </div>
+              <span class="case-type corporate">Corporate</span>
+            </div>
+            <div class="case-meta">
+              <div class="meta-line"><span>Status</span><strong>Deal documents</strong></div>
+              <div class="meta-line"><span>Attorney</span><strong>Sofia Patel</strong></div>
+              <div class="meta-line"><span>Next deadline</span><strong>June 5, 2026</strong></div>
+              <div class="progress-track" aria-label="Case progress 79 percent"><span style="width:79%"></span></div>
+            </div>
+          </article>
+          <article class="case-card">
+            <div class="case-top">
+              <div>
+                <span class="case-number">FA-2026-0638</span>
+                <div class="case-client">Rivera Custody</div>
+              </div>
+              <span class="case-type family">Family</span>
+            </div>
+            <div class="case-meta">
+              <div class="meta-line"><span>Status</span><strong>Mediation prep</strong></div>
+              <div class="meta-line"><span>Attorney</span><strong>Morgan Lee</strong></div>
+              <div class="meta-line"><span>Next deadline</span><strong>June 8, 2026</strong></div>
+              <div class="progress-track" aria-label="Case progress 55 percent"><span style="width:55%"></span></div>
+            </div>
+          </article>
+        </div>
+      </section>
+      <section class="section" id="documents" aria-labelledby="documents-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="documents-title">Document assembly</h2>
+            <p>Reusable templates combine matter facts, client data, and attorney review into compliant drafts.</p>
+          </div>
+          <button class="button primary" type="button">New template</button>
+        </div>
+        <div class="panel table-panel">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Template</th>
+                <th>Type</th>
+                <th>Last modified</th>
+                <th>Usage</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="table-title">Civil complaint packet</span><span class="table-subtitle">Claims, exhibits, summons cover</span></td>
+                <td><span class="status-pill live">Pleading</span></td>
+                <td>May 24, 2026</td>
+                <td>48 matters</td>
+                <td><button class="mini-button" type="button">Generate</button></td>
+              </tr>
+              <tr>
+                <td><span class="table-title">Corporate purchase agreement</span><span class="table-subtitle">Disclosure schedules and closing list</span></td>
+                <td><span class="status-pill ok">Contract</span></td>
+                <td>May 21, 2026</td>
+                <td>31 matters</td>
+                <td><button class="mini-button" type="button">Generate</button></td>
+              </tr>
+              <tr>
+                <td><span class="table-title">Family mediation statement</span><span class="table-subtitle">Issues, assets, requested orders</span></td>
+                <td><span class="status-pill live">Family</span></td>
+                <td>May 19, 2026</td>
+                <td>26 matters</td>
+                <td><button class="mini-button" type="button">Generate</button></td>
+              </tr>
+              <tr>
+                <td><span class="table-title">Sentencing memorandum</span><span class="table-subtitle">Background, guideline analysis, exhibits</span></td>
+                <td><span class="status-pill risk">Criminal</span></td>
+                <td>May 16, 2026</td>
+                <td>14 matters</td>
+                <td><button class="mini-button" type="button">Generate</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="section" id="calendar" aria-labelledby="calendar-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="calendar-title">Calendar</h2>
+            <p>Month-level planning pairs hearing dates, filing cutoffs, and client meetings with a deadline queue.</p>
+          </div>
+          <button class="button primary" type="button">Add event</button>
+        </div>
+        <div class="two-column">
+          <div class="panel calendar-panel">
+            <div class="calendar-head">
+              <h3>May 2026</h3>
+              <div class="calendar-controls" aria-label="Calendar controls">
+                <button class="icon-button" type="button" aria-label="Previous month">
+                  <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18l-6-6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </button>
+                <button class="icon-button" type="button" aria-label="Next month">
+                  <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                </button>
+              </div>
+            </div>
+            <div class="calendar-grid" aria-label="Monthly calendar">
+              <div class="day-name">Mon</div>
+              <div class="day-name">Tue</div>
+              <div class="day-name">Wed</div>
+              <div class="day-name">Thu</div>
+              <div class="day-name">Fri</div>
+              <div class="day-name">Sat</div>
+              <div class="day-name">Sun</div>
+              <div class="day-cell muted">27</div>
+              <div class="day-cell muted">28</div>
+              <div class="day-cell muted">29</div>
+              <div class="day-cell muted">30</div>
+              <div class="day-cell">1<span class="event-dots"><i></i></span></div>
+              <div class="day-cell">2</div>
+              <div class="day-cell">3</div>
+              <div class="day-cell">4</div>
+              <div class="day-cell">5<span class="event-dots"><i class="ok"></i></span></div>
+              <div class="day-cell">6</div>
+              <div class="day-cell">7<span class="event-dots"><i></i><i class="critical"></i></span></div>
+              <div class="day-cell">8</div>
+              <div class="day-cell">9</div>
+              <div class="day-cell">10</div>
+              <div class="day-cell">11</div>
+              <div class="day-cell">12<span class="event-dots"><i></i></span></div>
+              <div class="day-cell">13</div>
+              <div class="day-cell">14</div>
+              <div class="day-cell">15<span class="event-dots"><i class="ok"></i></span></div>
+              <div class="day-cell">16</div>
+              <div class="day-cell">17</div>
+              <div class="day-cell">18<span class="event-dots"><i></i></span></div>
+              <div class="day-cell">19</div>
+              <div class="day-cell">20<span class="event-dots"><i class="critical"></i></span></div>
+              <div class="day-cell">21</div>
+              <div class="day-cell">22</div>
+              <div class="day-cell">23</div>
+              <div class="day-cell">24</div>
+              <div class="day-cell">25</div>
+              <div class="day-cell">26<span class="event-dots"><i></i></span></div>
+              <div class="day-cell today">27<span class="event-dots"><i></i><i class="ok"></i></span></div>
+              <div class="day-cell">28</div>
+              <div class="day-cell">29<span class="event-dots"><i class="critical"></i></span></div>
+              <div class="day-cell">30<span class="event-dots"><i class="critical"></i></span></div>
+              <div class="day-cell">31</div>
+            </div>
+          </div>
+          <aside class="panel deadline-sidebar" aria-label="Upcoming deadlines">
+            <article class="deadline-item">
+              <div class="date-chip"><span>May</span><strong>29</strong></div>
+              <div><h3>Expert disclosure cutoff</h3><p>Northstar Holdings discovery phase requires final expert roster.</p></div>
+            </article>
+            <article class="deadline-item">
+              <div class="date-chip"><span>May</span><strong>30</strong></div>
+              <div><h3>Opposition filing</h3><p>Keller motion hearing brief due before court submission window closes.</p></div>
+            </article>
+            <article class="deadline-item">
+              <div class="date-chip"><span>Jun</span><strong>02</strong></div>
+              <div><h3>Client strategy meeting</h3><p>Meridian BioWorks closing deliverables and signature routing review.</p></div>
+            </article>
+            <article class="deadline-item">
+              <div class="date-chip"><span>Jun</span><strong>08</strong></div>
+              <div><h3>Mediation packet</h3><p>Rivera custody financial statement and parenting schedule packet.</p></div>
+            </article>
+          </aside>
+        </div>
+      </section>
+      <section class="section" id="billing" aria-labelledby="billing-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="billing-title">Billing integration</h2>
+            <p>Approved entries retain matter context and flow into invoices with clear billable status.</p>
+          </div>
+          <button class="button primary" type="button">Sync billing</button>
+        </div>
+        <div class="panel table-panel">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Case</th>
+                <th>Description</th>
+                <th>Hours</th>
+                <th>Rate</th>
+                <th>Status</th>
+                <th>Invoice</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="table-title">CV-2026-1842</span><span class="table-subtitle">Northstar Holdings</span></td>
+                <td>Drafted interrogatory responses and exhibit index</td>
+                <td>4.2</td>
+                <td>$425</td>
+                <td><span class="status-pill ok">Billable</span></td>
+                <td><button class="mini-button" type="button">Invoice</button></td>
+              </tr>
+              <tr>
+                <td><span class="table-title">CO-2026-1174</span><span class="table-subtitle">Meridian BioWorks</span></td>
+                <td>Reviewed purchase agreement revisions with client notes</td>
+                <td>3.6</td>
+                <td>$510</td>
+                <td><span class="status-pill ok">Billable</span></td>
+                <td><button class="mini-button" type="button">Invoice</button></td>
+              </tr>
+              <tr>
+                <td><span class="table-title">FA-2026-0638</span><span class="table-subtitle">Rivera Custody</span></td>
+                <td>Prepared mediation outline and custody calendar exhibits</td>
+                <td>2.8</td>
+                <td>$375</td>
+                <td><span class="status-pill live">Review</span></td>
+                <td><button class="mini-button light" type="button">Queue</button></td>
+              </tr>
+              <tr>
+                <td><span class="table-title">CR-2026-0917</span><span class="table-subtitle">State v. Keller</span></td>
+                <td>Internal hearing strategy conference</td>
+                <td>1.4</td>
+                <td>$0</td>
+                <td><span class="status-pill risk">No charge</span></td>
+                <td><button class="mini-button light" type="button">Record</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="section" id="clients" aria-labelledby="clients-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="clients-title">Client management</h2>
+            <p>Client cards surface active case load, company affiliation, and billed value for relationship reviews.</p>
+          </div>
+          <button class="button primary" type="button">Add client</button>
+        </div>
+        <div class="client-grid">
+          <article class="client-card">
+            <div class="client-avatar">NH</div>
+            <h3>Northstar Holdings</h3>
+            <p>Real estate investment group</p>
+            <div class="client-stats">
+              <div class="stat-box"><span>Active cases</span><strong>6</strong></div>
+              <div class="stat-box"><span>Total billed</span><strong>$184k</strong></div>
+            </div>
+          </article>
+          <article class="client-card">
+            <div class="client-avatar">MB</div>
+            <h3>Meridian BioWorks</h3>
+            <p>Life sciences operator</p>
+            <div class="client-stats">
+              <div class="stat-box"><span>Active cases</span><strong>4</strong></div>
+              <div class="stat-box"><span>Total billed</span><strong>$226k</strong></div>
+            </div>
+          </article>
+          <article class="client-card">
+            <div class="client-avatar">AR</div>
+            <h3>Alma Rivera</h3>
+            <p>Private family client</p>
+            <div class="client-stats">
+              <div class="stat-box"><span>Active cases</span><strong>1</strong></div>
+              <div class="stat-box"><span>Total billed</span><strong>$18k</strong></div>
+            </div>
+          </article>
+          <article class="client-card">
+            <div class="client-avatar">LK</div>
+            <h3>Leon Keller</h3>
+            <p>Individual defense client</p>
+            <div class="client-stats">
+              <div class="stat-box"><span>Active cases</span><strong>1</strong></div>
+              <div class="stat-box"><span>Total billed</span><strong>$42k</strong></div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      <span>Prism Legal Tech — designed by Meridian Studio</span>
+      <span>Case tracking, document assembly, calendar, billing, clients</span>
+    </footer>
+  </div>
+  <script>
+    const body = document.body;
+    const drawer = document.querySelector("#mobileDrawer");
+    const backdrop = document.querySelector(".drawer-backdrop");
+    const openButton = document.querySelector("[data-drawer-open]");
+    const closeButtons = document.querySelectorAll("[data-drawer-close]");
+    const drawerLinks = document.querySelectorAll(".drawer-links a");
+    let lastFocusedElement = null;
+    function setDrawer(open) {
+      drawer.classList.toggle("active", open);
+      backdrop.classList.toggle("active", open);
+      body.classList.toggle("drawer-open", open);
+      drawer.setAttribute("aria-hidden", String(!open));
+      openButton.setAttribute("aria-expanded", String(open));
+      if (open) {
+        lastFocusedElement = document.activeElement;
+        const firstLink = drawer.querySelector("a, button, input");
+        if (firstLink) firstLink.focus();
+      } else if (lastFocusedElement) {
+        lastFocusedElement.focus();
+      }
+    }
+    openButton.addEventListener("click", () => setDrawer(true));
+    closeButtons.forEach((button) => button.addEventListener("click", () => setDrawer(false)));
+    drawerLinks.forEach((link) => link.addEventListener("click", () => setDrawer(false)));
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && drawer.classList.contains("active")) {
+        setDrawer(false);
+      }
+      if (event.key !== "Tab" || !drawer.classList.contains("active")) {
+        return;
+      }
+      const focusable = drawer.querySelectorAll("a[href], button:not([disabled]), input:not([disabled])");
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+  </script>
+</body>
+</html>
