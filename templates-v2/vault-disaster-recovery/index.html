@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vault Disaster Recovery</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --cloud: #F6F8FC;
+    --ink: #19212B;
+    --indigo: #4F46E5;
+    --cyan: #06B6D4;
+    --lime: #A3E635;
+    --coral: #FB7185;
+    --card: #FFFFFF;
+    --border: #E5E7EB;
+    --green: #10B981;
+    --orange: #F59E0B;
+    --red: #EF4444;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cloud);
+    color: #111827;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+  }
+
+  a { color: var(--indigo); text-decoration: none; }
+  button { cursor: pointer; font-family: inherit; }
+
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--indigo);
+    color: #fff;
+    padding: 8px 16px;
+    z-index: 100;
+    font-size: 0.875rem;
+  }
+  .skip-link:focus { top: 0; }
+
+  .top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 24px;
+    height: 60px;
+    background: var(--ink);
+    color: #fff;
+  }
+  .nav-brand {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--coral);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-links { display: flex; gap: 4px; margin-left: 24px; }
+  .nav-links a {
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.7);
+  }
+  .nav-links a:hover,
+  .nav-links a[aria-current="page"] {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+  .nav-search { margin-left: auto; position: relative; }
+  .nav-search input {
+    width: 200px;
+    padding: 8px 12px 8px 36px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+  .nav-search svg {
+    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    width: 16px; height: 16px; color: rgba(255,255,255,0.5);
+  }
+  .nav-cta {
+    margin-left: 12px;
+    padding: 8px 18px;
+    background: var(--coral);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .hamburger { display: none; background: none; border: none; padding: 8px; color: #fff; }
+  .hamburger svg { width: 24px; height: 24px; }
+
+  .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 60; }
+  .drawer-overlay.open { display: block; }
+  .drawer {
+    position: fixed; top: 0; left: 0; width: 280px; height: 100%;
+    background: #fff; z-index: 70; transform: translateX(-100%);
+    transition: transform 0.25s ease; padding: 24px; overflow-y: auto;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-close { background: none; border: none; font-size: 1.5rem; position: absolute; top: 16px; right: 16px; color: #111827; }
+  .drawer nav { display: flex; flex-direction: column; gap: 4px; margin-top: 24px; }
+  .drawer nav a { padding: 10px 14px; border-radius: 8px; font-size: 0.9375rem; color: #111827; }
+  .drawer nav a:hover { background: var(--cloud); }
+
+  @media (max-width: 768px) {
+    .nav-links, .nav-search, .nav-cta { display: none; }
+    .hamburger { display: block; }
+    .top-nav { padding: 0 16px; }
+  }
+
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 24px;
+  }
+  .kpi-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .kpi-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.25rem; flex-shrink: 0;
+  }
+  .kpi-label { font-size: 0.8125rem; color: #6B7280; margin-bottom: 2px; }
+  .kpi-value { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 1.5rem; }
+  .kpi-trend { font-size: 0.75rem; margin-top: 2px; }
+
+  .main-content { padding: 0 24px 48px; }
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
+  }
+  .section-header h2 { font-size: 1.25rem; }
+  .badge {
+    background: var(--cloud); padding: 4px 12px; border-radius: 20px;
+    font-size: 0.8125rem; font-weight: 600; color: #6B7280;
+  }
+
+  /* Status Indicators */
+  .status-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .status-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+  }
+  .status-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .status-header h4 { font-size: 1rem; }
+  .status-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .status-card .detail { font-size: 0.8125rem; color: #6B7280; margin-bottom: 4px; }
+  .progress-bar { height: 6px; background: var(--border); border-radius: 3px; overflow: hidden; margin-top: 8px; }
+  .progress-fill { height: 100%; border-radius: 3px; }
+
+  /* Backup Table */
+  .data-tbl {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+  .data-tbl th {
+    text-align: left; padding: 12px 16px; font-size: 0.8125rem;
+    color: #6B7280; font-weight: 600; border-bottom: 1px solid var(--border); background: var(--cloud);
+  }
+  .data-tbl td { padding: 12px 16px; font-size: 0.875rem; border-bottom: 1px solid #F3F4F6; }
+  .data-tbl tr:last-child td { border-bottom: none; }
+  .data-tbl tr:hover { background: var(--cloud); }
+  .badge-status {
+    display: inline-block; padding: 2px 10px; border-radius: 20px;
+    font-size: 0.75rem; font-weight: 600;
+  }
+  .st-success { background: #D1FAE5; color: #065F46; }
+  .st-warning { background: #FEF3C7; color: #92400E; }
+  .st-failed { background: #FEE2E2; color: #991B1B; }
+  .st-running { background: #DBEAFE; color: #1E40AF; }
+
+  /* Runbook List */
+  .runbook-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+  .runbook-item {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 16px 20px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .runbook-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; flex-shrink: 0;
+  }
+  .runbook-info { flex: 1; }
+  .runbook-info h4 { font-size: 0.9375rem; margin-bottom: 2px; }
+  .runbook-info .meta { font-size: 0.8125rem; color: #6B7280; }
+  .runbook-badge {
+    padding: 2px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
+  }
+
+  /* Incident Timeline */
+  .timeline {
+    position: relative;
+    padding-left: 28px;
+    margin-bottom: 32px;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--border);
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 20px;
+    background: var(--card);
+    border-radius: 10px;
+    padding: 14px 18px;
+    border: 1px solid var(--border);
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -24px;
+    top: 18px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: #fff;
+  }
+  .timeline-item.resolved::before { background: var(--green); border-color: var(--green); }
+  .timeline-item.active::before { background: var(--coral); border-color: var(--coral); }
+  .timeline-item .time { font-size: 0.75rem; color: #6B7280; margin-bottom: 4px; }
+  .timeline-item h4 { font-size: 0.9375rem; margin-bottom: 4px; }
+  .timeline-item p { font-size: 0.8125rem; color: #6B7280; }
+
+  /* Compliance */
+  .compliance-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .compliance-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .compliance-card .score {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 2rem;
+    margin-bottom: 4px;
+  }
+  .compliance-card .label {
+    font-size: 0.8125rem;
+    color: #6B7280;
+    margin-bottom: 8px;
+  }
+  .compliance-card .bar {
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .compliance-card .bar-fill {
+    height: 100%;
+    border-radius: 2px;
+  }
+
+  .site-footer {
+    padding: 32px 24px;
+    text-align: center;
+    font-size: 0.8125rem;
+    color: #9CA3AF;
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+  }
+
+  :focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  @media (max-width: 768px) {
+    .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    .status-grid { grid-template-columns: 1fr; }
+    .data-tbl { display: block; overflow-x: auto; }
+    .compliance-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header class="top-nav">
+  <button class="hamburger" aria-label="Open menu" aria-expanded="false"
+    onclick="document.getElementById('drawer').classList.toggle('open');document.getElementById('overlay').classList.toggle('open');this.setAttribute('aria-expanded',document.getElementById('drawer').classList.contains('open'))">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+  </button>
+  <a href="#" class="nav-brand">🔐 Vault Disaster Recovery</a>
+  <nav class="nav-links" aria-label="Main">
+    <a href="#" aria-current="page">Dashboard</a>
+    <a href="#backups">Backups</a>
+    <a href="#runbooks">Runbooks</a>
+    <a href="#incidents">Incidents</a>
+    <a href="#compliance">Compliance</a>
+  </nav>
+  <div class="nav-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" aria-label="Search backups">
+  </div>
+  <button class="nav-cta">+ Trigger Backup</button>
+</header>
+
+<div class="drawer-overlay" id="overlay" onclick="document.getElementById('drawer').classList.remove('open');this.classList.remove('open')"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-label="Navigation">
+  <button class="drawer-close" aria-label="Close menu"
+    onclick="document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open')">&times;</button>
+  <nav>
+    <a href="#">Dashboard</a>
+    <a href="#backups">Backups</a>
+    <a href="#runbooks">Runbooks</a>
+    <a href="#incidents">Incidents</a>
+    <a href="#compliance">Compliance</a>
+  </nav>
+</aside>
+
+<main id="main">
+  <div class="kpi-strip" role="region" aria-label="Recovery metrics">
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#D1FAE5">✅</div>
+      <div>
+        <div class="kpi-label">Last Backup</div>
+        <div class="kpi-value" style="color:#10B981">2h ago</div>
+        <div class="kpi-trend" style="color:#10B981">Successful — 2.4 TB</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#ECFEFF">⏱️</div>
+      <div>
+        <div class="kpi-label">RTO (Recovery Time)</div>
+        <div class="kpi-value" style="color:#06B6D4">4.2 min</div>
+        <div class="kpi-trend" style="color:#10B981">Within SLA target</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#EEF2FF">📊</div>
+      <div>
+        <div class="kpi-label">RPO (Data Loss Window)</div>
+        <div class="kpi-value" style="color:#4F46E5">15 min</div>
+        <div class="kpi-trend" style="color:#10B981">Incremental every 15m</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#FEE2E2">🚨</div>
+      <div>
+        <div class="kpi-label">Active Incidents</div>
+        <div class="kpi-value" style="color:#FB7185">1</div>
+        <div class="kpi-trend" style="color:#FB7185">Storage node SN-04 degraded</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <!-- System Status -->
+    <div class="status-grid">
+      <div class="status-card">
+        <div class="status-header">
+          <h4>Primary Storage</h4>
+          <div class="status-dot" style="background:var(--green)"></div>
+        </div>
+        <div class="detail">Cluster: prod-east-1 · Capacity: 48 TB</div>
+        <div class="detail">Used: 31.2 TB · Free: 16.8 TB</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:65%;background:var(--indigo)"></div></div>
+      </div>
+      <div class="status-card">
+        <div class="status-header">
+          <h4>Replica Site</h4>
+          <div class="status-dot" style="background:var(--green)"></div>
+        </div>
+        <div class="detail">Cluster: prod-west-2 · Latency: 12ms</div>
+        <div class="detail">Last sync: 8 min ago · Status: Healthy</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:98%;background:var(--lime)"></div></div>
+      </div>
+      <div class="status-card">
+        <div class="status-header">
+          <h4>Cloud Archive</h4>
+          <div class="status-dot" style="background:var(--green)"></div>
+        </div>
+        <div class="detail">Provider: AWS S3 Glacier · Region: eu-central-1</div>
+        <div class="detail">Stored: 128 TB · Cost: $1,240/mo</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:42%;background:var(--cyan)"></div></div>
+      </div>
+      <div class="status-card">
+        <div class="status-header">
+          <h4>Storage Node SN-04</h4>
+          <div class="status-dot" style="background:var(--coral)"></div>
+        </div>
+        <div class="detail">Status: Degraded · RAID rebuilding</div>
+        <div class="detail">Estimated recovery: 3h 20m</div>
+        <div class="progress-bar"><div class="progress-fill" style="width:28%;background:var(--coral)"></div></div>
+      </div>
+    </div>
+
+    <!-- Backup History -->
+    <section id="backups">
+      <div class="section-header">
+        <h2>Backup History</h2>
+        <span class="badge">Last 7 days</span>
+      </div>
+      <table class="data-tbl" aria-label="Backup history">
+        <thead>
+          <tr>
+            <th>Job ID</th>
+            <th>Type</th>
+            <th>Target</th>
+            <th>Size</th>
+            <th>Duration</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>BK-7841</strong></td>
+            <td>Incremental</td>
+            <td>Primary → Replica</td>
+            <td>128 GB</td>
+            <td>4m 12s</td>
+            <td><span class="badge-status st-success">Success</span></td>
+          </tr>
+          <tr>
+            <td><strong>BK-7840</strong></td>
+            <td>Full</td>
+            <td>Primary → Cloud</td>
+            <td>2.4 TB</td>
+            <td>22m 48s</td>
+            <td><span class="badge-status st-success">Success</span></td>
+          </tr>
+          <tr>
+            <td><strong>BK-7839</strong></td>
+            <td>Incremental</td>
+            <td>Primary → Replica</td>
+            <td>94 GB</td>
+            <td>3m 55s</td>
+            <td><span class="badge-status st-success">Success</span></td>
+          </tr>
+          <tr>
+            <td><strong>BK-7838</strong></td>
+            <td>Differential</td>
+            <td>Database Cluster</td>
+            <td>410 GB</td>
+            <td>8m 30s</td>
+            <td><span class="badge-status st-warning">Warning</span></td>
+          </tr>
+          <tr>
+            <td><strong>BK-7837</strong></td>
+            <td>Incremental</td>
+            <td>Primary → Replica</td>
+            <td>112 GB</td>
+            <td>4m 02s</td>
+            <td><span class="badge-status st-success">Success</span></td>
+          </tr>
+          <tr>
+            <td><strong>BK-7836</strong></td>
+            <td>Full</td>
+            <td>File Server FS-02</td>
+            <td>1.8 TB</td>
+            <td>18m 15s</td>
+            <td><span class="badge-status st-failed">Failed</span></td>
+          </tr>
+          <tr>
+            <td><strong>BK-7835</strong></td>
+            <td>Snapshot</td>
+            <td>VM Cluster</td>
+            <td>680 GB</td>
+            <td>2m 40s</td>
+            <td><span class="badge-status st-success">Success</span></td>
+          </tr>
+          <tr>
+            <td><strong>BK-7834</strong></td>
+            <td>Incremental</td>
+            <td>Primary → Replica</td>
+            <td>105 GB</td>
+            <td>3m 48s</td>
+            <td><span class="badge-status st-running">Running</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Runbooks -->
+    <section id="runbooks">
+      <div class="section-header">
+        <h2>Recovery Runbooks</h2>
+        <span class="badge">6 procedures</span>
+      </div>
+      <div class="runbook-list" role="list">
+        <div class="runbook-item" role="listitem">
+          <div class="runbook-icon" style="background:#FEE2E2">🔥</div>
+          <div class="runbook-info">
+            <h4>Full Site Failover</h4>
+            <div class="meta">RTO: 15 min · Last tested: May 20 · 8 steps</div>
+          </div>
+          <span class="runbook-badge st-success">Tested</span>
+        </div>
+        <div class="runbook-item" role="listitem">
+          <div class="runbook-icon" style="background:#DBEAFE">🗄️</div>
+          <div class="runbook-info">
+            <h4>Database Point-in-Time Recovery</h4>
+            <div class="meta">RTO: 30 min · Last tested: Jun 1 · 6 steps</div>
+          </div>
+          <span class="runbook-badge st-success">Tested</span>
+        </div>
+        <div class="runbook-item" role="listitem">
+          <div class="runbook-icon" style="background:#FEF3C7">💾</div>
+          <div class="runbook-info">
+            <h4>Ransomware Isolation & Restore</h4>
+            <div class="meta">RTO: 45 min · Last tested: Apr 15 · 12 steps</div>
+          </div>
+          <span class="runbook-badge st-warning">Needs Retest</span>
+        </div>
+        <div class="runbook-item" role="listitem">
+          <div class="runbook-icon" style="background:#D1FAE5">☁️</div>
+          <div class="runbook-info">
+            <h4>Cloud Archive Retrieval</h4>
+            <div class="meta">RTO: 2 hours · Last tested: May 1 · 4 steps</div>
+          </div>
+          <span class="runbook-badge st-success">Tested</span>
+        </div>
+        <div class="runbook-item" role="listitem">
+          <div class="runbook-icon" style="background:#EEF2FF">🖥️</div>
+          <div class="runbook-info">
+            <h4>VM Cluster Restore</h4>
+            <div class="meta">RTO: 20 min · Last tested: May 28 · 7 steps</div>
+          </div>
+          <span class="runbook-badge st-success">Tested</span>
+        </div>
+        <div class="runbook-item" role="listitem">
+          <div class="runbook-icon" style="background:#FEE2E2">📧</div>
+          <div class="runbook-info">
+            <h4>Email Server DR</h4>
+            <div class="meta">RTO: 60 min · Last tested: Mar 10 · 9 steps</div>
+          </div>
+          <span class="runbook-badge st-failed">Outdated</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Incident Timeline -->
+    <section id="incidents">
+      <div class="section-header">
+        <h2>Recent Incidents</h2>
+        <span class="badge">Last 30 days</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item active">
+          <div class="time">Today, 14:22 UTC</div>
+          <h4>Storage Node SN-04 Degraded</h4>
+          <p>RAID array detected 2 failing drives. Automatic rebuild initiated. Replica serving reads. No data loss.</p>
+        </div>
+        <div class="timeline-item resolved">
+          <div class="time">May 25, 08:10 UTC</div>
+          <h4>Backup Job BK-7836 Failed</h4>
+          <p>File server FS-02 backup timed out due to network congestion. Re-scheduled and completed successfully at 10:45.</p>
+        </div>
+        <div class="timeline-item resolved">
+          <div class="time">May 18, 22:00 UTC</div>
+          <h4>Scheduled DR Drill — Full Failover</h4>
+          <p>Planned failover to replica site completed in 4m 38s. All services restored. Failback completed by 23:30.</p>
+        </div>
+        <div class="timeline-item resolved">
+          <div class="time">May 12, 15:30 UTC</div>
+          <h4>Cloud Archive Latency Spike</h4>
+          <p>AWS S3 Glacier retrieval exceeded SLA by 12 minutes. Root cause: regional throttling. No customer impact.</p>
+        </div>
+        <div class="timeline-item resolved">
+          <div class="time">May 5, 03:15 UTC</div>
+          <h4>Database WAL Archive Gap</h4>
+          <p>WAL archiving paused for 8 minutes during maintenance window. Gap filled from replica. RPO maintained.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Compliance Scores -->
+    <section id="compliance">
+      <div class="section-header">
+        <h2>Compliance & Readiness</h2>
+        <span class="badge">Q2 Assessment</span>
+      </div>
+      <div class="compliance-grid">
+        <div class="compliance-card">
+          <div class="score" style="color:var(--green)">98%</div>
+          <div class="label">Backup Coverage</div>
+          <div class="bar"><div class="bar-fill" style="width:98%;background:var(--green)"></div></div>
+        </div>
+        <div class="compliance-card">
+          <div class="score" style="color:var(--cyan)">92%</div>
+          <div class="label">RTO Compliance</div>
+          <div class="bar"><div class="bar-fill" style="width:92%;background:var(--cyan)"></div></div>
+        </div>
+        <div class="compliance-card">
+          <div class="score" style="color:var(--indigo)">95%</div>
+          <div class="label">RPO Compliance</div>
+          <div class="bar"><div class="bar-fill" style="width:95%;background:var(--indigo)"></div></div>
+        </div>
+        <div class="compliance-card">
+          <div class="score" style="color:var(--coral)">78%</div>
+          <div class="label">DR Test Currency</div>
+          <div class="bar"><div class="bar-fill" style="width:78%;background:var(--coral)"></div></div>
+        </div>
+        <div class="compliance-card">
+          <div class="score" style="color:var(--green)">100%</div>
+          <div class="label">Encryption at Rest</div>
+          <div class="bar"><div class="bar-fill" style="width:100%;background:var(--green)"></div></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p>Vault Disaster Recovery — designed by Studio · Standalone prototype · Not affiliated with any backup provider</p>
+</footer>
+
+<script>
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.getElementById('drawer').classList.remove('open');
+      document.getElementById('overlay').classList.remove('open');
+    }
+  });
+</script>
+</body>
+</html>
