@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Orbit Space Explorer</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --cloud: #F6F8FC;
+    --ink: #19212B;
+    --indigo: #4F46E5;
+    --cyan: #06B6D4;
+    --lime: #A3E635;
+    --coral: #FB7185;
+    --card: #FFFFFF;
+    --border: #E5E7EB;
+    --green: #10B981;
+    --orange: #F59E0B;
+    --red: #EF4444;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cloud);
+    color: #111827;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+  }
+
+  a { color: var(--indigo); text-decoration: none; }
+  button { cursor: pointer; font-family: inherit; }
+
+  /* Skip Link */
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--indigo);
+    color: #fff;
+    padding: 8px 16px;
+    z-index: 100;
+    font-size: 0.875rem;
+  }
+  .skip-link:focus { top: 0; }
+
+  /* Top Nav */
+  .top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 24px;
+    height: 60px;
+    background: var(--ink);
+    color: #fff;
+  }
+  .nav-brand {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--cyan);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-links {
+    display: flex;
+    gap: 4px;
+    margin-left: 24px;
+  }
+  .nav-links a {
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.7);
+  }
+  .nav-links a:hover,
+  .nav-links a[aria-current="page"] {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+  .nav-search {
+    margin-left: auto;
+    position: relative;
+  }
+  .nav-search input {
+    width: 200px;
+    padding: 8px 12px 8px 36px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+  .nav-search svg {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: rgba(255,255,255,0.5);
+  }
+  .nav-cta {
+    margin-left: 12px;
+    padding: 8px 18px;
+    background: var(--indigo);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .nav-cta:hover { background: #4338CA; }
+  .hamburger {
+    display: none;
+    background: none;
+    border: none;
+    padding: 8px;
+    color: #fff;
+  }
+  .hamburger svg { width: 24px; height: 24px; }
+
+  /* Drawer */
+  .drawer-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 60;
+  }
+  .drawer-overlay.open { display: block; }
+  .drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100%;
+    background: #fff;
+    z-index: 70;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    padding: 24px;
+    overflow-y: auto;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    color: #111827;
+  }
+  .drawer nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 24px;
+  }
+  .drawer nav a {
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: #111827;
+  }
+  .drawer nav a:hover { background: var(--cloud); }
+
+  @media (max-width: 768px) {
+    .nav-links, .nav-search, .nav-cta { display: none; }
+    .hamburger { display: block; }
+    .top-nav { padding: 0 16px; }
+  }
+
+  /* KPI Strip */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 24px;
+  }
+  .kpi-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .kpi-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+  .kpi-label {
+    font-size: 0.8125rem;
+    color: #6B7280;
+    margin-bottom: 2px;
+  }
+  .kpi-value {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+  }
+  .kpi-trend {
+    font-size: 0.75rem;
+    margin-top: 2px;
+    color: var(--green);
+  }
+
+  /* Main */
+  .main-content {
+    padding: 0 24px 48px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .section-header h2 { font-size: 1.25rem; }
+  .badge {
+    background: var(--cloud);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #6B7280;
+  }
+
+  /* Mission Timeline */
+  .mission-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+  .mission-item {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 16px 20px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .mission-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+  .mission-info { flex: 1; min-width: 150px; }
+  .mission-info h4 { font-size: 0.9375rem; margin-bottom: 2px; }
+  .mission-info .meta {
+    font-size: 0.8125rem;
+    color: #6B7280;
+  }
+  .mission-status {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+  .st-active { background: #D1FAE5; color: #065F46; }
+  .st-completed { background: #DBEAFE; color: #1E40AF; }
+  .st-scheduled { background: #FEF3C7; color: #92400E; }
+  .st-aborted { background: #FEE2E2; color: #991B1B; }
+  .mission-crew {
+    font-size: 0.8125rem;
+    color: #6B7280;
+    text-align: right;
+    min-width: 80px;
+  }
+
+  /* Satellite Table */
+  .data-tbl {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+  .data-tbl th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 0.8125rem;
+    color: #6B7280;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    background: var(--cloud);
+  }
+  .data-tbl td {
+    padding: 12px 16px;
+    font-size: 0.875rem;
+    border-bottom: 1px solid #F3F4F6;
+  }
+  .data-tbl tr:last-child td { border-bottom: none; }
+  .data-tbl tr:hover { background: var(--cloud); }
+  .badge-status {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  /* Bar Chart */
+  .chart-box {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+  .chart-title { font-size: 1rem; margin-bottom: 4px; }
+  .chart-sub {
+    font-size: 0.8125rem;
+    color: #6B7280;
+    margin-bottom: 20px;
+  }
+  .bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    height: 200px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+  }
+  .bar-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+  }
+  .bar-rect {
+    width: 100%;
+    max-width: 48px;
+    border-radius: 4px 4px 0 0;
+    min-height: 4px;
+    transition: height 0.3s ease;
+  }
+  .bar-lbl {
+    font-size: 0.6875rem;
+    color: #9CA3AF;
+    margin-top: 8px;
+  }
+  .bar-val {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    margin-bottom: 4px;
+  }
+
+  /* Crew Cards */
+  .crew-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .crew-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .crew-avatar {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+  }
+  .crew-card h4 { font-size: 1rem; margin-bottom: 4px; }
+  .crew-card .role {
+    font-size: 0.8125rem;
+    color: #6B7280;
+    margin-bottom: 8px;
+  }
+  .crew-card .stats {
+    font-size: 0.8125rem;
+    color: #6B7280;
+    margin-bottom: 8px;
+  }
+  .crew-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  /* Launch Schedule */
+  .launch-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+  .launch-item {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 16px 20px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .launch-date {
+    background: var(--indigo);
+    color: #fff;
+    border-radius: 8px;
+    padding: 8px 12px;
+    text-align: center;
+    min-width: 60px;
+    flex-shrink: 0;
+  }
+  .launch-date .month {
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    opacity: 0.8;
+  }
+  .launch-date .day {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+  }
+  .launch-info { flex: 1; min-width: 150px; }
+  .launch-info h4 { font-size: 0.9375rem; margin-bottom: 2px; }
+  .launch-info .meta { font-size: 0.8125rem; color: #6B7280; }
+
+  /* Activity Feed */
+  .activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+  .activity-item {
+    background: var(--card);
+    border-radius: 8px;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.875rem;
+  }
+  .activity-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .activity-time {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: #9CA3AF;
+  }
+
+  /* Footer */
+  .site-footer {
+    padding: 32px 24px;
+    text-align: center;
+    font-size: 0.8125rem;
+    color: #9CA3AF;
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+  }
+
+  /* Accessibility */
+  :focus-visible {
+    outline: 2px solid var(--indigo);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+  @media (max-width: 768px) {
+    .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    .crew-grid { grid-template-columns: 1fr; }
+    .data-tbl { display: block; overflow-x: auto; }
+    .mission-item { flex-direction: column; align-items: flex-start; }
+    .mission-crew { text-align: left; }
+    .launch-item { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header class="top-nav">
+  <button class="hamburger" aria-label="Open menu" aria-expanded="false"
+    onclick="document.getElementById('drawer').classList.toggle('open');document.getElementById('overlay').classList.toggle('open');this.setAttribute('aria-expanded',document.getElementById('drawer').classList.contains('open'))">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+  </button>
+  <a href="#" class="nav-brand">🚀 Orbit Space Explorer</a>
+  <nav class="nav-links" aria-label="Main">
+    <a href="#" aria-current="page">Dashboard</a>
+    <a href="#missions">Missions</a>
+    <a href="#satellites">Satellites</a>
+    <a href="#crew">Crew</a>
+    <a href="#launches">Launches</a>
+  </nav>
+  <div class="nav-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" aria-label="Search missions">
+  </div>
+  <button class="nav-cta">+ New Mission</button>
+</header>
+
+<div class="drawer-overlay" id="overlay" onclick="document.getElementById('drawer').classList.remove('open');this.classList.remove('open')"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-label="Navigation">
+  <button class="drawer-close" aria-label="Close menu"
+    onclick="document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open')">&times;</button>
+  <nav>
+    <a href="#">Dashboard</a>
+    <a href="#missions">Missions</a>
+    <a href="#satellites">Satellites</a>
+    <a href="#crew">Crew</a>
+    <a href="#launches">Launches</a>
+  </nav>
+</aside>
+
+<main id="main">
+  <div class="kpi-strip" role="region" aria-label="Key metrics">
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#EEF2FF">🛸</div>
+      <div>
+        <div class="kpi-label">Active Missions</div>
+        <div class="kpi-value" style="color:#4F46E5">12</div>
+        <div class="kpi-trend">3 launching this quarter</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#ECFEFF">📡</div>
+      <div>
+        <div class="kpi-label">Satellites Tracked</div>
+        <div class="kpi-value" style="color:#06B6D4">347</div>
+        <div class="kpi-trend">99.1% operational</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#D1FAE5">👨‍🚀</div>
+      <div>
+        <div class="kpi-label">Crew Members</div>
+        <div class="kpi-value" style="color:#10B981">28</div>
+        <div class="kpi-trend">6 currently in space</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#FEF3C7">🎯</div>
+      <div>
+        <div class="kpi-label">Launch Success Rate</div>
+        <div class="kpi-value" style="color:#F59E0B">98.4%</div>
+        <div class="kpi-trend">124 of 126 launches</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <!-- Mission Timeline -->
+    <section id="missions">
+      <div class="section-header">
+        <h2>Mission Timeline</h2>
+        <span class="badge">12 active</span>
+      </div>
+      <div class="mission-list" role="list">
+        <div class="mission-item" role="listitem">
+          <div class="mission-icon" style="background:#EEF2FF">🌙</div>
+          <div class="mission-info">
+            <h4>Artemis IV — Lunar Gateway</h4>
+            <div class="meta">Launched Mar 15 · Destination: Lunar Orbit</div>
+          </div>
+          <span class="mission-status st-active">Active</span>
+          <div class="mission-crew">Crew: 4</div>
+        </div>
+        <div class="mission-item" role="listitem">
+          <div class="mission-icon" style="background:#ECFEFF">🔴</div>
+          <div class="mission-info">
+            <h4>Red Horizon — Mars Surveyor</h4>
+            <div class="meta">Launched Jan 8 · Destination: Mars Orbit</div>
+          </div>
+          <span class="mission-status st-active">Active</span>
+          <div class="mission-crew">Crew: 6</div>
+        </div>
+        <div class="mission-item" role="listitem">
+          <div class="mission-icon" style="background:#D1FAE5">🛰️</div>
+          <div class="mission-info">
+            <h4>Constellation Beta — GPS III</h4>
+            <div class="meta">Completed Feb 28 · Destination: MEO</div>
+          </div>
+          <span class="mission-status st-completed">Completed</span>
+          <div class="mission-crew">Unmanned</div>
+        </div>
+        <div class="mission-item" role="listitem">
+          <div class="mission-icon" style="background:#FEF3C7">🔬</div>
+          <div class="mission-info">
+            <h4>Lab Module 7 — ISS Resupply</h4>
+            <div class="meta">Scheduled Jun 1 · Destination: ISS</div>
+          </div>
+          <span class="mission-status st-scheduled">Scheduled</span>
+          <div class="mission-crew">Crew: 2</div>
+        </div>
+        <div class="mission-item" role="listitem">
+          <div class="mission-icon" style="background:#EEF2FF">🌌</div>
+          <div class="mission-info">
+            <h4>Deep Field — JWST Calibration</h4>
+            <div class="meta">Launched Apr 2 · Destination: L2 Orbit</div>
+          </div>
+          <span class="mission-status st-active">Active</span>
+          <div class="mission-crew">Unmanned</div>
+        </div>
+        <div class="mission-item" role="listitem">
+          <div class="mission-icon" style="background:#FEE2E2">⚠️</div>
+          <div class="mission-info">
+            <h4>Vanguard Test — Crew Abort Drill</h4>
+            <div class="meta">Aborted Mar 20 · Destination: Sub-orbital</div>
+          </div>
+          <span class="mission-status st-aborted">Aborted</span>
+          <div class="mission-crew">Crew: 3</div>
+        </div>
+        <div class="mission-item" role="listitem">
+          <div class="mission-icon" style="background:#ECFEFF">🪐</div>
+          <div class="mission-info">
+            <h4>Saturn Probe — Cassini II</h4>
+            <div class="meta">Scheduled Sep 15 · Destination: Saturn System</div>
+          </div>
+          <span class="mission-status st-scheduled">Scheduled</span>
+          <div class="mission-crew">Unmanned</div>
+        </div>
+        <div class="mission-item" role="listitem">
+          <div class="mission-icon" style="background:#D1FAE5">☀️</div>
+          <div class="mission-info">
+            <h4>Solar Parker — Sun Skimmer</h4>
+            <div class="meta">Completed Jan 12 · Destination: Solar Orbit</div>
+          </div>
+          <span class="mission-status st-completed">Completed</span>
+          <div class="mission-crew">Unmanned</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Satellite Tracking -->
+    <section id="satellites">
+      <div class="section-header">
+        <h2>Satellite Tracking</h2>
+        <span class="badge">347 tracked</span>
+      </div>
+      <table class="data-tbl" aria-label="Satellite tracking data">
+        <thead>
+          <tr>
+            <th>Sat-ID</th>
+            <th>Name</th>
+            <th>Orbit</th>
+            <th>Status</th>
+            <th>Altitude</th>
+            <th>Inclination</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>SAT-0012</strong></td>
+            <td>Hubble Space Telescope</td>
+            <td>LEO</td>
+            <td><span class="badge-status st-active">Active</span></td>
+            <td>547 km</td>
+            <td>28.5°</td>
+          </tr>
+          <tr>
+            <td><strong>SAT-0045</strong></td>
+            <td>GOES-18 Weather</td>
+            <td>GEO</td>
+            <td><span class="badge-status st-active">Active</span></td>
+            <td>35,786 km</td>
+            <td>0.1°</td>
+          </tr>
+          <tr>
+            <td><strong>SAT-0089</strong></td>
+            <td>Starlink-V2-4471</td>
+            <td>LEO</td>
+            <td><span class="badge-status st-active">Active</span></td>
+            <td>550 km</td>
+            <td>53.0°</td>
+          </tr>
+          <tr>
+            <td><strong>SAT-0103</strong></td>
+            <td>GPS III SV06</td>
+            <td>MEO</td>
+            <td><span class="badge-status st-active">Active</span></td>
+            <td>20,200 km</td>
+            <td>55.0°</td>
+          </tr>
+          <tr>
+            <td><strong>SAT-0156</strong></td>
+            <td>Envisat (Decommissioned)</td>
+            <td>Sun-synch</td>
+            <td><span class="badge-status st-aborted">Decommissioned</span></td>
+            <td>772 km</td>
+            <td>98.6°</td>
+          </tr>
+          <tr>
+            <td><strong>SAT-0201</strong></td>
+            <td>TerraSAR-X</td>
+            <td>LEO</td>
+            <td><span class="badge-status st-scheduled">Maintenance</span></td>
+            <td>514 km</td>
+            <td>97.4°</td>
+          </tr>
+          <tr>
+            <td><strong>SAT-0278</strong></td>
+            <td>Intelsat 40e</td>
+            <td>GEO</td>
+            <td><span class="badge-status st-active">Active</span></td>
+            <td>35,786 km</td>
+            <td>0.0°</td>
+          </tr>
+          <tr>
+            <td><strong>SAT-0312</strong></td>
+            <td>Aqua Earth Science</td>
+            <td>LEO</td>
+            <td><span class="badge-status st-active">Active</span></td>
+            <td>705 km</td>
+            <td>98.2°</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Telemetry Chart -->
+    <div class="chart-box">
+      <h3 class="chart-title">Satellite Signal Strength — Telemetry Overview</h3>
+      <div class="chart-sub">Signal quality index (0–100) for top tracked satellites</div>
+      <div class="bar-chart" role="img" aria-label="Bar chart showing satellite signal strength">
+        <div class="bar-group">
+          <div class="bar-val">97</div>
+          <div class="bar-rect" style="height:194px;background:#4F46E5"></div>
+          <span class="bar-lbl">SAT-0012</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">92</div>
+          <div class="bar-rect" style="height:184px;background:#06B6D4"></div>
+          <span class="bar-lbl">SAT-0045</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">88</div>
+          <div class="bar-rect" style="height:176px;background:#4F46E5"></div>
+          <span class="bar-lbl">SAT-0089</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">95</div>
+          <div class="bar-rect" style="height:190px;background:#06B6D4"></div>
+          <span class="bar-lbl">SAT-0103</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">0</div>
+          <div class="bar-rect" style="height:8px;background:#FB7185"></div>
+          <span class="bar-lbl">SAT-0156</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">45</div>
+          <div class="bar-rect" style="height:90px;background:#F59E0B"></div>
+          <span class="bar-lbl">SAT-0201</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">91</div>
+          <div class="bar-rect" style="height:182px;background:#4F46E5"></div>
+          <span class="bar-lbl">SAT-0278</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">86</div>
+          <div class="bar-rect" style="height:172px;background:#06B6D4"></div>
+          <span class="bar-lbl">SAT-0312</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Crew Roster -->
+    <section id="crew">
+      <div class="section-header">
+        <h2>Crew Roster</h2>
+        <span class="badge">28 members</span>
+      </div>
+      <div class="crew-grid">
+        <div class="crew-card">
+          <div class="crew-avatar" style="background:#EEF2FF">👨‍🚀</div>
+          <h4>Commander Elena Vasquez</h4>
+          <div class="role">Mission Commander</div>
+          <div class="stats">14 missions completed</div>
+          <span class="crew-badge st-active">On Mission</span>
+        </div>
+        <div class="crew-card">
+          <div class="crew-avatar" style="background:#ECFEFF">👩‍🚀</div>
+          <h4>Dr. Mei Chen</h4>
+          <div class="role">Flight Engineer</div>
+          <div class="stats">9 missions completed</div>
+          <span class="crew-badge st-active">On Mission</span>
+        </div>
+        <div class="crew-card">
+          <div class="crew-avatar" style="background:#D1FAE5">👨‍🔬</div>
+          <h4>Dr. James Okonkwo</h4>
+          <div class="role">Payload Specialist</div>
+          <div class="stats">7 missions completed</div>
+          <span class="crew-badge st-active">On Mission</span>
+        </div>
+        <div class="crew-card">
+          <div class="crew-avatar" style="background:#FEF3C7">👩‍🔧</div>
+          <h4>Lt. Sarah Mitchell</h4>
+          <div class="role">Pilot</div>
+          <div class="stats">11 missions completed</div>
+          <span class="crew-badge" style="background:#DBEAFE;color:#1E40AF">Standby</span>
+        </div>
+        <div class="crew-card">
+          <div class="crew-avatar" style="background:#EEF2FF">👨‍⚕️</div>
+          <h4>Dr. Anton Petrov</h4>
+          <div class="role">Flight Surgeon</div>
+          <div class="stats">5 missions completed</div>
+          <span class="crew-badge" style="background:#FEF3C7;color:#92400E">Training</span>
+        </div>
+        <div class="crew-card">
+          <div class="crew-avatar" style="background:#ECFEFF">👩‍💻</div>
+          <h4>Yuki Tanaka</h4>
+          <div class="role">Systems Engineer</div>
+          <div class="stats">8 missions completed</div>
+          <span class="crew-badge" style="background:#DBEAFE;color:#1E40AF">Standby</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Launch Schedule -->
+    <section id="launches">
+      <div class="section-header">
+        <h2>Upcoming Launches</h2>
+        <span class="badge">5 scheduled</span>
+      </div>
+      <div class="launch-list" role="list">
+        <div class="launch-item" role="listitem">
+          <div class="launch-date">
+            <div class="month">Jun</div>
+            <div class="day">01</div>
+          </div>
+          <div class="launch-info">
+            <h4>Falcon Heavy — Lab Module 7</h4>
+            <div class="meta">Vehicle: FH-B1082 · Payload: ISS Resupply · Destination: ISS</div>
+          </div>
+          <span class="mission-status st-scheduled">Scheduled</span>
+        </div>
+        <div class="launch-item" role="listitem">
+          <div class="launch-date">
+            <div class="month">Jun</div>
+            <div class="day">18</div>
+          </div>
+          <div class="launch-info">
+            <h4>SLS Block 2 — Europa Clipper II</h4>
+            <div class="meta">Vehicle: SLS-003 · Payload: Probe · Destination: Jupiter System</div>
+          </div>
+          <span class="mission-status st-scheduled">Scheduled</span>
+        </div>
+        <div class="launch-item" role="listitem">
+          <div class="launch-date">
+            <div class="month">Jul</div>
+            <div class="day">05</div>
+          </div>
+          <div class="launch-info">
+            <h4>Starship — Mars Cargo Demo</h4>
+            <div class="meta">Vehicle: S28-S14 · Payload: Cargo · Destination: Mars Surface</div>
+          </div>
+          <span class="mission-status st-scheduled">Scheduled</span>
+        </div>
+        <div class="launch-item" role="listitem">
+          <div class="launch-date">
+            <div class="month">Aug</div>
+            <div class="day">12</div>
+          </div>
+          <div class="launch-info">
+            <h4>New Glenn — Kuiper Constellation</h4>
+            <div class="meta">Vehicle: NG-2 · Payload: 36 Satellites · Destination: LEO</div>
+          </div>
+          <span class="mission-status st-scheduled">Scheduled</span>
+        </div>
+        <div class="launch-item" role="listitem">
+          <div class="launch-date">
+            <div class="month">Sep</div>
+            <div class="day">15</div>
+          </div>
+          <div class="launch-info">
+            <h4>Vulcan Centaur — Saturn Probe</h4>
+            <div class="meta">Vehicle: VC06 · Payload: Probe · Destination: Saturn Orbit</div>
+          </div>
+          <span class="mission-status st-scheduled">Scheduled</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recent Events -->
+    <section>
+      <div class="section-header">
+        <h2>Recent Events</h2>
+        <span class="badge">Last 48 hours</span>
+      </div>
+      <div class="activity-list" role="list">
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:#A3E635"></div>
+          <span>Artemis IV crew completed 4-hour EVA for solar panel repair</span>
+          <span class="activity-time">2 hours ago</span>
+        </div>
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:#06B6D4"></div>
+          <span>Starlink-V2 batch 471 successfully deployed all 23 satellites</span>
+          <span class="activity-time">6 hours ago</span>
+        </div>
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:#4F46E5"></div>
+          <span>Deep Field telescope calibration cycle 14 completed</span>
+          <span class="activity-time">12 hours ago</span>
+        </div>
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:#FB7185"></div>
+          <span>TerraSAR-X entered safe mode — scheduled maintenance initiated</span>
+          <span class="activity-time">18 hours ago</span>
+        </div>
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:#A3E635"></div>
+          <span>Red Horizon Mars Surveyor completed trajectory correction maneuver</span>
+          <span class="activity-time">24 hours ago</span>
+        </div>
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:#06B6D4"></div>
+          <span>ISS crew rotation schedule confirmed for June window</span>
+          <span class="activity-time">36 hours ago</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p>Orbit Space Explorer — designed by Studio · Standalone prototype · Not affiliated with any space agency</p>
+</footer>
+
+<script>
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.getElementById('drawer').classList.remove('open');
+      document.getElementById('overlay').classList.remove('open');
+    }
+  });
+</script>
+</body>
+</html>
