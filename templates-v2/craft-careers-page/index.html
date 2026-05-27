@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Craft Careers Page</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --cloud-strong: #EEF2FA;
+      --cloud-soft: rgba(246, 248, 252, 0.72);
+      --ink: #19212B;
+      --ink-muted: rgba(25, 33, 43, 0.68);
+      --ink-soft: rgba(25, 33, 43, 0.08);
+      --ink-panel: rgba(25, 33, 43, 0.94);
+      --indigo: #4F46E5;
+      --indigo-soft: rgba(79, 70, 229, 0.12);
+      --indigo-line: rgba(79, 70, 229, 0.22);
+      --cyan: #06B6D4;
+      --cyan-soft: rgba(6, 182, 212, 0.12);
+      --cyan-line: rgba(6, 182, 212, 0.28);
+      --lime: #A3E635;
+      --lime-soft: rgba(163, 230, 53, 0.18);
+      --coral: #FB7185;
+      --coral-soft: rgba(251, 113, 133, 0.14);
+      --surface: rgba(255, 255, 255, 0.74);
+      --line: rgba(25, 33, 43, 0.12);
+      --shadow: 0 24px 70px rgba(25, 33, 43, 0.12);
+      --radius: 8px;
+      --font-heading: "Manrope", sans-serif;
+      --font-ui: "Inter", sans-serif;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 15% 8%, rgba(6, 182, 212, 0.14), transparent 28%),
+        radial-gradient(circle at 88% 18%, rgba(79, 70, 229, 0.12), transparent 24%),
+        var(--cloud);
+      color: var(--ink);
+      font-family: var(--font-ui);
+      line-height: 1.5;
+    }
+    body.menu-open {
+      overflow: hidden;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+    button {
+      cursor: pointer;
+    }
+    img {
+      display: block;
+      max-width: 100%;
+    }
+    .skip-link {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 40;
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--cloud);
+      transform: translateY(-160%);
+      transition: transform 160ms ease;
+    }
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+    :focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 3px;
+    }
+    .page-shell {
+      min-height: 100vh;
+    }
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      border-bottom: 1px solid var(--line);
+      background: rgba(246, 248, 252, 0.88);
+      backdrop-filter: blur(18px);
+    }
+    .nav-wrap {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      min-height: 78px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      background: var(--ink);
+      color: var(--lime);
+      box-shadow: inset 0 0 0 1px rgba(246, 248, 252, 0.18);
+    }
+    .brand-name {
+      font-family: var(--font-heading);
+      font-size: 1.02rem;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .nav-link {
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      color: var(--ink-muted);
+      font-size: 0.94rem;
+      font-weight: 700;
+    }
+    .nav-link:hover {
+      background: var(--ink-soft);
+      color: var(--ink);
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .button {
+      min-height: 44px;
+      border: 0;
+      border-radius: var(--radius);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 0 16px;
+      font-weight: 800;
+      color: var(--cloud);
+      background: var(--indigo);
+      box-shadow: 0 12px 30px rgba(79, 70, 229, 0.22);
+      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+    .button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 34px rgba(79, 70, 229, 0.28);
+    }
+    .button.secondary {
+      background: var(--ink);
+      box-shadow: 0 12px 30px rgba(25, 33, 43, 0.18);
+    }
+    .button.ghost {
+      color: var(--ink);
+      background: transparent;
+      border: 1px solid var(--line);
+      box-shadow: none;
+    }
+    .menu-button {
+      display: none;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--ink);
+      align-items: center;
+      justify-content: center;
+    }
+    .menu-icon {
+      width: 20px;
+      height: 14px;
+      position: relative;
+    }
+    .menu-icon span {
+      position: absolute;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      border-radius: 2px;
+      background: currentColor;
+      transition: transform 160ms ease, opacity 160ms ease, top 160ms ease;
+    }
+    .menu-icon span:nth-child(1) {
+      top: 0;
+    }
+    .menu-icon span:nth-child(2) {
+      top: 6px;
+    }
+    .menu-icon span:nth-child(3) {
+      top: 12px;
+    }
+    .menu-button[aria-expanded="true"] .menu-icon span:nth-child(1) {
+      top: 6px;
+      transform: rotate(45deg);
+    }
+    .menu-button[aria-expanded="true"] .menu-icon span:nth-child(2) {
+      opacity: 0;
+    }
+    .menu-button[aria-expanded="true"] .menu-icon span:nth-child(3) {
+      top: 6px;
+      transform: rotate(-45deg);
+    }
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 35;
+      background: rgba(25, 33, 43, 0.42);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+    }
+    .drawer-backdrop.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .mobile-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 36;
+      width: min(360px, 88vw);
+      height: 100vh;
+      padding: 22px;
+      background: var(--cloud);
+      border-left: 1px solid var(--line);
+      box-shadow: -22px 0 54px rgba(25, 33, 43, 0.16);
+      transform: translateX(105%);
+      transition: transform 220ms ease;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+    .mobile-drawer.open {
+      transform: translateX(0);
+    }
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .drawer-close {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      color: var(--ink);
+      font-weight: 800;
+    }
+    .drawer-links {
+      display: grid;
+      gap: 10px;
+    }
+    .drawer-links a {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      font-weight: 800;
+    }
+    main {
+      overflow: hidden;
+    }
+    .section {
+      padding: 88px 0;
+    }
+    .section.tight {
+      padding-top: 62px;
+    }
+    .container {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--indigo);
+      font-weight: 800;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 0 6px var(--cyan-soft);
+    }
+    .section-heading {
+      margin: 12px 0 0;
+      max-width: 720px;
+      font-family: var(--font-heading);
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 1.04;
+      letter-spacing: 0;
+    }
+    .section-copy {
+      margin: 16px 0 0;
+      max-width: 690px;
+      color: var(--ink-muted);
+      font-size: 1.05rem;
+    }
+    .hero {
+      padding: 70px 0 76px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(380px, 1.05fr);
+      gap: 46px;
+      align-items: center;
+    }
+    .hero h1 {
+      margin: 14px 0 0;
+      font-family: var(--font-heading);
+      font-size: clamp(3.4rem, 9vw, 7.8rem);
+      line-height: 0.92;
+      letter-spacing: 0;
+    }
+    .hero p {
+      margin: 24px 0 0;
+      max-width: 620px;
+      color: var(--ink-muted);
+      font-size: clamp(1.05rem, 2vw, 1.28rem);
+    }
+    .hero-actions {
+      margin-top: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .hero-stats {
+      margin-top: 34px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      max-width: 560px;
+    }
+    .stat {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+    }
+    .stat strong {
+      display: block;
+      font-family: var(--font-heading);
+      font-size: 1.55rem;
+    }
+    .stat span {
+      color: var(--ink-muted);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    .team-photo {
+      min-height: 540px;
+      border-radius: var(--radius);
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, rgba(25, 33, 43, 0.92), rgba(79, 70, 229, 0.74)),
+        radial-gradient(circle at 18% 18%, rgba(163, 230, 53, 0.58), transparent 21%),
+        radial-gradient(circle at 75% 24%, rgba(6, 182, 212, 0.5), transparent 24%),
+        radial-gradient(circle at 56% 78%, rgba(251, 113, 133, 0.42), transparent 28%);
+      box-shadow: var(--shadow);
+      isolation: isolate;
+    }
+    .team-photo::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, rgba(246, 248, 252, 0.11) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(246, 248, 252, 0.11) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(to bottom, rgba(25, 33, 43, 0.9), transparent);
+      z-index: -1;
+    }
+    .team-card {
+      position: absolute;
+      left: 26px;
+      right: 26px;
+      bottom: 26px;
+      padding: 22px;
+      border: 1px solid rgba(246, 248, 252, 0.24);
+      border-radius: var(--radius);
+      color: var(--cloud);
+      background: rgba(25, 33, 43, 0.64);
+      backdrop-filter: blur(18px);
+    }
+    .team-card strong {
+      display: block;
+      font-family: var(--font-heading);
+      font-size: 1.35rem;
+    }
+    .team-card span {
+      display: block;
+      margin-top: 8px;
+      color: rgba(246, 248, 252, 0.76);
+    }
+    .floating-pill {
+      position: absolute;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-radius: 999px;
+      color: var(--cloud);
+      background: rgba(25, 33, 43, 0.72);
+      border: 1px solid rgba(246, 248, 252, 0.2);
+      font-weight: 800;
+      backdrop-filter: blur(14px);
+    }
+    .floating-pill.one {
+      top: 28px;
+      left: 28px;
+    }
+    .floating-pill.two {
+      top: 118px;
+      right: 30px;
+    }
+    .floating-pill.three {
+      left: 46px;
+      top: 240px;
+    }
+    .pulse {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--lime);
+      box-shadow: 0 0 0 7px var(--lime-soft);
+    }
+    .culture-grid {
+      margin-top: 34px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .culture-card,
+    .benefit-card,
+    .quote-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      box-shadow: 0 18px 44px rgba(25, 33, 43, 0.06);
+    }
+    .culture-card {
+      min-height: 230px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 22px;
+    }
+    .icon-box {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      background: var(--indigo-soft);
+      color: var(--indigo);
+      font-size: 1.3rem;
+      font-weight: 800;
+    }
+    .icon-box.cyan {
+      background: var(--cyan-soft);
+      color: var(--cyan);
+    }
+    .icon-box.lime {
+      background: var(--lime-soft);
+      color: var(--ink);
+    }
+    .icon-box.coral {
+      background: var(--coral-soft);
+      color: var(--coral);
+    }
+    .card-title {
+      margin: 0;
+      font-family: var(--font-heading);
+      font-size: 1.25rem;
+      letter-spacing: 0;
+    }
+    .card-copy {
+      margin: 10px 0 0;
+      color: var(--ink-muted);
+    }
+    .benefits-band {
+      background: rgba(25, 33, 43, 0.96);
+      color: var(--cloud);
+    }
+    .benefits-band .eyebrow {
+      color: var(--lime);
+    }
+    .benefits-band .section-copy {
+      color: rgba(246, 248, 252, 0.72);
+    }
+    .benefits-grid {
+      margin-top: 34px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .benefit-card {
+      padding: 22px;
+      background: rgba(246, 248, 252, 0.07);
+      border-color: rgba(246, 248, 252, 0.14);
+    }
+    .benefit-card .card-copy {
+      color: rgba(246, 248, 252, 0.72);
+    }
+    .jobs-toolbar {
+      margin-top: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .filters {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .filter-button {
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 0 14px;
+      color: var(--ink-muted);
+      background: var(--surface);
+      font-weight: 800;
+    }
+    .filter-button.active {
+      color: var(--cloud);
+      background: var(--ink);
+      border-color: var(--ink);
+    }
+    .job-count {
+      color: var(--ink-muted);
+      font-weight: 800;
+    }
+    .jobs-list {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--surface);
+    }
+    .job-row {
+      display: grid;
+      grid-template-columns: minmax(220px, 1.4fr) 150px 170px 130px 120px;
+      gap: 16px;
+      align-items: center;
+      padding: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .job-row:last-child {
+      border-bottom: 0;
+    }
+    .job-row.hidden {
+      display: none;
+    }
+    .job-title {
+      margin: 0;
+      font-family: var(--font-heading);
+      font-size: 1.05rem;
+    }
+    .job-meta {
+      color: var(--ink-muted);
+      font-weight: 700;
+      font-size: 0.94rem;
+    }
+    .badge {
+      width: fit-content;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      background: var(--indigo-soft);
+      color: var(--indigo);
+    }
+    .badge.cyan {
+      background: var(--cyan-soft);
+      color: var(--ink);
+    }
+    .badge.lime {
+      background: var(--lime-soft);
+      color: var(--ink);
+    }
+    .badge.coral {
+      background: var(--coral-soft);
+      color: var(--coral);
+    }
+    .apply-link {
+      min-height: 40px;
+      border-radius: var(--radius);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 12px;
+      background: var(--indigo);
+      color: var(--cloud);
+      font-weight: 800;
+    }
+    .application-layout {
+      display: grid;
+      grid-template-columns: 310px minmax(0, 1fr);
+      gap: 24px;
+      align-items: start;
+      margin-top: 34px;
+    }
+    .progress-panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 20px;
+      background: var(--surface);
+      position: sticky;
+      top: 98px;
+    }
+    .progress-step {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      gap: 12px;
+      align-items: start;
+      padding: 12px 0;
+    }
+    .step-dot {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--cloud-strong);
+      color: var(--ink-muted);
+      font-weight: 800;
+      border: 1px solid var(--line);
+    }
+    .progress-step.active .step-dot {
+      background: var(--indigo);
+      color: var(--cloud);
+      border-color: var(--indigo);
+    }
+    .progress-step.done .step-dot {
+      background: var(--lime);
+      color: var(--ink);
+      border-color: var(--lime);
+    }
+    .step-name {
+      margin: 2px 0 0;
+      font-weight: 800;
+    }
+    .step-note {
+      margin: 2px 0 0;
+      color: var(--ink-muted);
+      font-size: 0.9rem;
+    }
+    .form-panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      overflow: hidden;
+    }
+    .form-step {
+      display: none;
+      padding: 26px;
+    }
+    .form-step.active {
+      display: block;
+    }
+    .form-step h3 {
+      margin: 0;
+      font-family: var(--font-heading);
+      font-size: 1.45rem;
+    }
+    .form-step p {
+      color: var(--ink-muted);
+    }
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 20px;
+    }
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+    .field.full {
+      grid-column: 1 / -1;
+    }
+    .field label {
+      font-weight: 800;
+      font-size: 0.92rem;
+    }
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.7);
+      color: var(--ink);
+      padding: 12px 13px;
+    }
+    .field textarea {
+      min-height: 170px;
+      resize: vertical;
+    }
+    .resume-drop {
+      border: 1px dashed var(--indigo-line);
+      border-radius: var(--radius);
+      min-height: 160px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      background: var(--indigo-soft);
+      padding: 24px;
+    }
+    .resume-drop strong {
+      display: block;
+      font-family: var(--font-heading);
+      font-size: 1.18rem;
+    }
+    .resume-drop span {
+      display: block;
+      margin-top: 6px;
+      color: var(--ink-muted);
+    }
+    .form-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 26px;
+      border-top: 1px solid var(--line);
+      background: rgba(246, 248, 252, 0.52);
+    }
+    .review-grid {
+      display: grid;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .review-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.7);
+    }
+    .review-item span {
+      color: var(--ink-muted);
+      font-weight: 700;
+    }
+    .review-item strong {
+      text-align: right;
+    }
+    .testimonials-grid {
+      margin-top: 34px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .quote-card {
+      padding: 22px;
+    }
+    .photo-area {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 34% 28%, var(--lime), transparent 28%),
+        linear-gradient(135deg, var(--indigo), var(--cyan));
+      border: 3px solid var(--cloud);
+      box-shadow: 0 0 0 1px var(--line);
+    }
+    .quote-text {
+      margin: 18px 0;
+      color: var(--ink);
+      font-size: 1.02rem;
+    }
+    .person-name {
+      margin: 0;
+      font-weight: 800;
+    }
+    .person-role {
+      margin: 2px 0 0;
+      color: var(--ink-muted);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+    .site-footer {
+      padding: 34px 0;
+      border-top: 1px solid var(--line);
+      background: rgba(246, 248, 252, 0.78);
+    }
+    .footer-grid {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+    .credit {
+      margin: 0;
+      color: var(--ink-muted);
+      font-weight: 700;
+    }
+    .social-links {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .social-links a {
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--surface);
+      font-weight: 800;
+      color: var(--ink-muted);
+    }
+    @media (max-width: 980px) {
+      .nav-links,
+      .nav-actions .button {
+        display: none;
+      }
+      .menu-button {
+        display: inline-flex;
+      }
+      .hero-grid,
+      .application-layout {
+        grid-template-columns: 1fr;
+      }
+      .team-photo {
+        min-height: 420px;
+      }
+      .culture-grid,
+      .benefits-grid,
+      .testimonials-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .job-row {
+        grid-template-columns: 1fr 1fr;
+      }
+      .progress-panel {
+        position: static;
+      }
+    }
+    @media (max-width: 680px) {
+      .section {
+        padding: 66px 0;
+      }
+      .hero {
+        padding-top: 42px;
+      }
+      .hero-stats,
+      .culture-grid,
+      .benefits-grid,
+      .testimonials-grid,
+      .field-grid {
+        grid-template-columns: 1fr;
+      }
+      .team-photo {
+        min-height: 360px;
+      }
+      .floating-pill.three {
+        display: none;
+      }
+      .job-row {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+      .form-actions {
+        flex-direction: column-reverse;
+        align-items: stretch;
+      }
+      .button,
+      .apply-link {
+        width: 100%;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="page-shell">
+    <header class="site-header">
+      <nav class="nav-wrap" aria-label="Primary navigation">
+        <a class="brand" href="#top" aria-label="Craft home">
+          <span class="brand-mark" aria-hidden="true">C</span>
+          <span class="brand-name">Craft Careers</span>
+        </a>
+        <div class="nav-links">
+          <a class="nav-link" href="#roles">Open Roles</a>
+          <a class="nav-link" href="#culture">Culture</a>
+          <a class="nav-link" href="#benefits">Benefits</a>
+          <a class="nav-link" href="#blog">Blog</a>
+        </div>
+        <div class="nav-actions">
+          <a class="button" href="#roles">See Open Roles</a>
+          <button class="menu-button" type="button" aria-label="Open menu" aria-controls="mobile-drawer" aria-expanded="false">
+            <span class="menu-icon" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </button>
+        </div>
+      </nav>
+    </header>
+    <div class="drawer-backdrop" data-close-drawer></div>
+    <aside class="mobile-drawer" id="mobile-drawer" aria-label="Mobile navigation" aria-hidden="true">
+      <div class="drawer-head">
+        <a class="brand" href="#top" data-close-drawer>
+          <span class="brand-mark" aria-hidden="true">C</span>
+          <span class="brand-name">Craft Careers</span>
+        </a>
+        <button class="drawer-close" type="button" aria-label="Close menu" data-close-drawer>×</button>
+      </div>
+      <div class="drawer-links">
+        <a href="#roles" data-close-drawer>Open Roles</a>
+        <a href="#culture" data-close-drawer>Culture</a>
+        <a href="#benefits" data-close-drawer>Benefits</a>
+        <a href="#blog" data-close-drawer>Blog</a>
+        <a href="#apply" data-close-drawer>Application Flow</a>
+      </div>
+      <a class="button" href="#roles" data-close-drawer>See Open Roles</a>
+    </aside>
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="container hero-grid">
+          <div>
+            <span class="eyebrow">Hiring across product, care, and craft</span>
+            <h1 id="hero-title">Join Our Team</h1>
+            <p>
+              Build practical tools with a thoughtful group of operators, designers, engineers, and customer partners who care about quality at every handoff.
+            </p>
+            <div class="hero-actions">
+              <a class="button" href="#roles">Explore roles</a>
+              <a class="button ghost" href="#culture">Meet the culture</a>
+            </div>
+            <div class="hero-stats" aria-label="Company hiring highlights">
+              <div class="stat">
+                <strong>42</strong>
+                <span>open roles</span>
+              </div>
+              <div class="stat">
+                <strong>18</strong>
+                <span>countries</span>
+              </div>
+              <div class="stat">
+                <strong>91%</strong>
+                <span>team retention</span>
+              </div>
+            </div>
+          </div>
+          <div class="team-photo" aria-label="Abstract team photo area with layered color fields">
+            <span class="floating-pill one"><span class="pulse"></span> Live hiring sprint</span>
+            <span class="floating-pill two">Remote-first teams</span>
+            <span class="floating-pill three">Mentors in every cohort</span>
+            <div class="team-card">
+              <strong>People who make the work better</strong>
+              <span>Weekly craft reviews, clear growth paths, and room to do focused work.</span>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section tight" id="culture" aria-labelledby="culture-title">
+        <div class="container">
+          <span class="eyebrow">Culture showcase</span>
+          <h2 class="section-heading" id="culture-title">A team rhythm built around trust, clarity, and useful feedback.</h2>
+          <p class="section-copy">
+            We keep collaboration intentional so people can learn quickly, make durable decisions, and protect time for deep execution.
+          </p>
+          <div class="culture-grid">
+            <article class="culture-card">
+              <div class="icon-box" aria-hidden="true">↗</div>
+              <div>
+                <h3 class="card-title">Own the outcome</h3>
+                <p class="card-copy">Small teams set sharp goals, publish decisions, and stay close to the customer impact of their work.</p>
+              </div>
+            </article>
+            <article class="culture-card">
+              <div class="icon-box cyan" aria-hidden="true">◇</div>
+              <div>
+                <h3 class="card-title">Share the craft</h3>
+                <p class="card-copy">Design reviews, engineering clinics, and support retros turn expertise into shared standards.</p>
+              </div>
+            </article>
+            <article class="culture-card">
+              <div class="icon-box lime" aria-hidden="true">✓</div>
+              <div>
+                <h3 class="card-title">Default to healthy</h3>
+                <p class="card-copy">Balanced planning, async updates, and generous time off keep the pace sustainable.</p>
+              </div>
+            </article>
+            <article class="culture-card">
+              <div class="icon-box coral" aria-hidden="true">!</div>
+              <div>
+                <h3 class="card-title">Name the risk</h3>
+                <p class="card-copy">Teams surface constraints early, discuss tradeoffs plainly, and choose the clearest next move.</p>
+              </div>
+            </article>
+            <article class="culture-card">
+              <div class="icon-box" aria-hidden="true">⌁</div>
+              <div>
+                <h3 class="card-title">Learn in public</h3>
+                <p class="card-copy">Post-launch notes, demos, and open questions make progress visible across disciplines.</p>
+              </div>
+            </article>
+            <article class="culture-card">
+              <div class="icon-box cyan" aria-hidden="true">●</div>
+              <div>
+                <h3 class="card-title">Care for users</h3>
+                <p class="card-copy">Customer conversations shape roadmaps, onboarding, documentation, and support decisions.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="section benefits-band" id="benefits" aria-labelledby="benefits-title">
+        <div class="container">
+          <span class="eyebrow">Benefits</span>
+          <h2 class="section-heading" id="benefits-title">Support for focused work and a full life outside it.</h2>
+          <p class="section-copy">
+            Our benefits are practical by design: care coverage, flexibility, growth budget, and meaningful ownership for every role.
+          </p>
+          <div class="benefits-grid">
+            <article class="benefit-card">
+              <div class="icon-box lime" aria-hidden="true">+</div>
+              <h3 class="card-title">Health</h3>
+              <p class="card-copy">Comprehensive medical, dental, and mental health coverage for employees and families.</p>
+            </article>
+            <article class="benefit-card">
+              <div class="icon-box cyan" aria-hidden="true">⌂</div>
+              <h3 class="card-title">Remote</h3>
+              <p class="card-copy">Work from anywhere in approved regions with home office support and coworking credits.</p>
+            </article>
+            <article class="benefit-card">
+              <div class="icon-box" aria-hidden="true">✦</div>
+              <h3 class="card-title">Learning</h3>
+              <p class="card-copy">Annual development budget, internal classes, conference time, and paid certification paths.</p>
+            </article>
+            <article class="benefit-card">
+              <div class="icon-box coral" aria-hidden="true">◐</div>
+              <h3 class="card-title">Equity</h3>
+              <p class="card-copy">Every full-time teammate receives ownership grants with transparent refresh cycles.</p>
+            </article>
+            <article class="benefit-card">
+              <div class="icon-box lime" aria-hidden="true">↻</div>
+              <h3 class="card-title">Recharge</h3>
+              <p class="card-copy">Flexible time away, company-wide rest weeks, and meeting-light recovery periods.</p>
+            </article>
+            <article class="benefit-card">
+              <div class="icon-box cyan" aria-hidden="true">▣</div>
+              <h3 class="card-title">Tools</h3>
+              <p class="card-copy">Choose your setup, from laptop and display to specialist software and accessibility gear.</p>
+            </article>
+            <article class="benefit-card">
+              <div class="icon-box" aria-hidden="true">↔</div>
+              <h3 class="card-title">Mobility</h3>
+              <p class="card-copy">Clear internal transfer paths and short-term rotations across product areas.</p>
+            </article>
+            <article class="benefit-card">
+              <div class="icon-box coral" aria-hidden="true">♥</div>
+              <h3 class="card-title">Family</h3>
+              <p class="card-copy">Paid parental leave, caregiver support, and phased returns tailored with people partners.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="roles" aria-labelledby="roles-title">
+        <div class="container">
+          <span class="eyebrow">Open roles</span>
+          <h2 class="section-heading" id="roles-title">Find the role where your craft can compound.</h2>
+          <p class="section-copy">
+            Filter by department, review the essentials, then start the application flow when a role feels aligned.
+          </p>
+          <div class="jobs-toolbar">
+            <div class="filters" aria-label="Filter jobs by department">
+              <button class="filter-button active" type="button" data-filter="all">All</button>
+              <button class="filter-button" type="button" data-filter="Product">Product</button>
+              <button class="filter-button" type="button" data-filter="Engineering">Engineering</button>
+              <button class="filter-button" type="button" data-filter="People">People</button>
+              <button class="filter-button" type="button" data-filter="Customer">Customer</button>
+            </div>
+            <span class="job-count" aria-live="polite">6 roles visible</span>
+          </div>
+          <div class="jobs-list" role="list" aria-label="Job listings">
+            <article class="job-row" role="listitem" data-department="Product">
+              <div>
+                <h3 class="job-title">Senior Product Designer</h3>
+                <span class="job-meta">Design systems and hiring platform workflows</span>
+              </div>
+              <span class="badge">Product</span>
+              <span class="job-meta">Berlin or Remote</span>
+              <span class="job-meta">Full-time</span>
+              <a class="apply-link" href="#apply">Apply</a>
+            </article>
+            <article class="job-row" role="listitem" data-department="Engineering">
+              <div>
+                <h3 class="job-title">Frontend Engineer</h3>
+                <span class="job-meta">Accessible UI, performance, and component systems</span>
+              </div>
+              <span class="badge cyan">Engineering</span>
+              <span class="job-meta">Warsaw or Remote</span>
+              <span class="job-meta">Full-time</span>
+              <a class="apply-link" href="#apply">Apply</a>
+            </article>
+            <article class="job-row" role="listitem" data-department="Engineering">
+              <div>
+                <h3 class="job-title">Platform Reliability Lead</h3>
+                <span class="job-meta">Observability, release health, and service ownership</span>
+              </div>
+              <span class="badge cyan">Engineering</span>
+              <span class="job-meta">London or Remote</span>
+              <span class="job-meta">Full-time</span>
+              <a class="apply-link" href="#apply">Apply</a>
+            </article>
+            <article class="job-row" role="listitem" data-department="Customer">
+              <div>
+                <h3 class="job-title">Customer Success Manager</h3>
+                <span class="job-meta">Onboarding strategy for fast-growing teams</span>
+              </div>
+              <span class="badge lime">Customer</span>
+              <span class="job-meta">New York</span>
+              <span class="job-meta">Full-time</span>
+              <a class="apply-link" href="#apply">Apply</a>
+            </article>
+            <article class="job-row" role="listitem" data-department="People">
+              <div>
+                <h3 class="job-title">People Operations Partner</h3>
+                <span class="job-meta">Employee experience, mobility, and talent programs</span>
+              </div>
+              <span class="badge coral">People</span>
+              <span class="job-meta">Dublin</span>
+              <span class="job-meta">Part-time</span>
+              <a class="apply-link" href="#apply">Apply</a>
+            </article>
+            <article class="job-row" role="listitem" data-department="Product">
+              <div>
+                <h3 class="job-title">Product Manager, Growth</h3>
+                <span class="job-meta">Activation, lifecycle experiments, and pricing insights</span>
+              </div>
+              <span class="badge">Product</span>
+              <span class="job-meta">Remote Americas</span>
+              <span class="job-meta">Full-time</span>
+              <a class="apply-link" href="#apply">Apply</a>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="section tight" id="apply" aria-labelledby="apply-title">
+        <div class="container">
+          <span class="eyebrow">Application flow</span>
+          <h2 class="section-heading" id="apply-title">A clear three-step application you can complete in one sitting.</h2>
+          <p class="section-copy">
+            Upload your resume, add a focused note, and review the details before sending your application to the hiring team.
+          </p>
+          <div class="application-layout">
+            <aside class="progress-panel" aria-label="Application progress">
+              <div class="progress-step active" data-progress-step="1">
+                <span class="step-dot">1</span>
+                <div>
+                  <p class="step-name">Upload Resume</p>
+                  <p class="step-note">Share your recent work history.</p>
+                </div>
+              </div>
+              <div class="progress-step" data-progress-step="2">
+                <span class="step-dot">2</span>
+                <div>
+                  <p class="step-name">Cover Letter</p>
+                  <p class="step-note">Tell us what attracts you.</p>
+                </div>
+              </div>
+              <div class="progress-step" data-progress-step="3">
+                <span class="step-dot">3</span>
+                <div>
+                  <p class="step-name">Review</p>
+                  <p class="step-note">Confirm everything is accurate.</p>
+                </div>
+              </div>
+            </aside>
+            <form class="form-panel">
+              <section class="form-step active" data-form-step="1" aria-labelledby="resume-step-title">
+                <h3 id="resume-step-title">Upload Resume</h3>
+                <p>Attach your resume and share the basics that help us route your application to the right hiring team.</p>
+                <div class="field-grid">
+                  <div class="field">
+                    <label for="candidate-name">Full name</label>
+                    <input id="candidate-name" name="candidate-name" value="Avery Johnson" autocomplete="name">
+                  </div>
+                  <div class="field">
+                    <label for="candidate-email">Email</label>
+                    <input id="candidate-email" name="candidate-email" type="email" value="avery@example.com" autocomplete="email">
+                  </div>
+                  <div class="field full">
+                    <label for="resume-file">Resume file</label>
+                    <input id="resume-file" name="resume-file" type="file" aria-describedby="resume-guidance">
+                  </div>
+                  <div class="field full">
+                    <div class="resume-drop" id="resume-guidance">
+                      <div>
+                        <strong>PDF, DOCX, or portfolio packet</strong>
+                        <span>Keep it under 10 MB so the review team can open it quickly.</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+              <section class="form-step" data-form-step="2" aria-labelledby="letter-step-title">
+                <h3 id="letter-step-title">Cover Letter</h3>
+                <p>Use this space for a concise note about the role, your strengths, and the type of environment where you do your best work.</p>
+                <div class="field-grid">
+                  <div class="field">
+                    <label for="target-role">Target role</label>
+                    <select id="target-role" name="target-role">
+                      <option>Senior Product Designer</option>
+                      <option>Frontend Engineer</option>
+                      <option>Platform Reliability Lead</option>
+                      <option>Customer Success Manager</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="work-location">Preferred location</label>
+                    <select id="work-location" name="work-location">
+                      <option>Remote</option>
+                      <option>Berlin</option>
+                      <option>Warsaw</option>
+                      <option>New York</option>
+                    </select>
+                  </div>
+                  <div class="field full">
+                    <label for="cover-letter">Cover letter</label>
+                    <textarea id="cover-letter" name="cover-letter">I am excited by Craft Careers because the team values thoughtful systems, useful feedback, and outcomes that improve the hiring experience for real teams.</textarea>
+                  </div>
+                </div>
+              </section>
+              <section class="form-step" data-form-step="3" aria-labelledby="review-step-title">
+                <h3 id="review-step-title">Review</h3>
+                <p>Review the application summary, then submit when the information is ready for the recruiting team.</p>
+                <div class="review-grid">
+                  <div class="review-item">
+                    <span>Name</span>
+                    <strong>Avery Johnson</strong>
+                  </div>
+                  <div class="review-item">
+                    <span>Email</span>
+                    <strong>avery@example.com</strong>
+                  </div>
+                  <div class="review-item">
+                    <span>Role</span>
+                    <strong>Senior Product Designer</strong>
+                  </div>
+                  <div class="review-item">
+                    <span>Status</span>
+                    <strong>Ready to submit</strong>
+                  </div>
+                </div>
+              </section>
+              <div class="form-actions">
+                <button class="button ghost" type="button" data-prev-step>Back</button>
+                <button class="button" type="button" data-next-step>Continue</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+      <section class="section" aria-labelledby="testimonials-title">
+        <div class="container">
+          <span class="eyebrow">Employee testimonials</span>
+          <h2 class="section-heading" id="testimonials-title">People stay because the work has purpose and the team has range.</h2>
+          <p class="section-copy">
+            Teammates from design, support, and engineering share what makes Craft Careers a place where they can grow.
+          </p>
+          <div class="testimonials-grid">
+            <article class="quote-card">
+              <div class="photo-area" aria-hidden="true"></div>
+              <p class="quote-text">“I get space to shape the product, then feedback from people who make the details sharper.”</p>
+              <p class="person-name">Mina Hart</p>
+              <p class="person-role">Product Design Manager</p>
+            </article>
+            <article class="quote-card">
+              <div class="photo-area" aria-hidden="true"></div>
+              <p class="quote-text">“The engineering culture rewards clarity. We write down decisions and keep releases calm.”</p>
+              <p class="person-name">Jon Bell</p>
+              <p class="person-role">Staff Engineer</p>
+            </article>
+            <article class="quote-card">
+              <div class="photo-area" aria-hidden="true"></div>
+              <p class="quote-text">“Customer work is treated as strategic here, which makes every onboarding conversation matter.”</p>
+              <p class="person-name">Leah Okafor</p>
+              <p class="person-role">Customer Success Lead</p>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="section tight" id="blog" aria-labelledby="blog-title">
+        <div class="container">
+          <span class="eyebrow">Blog</span>
+          <h2 class="section-heading" id="blog-title">Notes from the hiring floor.</h2>
+          <p class="section-copy">
+            Read how our teams interview, onboard, plan, and improve the systems that help candidates and companies meet with confidence.
+          </p>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-grid">
+        <p class="credit">Craft Careers Page — designed by Northstar Studio.</p>
+        <div class="social-links" aria-label="Social links">
+          <a href="#">LinkedIn</a>
+          <a href="#">Instagram</a>
+          <a href="#">Threads</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <script>
+    const body = document.body;
+    const menuButton = document.querySelector(".menu-button");
+    const drawer = document.querySelector(".mobile-drawer");
+    const backdrop = document.querySelector(".drawer-backdrop");
+    const closeDrawerItems = document.querySelectorAll("[data-close-drawer]");
+    const filterButtons = document.querySelectorAll("[data-filter]");
+    const jobRows = document.querySelectorAll(".job-row");
+    const jobCount = document.querySelector(".job-count");
+    const formSteps = document.querySelectorAll("[data-form-step]");
+    const progressSteps = document.querySelectorAll("[data-progress-step]");
+    const nextButton = document.querySelector("[data-next-step]");
+    const prevButton = document.querySelector("[data-prev-step]");
+    let currentStep = 1;
+    function setDrawer(open) {
+      menuButton.setAttribute("aria-expanded", String(open));
+      drawer.setAttribute("aria-hidden", String(!open));
+      drawer.classList.toggle("open", open);
+      backdrop.classList.toggle("open", open);
+      body.classList.toggle("menu-open", open);
+      if (open) {
+        drawer.querySelector("a, button").focus();
+      } else {
+        menuButton.focus();
+      }
+    }
+    menuButton.addEventListener("click", () => {
+      setDrawer(menuButton.getAttribute("aria-expanded") !== "true");
+    });
+    closeDrawerItems.forEach((item) => {
+      item.addEventListener("click", () => setDrawer(false));
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && drawer.classList.contains("open")) {
+        setDrawer(false);
+      }
+    });
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const filter = button.dataset.filter;
+        let visible = 0;
+        filterButtons.forEach((item) => item.classList.toggle("active", item === button));
+        jobRows.forEach((row) => {
+          const show = filter === "all" || row.dataset.department === filter;
+          row.classList.toggle("hidden", !show);
+          if (show) visible += 1;
+        });
+        jobCount.textContent = `${visible} ${visible === 1 ? "role" : "roles"} visible`;
+      });
+    });
+    function updateApplicationStep(step) {
+      currentStep = Math.max(1, Math.min(3, step));
+      formSteps.forEach((panel) => {
+        panel.classList.toggle("active", Number(panel.dataset.formStep) === currentStep);
+      });
+      progressSteps.forEach((item) => {
+        const index = Number(item.dataset.progressStep);
+        item.classList.toggle("active", index === currentStep);
+        item.classList.toggle("done", index < currentStep);
+      });
+      prevButton.disabled = currentStep === 1;
+      nextButton.textContent = currentStep === 3 ? "Submit application" : "Continue";
+    }
+    nextButton.addEventListener("click", () => {
+      if (currentStep < 3) {
+        updateApplicationStep(currentStep + 1);
+      } else {
+        nextButton.textContent = "Application ready";
+      }
+    });
+    prevButton.addEventListener("click", () => {
+      updateApplicationStep(currentStep - 1);
+    });
+    updateApplicationStep(1);
+  </script>
+</body>
+</html>
