@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Summit ERP Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --indigo: #4F46E5;
+      --cyan: #06B6D4;
+      --lime: #A3E635;
+      --coral: #FB7185;
+      --white: rgba(255, 255, 255, 0.94);
+      --ink-88: rgba(25, 33, 43, 0.88);
+      --ink-72: rgba(25, 33, 43, 0.72);
+      --ink-58: rgba(25, 33, 43, 0.58);
+      --ink-14: rgba(25, 33, 43, 0.14);
+      --ink-08: rgba(25, 33, 43, 0.08);
+      --indigo-12: rgba(79, 70, 229, 0.12);
+      --indigo-20: rgba(79, 70, 229, 0.20);
+      --cyan-12: rgba(6, 182, 212, 0.12);
+      --cyan-20: rgba(6, 182, 212, 0.20);
+      --lime-18: rgba(163, 230, 53, 0.18);
+      --coral-14: rgba(251, 113, 133, 0.14);
+      --coral-22: rgba(251, 113, 133, 0.22);
+      --shadow: 0 22px 60px rgba(25, 33, 43, 0.10);
+      --radius: 8px;
+      --font-heading: "Manrope", sans-serif;
+      --font-ui: "Inter", sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        linear-gradient(135deg, rgba(79, 70, 229, 0.08), transparent 34%),
+        linear-gradient(315deg, rgba(6, 182, 212, 0.10), transparent 36%),
+        var(--cloud);
+      font-family: var(--font-ui);
+      line-height: 1.5;
+    }
+    body.drawer-open { overflow: hidden; }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    button { border: 0; cursor: pointer; }
+    :focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
+    .app-shell { width: min(1480px, calc(100% - 32px)); margin: 0 auto; }
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(246, 248, 252, 0.88);
+      border-bottom: 1px solid var(--ink-08);
+      backdrop-filter: blur(18px);
+    }
+    .top-nav__inner {
+      display: grid;
+      grid-template-columns: auto minmax(360px, 1fr) minmax(240px, 420px) auto;
+      gap: 18px;
+      align-items: center;
+      min-height: 76px;
+      width: min(1480px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-heading);
+      font-weight: 800;
+      font-size: 1.04rem;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+    .brand-mark {
+      display: grid;
+      width: 40px;
+      height: 40px;
+      place-items: center;
+      color: white;
+      background: var(--ink);
+      border-radius: var(--radius);
+      box-shadow: 0 12px 30px rgba(25, 33, 43, 0.18);
+    }
+    .brand-mark svg { width: 22px; height: 22px; }
+    .module-tabs {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      min-width: 0;
+      padding: 5px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid var(--ink-08);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 30px rgba(25, 33, 43, 0.05);
+    }
+    .module-tab {
+      flex: 1 1 auto;
+      min-height: 38px;
+      padding: 0 14px;
+      color: var(--ink-72);
+      background: transparent;
+      border-radius: 6px;
+      font-size: 0.88rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .module-tab.is-active, .module-tab:hover { color: white; background: var(--indigo); }
+    .search { position: relative; display: flex; align-items: center; }
+    .search svg {
+      position: absolute;
+      left: 14px;
+      width: 18px;
+      height: 18px;
+      color: var(--ink-58);
+      pointer-events: none;
+    }
+    .search input {
+      width: 100%;
+      min-height: 44px;
+      padding: 0 14px 0 42px;
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.84);
+      border: 1px solid var(--ink-08);
+      border-radius: var(--radius);
+    }
+    .nav-actions {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .icon-button {
+      position: relative;
+      display: grid;
+      width: 44px;
+      height: 44px;
+      place-items: center;
+      color: var(--ink);
+      background: var(--white);
+      border: 1px solid var(--ink-08);
+      border-radius: var(--radius);
+    }
+    .icon-button svg { width: 20px; height: 20px; }
+    .badge {
+      position: absolute;
+      top: 7px;
+      right: 7px;
+      width: 10px;
+      height: 10px;
+      background: var(--coral);
+      border: 2px solid var(--cloud);
+      border-radius: 99px;
+    }
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 44px;
+      padding: 5px 10px 5px 5px;
+      background: var(--white);
+      border: 1px solid var(--ink-08);
+      border-radius: var(--radius);
+    }
+    .avatar {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      color: white;
+      background: var(--indigo);
+      border-radius: 7px;
+      font-weight: 900;
+      font-size: 0.78rem;
+    }
+    .profile strong { display: block; font-size: 0.84rem; line-height: 1.1; }
+    .profile span { display: block; color: var(--ink-58); font-size: 0.72rem; line-height: 1.1; }
+    .hamburger { display: none; }
+    .mobile-drawer {
+      position: fixed;
+      inset: 0 0 0 auto;
+      z-index: 80;
+      width: min(360px, 88vw);
+      padding: 22px;
+      background: var(--ink);
+      color: white;
+      transform: translateX(100%);
+      transition: transform 240ms ease;
+      box-shadow: -28px 0 70px rgba(25, 33, 43, 0.34);
+    }
+    .mobile-drawer.is-open { transform: translateX(0); }
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      display: none;
+      background: rgba(25, 33, 43, 0.42);
+    }
+    .drawer-backdrop.is-open { display: block; }
+    .drawer-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 28px; }
+    .drawer-title { font-family: var(--font-heading); font-weight: 800; }
+    .drawer-links { display: grid; gap: 10px; }
+    .drawer-links a,
+    .drawer-links button {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      min-height: 48px;
+      padding: 0 14px;
+      color: white;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: var(--radius);
+      text-align: left;
+    }
+    main { padding: 34px 0 26px; }
+    .hero-band {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 28px;
+      align-items: end;
+      margin-bottom: 24px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+      color: var(--indigo);
+      font-size: 0.78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .live-dot {
+      width: 9px;
+      height: 9px;
+      background: var(--cyan);
+      border-radius: 99px;
+      box-shadow: 0 0 0 6px var(--cyan-12);
+    }
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      font-family: var(--font-heading);
+      letter-spacing: 0;
+      line-height: 1.05;
+    }
+    h1 {
+      max-width: 780px;
+      font-size: clamp(2rem, 4vw, 4.25rem);
+    }
+    h2 { font-size: clamp(1.3rem, 2vw, 2rem); }
+    h3 { font-size: 1rem; }
+    .hero-band p {
+      max-width: 520px;
+      margin: 12px 0 0;
+      color: var(--ink-72);
+      font-size: 1rem;
+    }
+    .period-card {
+      min-width: 280px;
+      padding: 18px;
+      color: white;
+      background: var(--ink);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .period-card span {
+      color: rgba(255, 255, 255, 0.68);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .period-card strong {
+      display: block;
+      margin-top: 8px;
+      font-family: var(--font-heading);
+      font-size: 1.6rem;
+    }
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .kpi-card,
+    .panel,
+    .alert-card,
+    .supplier-card,
+    .timeline,
+    .warehouse-tile {
+      background: var(--white);
+      border: 1px solid var(--ink-08);
+      border-radius: var(--radius);
+      box-shadow: 0 16px 36px rgba(25, 33, 43, 0.06);
+    }
+    .kpi-card {
+      min-height: 144px;
+      padding: 16px;
+    }
+    .kpi-card span {
+      color: var(--ink-58);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .kpi-card strong {
+      display: block;
+      margin-top: 12px;
+      font-family: var(--font-heading);
+      font-size: 1.55rem;
+    }
+    .trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 14px;
+      padding: 5px 8px;
+      color: var(--ink);
+      background: var(--lime-18);
+      border-radius: 99px;
+      font-size: 0.75rem;
+      font-weight: 900;
+    }
+    .trend.is-critical {
+      background: var(--coral-14);
+    }
+    .dashboard-grid {
+      display: grid;
+      gap: 22px;
+    }
+    .module-section {
+      display: grid;
+      gap: 16px;
+      scroll-margin-top: 96px;
+    }
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 18px;
+      padding-top: 8px;
+    }
+    .section-header p {
+      margin: 8px 0 0;
+      color: var(--ink-58);
+    }
+    .section-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 0 10px;
+      color: var(--ink-72);
+      background: rgba(255, 255, 255, 0.76);
+      border: 1px solid var(--ink-08);
+      border-radius: 99px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .module-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
+      gap: 16px;
+    }
+    .panel {
+      overflow: hidden;
+    }
+    .panel__header {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 18px;
+      border-bottom: 1px solid var(--ink-08);
+    }
+    .panel__header span {
+      color: var(--ink-58);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+    .panel__body {
+      padding: 18px;
+    }
+    .bar-chart {
+      display: grid;
+      grid-template-columns: repeat(6, minmax(42px, 1fr));
+      gap: 12px;
+      align-items: end;
+      min-height: 260px;
+      padding: 10px 4px 0;
+    }
+    .bar-group {
+      display: grid;
+      grid-template-rows: 1fr auto;
+      gap: 10px;
+      height: 240px;
+      min-width: 0;
+    }
+    .bars {
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      gap: 6px;
+      min-height: 200px;
+      border-bottom: 1px solid var(--ink-14);
+    }
+    .bar {
+      width: 18px;
+      min-height: 14px;
+      border-radius: 6px 6px 0 0;
+    }
+    .bar.revenue {
+      background: var(--indigo);
+    }
+    .bar.expense {
+      background: var(--cyan);
+    }
+    .bar-label {
+      color: var(--ink-58);
+      font-size: 0.76rem;
+      font-weight: 800;
+      text-align: center;
+    }
+    .legend {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .legend span {
+      display: inline-flex;
+      gap: 6px;
+      align-items: center;
+      color: var(--ink-58);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+    .legend i {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+    }
+    .table-wrap {
+      overflow-x: auto;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 620px;
+    }
+    th,
+    td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--ink-08);
+      text-align: left;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+    th {
+      color: var(--ink-58);
+      font-size: 0.75rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    td {
+      font-size: 0.88rem;
+      font-weight: 650;
+    }
+    tr:last-child td {
+      border-bottom: 0;
+    }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 0 9px;
+      border-radius: 99px;
+      font-size: 0.72rem;
+      font-weight: 900;
+    }
+    .status.ok {
+      background: var(--lime-18);
+    }
+    .status.live {
+      background: var(--cyan-12);
+    }
+    .status.review {
+      background: var(--indigo-12);
+    }
+    .status.alert {
+      background: var(--coral-14);
+    }
+    .alert-grid,
+    .supplier-grid,
+    .review-grid,
+    .approval-grid {
+      display: grid;
+      gap: 12px;
+    }
+    .alert-card,
+    .supplier-card,
+    .warehouse-tile {
+      padding: 16px;
+    }
+    .alert-card {
+      border-left: 4px solid var(--coral);
+    }
+    .alert-card strong,
+    .supplier-card strong,
+    .warehouse-tile strong {
+      display: block;
+      margin-bottom: 5px;
+      font-family: var(--font-heading);
+    }
+    .alert-card span,
+    .supplier-card span,
+    .warehouse-tile span {
+      color: var(--ink-58);
+      font-size: 0.83rem;
+      font-weight: 650;
+    }
+    .meter {
+      height: 10px;
+      margin-top: 12px;
+      overflow: hidden;
+      background: var(--ink-08);
+      border-radius: 99px;
+    }
+    .meter i {
+      display: block;
+      height: 100%;
+      background: var(--indigo);
+      border-radius: inherit;
+    }
+    .meter i.cyan {
+      background: var(--cyan);
+    }
+    .meter i.lime {
+      background: var(--lime);
+    }
+    .meter i.coral {
+      background: var(--coral);
+    }
+    .category-list {
+      display: grid;
+      gap: 15px;
+    }
+    .category-row {
+      display: grid;
+      grid-template-columns: 120px 1fr 70px;
+      gap: 12px;
+      align-items: center;
+    }
+    .category-row b,
+    .category-row span {
+      font-size: 0.84rem;
+    }
+    .category-row span {
+      color: var(--ink-58);
+      font-weight: 800;
+      text-align: right;
+    }
+    .warehouse-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+    .department-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .department-card {
+      min-height: 138px;
+      padding: 16px;
+      color: white;
+      background: var(--ink);
+      border-radius: var(--radius);
+    }
+    .department-card:nth-child(2) {
+      background: var(--indigo);
+    }
+    .department-card:nth-child(3) {
+      background: var(--cyan);
+      color: var(--ink);
+    }
+    .department-card:nth-child(4) {
+      background: var(--lime);
+      color: var(--ink);
+    }
+    .department-card span {
+      display: block;
+      opacity: 0.74;
+      font-size: 0.76rem;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .department-card strong {
+      display: block;
+      margin-top: 18px;
+      font-family: var(--font-heading);
+      font-size: 2rem;
+    }
+    .review-item,
+    .approval-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      background: rgba(246, 248, 252, 0.76);
+      border: 1px solid var(--ink-08);
+      border-radius: var(--radius);
+    }
+    .date-chip {
+      display: grid;
+      width: 54px;
+      height: 54px;
+      place-items: center;
+      color: white;
+      background: var(--indigo);
+      border-radius: var(--radius);
+      font-weight: 900;
+      line-height: 1.05;
+      text-align: center;
+    }
+    .date-chip span {
+      display: block;
+      font-size: 0.68rem;
+      text-transform: uppercase;
+    }
+    .review-item strong,
+    .approval-item strong {
+      display: block;
+      font-size: 0.9rem;
+    }
+    .review-item small,
+    .approval-item small {
+      color: var(--ink-58);
+      font-weight: 700;
+    }
+    .turnover-card {
+      display: grid;
+      place-items: center;
+      min-height: 240px;
+      color: white;
+      background: var(--ink);
+      border-radius: var(--radius);
+      text-align: center;
+    }
+    .turnover-card strong {
+      display: block;
+      font-family: var(--font-heading);
+      font-size: 4rem;
+      line-height: 1;
+    }
+    .turnover-card span {
+      color: rgba(255, 255, 255, 0.72);
+      font-weight: 800;
+    }
+    .supplier-card {
+      display: grid;
+      gap: 12px;
+    }
+    .supplier-score {
+      display: flex;
+      justify-content: space-between;
+      color: var(--ink-72);
+      font-size: 0.8rem;
+      font-weight: 850;
+    }
+    .timeline {
+      padding: 18px;
+    }
+    .timeline-list {
+      display: grid;
+      gap: 0;
+      margin: 16px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    .timeline-item {
+      position: relative;
+      display: grid;
+      grid-template-columns: 20px 1fr auto;
+      gap: 12px;
+      padding: 0 0 18px;
+    }
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: 9px;
+      top: 20px;
+      bottom: 0;
+      width: 2px;
+      background: var(--ink-08);
+    }
+    .timeline-item:last-child {
+      padding-bottom: 0;
+    }
+    .timeline-item:last-child::before {
+      display: none;
+    }
+    .timeline-dot {
+      width: 20px;
+      height: 20px;
+      background: var(--cyan);
+      border: 5px solid var(--cyan-12);
+      border-radius: 99px;
+    }
+    .timeline-copy strong {
+      display: block;
+      font-size: 0.9rem;
+    }
+    .timeline-copy span,
+    .timeline-time {
+      color: var(--ink-58);
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+    .site-footer {
+      margin-top: 32px;
+      padding: 24px 0 42px;
+      color: var(--ink-58);
+      border-top: 1px solid var(--ink-08);
+      font-weight: 750;
+      text-align: center;
+    }
+    @media (max-width: 1180px) {
+      .top-nav__inner {
+        grid-template-columns: auto 1fr auto;
+      }
+      .module-tabs,
+      .profile {
+        display: none;
+      }
+      .hamburger {
+        display: grid;
+      }
+      .kpi-strip {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .module-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 820px) {
+      .app-shell,
+      .top-nav__inner {
+        width: min(100% - 22px, 1480px);
+      }
+      .top-nav__inner {
+        grid-template-columns: auto auto;
+        min-height: 66px;
+      }
+      .search {
+        display: none;
+      }
+      .nav-actions .icon-button:not(.hamburger) {
+        display: none;
+      }
+      .hero-band,
+      .section-header {
+        grid-template-columns: 1fr;
+        display: grid;
+      }
+      .period-card {
+        min-width: 0;
+      }
+      .kpi-strip,
+      .department-grid,
+      .warehouse-grid {
+        grid-template-columns: 1fr;
+      }
+      .bar-chart {
+        overflow-x: auto;
+      }
+      .category-row {
+        grid-template-columns: 92px 1fr 54px;
+      }
+      .timeline-item {
+        grid-template-columns: 20px 1fr;
+      }
+      .timeline-time {
+        grid-column: 2;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="top-nav" role="banner">
+    <div class="top-nav__inner">
+      <a class="brand" href="#overview" aria-label="Summit ERP Dashboard home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M4 18L10 6L14 14L17 9L21 18H4Z" fill="currentColor"/>
+          </svg>
+        </span>
+        Summit ERP
+      </a>
+      <nav class="module-tabs" aria-label="ERP modules">
+        <a class="module-tab is-active" href="#finance">Finance</a>
+        <a class="module-tab" href="#inventory">Inventory</a>
+        <a class="module-tab" href="#hr">HR</a>
+        <a class="module-tab" href="#procurement">Procurement</a>
+      </nav>
+      <form class="search" role="search" aria-label="Search ERP records">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M10.8 18.2a7.4 7.4 0 1 1 0-14.8a7.4 7.4 0 0 1 0 14.8Zm5.2-2.2 4.1 4.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <input type="search" aria-label="Search invoices, SKUs, employees, and suppliers" value="Global search">
+      </form>
+      <div class="nav-actions">
+        <button class="icon-button" type="button" aria-label="View notifications">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M18 9a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M10 21h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span class="badge" aria-hidden="true"></span>
+        </button>
+        <button class="profile" type="button" aria-label="Open user profile">
+          <span class="avatar" aria-hidden="true">AK</span>
+          <span>
+            <strong>Avery Kim</strong>
+            <span>Operations Lead</span>
+          </span>
+        </button>
+        <button class="icon-button hamburger" type="button" aria-label="Open navigation menu" aria-controls="mobile-drawer" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <div class="drawer-backdrop" data-drawer-backdrop></div>
+  <aside class="mobile-drawer" id="mobile-drawer" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="drawer-header">
+      <span class="drawer-title">Summit ERP</span>
+      <button class="icon-button" type="button" data-drawer-close aria-label="Close navigation menu">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <nav class="drawer-links" aria-label="Mobile ERP modules">
+      <a href="#finance">Finance <span>Revenue, cash, transactions</span></a>
+      <a href="#inventory">Inventory <span>Stock, alerts, warehouses</span></a>
+      <a href="#hr">HR <span>People, reviews, leave</span></a>
+      <a href="#procurement">Procurement <span>Orders, suppliers, approvals</span></a>
+      <a href="#activity">Activity Log <span>Recent ERP events</span></a>
+    </nav>
+  </aside>
+  <main id="overview" class="app-shell">
+    <section class="hero-band" aria-labelledby="page-title">
+      <div>
+        <span class="eyebrow"><span class="live-dot" aria-hidden="true"></span> Live enterprise command center</span>
+        <h1 id="page-title">Integrated ERP control for finance, inventory, people, and spend.</h1>
+        <p>Executive operators can scan margin pressure, material risk, workforce movement, and supplier approvals from one resilient dashboard.</p>
+      </div>
+      <aside class="period-card" aria-label="Reporting period">
+        <span>Current close cycle</span>
+        <strong>May 2026</strong>
+        <p>97% reconciled across operating units</p>
+      </aside>
+    </section>
+    <section class="kpi-strip" aria-label="ERP key performance indicators">
+      <article class="kpi-card">
+        <span>Revenue</span>
+        <strong>$18.4M</strong>
+        <em class="trend">+12.8% forecast</em>
+      </article>
+      <article class="kpi-card">
+        <span>Expenses</span>
+        <strong>$11.7M</strong>
+        <em class="trend is-critical">+4.2% variance</em>
+      </article>
+      <article class="kpi-card">
+        <span>Inventory Value</span>
+        <strong>$42.6M</strong>
+        <em class="trend">91% service level</em>
+      </article>
+      <article class="kpi-card">
+        <span>Headcount</span>
+        <strong>1,284</strong>
+        <em class="trend">38 open roles</em>
+      </article>
+      <article class="kpi-card">
+        <span>Procurement Spend</span>
+        <strong>$6.9M</strong>
+        <em class="trend is-critical">14 approvals due</em>
+      </article>
+      <article class="kpi-card">
+        <span>Cash Flow</span>
+        <strong>$3.8M</strong>
+        <em class="trend">+8 day runway</em>
+      </article>
+    </section>
+    <div class="dashboard-grid">
+      <section class="module-section" id="finance" aria-labelledby="finance-title">
+        <div class="section-header">
+          <div>
+            <h2 id="finance-title">Finance Module</h2>
+            <p>Revenue recognition, operating expense control, and reconciled transaction flow.</p>
+          </div>
+          <div class="section-actions" aria-label="Finance filters">
+            <span class="pill">Consolidated</span>
+            <span class="pill">Six months</span>
+          </div>
+        </div>
+        <div class="module-layout">
+          <article class="panel">
+            <div class="panel__header">
+              <div>
+                <h3>Revenue vs Expenses</h3>
+                <span>Monthly operating comparison</span>
+              </div>
+              <div class="legend" aria-label="Chart legend">
+                <span><i style="background: var(--indigo);"></i> Revenue</span>
+                <span><i style="background: var(--cyan);"></i> Expenses</span>
+              </div>
+            </div>
+            <div class="panel__body">
+              <div class="bar-chart" aria-label="Revenue and expenses bar chart for six months">
+                <div class="bar-group">
+                  <div class="bars">
+                    <span class="bar revenue" style="height: 68%;"></span>
+                    <span class="bar expense" style="height: 49%;"></span>
+                  </div>
+                  <span class="bar-label">Dec</span>
+                </div>
+                <div class="bar-group">
+                  <div class="bars">
+                    <span class="bar revenue" style="height: 72%;"></span>
+                    <span class="bar expense" style="height: 53%;"></span>
+                  </div>
+                  <span class="bar-label">Jan</span>
+                </div>
+                <div class="bar-group">
+                  <div class="bars">
+                    <span class="bar revenue" style="height: 78%;"></span>
+                    <span class="bar expense" style="height: 57%;"></span>
+                  </div>
+                  <span class="bar-label">Feb</span>
+                </div>
+                <div class="bar-group">
+                  <div class="bars">
+                    <span class="bar revenue" style="height: 75%;"></span>
+                    <span class="bar expense" style="height: 61%;"></span>
+                  </div>
+                  <span class="bar-label">Mar</span>
+                </div>
+                <div class="bar-group">
+                  <div class="bars">
+                    <span class="bar revenue" style="height: 86%;"></span>
+                    <span class="bar expense" style="height: 59%;"></span>
+                  </div>
+                  <span class="bar-label">Apr</span>
+                </div>
+                <div class="bar-group">
+                  <div class="bars">
+                    <span class="bar revenue" style="height: 92%;"></span>
+                    <span class="bar expense" style="height: 64%;"></span>
+                  </div>
+                  <span class="bar-label">May</span>
+                </div>
+              </div>
+            </div>
+          </article>
+          <article class="panel">
+            <div class="panel__header">
+              <div>
+                <h3>Cash Quality</h3>
+                <span>Working capital movement</span>
+              </div>
+              <span class="status ok">Healthy</span>
+            </div>
+            <div class="panel__body">
+              <div class="category-list">
+                <div class="category-row">
+                  <b>Receivables</b>
+                  <div class="meter"><i class="lime" style="width: 84%;"></i></div>
+                  <span>84%</span>
+                </div>
+                <div class="category-row">
+                  <b>Payables</b>
+                  <div class="meter"><i style="width: 63%;"></i></div>
+                  <span>63%</span>
+                </div>
+                <div class="category-row">
+                  <b>Accruals</b>
+                  <div class="meter"><i class="cyan" style="width: 72%;"></i></div>
+                  <span>72%</span>
+                </div>
+                <div class="category-row">
+                  <b>Risk</b>
+                  <div class="meter"><i class="coral" style="width: 21%;"></i></div>
+                  <span>21%</span>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
+        <article class="panel">
+          <div class="panel__header">
+            <div>
+              <h3>Recent Transactions</h3>
+              <span>Reviewed ledger movements</span>
+            </div>
+            <span class="status live">Live feed</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Document</th>
+                  <th>Account</th>
+                  <th>Business Unit</th>
+                  <th>Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>INV-80421</td>
+                  <td>Enterprise SaaS Renewal</td>
+                  <td>North America</td>
+                  <td>$482,900</td>
+                  <td><span class="status ok">Posted</span></td>
+                </tr>
+                <tr>
+                  <td>EXP-32018</td>
+                  <td>Carrier Surcharge</td>
+                  <td>Logistics</td>
+                  <td>$78,430</td>
+                  <td><span class="status review">Review</span></td>
+                </tr>
+                <tr>
+                  <td>PAY-55209</td>
+                  <td>Supplier Settlement</td>
+                  <td>Procurement</td>
+                  <td>$216,700</td>
+                  <td><span class="status live">Scheduled</span></td>
+                </tr>
+                <tr>
+                  <td>JRN-11984</td>
+                  <td>Inventory Adjustment</td>
+                  <td>Manufacturing</td>
+                  <td>$41,260</td>
+                  <td><span class="status ok">Matched</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </article>
+      </section>
+      <section class="module-section" id="inventory" aria-labelledby="inventory-title">
+        <div class="section-header">
+          <div>
+            <h2 id="inventory-title">Inventory Module</h2>
+            <p>Operational stock visibility across critical items, category depth, and warehouse throughput.</p>
+          </div>
+          <div class="section-actions">
+            <span class="pill">3 low stock risks</span>
+            <span class="pill">12 warehouses</span>
+          </div>
+        </div>
+        <div class="module-layout">
+          <article class="panel">
+            <div class="panel__header">
+              <div>
+                <h3>Stock Levels by Category</h3>
+                <span>Available inventory against planning target</span>
+              </div>
+              <span class="status ok">91% fill rate</span>
+            </div>
+            <div class="panel__body">
+              <div class="category-list">
+                <div class="category-row">
+                  <b>Finished</b>
+                  <div class="meter"><i class="lime" style="width: 88%;"></i></div>
+                  <span>88%</span>
+                </div>
+                <div class="category-row">
+                  <b>Raw</b>
+                  <div class="meter"><i style="width: 76%;"></i></div>
+                  <span>76%</span>
+                </div>
+                <div class="category-row">
+                  <b>Packaging</b>
+                  <div class="meter"><i class="cyan" style="width: 69%;"></i></div>
+                  <span>69%</span>
+                </div>
+                <div class="category-row">
+                  <b>Service</b>
+                  <div class="meter"><i style="width: 58%;"></i></div>
+                  <span>58%</span>
+                </div>
+                <div class="category-row">
+                  <b>Critical</b>
+                  <div class="meter"><i class="coral" style="width: 34%;"></i></div>
+                  <span>34%</span>
+                </div>
+              </div>
+            </div>
+          </article>
+          <aside class="alert-grid" aria-label="Low stock alerts">
+            <article class="alert-card">
+              <strong>Servo Controller SC-44</strong>
+              <span>216 units on hand, reorder point 400 units.</span>
+              <div class="meter"><i class="coral" style="width: 31%;"></i></div>
+            </article>
+            <article class="alert-card">
+              <strong>Medical Grade Resin</strong>
+              <span>6.2 days of supply remain at Plant 04.</span>
+              <div class="meter"><i class="coral" style="width: 22%;"></i></div>
+            </article>
+            <article class="alert-card">
+              <strong>Cold Chain Labels</strong>
+              <span>Backorder exposure starts after Friday dispatch.</span>
+              <div class="meter"><i class="coral" style="width: 28%;"></i></div>
+            </article>
+          </aside>
+        </div>
+        <div class="warehouse-grid" aria-label="Warehouse summary">
+          <article class="warehouse-tile">
+            <strong>West Hub</strong>
+            <span>96.4% pick accuracy</span>
+            <div class="meter"><i class="lime" style="width: 96%;"></i></div>
+          </article>
+          <article class="warehouse-tile">
+            <strong>Central Hub</strong>
+            <span>88.1% dock utilization</span>
+            <div class="meter"><i style="width: 88%;"></i></div>
+          </article>
+          <article class="warehouse-tile">
+            <strong>EU Gateway</strong>
+            <span>74.7% inbound cleared</span>
+            <div class="meter"><i class="cyan" style="width: 75%;"></i></div>
+          </article>
+        </div>
+      </section>
+      <section class="module-section" id="hr" aria-labelledby="hr-title">
+        <div class="section-header">
+          <div>
+            <h2 id="hr-title">HR Module</h2>
+            <p>Headcount mix, manager reviews, leave requests, and turnover risk in one people view.</p>
+          </div>
+          <div class="section-actions">
+            <span class="pill">1,284 employees</span>
+            <span class="pill">38 requisitions</span>
+          </div>
+        </div>
+        <div class="department-grid" aria-label="Headcount by department">
+          <article class="department-card">
+            <span>Operations</span>
+            <strong>412</strong>
+            <p>32 new hires planned</p>
+          </article>
+          <article class="department-card">
+            <span>Finance</span>
+            <strong>146</strong>
+            <p>Close team fully staffed</p>
+          </article>
+          <article class="department-card">
+            <span>Sales</span>
+            <strong>298</strong>
+            <p>9 regional transfers</p>
+          </article>
+          <article class="department-card">
+            <span>Engineering</span>
+            <strong>236</strong>
+            <p>18 roles in pipeline</p>
+          </article>
+        </div>
+        <div class="module-layout">
+          <article class="panel">
+            <div class="panel__header">
+              <div>
+                <h3>Leave Requests</h3>
+                <span>Manager approvals due this week</span>
+              </div>
+              <span class="status review">9 pending</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Employee</th>
+                    <th>Team</th>
+                    <th>Dates</th>
+                    <th>Coverage</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Maya Chen</td>
+                    <td>Revenue Ops</td>
+                    <td>Jun 03-07</td>
+                    <td>Assigned</td>
+                    <td><span class="status ok">Ready</span></td>
+                  </tr>
+                  <tr>
+                    <td>Jon Bell</td>
+                    <td>Plant 04</td>
+                    <td>Jun 10-14</td>
+                    <td>Needed</td>
+                    <td><span class="status alert">Action</span></td>
+                  </tr>
+                  <tr>
+                    <td>Nadia Price</td>
+                    <td>Procurement</td>
+                    <td>Jun 17-21</td>
+                    <td>Assigned</td>
+                    <td><span class="status review">Manager</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+          <aside class="review-grid" aria-label="Upcoming reviews and turnover">
+            <article class="review-item">
+              <span class="date-chip">28<span>May</span></span>
+              <div>
+                <strong>Quarterly talent calibration</strong>
+                <small>Leadership team and HR partners</small>
+              </div>
+              <span class="status live">Today</span>
+            </article>
+            <article class="review-item">
+              <span class="date-chip">03<span>Jun</span></span>
+              <div>
+                <strong>Plant supervisor reviews</strong>
+                <small>48 review packets prepared</small>
+              </div>
+              <span class="status review">Due</span>
+            </article>
+            <article class="turnover-card">
+              <div>
+                <strong>6.8%</strong>
+                <span>Rolling turnover rate</span>
+              </div>
+            </article>
+          </aside>
+        </div>
+      </section>
+      <section class="module-section" id="procurement" aria-labelledby="procurement-title">
+        <div class="section-header">
+          <div>
+            <h2 id="procurement-title">Procurement Module</h2>
+            <p>Purchase orders, supplier performance, and approval queues aligned to spend policy.</p>
+          </div>
+          <div class="section-actions">
+            <span class="pill">$6.9M open spend</span>
+            <span class="pill">14 approvals</span>
+          </div>
+        </div>
+        <div class="module-layout">
+          <article class="panel">
+            <div class="panel__header">
+              <div>
+                <h3>Purchase Orders</h3>
+                <span>High value orders moving through control gates</span>
+              </div>
+              <span class="status live">ERP synced</span>
+            </div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>PO</th>
+                    <th>Supplier</th>
+                    <th>Category</th>
+                    <th>Value</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>PO-77842</td>
+                    <td>Northstar Components</td>
+                    <td>Electronics</td>
+                    <td>$842,000</td>
+                    <td><span class="status review">Legal</span></td>
+                  </tr>
+                  <tr>
+                    <td>PO-77891</td>
+                    <td>Atlas Freight</td>
+                    <td>Logistics</td>
+                    <td>$316,400</td>
+                    <td><span class="status ok">Approved</span></td>
+                  </tr>
+                  <tr>
+                    <td>PO-77908</td>
+                    <td>Brightline Packaging</td>
+                    <td>Materials</td>
+                    <td>$124,880</td>
+                    <td><span class="status alert">Blocked</span></td>
+                  </tr>
+                  <tr>
+                    <td>PO-77926</td>
+                    <td>Vertex Labs</td>
+                    <td>Quality</td>
+                    <td>$221,500</td>
+                    <td><span class="status live">Issued</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+          <aside class="approval-grid" aria-label="Approval queue">
+            <article class="approval-item">
+              <span class="date-chip">2h<span>left</span></span>
+              <div>
+                <strong>Capital equipment renewal</strong>
+                <small>Requires CFO approval over threshold</small>
+              </div>
+              <span class="status alert">Urgent</span>
+            </article>
+            <article class="approval-item">
+              <span class="date-chip">8h<span>left</span></span>
+              <div>
+                <strong>Expedite freight exception</strong>
+                <small>Service level breach prevention</small>
+              </div>
+              <span class="status review">Review</span>
+            </article>
+            <article class="approval-item">
+              <span class="date-chip">1d<span>left</span></span>
+              <div>
+                <strong>New supplier onboarding</strong>
+                <small>Risk documents verified</small>
+              </div>
+              <span class="status live">Queue</span>
+            </article>
+          </aside>
+        </div>
+        <div class="supplier-grid" style="grid-template-columns: repeat(3, minmax(0, 1fr));" aria-label="Supplier cards">
+          <article class="supplier-card">
+            <strong>Northstar Components</strong>
+            <span>Strategic electronics partner</span>
+            <div class="supplier-score"><span>OTIF</span><b>94%</b></div>
+            <div class="meter"><i class="lime" style="width: 94%;"></i></div>
+          </article>
+          <article class="supplier-card">
+            <strong>Atlas Freight</strong>
+            <span>Regional carrier network</span>
+            <div class="supplier-score"><span>OTIF</span><b>88%</b></div>
+            <div class="meter"><i style="width: 88%;"></i></div>
+          </article>
+          <article class="supplier-card">
+            <strong>Brightline Packaging</strong>
+            <span>Validated packaging supplier</span>
+            <div class="supplier-score"><span>OTIF</span><b>72%</b></div>
+            <div class="meter"><i class="coral" style="width: 72%;"></i></div>
+          </article>
+        </div>
+      </section>
+      <section class="module-section" id="activity" aria-labelledby="activity-title">
+        <div class="section-header">
+          <div>
+            <h2 id="activity-title">Activity Log</h2>
+            <p>Recent ERP events from approvals, orders, inventory adjustments, and HR workflows.</p>
+          </div>
+          <span class="pill">Updated 3 minutes ago</span>
+        </div>
+        <article class="timeline">
+          <h3>Recent Events</h3>
+          <ul class="timeline-list">
+            <li class="timeline-item">
+              <span class="timeline-dot" aria-hidden="true"></span>
+              <div class="timeline-copy">
+                <strong>Purchase order PO-77926 issued to Vertex Labs.</strong>
+                <span>Quality services routed to budget owner after supplier validation.</span>
+              </div>
+              <time class="timeline-time" datetime="2026-05-27T21:14">21:14</time>
+            </li>
+            <li class="timeline-item">
+              <span class="timeline-dot" aria-hidden="true"></span>
+              <div class="timeline-copy">
+                <strong>Inventory adjustment posted for Plant 04 resin.</strong>
+                <span>Cycle count variance reconciled and replenishment signal increased.</span>
+              </div>
+              <time class="timeline-time" datetime="2026-05-27T20:48">20:48</time>
+            </li>
+            <li class="timeline-item">
+              <span class="timeline-dot" aria-hidden="true"></span>
+              <div class="timeline-copy">
+                <strong>Leave coverage assigned for Revenue Ops.</strong>
+                <span>Maya Chen request moved to ready state after coverage confirmation.</span>
+              </div>
+              <time class="timeline-time" datetime="2026-05-27T19:35">19:35</time>
+            </li>
+            <li class="timeline-item">
+              <span class="timeline-dot" aria-hidden="true"></span>
+              <div class="timeline-copy">
+                <strong>Supplier scorecard refreshed for Atlas Freight.</strong>
+                <span>Dock appointment performance improved after route consolidation.</span>
+              </div>
+              <time class="timeline-time" datetime="2026-05-27T18:22">18:22</time>
+            </li>
+            <li class="timeline-item">
+              <span class="timeline-dot" aria-hidden="true"></span>
+              <div class="timeline-copy">
+                <strong>Finance close milestone reached.</strong>
+                <span>Consolidation package reached 97% reconciled across operating units.</span>
+              </div>
+              <time class="timeline-time" datetime="2026-05-27T17:50">17:50</time>
+            </li>
+          </ul>
+        </article>
+      </section>
+    </div>
+  </main>
+  <footer class="site-footer">
+    Summit ERP Dashboard — designed by Northstar Studio
+  </footer>
+  <script>
+    const drawer = document.querySelector("#mobile-drawer");
+    const openButton = document.querySelector(".hamburger");
+    const closeButton = document.querySelector("[data-drawer-close]");
+    const backdrop = document.querySelector("[data-drawer-backdrop]");
+    const drawerLinks = Array.from(document.querySelectorAll(".drawer-links a"));
+    let lastFocused = null;
+    function setDrawer(open) {
+      if (!drawer || !openButton || !backdrop) return;
+      drawer.classList.toggle("is-open", open);
+      backdrop.classList.toggle("is-open", open);
+      document.body.classList.toggle("drawer-open", open);
+      drawer.setAttribute("aria-hidden", String(!open));
+      openButton.setAttribute("aria-expanded", String(open));
+      if (open) {
+        lastFocused = document.activeElement;
+        closeButton.focus();
+      } else if (lastFocused) {
+        lastFocused.focus();
+      }
+    }
+    openButton?.addEventListener("click", () => setDrawer(true));
+    closeButton?.addEventListener("click", () => setDrawer(false));
+    backdrop?.addEventListener("click", () => setDrawer(false));
+    drawerLinks.forEach((link) => {
+      link.addEventListener("click", () => setDrawer(false));
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && drawer?.classList.contains("is-open")) {
+        setDrawer(false);
+      }
+      if (event.key !== "Tab" || !drawer?.classList.contains("is-open")) return;
+      const focusables = Array.from(drawer.querySelectorAll("a, button"));
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+  </script>
+</body>
+</html>
