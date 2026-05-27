@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terra Garden Planner</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --cloud: #F6F8FC;
+    --ink: #19212B;
+    --indigo: #4F46E5;
+    --cyan: #06B6D4;
+    --lime: #A3E635;
+    --coral: #FB7185;
+    --card: #FFFFFF;
+    --border: #E5E7EB;
+    --green: #10B981;
+    --orange: #F59E0B;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cloud);
+    color: #111827;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+  }
+
+  a { color: var(--indigo); text-decoration: none; }
+  button { cursor: pointer; font-family: inherit; }
+
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--indigo);
+    color: #fff;
+    padding: 8px 16px;
+    z-index: 100;
+    font-size: 0.875rem;
+  }
+  .skip-link:focus { top: 0; }
+
+  .top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 24px;
+    height: 60px;
+    background: var(--ink);
+    color: #fff;
+  }
+  .nav-brand {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--lime);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-links {
+    display: flex;
+    gap: 4px;
+    margin-left: 24px;
+  }
+  .nav-links a {
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.7);
+  }
+  .nav-links a:hover,
+  .nav-links a[aria-current="page"] {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+  .nav-search {
+    margin-left: auto;
+    position: relative;
+  }
+  .nav-search input {
+    width: 200px;
+    padding: 8px 12px 8px 36px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+  .nav-search svg {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: rgba(255,255,255,0.5);
+  }
+  .nav-cta {
+    margin-left: 12px;
+    padding: 8px 18px;
+    background: var(--lime);
+    color: var(--ink);
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+  .hamburger {
+    display: none;
+    background: none;
+    border: none;
+    padding: 8px;
+    color: #fff;
+  }
+  .hamburger svg { width: 24px; height: 24px; }
+
+  .drawer-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 60;
+  }
+  .drawer-overlay.open { display: block; }
+  .drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100%;
+    background: #fff;
+    z-index: 70;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    padding: 24px;
+    overflow-y: auto;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    color: #111827;
+  }
+  .drawer nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 24px;
+  }
+  .drawer nav a {
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: #111827;
+  }
+  .drawer nav a:hover { background: var(--cloud); }
+
+  @media (max-width: 768px) {
+    .nav-links, .nav-search, .nav-cta { display: none; }
+    .hamburger { display: block; }
+    .top-nav { padding: 0 16px; }
+  }
+
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 24px;
+  }
+  .kpi-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .kpi-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+  .kpi-label {
+    font-size: 0.8125rem;
+    color: #6B7280;
+    margin-bottom: 2px;
+  }
+  .kpi-value {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+  }
+  .kpi-trend {
+    font-size: 0.75rem;
+    margin-top: 2px;
+    color: var(--green);
+  }
+
+  .main-content { padding: 0 24px 48px; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .section-header h2 { font-size: 1.25rem; }
+  .badge {
+    background: var(--cloud);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #6B7280;
+  }
+
+  /* Garden Grid */
+  .garden-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .garden-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1 Plant border;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .garden-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+  }
+  .garden-card h4 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .garden-card .plant-meta {
+    font-size: 0.8125rem;
+    color: #6B7280;
+    margin-bottom: 4px;
+  }
+  .garden-card .plant-status {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-top: 8px;
+  }
+  .st-thriving { background: #D1FAE5; color: #065F46; }
+  .st-growing { background: #DBEAFE; color: #1E40AF; }
+  .st-needs-water { background: #FEF3C7; color: #92400E; }
+  .st-dormant { background: #F3F4F6; color: #6B7280; }
+
+  /* Planting Schedule */
+  .schedule-tbl {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+  .schedule-tbl th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 0.8125rem;
+    color: #6B7280;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    background: var(--cloud);
+  }
+  .schedule-tbl td {
+    padding: 12px 16px;
+    font-size: 0.875rem;
+    border-bottom: 1px solid #F3F4F6;
+  }
+  .schedule-tbl tr:last-child td { border-bottom: none; }
+  .schedule-tbl tr:hover { background: var(--cloud); }
+
+  /* Weather Widget */
+  .weather-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .weather-day {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+  .weather-day .day-name {
+    font-size: 0.8125rem;
+    color: #6B7280;
+    margin-bottom: 4px;
+  }
+  .weather-day .temp {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 1.125rem;
+  }
+  .weather-day .condition {
+    font-size: 0.75rem;
+    color: #9CA3AF;
+    margin-top: 4px;
+  }
+  .weather-icon { font-size: 1.5rem; margin-bottom: 4px; }
+
+  /* Harvest Tracker */
+  .harvest-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+  .harvest-item {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 14px 18px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .harvest-icon {
+    font-size: 1.25rem;
+    width: 40px;
+    text-align: center;
+  }
+  .harvest-info { flex: 1; }
+  .harvest-info h4 { font-size: 0.9375rem; margin-bottom: 2px; }
+  .harvest-info .meta { font-size: 0.8125rem; color: #6B7280; }
+  .harvest-yield {
+    text-align: right;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--green);
+  }
+
+  /* Tips Grid */
+  .tips-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .tip-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+  }
+  .tip-card h4 {
+    font-size: 0.9375rem;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .tip-card p {
+    font-size: 0.875rem;
+    color: #6B7280;
+    line-height: 1.6;
+  }
+  .tip-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    margin-top: 8px;
+  }
+
+  .site-footer {
+    padding: 32px 24px;
+    text-align: center;
+    font-size: 0.8125rem;
+    color: #9CA3AF;
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--indigo);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+  @media (max-width: 768px) {
+    .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    .garden-grid { grid-template-columns: 1fr; }
+    .schedule-tbl { display: block; overflow-x: auto; }
+    .weather-grid { grid-template-columns: repeat(4, 1fr); }
+    .tips-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header class="top-nav">
+  <button class="hamburger" aria-label="Open menu" aria-expanded="false"
+    onclick="document.getElementById('drawer').classList.toggle('open');document.getElementById('overlay').classList.toggle('open');this.setAttribute('aria-expanded',document.getElementById('drawer').classList.contains('open'))">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+  </button>
+  <a href="#" class="nav-brand">🌱 Terra Garden Planner</a>
+  <nav class="nav-links" aria-label="Main">
+    <a href="#" aria-current="page">Garden</a>
+    <a href="#plants">My Plants</a>
+    <a href="#schedule">Schedule</a>
+    <a href="#weather">Weather</a>
+    <a href="#harvest">Harvest</a>
+    <a href="#tips">Tips</a>
+  </nav>
+  <div class="nav-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" aria-label="Search plants">
+  </div>
+  <button class="nav-cta">+ Add Plant</button>
+</header>
+
+<div class="drawer-overlay" id="overlay" onclick="document.getElementById('drawer').classList.remove('open');this.classList.remove('open')"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-label="Navigation">
+  <button class="drawer-close" aria-label="Close menu"
+    onclick="document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open')">&times;</button>
+  <nav>
+    <a href="#">Garden</a>
+    <a href="#plants">My Plants</a>
+    <a href="#schedule">Schedule</a>
+    <a href="#weather">Weather</a>
+    <a href="#harvest">Harvest</a>
+    <a href="#tips">Tips</a>
+  </nav>
+</aside>
+
+<main id="main">
+  <div class="kpi-strip" role="region" aria-label="Garden overview">
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#D1FAE5">🌿</div>
+      <div>
+        <div class="kpi-label">Active Plants</div>
+        <div class="kpi-value" style="color:#10B981">34</div>
+        <div class="kpi-trend">8 new this month</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#ECFEFF">💧</div>
+      <div>
+        <div class="kpi-label">Garden Beds</div>
+        <div class="kpi-value" style="color:#06B6D4">6</div>
+        <div class="kpi-trend">2 raised beds added</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#FEF3C7">🌡️</div>
+      <div>
+        <div class="kpi-label">Avg Soil Temp</div>
+        <div class="kpi-value" style="color:#F59E0B">18°C</div>
+        <div class="kpi-trend">Optimal for sowing</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#EEF2FF">📅</div>
+      <div>
+        <div class="kpi-label">Days to Harvest</div>
+        <div class="kpi-value" style="color:#4F46E5">12</div>
+        <div class="kpi-trend">Tomatoes, peppers ready</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <!-- Plant Cards -->
+    <section id="plants">
+      <div class="section-header">
+        <h2>My Plants</h2>
+        <span class="badge">34 active</span>
+      </div>
+      <div class="garden-grid">
+        <div class="garden-card" style="border-top:4px solid #10B981">
+          <h4>🍅 Cherry Tomatoes</h4>
+          <div class="plant-meta">Zone: 7a · Sun: Full · Water: Daily</div>
+          <div class="plant-meta">Planted: Apr 15 · Est. harvest: Jul 1</div>
+          <span class="plant-status st-thriving">Thriving</span>
+        </div>
+        <div class="garden-card" style="border-top:4px solid #06B6D4">
+          <h4>🥕 Carrots (Nantes)</h4>
+          <div class="plant-meta">Zone: 7a · Sun: Full · Water: Every 2 days</div>
+          <div class="plant-meta">Planted: Mar 28 · Est. harvest: Jun 20</div>
+          <span class="plant-status st-growing">Growing</span>
+        </div>
+        <div class="garden-card" style="border-top:4px solid #A3E635">
+          <h4>🌿 Basil (Genovese)</h4>
+          <div class="plant-meta">Zone: 7a · Sun: Full · Water: Daily</div>
+          <div class="plant-meta">Planted: May 1 · Est. harvest: Jun 15</div>
+          <span class="plant-status st-thriving">Thriving</span>
+        </div>
+        <div class="garden-card" style="border-top:4px solid #F59E0B">
+          <h4>🫑 Bell Peppers</h4>
+          <div class="plant-meta">Zone: 7a · Sun: Full · Water: Daily</div>
+          <div class="plant-meta">Planted: Apr 20 · Est. harvest: Jul 10</div>
+          <span class="plant-status st-needs-water">Needs Water</span>
+        </div>
+        <div class="garden-card" style="border-top:4px solid #4F46E5">
+          <h4>🥒 Cucumbers</h4>
+          <div class="plant-meta">Zone: 7a · Sun: Full · Water: Daily</div>
+          <div class="plant-meta">Planted: May 5 · Est. harvest: Jul 15</div>
+          <span class="plant-status st-growing">Growing</span>
+        </div>
+        <div class="garden-card" style="border-top:4px solid #FB7185">
+          <h4>🌹 Rose Bush</h4>
+          <div class="plant-meta">Zone: 7a · Sun: Full · Water: 3x/week</div>
+          <div class="plant-meta">Planted: Mar 2024 · Blooming: Jun–Sep</div>
+          <span class="plant-status st-thriving">Thriving</span>
+        </div>
+        <div class="garden-card" style="border-top:4px solid #6B7280">
+          <h4>🧄 Garlic (Hardneck)</h4>
+          <div class="plant-meta">Zone: 7a · Sun: Full · Water: Weekly</div>
+          <div class="plant-meta">Planted: Oct 15 · Est. harvest: Jul 1</div>
+          <span class="plant-status st-dormant">Bulbing</span>
+        </div>
+        <div class="garden-card" style="border-top:4px solid #10B981">
+          <h4>🍓 Strawberries</h4>
+          <div class="plant-meta">Zone: 7a · Sun: Full · Water: Daily</div>
+          <div class="plant-meta">Planted: Apr 2024 · Producing: May–Oct</div>
+          <span class="plant-status st-thriving">Thriving</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Planting Schedule -->
+    <section id="schedule">
+      <div class="section-header">
+        <h2>Planting Schedule</h2>
+        <span class="badge">June tasks</span>
+      </div>
+      <table class="schedule-tbl" aria-label="Planting schedule">
+        <thead>
+          <tr>
+            <th>Task</th>
+            <th>Plant</th>
+            <th>Bed</th>
+            <th>Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Direct sow</td>
+            <td>Beans (Bush)</td>
+            <td>Bed 3</td>
+            <td>Jun 1</td>
+            <td><span class="plant-status st-thriving">Done</span></td>
+          </tr>
+          <tr>
+            <td>Transplant</td>
+            <td>Eggplant</td>
+            <td>Bed 2</td>
+            <td>Jun 3</td>
+            <td><span class="plant-status st-thriving">Done</span></td>
+          </tr>
+          <tr>
+            <td>Thin seedlings</td>
+            <td>Carrots</td>
+            <td>Bed 1</td>
+            <td>Jun 5</td>
+            <td><span class="plant-status st-growing">Upcoming</span></td>
+          </tr>
+          <tr>
+            <td>Side-dress</td>
+            <td>Tomatoes</td>
+            <td>Bed 2</td>
+            <td>Jun 8</td>
+            <td><span class="plant-status st-growing">Upcoming</span></td>
+          </tr>
+          <tr>
+            <td>Succession sow</td>
+            <td>Lettuce</td>
+            <td>Bed 4</td>
+            <td>Jun 10</td>
+            <td><span class="plant-status st-growing">Upcoming</span></td>
+          </tr>
+          <tr>
+            <td>Prune</td>
+            <td>Rose Bush</td>
+            <td>Border</td>
+            <td>Jun 12</td>
+            <td><span class="plant-status st-growing">Upcoming</span></td>
+          </tr>
+          <tr>
+            <td>Harvest</td>
+            <td>Basil</td>
+            <td>Herb Bed</td>
+            <td>Jun 15</td>
+            <td><span class="plant-status st-needs-water">Scheduled</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Weather Forecast -->
+    <section id="weather">
+      <div class="section-header">
+        <h2>7-Day Forecast</h2>
+        <span class="badge">Zone 7a</span>
+      </div>
+      <div class="weather-grid">
+        <div class="weather-day">
+          <div class="day-name">Mon</div>
+          <div class="weather-icon">☀️</div>
+          <div class="temp">24°C</div>
+          <div class="condition">Sunny</div>
+        </div>
+        <div class="weather-day">
+          <div class="day-name">Tue</div>
+          <div class="weather-icon">⛅</div>
+          <div class="temp">22°C</div>
+          <div class="condition">Partly Cloudy</div>
+        </div>
+        <div class="weather-day">
+          <div class="day-name">Wed</div>
+          <div class="weather-icon">🌧️</div>
+          <div class="temp">18°C</div>
+          <div class="condition">Rain</div>
+        </div>
+        <div class="weather-day">
+          <div class="day-name">Thu</div>
+          <div class="weather-icon">🌧️</div>
+          <div class="temp">17°C</div>
+          <div class="condition">Showers</div>
+        </div>
+        <div class="weather-day">
+          <div class="day-name">Fri</div>
+          <div class="weather-icon">⛅</div>
+          <div class="temp">20°C</div>
+          <div class="condition">Clearing</div>
+        </div>
+        <div class="weather-day">
+          <div class="day-name">Sat</div>
+          <div class="weather-icon">☀️</div>
+          <div class="temp">23°C</div>
+          <div class="condition">Sunny</div>
+        </div>
+        <div class="weather-day">
+          <div class="day-name">Sun</div>
+          <div class="weather-icon">☀️</div>
+          <div class="temp">25°C</div>
+          <div class="condition">Hot</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Harvest Tracker -->
+    <section id="harvest">
+      <div class="section-header">
+        <h2>Harvest Tracker</h2>
+        <span class="badge">This season</span>
+      </div>
+      <div class="harvest-list" role="list">
+        <div class="harvest-item" role="listitem">
+          <div class="harvest-icon">🍅</div>
+          <div class="harvest-info">
+            <h4>Cherry Tomatoes</h4>
+            <div class="meta">Bed 2 · Picked 3 times this week</div>
+          </div>
+          <div class="harvest-yield">2.4 kg</div>
+        </div>
+        <div class="harvest-item" role="listitem">
+          <div class="harvest-icon">🌿</div>
+          <div class="harvest-info">
+            <h4>Basil</h4>
+            <div class="meta">Herb Bed · Cut weekly</div>
+          </div>
+          <div class="harvest-yield">0.8 kg</div>
+        </div>
+        <div class="harvest-item" role="listitem">
+          <div class="harvest-icon">🍓</div>
+          <div class="harvest-info">
+            <h4>Strawberries</h4>
+            <div class="meta">Berry Patch · Daily picks</div>
+          </div>
+          <div class="harvest-yield">1.6 kg</div>
+        </div>
+        <div class="harvest-item" role="listitem">
+          <div class="harvest-icon">🥬</div>
+          <div class="harvest-info">
+            <h4>Lettuce (Spring Mix)</h4>
+            <div class="meta">Bed 4 · Cut-and-come-again</div>
+          </div>
+          <div class="harvest-yield">1.2 kg</div>
+        </div>
+        <div class="harvest-item" role="listitem">
+          <div class="harvest-icon">🥕</div>
+          <div class="harvest-info">
+            <h4>Radishes</h4>
+            <div class="meta">Bed 1 · First harvest ready</div>
+          </div>
+          <div class="harvest-yield">0.5 kg</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Gardening Tips -->
+    <section id="tips">
+      <div class="section-header">
+        <h2>Gardening Tips</h2>
+        <span class="badge">Seasonal</span>
+      </div>
+      <div class="tips-grid">
+        <div class="tip-card">
+          <h4>💧 Watering in Summer</h4>
+          <p>Water deeply and less frequently to encourage deep root growth. Early morning watering reduces evaporation and helps prevent fungal diseases.</p>
+          <span class="tip-tag" style="background:#DBEAFE;color:#1E40AF">Watering</span>
+        </div>
+        <div class="tip-card">
+          <h4>🐛 Companion Planting</h4>
+          <p>Plant marigolds near tomatoes to deter whiteflies. Basil planted alongside peppers improves flavor and repels aphids naturally.</p>
+          <span class="tip-tag" style="background:#D1FAE5;color:#065F46">Pest Control</span>
+        </div>
+        <div class="tip-card">
+          <h4>🌾 Succession Planting</h4>
+          <p>Sow lettuce and beans every 2–3 weeks for continuous harvest. This extends your growing season without overwhelming your kitchen.</p>
+          <span class="tip-tag" style="background:#FEF3C7;color:#92400E">Planning</span>
+        </div>
+        <div class="tip-card">
+          <h4>🧪 Soil Testing</h4>
+          <p>Test soil pH and nutrients every spring. Most vegetables thrive in pH 6.0–7.0. Amend with compost or sulfur as needed.</p>
+          <span class="tip-tag" style="background:#EEF2FF;color:#4F46E5">Soil Health</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p>Terra Garden Planner — designed by Studio · Standalone prototype · Not affiliated with any gardening service</p>
+</footer>
+
+<script>
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.getElementById('drawer').classList.remove('open');
+      document.getElementById('overlay').classList.remove('open');
+    }
+  });
+</script>
+</body>
+</html>
