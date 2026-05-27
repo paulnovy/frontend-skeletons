@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nova Fintech Banking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --cloud:#F6F8FC;      --cloud-94:rgba(246,248,252,0.94);      --cloud-86:rgba(246,248,252,0.86);
+      --cloud-62:rgba(246,248,252,0.62);      --cloud-34:rgba(246,248,252,0.34);      --ink:#19212B;
+      --ink-92:rgba(25,33,43,0.92);      --ink-76:rgba(25,33,43,0.76);      --ink-60:rgba(25,33,43,0.60);
+      --ink-42:rgba(25,33,43,0.42);      --ink-20:rgba(25,33,43,0.20);      --ink-12:rgba(25,33,43,0.12);
+      --ink-08:rgba(25,33,43,0.08);      --ink-05:rgba(25,33,43,0.05);      --indigo:#4F46E5;
+      --indigo-86:rgba(79,70,229,0.86);      --indigo-30:rgba(79,70,229,0.30);      --indigo-18:rgba(79,70,229,0.18);
+      --indigo-10:rgba(79,70,229,0.10);      --cyan:#06B6D4;      --cyan-82:rgba(6,182,212,0.82);
+      --cyan-30:rgba(6,182,212,0.30);      --cyan-16:rgba(6,182,212,0.16);      --lime:#A3E635;
+      --lime-82:rgba(163,230,53,0.82);      --lime-32:rgba(163,230,53,0.32);      --lime-18:rgba(163,230,53,0.18);
+      --coral:#FB7185;      --coral-82:rgba(251,113,133,0.82);      --coral-30:rgba(251,113,133,0.30);
+      --coral-16:rgba(251,113,133,0.16);      --shadow:0 24px 80px rgba(25,33,43,0.12);      --radius:8px;
+      --max:1240px;
+    }
+    *{
+      box-sizing:border-box;
+    }
+    html{
+      scroll-behavior:smooth;
+    }
+    body{
+      margin:0;      min-height:100vh;      color:var(--ink);
+      background:
+        radial-gradient(circle at 12% 0,var(--cyan-16),transparent 28rem),
+        radial-gradient(circle at 86% 4%,var(--indigo-18),transparent 30rem),
+        linear-gradient(180deg,var(--cloud),var(--cloud));
+      font-family:"Inter",system-ui,sans-serif;      line-height:1.5;
+    }
+    body.drawer-open{
+      overflow:hidden;
+    }
+    a{
+      color:inherit;      text-decoration:none;
+    }
+    button,
+    input,
+    select{
+      font:inherit;
+    }
+    button{
+      cursor:pointer;
+    }
+    :focus-visible{
+      outline:3px solid var(--cyan);      outline-offset:3px;
+    }
+    .sr-only{
+      position:absolute;      width:1px;      height:1px;
+      padding:0;      margin:-1px;      overflow:hidden;
+      clip:rect(0,0,0,0);      white-space:nowrap;      border:0;
+    }
+    .page{
+      min-height:100vh;      overflow:hidden;
+    }
+    .topbar{
+      position:sticky;      top:0;      z-index:50;
+      border-bottom:1px solid var(--ink-08);      background:var(--cloud-94);      backdrop-filter:blur(18px);
+    }
+    .nav-inner{
+      width:min(100% - 32px,var(--max));      min-height:76px;      margin:0 auto;
+      display:grid;      grid-template-columns:auto 1fr auto;      align-items:center;
+      gap:20px;
+    }
+    .brand{
+      display:inline-flex;      align-items:center;      gap:10px;
+      font-family:"Manrope",sans-serif;      font-weight:800;      letter-spacing:0;
+    }
+    .brand-mark{
+      width:38px;      height:38px;      display:grid;
+      place-items:center;      border-radius:var(--radius);      color:var(--cloud);
+      background:linear-gradient(135deg,var(--indigo),var(--cyan));      box-shadow:0 16px 36px var(--indigo-30);
+    }
+    .nav-links{
+      display:flex;      justify-content:center;      align-items:center;
+      gap:6px;
+    }
+    .nav-links a{
+      padding:10px 12px;      border-radius:var(--radius);      color:var(--ink-76);
+      font-size:0.92rem;      font-weight:800;
+    }
+    .nav-links a:hover{
+      color:var(--ink);      background:var(--indigo-10);
+    }
+    .nav-actions{
+      display:flex;      align-items:center;      justify-content:flex-end;
+      gap:10px;
+    }
+    .icon-button{
+      position:relative;      width:42px;      height:42px;
+      display:grid;      place-items:center;      border:1px solid var(--ink-12);
+      border-radius:var(--radius);      color:var(--ink);      background:var(--cloud-86);
+      font-weight:800;
+    }
+    .badge{
+      position:absolute;      top:-6px;      right:-6px;
+      min-width:20px;      height:20px;      display:grid;
+      place-items:center;      border:2px solid var(--cloud);      border-radius:999px;
+      color:var(--cloud);      background:var(--coral);      font-size:0.7rem;
+      font-weight:900;
+    }
+    .avatar{
+      width:42px;      height:42px;      display:grid;
+      place-items:center;      border-radius:50%;      color:var(--cloud);
+      background:linear-gradient(135deg,var(--ink),var(--indigo));      font-weight:900;
+    }
+    .hamburger{
+      width:42px;      height:42px;      display:none;
+      align-items:center;      justify-content:center;      border:1px solid var(--ink-12);
+      border-radius:var(--radius);      background:var(--cloud-86);
+    }
+    .hamburger-lines{
+      width:18px;      height:13px;      display:grid;
+      gap:4px;
+    }
+    .hamburger-lines span{
+      height:2px;      border-radius:999px;      background:var(--ink);
+    }
+    .drawer-backdrop{
+      position:fixed;      inset:0;      z-index:70;
+      display:none;      background:rgba(25,33,43,0.42);
+    }
+    .drawer-backdrop.open{
+      display:block;
+    }
+    .mobile-drawer{
+      position:fixed;      top:0;      right:0;
+      z-index:80;      width:min(86vw,340px);      height:100vh;
+      padding:22px;      display:flex;      flex-direction:column;
+      gap:22px;      color:var(--cloud);      background:var(--ink);
+      transform:translateX(105%);      transition:transform 260ms ease;      box-shadow:-22px 0 50px rgba(25,33,43,0.30);
+    }
+    .mobile-drawer.open{
+      transform:translateX(0);
+    }
+    .drawer-head{
+      display:flex;      align-items:center;      justify-content:space-between;
+      gap:16px;
+    }
+    .drawer-close{
+      width:40px;      height:40px;      border:1px solid var(--cloud-34);
+      border-radius:var(--radius);      color:var(--cloud);      background:transparent;
+      font-size:1.3rem;
+    }
+    .drawer-links{
+      display:grid;      gap:8px;
+    }
+    .drawer-links a{
+      padding:13px 12px;      border-radius:var(--radius);      color:var(--cloud);
+      background:rgba(246,248,252,0.08);      font-weight:800;
+    }
+    main{
+      width:min(100% - 32px,var(--max));      margin:0 auto;      padding:28px 0 56px;
+    }
+    .hero{
+      display:grid;      grid-template-columns:1.08fr 0.92fr;      gap:22px;
+      align-items:stretch;
+    }
+    .balance-panel{
+      position:relative;      overflow:hidden;      min-height:330px;
+      padding:28px;      border-radius:var(--radius);      color:var(--cloud);
+      background:
+        radial-gradient(circle at 84% 18%,var(--cyan-30),transparent 18rem),
+        radial-gradient(circle at 18% 100%,var(--indigo-30),transparent 22rem),
+        linear-gradient(135deg,var(--ink),var(--ink-92));
+      box-shadow:var(--shadow);
+    }
+    .eyebrow{
+      margin:0 0 8px;      color:var(--cyan);      font-size:0.78rem;
+      font-weight:900;      letter-spacing:0.12em;      text-transform:uppercase;
+    }
+    h1,
+    h2,
+    h3{
+      margin:0;      font-family:"Manrope",sans-serif;      letter-spacing:0;
+      line-height:1.05;
+    }
+    h1{
+      max-width:620px;      font-size:clamp(2.4rem,6vw,5.6rem);
+    }
+    h2{
+      font-size:1.45rem;
+    }
+    h3{
+      font-size:1rem;
+    }
+    .hero-copy{
+      max-width:620px;      margin:14px 0 0;      color:rgba(246,248,252,0.76);
+      font-size:1rem;      font-weight:600;
+    }
+    .total-balance{
+      margin-top:34px;      display:flex;      align-items:flex-end;
+      justify-content:space-between;      gap:22px;
+    }
+    .balance-label{
+      margin:0 0 4px;      color:rgba(246,248,252,0.64);      font-size:0.82rem;
+      font-weight:800;
+    }
+    .balance-value{
+      margin:0;      font-family:"Manrope",sans-serif;      font-size:clamp(2.2rem,5vw,4.3rem);
+      font-weight:800;      letter-spacing:0;
+    }
+    .health-pill{
+      display:inline-flex;      align-items:center;      gap:8px;
+      padding:9px 12px;      border:1px solid var(--lime-32);      border-radius:999px;
+      color:var(--lime);      background:rgba(163,230,53,0.10);      font-size:0.82rem;
+      font-weight:900;      white-space:nowrap;
+    }
+    .health-dot{
+      width:8px;      height:8px;      border-radius:50%;
+      background:var(--lime);      box-shadow:0 0 0 6px var(--lime-18);
+    }
+    .accounts-panel{
+      padding:22px;      border:1px solid var(--ink-08);      border-radius:var(--radius);
+      background:var(--cloud-86);      box-shadow:0 18px 56px rgba(25,33,43,0.08);
+    }
+    .section-head{
+      display:flex;      align-items:center;      justify-content:space-between;
+      gap:18px;      margin-bottom:18px;
+    }
+    .section-head p{
+      margin:4px 0 0;      color:var(--ink-60);      font-size:0.9rem;
+      font-weight:700;
+    }
+    .account-list{
+      display:grid;      gap:12px;
+    }
+    .account-card{
+      display:grid;      grid-template-columns:auto 1fr auto;      align-items:center;
+      gap:14px;      padding:16px;      border:1px solid var(--ink-08);
+      border-radius:var(--radius);      background:var(--cloud);
+    }
+    .account-icon,
+    .category-icon{
+      width:42px;      height:42px;      display:grid;
+      place-items:center;      border-radius:var(--radius);      color:var(--ink);
+      background:var(--cyan-16);      font-weight:900;
+    }
+    .account-card:nth-child(2) .account-icon{
+      background:var(--lime-18);
+    }
+    .account-card:nth-child(3) .account-icon{
+      color:var(--cloud);      background:var(--indigo);
+    }
+    .account-name{
+      margin:0;      font-weight:900;
+    }
+    .account-meta{
+      margin:2px 0 0;      color:var(--ink-60);      font-size:0.82rem;
+      font-weight:700;
+    }
+    .account-balance{
+      margin:0;      font-weight:900;
+    }
+    .quick-actions{
+      margin-top:22px;      display:grid;      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+    }
+    .action-button{
+      min-height:96px;      padding:16px;      display:flex;
+      flex-direction:column;      align-items:flex-start;      justify-content:space-between;
+      border:1px solid var(--ink-08);      border-radius:var(--radius);      color:var(--ink);
+      background:var(--cloud-86);      box-shadow:0 14px 40px rgba(25,33,43,0.06);      font-weight:900;
+      text-align:left;
+    }
+    .action-button span{
+      width:34px;      height:34px;      display:grid;
+      place-items:center;      border-radius:var(--radius);      color:var(--cloud);
+      background:var(--indigo);
+    }
+    .action-button:nth-child(2) span{
+      background:var(--cyan);
+    }
+    .action-button:nth-child(3) span{
+      color:var(--ink);      background:var(--lime);
+    }
+    .action-button:nth-child(4) span{
+      background:var(--coral);
+    }
+    .workspace-grid{
+      margin-top:22px;      display:grid;      grid-template-columns:1.1fr 0.9fr;
+      gap:22px;      align-items:start;
+    }
+    .panel{
+      border:1px solid var(--ink-08);      border-radius:var(--radius);      background:var(--cloud-86);
+      box-shadow:0 18px 56px rgba(25,33,43,0.08);
+    }
+    .panel-pad{
+      padding:22px;
+    }
+    .transactions{
+      max-height:500px;      overflow:auto;      padding-right:8px;
+      scrollbar-color:var(--indigo-30) transparent;
+    }
+    .transaction-row{
+      display:grid;      grid-template-columns:auto 1fr auto auto;      align-items:center;
+      gap:14px;      min-width:640px;      padding:14px 0;
+      border-bottom:1px solid var(--ink-08);
+    }
+    .transaction-row:last-child{
+      border-bottom:0;
+    }
+    .merchant{
+      margin:0;      font-weight:900;
+    }
+    .transaction-meta{
+      margin:2px 0 0;      color:var(--ink-60);      font-size:0.82rem;
+      font-weight:700;
+    }
+    .amount{
+      margin:0;      font-weight:900;      text-align:right;
+      white-space:nowrap;
+    }
+    .amount.debit{
+      color:var(--coral);
+    }
+    .amount.credit{
+      color:var(--lime);      text-shadow:0 1px 0 var(--ink);
+    }
+    .running{
+      margin:0;      color:var(--ink-60);      font-size:0.82rem;
+      font-weight:800;      text-align:right;      white-space:nowrap;
+    }
+    .breakdown{
+      display:grid;      grid-template-columns:auto 1fr;      gap:20px;
+      align-items:center;
+    }
+    .donut{
+      width:176px;      aspect-ratio:1;      display:grid;
+      place-items:center;      border-radius:50%;
+      background:
+        conic-gradient(
+          var(--indigo) 0 32%,
+          var(--cyan) 32% 57%,
+          var(--lime) 57% 76%,
+          var(--coral) 76% 91%,
+          var(--ink) 91% 100%
+        );
+      box-shadow:inset 0 0 0 1px var(--ink-08),0 18px 44px rgba(25,33,43,0.12);
+    }
+    .donut-core{
+      width:108px;      aspect-ratio:1;      display:grid;
+      place-items:center;      border-radius:50%;      background:var(--cloud);
+      text-align:center;
+    }
+    .donut-core strong{
+      display:block;      font-family:"Manrope",sans-serif;      font-size:1.3rem;
+    }
+    .donut-core span{
+      color:var(--ink-60);      font-size:0.72rem;      font-weight:900;
+      text-transform:uppercase;
+    }
+    .legend{
+      display:grid;      gap:10px;
+    }
+    .legend-item{
+      display:grid;      grid-template-columns:auto 1fr auto;      align-items:center;
+      gap:10px;      font-size:0.88rem;      font-weight:800;
+    }
+    .swatch{
+      width:12px;      height:12px;      border-radius:4px;
+      background:var(--indigo);
+    }
+    .swatch.cyan{
+      background:var(--cyan);
+    }
+    .swatch.lime{
+      background:var(--lime);
+    }
+    .swatch.coral{
+      background:var(--coral);
+    }
+    .swatch.ink{
+      background:var(--ink);
+    }
+    .transfer-panel{
+      margin-top:22px;
+    }
+    .progress{
+      display:grid;      grid-template-columns:repeat(3,1fr);      gap:8px;
+      margin-bottom:18px;
+    }
+    .step{
+      display:flex;      align-items:center;      gap:8px;
+      padding:10px;      border:1px solid var(--ink-08);      border-radius:var(--radius);
+      color:var(--ink-60);      background:var(--cloud);      font-size:0.82rem;
+      font-weight:900;
+    }
+    .step-number{
+      width:24px;      height:24px;      display:grid;
+      place-items:center;      border-radius:50%;      color:var(--cloud);
+      background:var(--ink-42);      font-size:0.76rem;
+    }
+    .step.active{
+      color:var(--ink);      border-color:var(--indigo-30);      background:var(--indigo-10);
+    }
+    .step.active .step-number{
+      background:var(--indigo);
+    }
+    .transfer-step{
+      display:none;      gap:14px;
+    }
+    .transfer-step.active{
+      display:grid;
+    }
+    .field{
+      display:grid;      gap:7px;
+    }
+    .field label{
+      color:var(--ink-76);      font-size:0.82rem;      font-weight:900;
+    }
+    .field input,
+    .field select{
+      width:100%;      height:48px;      border:1px solid var(--ink-12);
+      border-radius:var(--radius);      color:var(--ink);      background:var(--cloud);
+      padding:0 13px;      font-weight:800;
+    }
+    .transfer-actions{
+      display:flex;      justify-content:flex-end;      gap:10px;
+      margin-top:2px;
+    }
+    .button{
+      min-height:44px;      padding:0 16px;      border:1px solid var(--ink-12);
+      border-radius:var(--radius);      background:var(--cloud);      color:var(--ink);
+      font-weight:900;
+    }
+    .button.primary{
+      border-color:var(--indigo);      color:var(--cloud);      background:var(--indigo);
+      box-shadow:0 16px 36px var(--indigo-30);
+    }
+    .button.ghost{
+      background:transparent;
+    }
+    .confirm-card{
+      display:grid;      gap:10px;      padding:16px;
+      border-radius:var(--radius);      background:var(--ink);      color:var(--cloud);
+    }
+    .confirm-row{
+      display:flex;      align-items:center;      justify-content:space-between;
+      gap:12px;      color:rgba(246,248,252,0.72);      font-size:0.9rem;
+      font-weight:800;
+    }
+    .confirm-row strong{
+      color:var(--cloud);
+    }
+    .success-note{
+      margin:0;      padding:12px;      border-radius:var(--radius);
+      color:var(--ink);      background:var(--lime-18);      font-size:0.9rem;
+      font-weight:800;
+    }
+    .card-panel{
+      margin-top:22px;
+    }
+    .virtual-card{
+      position:relative;      overflow:hidden;      min-height:230px;
+      padding:22px;      border-radius:var(--radius);      color:var(--cloud);
+      background:
+        radial-gradient(circle at 88% 18%,var(--cyan-30),transparent 12rem),
+        linear-gradient(135deg,var(--indigo),var(--ink));
+      box-shadow:0 22px 60px var(--indigo-30);
+    }
+    .virtual-card:after{
+      content:"";      position:absolute;      right:-60px;
+      bottom:-70px;      width:190px;      height:190px;
+      border:1px solid var(--cloud-34);      border-radius:50%;
+    }
+    .card-top{
+      position:relative;      z-index:1;      display:flex;
+      align-items:center;      justify-content:space-between;      gap:16px;
+    }
+    .chip{
+      width:46px;      height:34px;      border-radius:var(--radius);
+      background:linear-gradient(135deg,var(--lime),var(--cyan));
+    }
+    .card-number{
+      position:relative;      z-index:1;      margin:52px 0 18px;
+      font-family:"Manrope",sans-serif;      font-size:1.55rem;      font-weight:800;
+      letter-spacing:0.08em;
+    }
+    .card-foot{
+      position:relative;      z-index:1;      display:flex;
+      align-items:flex-end;      justify-content:space-between;      gap:18px;
+      color:rgba(246,248,252,0.70);      font-size:0.78rem;      font-weight:900;
+      text-transform:uppercase;
+    }
+    .card-foot strong{
+      display:block;      margin-top:4px;      color:var(--cloud);
+      font-size:0.96rem;      text-transform:none;
+    }
+    .limit{
+      margin-top:18px;      display:grid;      gap:10px;
+    }
+    .limit-head{
+      display:flex;      justify-content:space-between;      color:var(--ink-76);
+      font-size:0.86rem;      font-weight:900;
+    }
+    .limit-bar{
+      height:12px;      overflow:hidden;      border-radius:999px;
+      background:var(--ink-08);
+    }
+    .limit-fill{
+      width:62%;      height:100%;      border-radius:999px;
+      background:linear-gradient(90deg,var(--cyan),var(--indigo));
+    }
+    .toggle-row{
+      margin-top:18px;      display:flex;      align-items:center;
+      justify-content:space-between;      gap:16px;      padding:14px;
+      border-radius:var(--radius);      background:var(--cloud);      border:1px solid var(--ink-08);
+    }
+    .switch{
+      position:relative;      width:56px;      height:32px;
+      display:inline-flex;      align-items:center;
+    }
+    .switch input{
+      position:absolute;      opacity:0;      inset:0;
+    }
+    .slider{
+      width:56px;      height:32px;      border-radius:999px;
+      background:var(--coral);      transition:background 180ms ease;
+    }
+    .slider:before{
+      content:"";      position:absolute;      width:24px;
+      height:24px;      left:4px;      top:4px;
+      border-radius:50%;      background:var(--cloud);      transition:transform 180ms ease;
+      box-shadow:0 8px 18px rgba(25,33,43,0.22);
+    }
+    .switch input:checked + .slider{
+      background:var(--lime);
+    }
+    .switch input:checked + .slider:before{
+      transform:translateX(24px);
+    }
+    .site-footer{
+      width:min(100% - 32px,var(--max));      margin:0 auto 28px;      padding:22px 0 0;
+      border-top:1px solid var(--ink-08);      color:var(--ink-60);      font-size:0.9rem;
+      font-weight:800;      text-align:center;
+    }
+    @media (max-width:980px){
+      .nav-links{
+        display:none;
+      }
+      .hamburger{
+        display:flex;
+      }
+      .nav-inner{
+        grid-template-columns:auto 1fr auto;
+      }
+      .hero,
+      .workspace-grid{
+        grid-template-columns:1fr;
+      }
+      .quick-actions{
+        grid-template-columns:repeat(2,1fr);
+      }
+      .breakdown{
+        grid-template-columns:1fr;
+      }
+    }
+    @media (max-width:640px){
+      .nav-inner,
+      main,
+      .site-footer{
+        width:min(100% - 24px,var(--max));
+      }
+      .topbar .avatar,
+      .topbar .icon-button{
+        display:none;
+      }
+      .balance-panel,
+      .accounts-panel,
+      .panel-pad{
+        padding:18px;
+      }
+      .total-balance{
+        align-items:flex-start;        flex-direction:column;
+      }
+      .quick-actions{
+        grid-template-columns:1fr;
+      }
+      .transaction-row{
+        min-width:560px;
+      }
+      .progress{
+        grid-template-columns:1fr;
+      }
+      .transfer-actions{
+        justify-content:stretch;
+      }
+      .transfer-actions .button{
+        flex:1;
+      }
+      .card-number{
+        font-size:1.15rem;
+      }
+    }
+    @media (prefers-reduced-motion:reduce){
+      *,
+      *:before,
+      *:after{
+        scroll-behavior:auto !important;        transition:none !important;        animation:none !important;
+      }
+    }
+
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="nav-inner">
+        <a class="brand" href="#overview" aria-label="Nova Fintech Banking home">
+          <span class="brand-mark">N</span>
+          <span>Nova</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="#overview">Accounts</a>
+          <a href="#transfer">Payments</a>
+          <a href="#cards">Cards</a>
+          <a href="#breakdown">Investments</a>
+          <a href="#settings">Settings</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="icon-button" type="button" aria-label="View notifications">
+            <span aria-hidden="true">!</span>
+            <span class="badge">3</span>
+          </button>
+          <div class="avatar" aria-label="Account avatar">PL</div>
+          <button class="hamburger" type="button" aria-label="Open menu" aria-controls="mobile-drawer" aria-expanded="false">
+            <span class="hamburger-lines" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </button>
+        </div>
+      </div>
+    </header>
+    <div class="drawer-backdrop" data-close-drawer></div>
+    <aside class="mobile-drawer" id="mobile-drawer" aria-label="Mobile navigation" aria-hidden="true">
+      <div class="drawer-head">
+        <span class="brand">
+          <span class="brand-mark">N</span>
+          <span>Nova</span>
+        </span>
+        <button class="drawer-close" type="button" aria-label="Close menu" data-close-drawer>×</button>
+      </div>
+      <nav class="drawer-links" aria-label="Mobile menu links">
+        <a href="#overview">Accounts</a>
+        <a href="#transfer">Payments</a>
+        <a href="#cards">Cards</a>
+        <a href="#breakdown">Investments</a>
+        <a href="#settings">Settings</a>
+      </nav>
+    </aside>
+    <main>
+      <section class="hero" id="overview" aria-labelledby="overview-title">
+        <div class="balance-panel">
+          <p class="eyebrow">Live private banking</p>
+          <h1 id="overview-title">One operating view for every account.</h1>
+          <p class="hero-copy">Balances, card risk, recent movement, and transfer approvals stay visible without pushing finance teams into separate screens.</p>
+          <div class="total-balance" aria-label="Total balance">
+            <div>
+              <p class="balance-label">Total balance</p>
+              <p class="balance-value">$128,430.80</p>
+            </div>
+            <span class="health-pill"><span class="health-dot"></span>Strong liquidity</span>
+          </div>
+        </div>
+        <aside class="accounts-panel" aria-labelledby="accounts-title">
+          <div class="section-head">
+            <div>
+              <h2 id="accounts-title">Linked accounts</h2>
+              <p>Updated moments ago</p>
+            </div>
+            <span class="health-pill"><span class="health-dot"></span>Synced</span>
+          </div>
+          <div class="account-list">
+            <article class="account-card">
+              <span class="account-icon">C</span>
+              <div>
+                <p class="account-name">Checking</p>
+                <p class="account-meta">Everyday spend</p>
+              </div>
+              <p class="account-balance">$24,980.45</p>
+            </article>
+            <article class="account-card">
+              <span class="account-icon">S</span>
+              <div>
+                <p class="account-name">Savings</p>
+                <p class="account-meta">High-yield reserve</p>
+              </div>
+              <p class="account-balance">$67,250.20</p>
+            </article>
+            <article class="account-card">
+              <span class="account-icon">I</span>
+              <div>
+                <p class="account-name">Investment</p>
+                <p class="account-meta">Managed portfolio</p>
+              </div>
+              <p class="account-balance">$36,200.15</p>
+            </article>
+          </div>
+        </aside>
+      </section>
+      <section class="quick-actions" aria-label="Quick actions">
+        <button class="action-button" type="button"><span aria-hidden="true">→</span>Send</button>
+        <button class="action-button" type="button"><span aria-hidden="true">←</span>Request</button>
+        <button class="action-button" type="button"><span aria-hidden="true">$</span>Pay bills</button>
+        <button class="action-button" type="button"><span aria-hidden="true">+</span>Top up</button>
+      </section>
+      <div class="workspace-grid">
+        <section class="panel panel-pad" aria-labelledby="transactions-title">
+          <div class="section-head">
+            <div>
+              <h2 id="transactions-title">Transaction history</h2>
+              <p>Running balances across linked accounts</p>
+            </div>
+            <button class="button ghost" type="button">Export</button>
+          </div>
+          <div class="transactions" tabindex="0" aria-label="Scrollable transaction list">
+            <article class="transaction-row">
+              <span class="category-icon">F</span>
+              <div>
+                <p class="merchant">Fresh Market</p>
+                <p class="transaction-meta">Groceries · May 27</p>
+              </div>
+              <p class="amount debit">-$84.20</p>
+              <p class="running">$128,430.80</p>
+            </article>
+            <article class="transaction-row">
+              <span class="category-icon">P</span>
+              <div>
+                <p class="merchant">Payroll Deposit</p>
+                <p class="transaction-meta">Income · May 27</p>
+              </div>
+              <p class="amount credit">+$4,850.00</p>
+              <p class="running">$128,515.00</p>
+            </article>
+            <article class="transaction-row">
+              <span class="category-icon">R</span>
+              <div>
+                <p class="merchant">Rent Transfer</p>
+                <p class="transaction-meta">Housing · May 26</p>
+              </div>
+              <p class="amount debit">-$2,400.00</p>
+              <p class="running">$123,665.00</p>
+            </article>
+            <article class="transaction-row">
+              <span class="category-icon">T</span>
+              <div>
+                <p class="merchant">Metro Tap</p>
+                <p class="transaction-meta">Transport · May 26</p>
+              </div>
+              <p class="amount debit">-$18.75</p>
+              <p class="running">$126,065.00</p>
+            </article>
+            <article class="transaction-row">
+              <span class="category-icon">D</span>
+              <div>
+                <p class="merchant">Dividend Sweep</p>
+                <p class="transaction-meta">Investment · May 25</p>
+              </div>
+              <p class="amount credit">+$312.44</p>
+              <p class="running">$126,083.75</p>
+            </article>
+            <article class="transaction-row">
+              <span class="category-icon">B</span>
+              <div>
+                <p class="merchant">Blue Cloud SaaS</p>
+                <p class="transaction-meta">Software · May 25</p>
+              </div>
+              <p class="amount debit">-$129.00</p>
+              <p class="running">$125,771.31</p>
+            </article>
+            <article class="transaction-row">
+              <span class="category-icon">C</span>
+              <div>
+                <p class="merchant">Cafe Meridian</p>
+                <p class="transaction-meta">Dining · May 24</p>
+              </div>
+              <p class="amount debit">-$42.60</p>
+              <p class="running">$125,900.31</p>
+            </article>
+          </div>
+        </section>
+        <aside>
+          <section class="panel panel-pad" id="breakdown" aria-labelledby="breakdown-title">
+            <div class="section-head">
+              <div>
+                <h2 id="breakdown-title">Spending breakdown</h2>
+                <p>Current cycle allocation</p>
+              </div>
+            </div>
+            <div class="breakdown">
+              <div class="donut" role="img" aria-label="Spending donut chart showing housing, food, transport, software, and other categories">
+                <div class="donut-core">
+                  <span>Total</span>
+                  <strong>$4.8k</strong>
+                </div>
+              </div>
+              <div class="legend">
+                <div class="legend-item"><span class="swatch"></span><span>Housing</span><strong>32%</strong></div>
+                <div class="legend-item"><span class="swatch cyan"></span><span>Food</span><strong>25%</strong></div>
+                <div class="legend-item"><span class="swatch lime"></span><span>Transport</span><strong>19%</strong></div>
+                <div class="legend-item"><span class="swatch coral"></span><span>Software</span><strong>15%</strong></div>
+                <div class="legend-item"><span class="swatch ink"></span><span>Other</span><strong>9%</strong></div>
+              </div>
+            </div>
+          </section>
+          <section class="panel panel-pad card-panel" id="cards" aria-labelledby="cards-title">
+            <div class="section-head">
+              <div>
+                <h2 id="cards-title">Card management</h2>
+                <p>Virtual card controls</p>
+              </div>
+            </div>
+            <div class="virtual-card" aria-label="Virtual card">
+              <div class="card-top">
+                <span class="chip" aria-hidden="true"></span>
+                <strong>Nova Black</strong>
+              </div>
+              <p class="card-number">•••• •••• •••• 8421</p>
+              <div class="card-foot">
+                <span>Card holder<strong>Paweł L.</strong></span>
+                <span>Valid thru<strong>09/29</strong></span>
+              </div>
+            </div>
+            <div class="limit">
+              <div class="limit-head">
+                <span>Monthly spend limit</span>
+                <strong>$6,200 / $10,000</strong>
+              </div>
+              <div class="limit-bar" aria-hidden="true">
+                <div class="limit-fill"></div>
+              </div>
+            </div>
+            <div class="toggle-row" id="settings">
+              <div>
+                <h3>Freeze card</h3>
+                <p class="account-meta">Block new card charges instantly</p>
+              </div>
+              <label class="switch">
+                <span class="sr-only">Freeze virtual card</span>
+                <input type="checkbox">
+                <span class="slider"></span>
+              </label>
+            </div>
+          </section>
+        </aside>
+      </div>
+      <section class="panel panel-pad transfer-panel" id="transfer" aria-labelledby="transfer-title">
+        <div class="section-head">
+          <div>
+            <h2 id="transfer-title">Money transfer</h2>
+            <p>Recipient, amount, and approval in one flow</p>
+          </div>
+          <span class="health-pill"><span class="health-dot"></span>Protected</span>
+        </div>
+        <div class="progress" aria-label="Transfer progress">
+          <div class="step active" data-step-indicator="0"><span class="step-number">1</span>Recipient</div>
+          <div class="step" data-step-indicator="1"><span class="step-number">2</span>Amount</div>
+          <div class="step" data-step-indicator="2"><span class="step-number">3</span>Confirm</div>
+        </div>
+        <form class="transfer-form">
+          <div class="transfer-step active" data-transfer-step="0">
+            <div class="field">
+              <label for="recipient">Recipient</label>
+              <select id="recipient" name="recipient">
+                <option>Anna Kowalska · Savings 2044</option>
+                <option>Northstar Studio · Business 1180</option>
+                <option>Marian Labs · Treasury 7002</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="memo">Payment note</label>
+              <input id="memo" name="memo" value="Monthly settlement">
+            </div>
+            <div class="transfer-actions">
+              <button class="button primary" type="button" data-next-step>Continue</button>
+            </div>
+          </div>
+          <div class="transfer-step" data-transfer-step="1">
+            <div class="field">
+              <label for="amount">Amount</label>
+              <input id="amount" name="amount" value="$1,250.00" inputmode="decimal">
+            </div>
+            <div class="field">
+              <label for="source">Source account</label>
+              <select id="source" name="source">
+                <option>Checking · $24,980.45 available</option>
+                <option>Savings · $67,250.20 available</option>
+              </select>
+            </div>
+            <div class="transfer-actions">
+              <button class="button" type="button" data-prev-step>Back</button>
+              <button class="button primary" type="button" data-next-step>Review</button>
+            </div>
+          </div>
+          <div class="transfer-step" data-transfer-step="2">
+            <div class="confirm-card">
+              <div class="confirm-row"><span>Recipient</span><strong>Anna Kowalska</strong></div>
+              <div class="confirm-row"><span>Amount</span><strong>$1,250.00</strong></div>
+              <div class="confirm-row"><span>Arrival</span><strong>Today by 18:00</strong></div>
+              <div class="confirm-row"><span>Fee</span><strong>$0.00</strong></div>
+            </div>
+            <p class="success-note" aria-live="polite">Strong customer authentication is ready for approval.</p>
+            <div class="transfer-actions">
+              <button class="button" type="button" data-prev-step>Back</button>
+              <button class="button primary" type="submit">Authorize transfer</button>
+            </div>
+          </div>
+        </form>
+      </section>
+    </main>
+    <footer class="site-footer">
+      Nova Fintech Banking — designed by Northstar Digital Studio.
+    </footer>
+  </div>
+  <script>
+    const menuButton = document.querySelector(".hamburger");
+    const drawer = document.querySelector(".mobile-drawer");
+    const backdrop = document.querySelector(".drawer-backdrop");
+    const closeTargets = document.querySelectorAll("[data-close-drawer]");
+    const drawerLinks = document.querySelectorAll(".drawer-links a");
+    const setDrawer = (open) => {
+      drawer.classList.toggle("open", open);
+      backdrop.classList.toggle("open", open);
+      document.body.classList.toggle("drawer-open", open);
+      drawer.setAttribute("aria-hidden", String(!open));
+      menuButton.setAttribute("aria-expanded", String(open));
+      if(open){
+        drawer.querySelector("a").focus();
+      }else{
+        menuButton.focus();
+      }
+    };
+    menuButton.addEventListener("click", () => setDrawer(true));
+    closeTargets.forEach((target) => target.addEventListener("click", () => setDrawer(false)));
+    drawerLinks.forEach((link) => link.addEventListener("click", () => setDrawer(false)));
+    document.addEventListener("keydown", (event) => {
+      if(event.key === "Escape" && drawer.classList.contains("open")){
+        setDrawer(false);
+      }
+    });
+    const steps = Array.from(document.querySelectorAll("[data-transfer-step]"));
+    const indicators = Array.from(document.querySelectorAll("[data-step-indicator]"));
+    let activeStep = 0;
+    const showStep = (index) => {
+      activeStep = Math.max(0, Math.min(index, steps.length - 1));
+      steps.forEach((step, stepIndex) => step.classList.toggle("active", stepIndex === activeStep));
+      indicators.forEach((step, stepIndex) => step.classList.toggle("active", stepIndex <= activeStep));
+    };
+    document.querySelectorAll("[data-next-step]").forEach((button) => {
+      button.addEventListener("click", () => showStep(activeStep + 1));
+    });
+    document.querySelectorAll("[data-prev-step]").forEach((button) => {
+      button.addEventListener("click", () => showStep(activeStep - 1));
+    });
+    document.querySelector(".transfer-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const note = document.querySelector(".success-note");
+      note.textContent = "Transfer authorized and queued for delivery.";
+    });
+  </script>
+</body>
+</html>
