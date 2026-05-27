@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vault Password Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--cloud:#F6F8FC;--ink:#19212B;--indigo:#4F46E5;--cyan:#06B6D4;--lime:#A3E635;--coral:#FB7185}
+body{font-family:'Inter',sans-serif;background:var(--cloud);color:var(--ink);line-height:1.5}
+h1,h2,h3,h4,h5{font-family:'Manrope',sans-serif;font-weight:700}
+a{color:var(--indigo);text-decoration:none}
+button{cursor:pointer;font-family:inherit}
+.skip-link{position:absolute;top:-40px;left:0;background:var(--indigo);color:#fff;padding:8px 16px;z-index:100}
+.skip-link:focus{top:0}
+.top-nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:16px;padding:0 24px;height:60px;background:#fff;border-bottom:1px solid #e5e7eb}
+.nav-brand{font-family:'Manrope',sans-serif;font-weight:800;font-size:1.25rem;color:var(--indigo);display:flex;align-items:center;gap:8px}
+.nav-brand svg{width:28px;height:28px}
+.nav-links{display:flex;gap:4px;margin-left:24px}
+.nav-links a{padding:8px 14px;border-radius:8px;font-size:0.875rem;font-weight:500;color:var(--ink);transition:background 0.15s}
+.nav-links a:hover,.nav-links a[aria-current="page"]{background:var(--cloud);color:var(--indigo)}
+.nav-search{margin-left:auto;position:relative}
+.nav-search input{width:220px;padding:8px 12px 8px 36px;border:1px solid #e5e7eb;border-radius:8px;font-size:0.875rem;background:var(--cloud)}
+.nav-search svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:16px;height:16px;color:#9ca3af}
+.nav-cta{margin-left:12px;padding:8px 18px;background:var(--indigo);color:#fff;border:none;border-radius:8px;font-size:0.875rem;font-weight:600}
+.hamburger{display:none;background:none;border:none;padding:8px}
+.hamburger svg{width:24px;height:24px}
+.drawer-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:60}
+.drawer-overlay.open{display:block}
+.drawer{position:fixed;top:0;left:0;width:280px;height:100%;background:#fff;z-index:70;transform:translateX(-100%);transition:transform 0.25s;padding:24px;overflow-y:auto}
+.drawer.open{transform:translateX(0)}
+.drawer-close{background:none;border:none;font-size:1.5rem;position:absolute;top:16px;right:16px}
+.drawer nav{display:flex;flex-direction:column;gap:4px;margin-top:24px}
+.drawer nav a{padding:10px 14px;border-radius:8px;font-size:0.9375rem}
+@media(max-width:768px){.nav-links,.nav-search,.nav-cta{display:none}.hamburger{display:block}.top-nav{padding:0 16px}}
+.kpi-strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;padding:24px}
+.kpi-card{background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb}
+.kpi-label{font-size:0.8125rem;color:#6b7280;margin-bottom:4px}
+.kpi-value{font-family:'Manrope',sans-serif;font-size:1.75rem;font-weight:800}
+.kpi-trend{font-size:0.8125rem;margin-top:4px}
+.kpi-trend.up{color:#059669}
+.kpi-trend.down{color:var(--coral)}
+.main{padding:0 24px 48px}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.section-header h2{font-size:1.25rem}
+.badge{background:var(--cloud);padding:4px 12px;border-radius:20px;font-size:0.8125rem;font-weight:600}
+.cred-table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;border:1px solid #e5e7eb;margin-bottom:32px}
+.cred-table th{text-align:left;padding:12px 16px;font-size:0.8125rem;color:#6b7280;font-weight:600;border-bottom:1px solid #e5e7eb;background:var(--cloud)}
+.cred-table td{padding:12px 16px;font-size:0.875rem;border-bottom:1px solid #f3f4f6}
+.cred-table tr:last-child td{border-bottom:none}
+.cred-table tr:hover{background:var(--cloud)}
+.badge-cat{display:inline-block;padding:2px 10px;border-radius:20px;font-size:0.75rem;font-weight:600}
+.cat-social{background:#dbeafe;color:#1d4ed8}
+.cat-finance{background:#d1fae5;color:#065f46}
+.cat-work{background:#ede9fe;color:#5b21b6}
+.cat-dev{background:#fef3c7;color:#92400e}
+.cat-email{background:#fce7f3;color:#9d174d}
+.strength-bar{width:80px;height:6px;background:#e5e7eb;border-radius:3px;display:inline-block;vertical-align:middle}
+.strength-fill{height:100%;border-radius:3px}
+.strength-strong{background:#059669}
+.strength-medium{background:#d97706}
+.strength-weak{background:var(--coral)}
+.btn-icon{background:none;border:none;padding:4px;color:#9ca3af;font-size:1rem}
+.btn-icon:hover{color:var(--indigo)}
+.generator-card{background:#fff;border-radius:12px;padding:24px;border:1px solid #e5e7eb;margin-bottom:32px}
+.gen-output{background:var(--ink);color:var(--lime);font-family:'Courier New',monospace;font-size:1.25rem;padding:16px;border-radius:8px;margin-bottom:16px;letter-spacing:2px;word-break:break-all}
+.gen-controls{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:16px}
+.gen-control{display:flex;align-items:center;gap:8px;font-size:0.875rem}
+.gen-control input[type="range"]{width:120px;accent-color:var(--indigo)}
+.gen-control input[type="checkbox"]{accent-color:var(--indigo);width:16px;height:16px}
+.gen-actions{display:flex;gap:8px}
+.btn-primary{padding:10px 20px;background:var(--indigo);color:#fff;border:none;border-radius:8px;font-size:0.875rem;font-weight:600}
+.btn-outline{padding:10px 20px;background:transparent;color:var(--ink);border:1px solid #e5e7eb;border-radius:8px;font-size:0.875rem;font-weight:600}
+.breach-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:32px}
+.breach-card{background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb;border-left:4px solid var(--coral)}
+.breach-card.resolved{border-left-color:#059669}
+.breach-card h4{font-size:0.9375rem;margin-bottom:4px}
+.breach-detail{font-size:0.8125rem;color:#6b7280;margin-bottom:8px}
+.breach-meta{display:flex;gap:12px;font-size:0.75rem;color:#9ca3af}
+.badge-breach{display:inline-block;padding:2px 10px;border-radius:20px;font-size:0.75rem;font-weight:600}
+.breach-critical{background:#fee2e2;color:#991b1b}
+.breach-warning{background:#fef3c7;color:#92400e}
+.breach-resolved{background:#d1fae5;color:#065f46}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:32px}
+.team-card{background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb;text-align:center}
+.team-avatar{width:48px;height:48px;border-radius:50%;background:var(--indigo);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Manrope',sans-serif;font-weight:700;font-size:1.125rem;margin:0 auto 12px}
+.team-card h4{font-size:0.9375rem;margin-bottom:2px}
+.team-card .role{font-size:0.8125rem;color:#6b7280;margin-bottom:8px}
+.team-stats{display:flex;justify-content:center;gap:16px;font-size:0.8125rem}
+.team-stats span{color:#6b7280}
+.team-stats strong{color:var(--ink)}
+.activity-list{display:flex;flex-direction:column;gap:8px;margin-bottom:32px}
+.activity-item{background:#fff;border-radius:8px;padding:12px 16px;border:1px solid #e5e7eb;display:flex;align-items:center;gap:12px;font-size:0.875rem}
+.activity-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.activity-time{margin-left:auto;font-size:0.75rem;color:#9ca3af}
+.site-footer{padding:32px 24px;text-align:center;font-size:0.8125rem;color:#9ca3af;border-top:1px solid #e5e7eb;margin-top:48px}
+:focus-visible{outline:2px solid var(--indigo);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+@media(max-width:768px){.kpi-strip{grid-template-columns:repeat(2,1fr)}.breach-grid,.team-grid{grid-template-columns:1fr}.cred-table{font-size:0.8125rem}.cred-table th,.cred-table td{padding:8px 10px}.gen-controls{flex-direction:column}}
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+<header class="top-nav">
+  <button class="hamburger" aria-label="Open menu" aria-expanded="false" onclick="document.getElementById('drawer').classList.toggle('open');document.getElementById('overlay').classList.toggle('open');this.setAttribute('aria-expanded',document.getElementById('drawer').classList.contains('open'))">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+  </button>
+  <a href="#" class="nav-brand">
+    <svg viewBox="0 0 28 28" fill="none"><rect x="6" y="10" width="16" height="14" rx="2" stroke="#4F46E5" stroke-width="2"/><path d="M10 10V8a4 4 0 0 1 8 0v2" stroke="#06B6D4" stroke-width="2"/><circle cx="14" cy="17" r="2" fill="#A3E635"/></svg>
+    Vault Password Manager
+  </a>
+  <nav class="nav-links" aria-label="Main">
+    <a href="#" aria-current="page">Vault</a>
+    <a href="#generator">Generator</a>
+    <a href="#breaches">Breaches</a>
+    <a href="#team">Team</a>
+    <a href="#activity">Activity</a>
+  </nav>
+  <div class="nav-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="search" title="Search credentials" aria-label="Search credentials">
+  </div>
+  <button class="nav-cta">+ Add Credential</button>
+</header>
+<div class="drawer-overlay" id="overlay" onclick="document.getElementById('drawer').classList.remove('open');this.classList.remove('open')"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-label="Navigation">
+  <button class="drawer-close" aria-label="Close menu" onclick="document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open')">&times;</button>
+  <nav>
+    <a href="#">Vault</a>
+    <a href="#generator">Generator</a>
+    <a href="#breaches">Breaches</a>
+    <a href="#team">Team</a>
+    <a href="#activity">Activity</a>
+  </nav>
+</aside>
+<main id="main">
+  <div class="kpi-strip" role="region" aria-label="Key metrics">
+    <div class="kpi-card">
+      <div class="kpi-label">Stored Credentials</div>
+      <div class="kpi-value">247</div>
+      <div class="kpi-trend up">↑ 12 this month</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Weak Passwords</div>
+      <div class="kpi-value">18</div>
+      <div class="kpi-trend down">↑ 3 detected</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Breach Alerts</div>
+      <div class="kpi-value">5</div>
+      <div class="kpi-trend down">2 critical</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Team Members</div>
+      <div class="kpi-value">8</div>
+      <div class="kpi-trend up">All synced</div>
+    </div>
+  </div>
+  <div class="main">
+    <section aria-labelledby="vault-heading">
+      <div class="section-header">
+        <h2 id="vault-heading">Credential Vault</h2>
+        <span class="badge">247 Stored</span>
+      </div>
+      <table class="cred-table">
+        <thead>
+          <tr>
+            <th>Service</th>
+            <th>Username</th>
+            <th>Category</th>
+            <th>Strength</th>
+            <th>Last Used</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>GitHub</strong></td><td>alex.dev@company.io</td><td><span class="badge-cat cat-dev">Dev</span></td><td><span class="strength-bar"><span class="strength-fill strength-strong" style="width:95%"></span></span> Strong</td><td>2 min ago</td><td><button class="btn-icon" title="Copy">📋</button> <button class="btn-icon" title="Edit">✏️</button></td></tr>
+          <tr><td><strong>AWS Console</strong></td><td>admin@company.io</td><td><span class="badge-cat cat-dev">Dev</span></td><td><span class="strength-bar"><span class="strength-fill strength-strong" style="width:90%"></span></span> Strong</td><td>1 hour ago</td><td><button class="btn-icon" title="Copy">📋</button> <button class="btn-icon" title="Edit">✏️</button></td></tr>
+          <tr><td><strong>Chase Bank</strong></td><td>alex.morgan</td><td><span class="badge-cat cat-finance">Finance</span></td><td><span class="strength-bar"><span class="strength-fill strength-strong" style="width:88%"></span></span> Strong</td><td>3 hours ago</td><td><button class="btn-icon" title="Copy">📋</button> <button class="btn-icon" title="Edit">✏️</button></td></tr>
+          <tr><td><strong>Twitter / X</strong></td><td>@alexmorgan_dev</td><td><span class="badge-cat cat-social">Social</span></td><td><span class="strength-bar"><span class="strength-fill strength-medium" style="width:55%"></span></span> Medium</td><td>Yesterday</td><td><button class="btn-icon" title="Copy">📋</button> <button class="btn-icon" title="Edit">✏️</button></td></tr>
+          <tr><td><strong>Slack</strong></td><td>alex.morgan@company.io</td><td><span class="badge-cat cat-work">Work</span></td><td><span class="strength-bar"><span class="strength-fill strength-strong" style="width:82%"></span></span> Strong</td><td>5 min ago</td><td><button class="btn-icon" title="Copy">📋</button> <button class="btn-icon" title="Edit">✏️</button></td></tr>
+          <tr><td><strong>Gmail</strong></td><td>alex.morgan@gmail.com</td><td><span class="badge-cat cat-email">Email</span></td><td><span class="strength-bar"><span class="strength-fill strength-strong" style="width:92%"></span></span> Strong</td><td>10 min ago</td><td><button class="btn-icon" title="Copy">📋</button> <button class="btn-icon" title="Edit">✏️</button></td></tr>
+          <tr><td><strong>LinkedIn</strong></td><td>alex-morgan-dev</td><td><span class="badge-cat cat-social">Social</span></td><td><span class="strength-bar"><span class="strength-fill strength-weak" style="width:30%"></span></span> Weak</td><td>Last week</td><td><button class="btn-icon" title="Copy">📋</button> <button class="btn-icon" title="Edit">✏️</button></td></tr>
+          <tr><td><strong>Vercel</strong></td><td>alexmorgan</td><td><span class="badge-cat cat-dev">Dev</span></td><td><span class="strength-bar"><span class="strength-fill strength-strong" style="width:85%"></span></span> Strong</td><td>4 hours ago</td><td><button class="btn-icon" title="Copy">📋</button> <button class="btn-icon" title="Edit">✏️</button></td></tr>
+          <tr><td><strong>Netflix</strong></td><td>alex.morgan@gmail.com</td><td><span class="badge-cat cat-social">Social</span></td><td><span class="strength-bar"><span class="strength-fill strength-weak" style="width:25%"></span></span> Weak</td><td>2 days ago</td><td><button class="btn-icon" title="Copy">📋</button> <button class="btn-icon" title="Edit">✏️</button></td></tr>
+          <tr><td><strong>Jira</strong></td><td>alex.morgan@company.io</td><td><span class="badge-cat cat-work">Work</span></td><td><span class="strength-bar"><span class="strength-fill strength-strong" style="width:78%"></span></span> Strong</td><td>30 min ago</td><td><button class="btn-icon" title="Copy">📋</button> <button class="btn-icon" title="Edit">✏️</button></td></tr>
+          <tr><td><strong>Figma</strong></td><td>alex.morgan@company.io</td><td><span class="badge-cat cat-work">Work</span></td><td><span class="strength-bar"><span class="strength-fill strength-strong" style="width:80%"></span></span> Strong</td><td>1 hour ago</td><td><button class="btn-icon" title="Copy">📋</button> <button class="btn-icon" title="Edit">✏️</button></td></tr>
+          <tr><td><strong>Stripe</strong></td><td>alex.morgan@company.io</td><td><span class="badge-cat cat-finance">Finance</span></td><td><span class="strength-bar"><span class="strength-fill strength-strong" style="width:93%"></span></span> Strong</td><td>6 hours ago</td><td><button class="btn-icon" title="Copy">📋</button> <button class="btn-icon" title="Edit">✏️</button></td></tr>
+          <tr><td><strong>Reddit</strong></td><td>u/alexmorgan</td><td><span class="badge-cat cat-social">Social</span></td><td><span class="strength-bar"><span class="strength-fill strength-medium" style="width:48%"></span></span> Medium</td><td>3 days ago</td><td><button class="btn-icon" title="Copy">📋</button> <button class="btn-icon" title="Edit">✏️</button></td></tr>
+          <tr><td><strong>Docker Hub</strong></td><td>alexmorgan</td><td><span class="badge-cat cat-dev">Dev</span></td><td><span class="strength-bar"><span class="strength-fill strength-strong" style="width:87%"></span></span> Strong</td><td>2 hours ago</td><td><button class="btn-icon" title="Copy">📋</button> <button class="btn-icon" title="Edit">✏️</button></td></tr>
+          <tr><td><strong>Outlook</strong></td><td>alex.morgan@company.io</td><td><span class="badge-cat cat-email">Email</span></td><td><span class="strength-bar"><span class="strength-fill strength-strong" style="width:91%"></span></span> Strong</td><td>15 min ago</td><td><button class="btn-icon" title="Copy">📋</button> <button class="btn-icon" title="Edit">✏️</button></td></tr>
+        </tbody>
+      </table>
+    </section>
+    <section id="generator" aria-labelledby="gen-heading">
+      <div class="section-header">
+        <h2 id="gen-heading">Password Generator</h2>
+      </div>
+      <div class="generator-card">
+        <div class="gen-output" id="genOutput">kX9$mP2vL@nQ7wR4</div>
+        <div class="gen-controls">
+          <div class="gen-control">
+            <label for="genLength">Length</label>
+            <input type="range" id="genLength" min="8" max="64" value="16" oninput="document.getElementById('lenVal').textContent=this.value">
+            <span id="lenVal">16</span>
+          </div>
+          <div class="gen-control">
+            <input type="checkbox" id="genUpper" checked>
+            <label for="genUpper">Uppercase</label>
+          </div>
+          <div class="gen-control">
+            <input type="checkbox" id="genLower" checked>
+            <label for="genLower">Lowercase</label>
+          </div>
+          <div class="gen-control">
+            <input type="checkbox" id="genDigits" checked>
+            <label for="genDigits">Digits</label>
+          </div>
+          <div class="gen-control">
+            <input type="checkbox" id="genSymbols" checked>
+            <label for="genSymbols">Symbols</label>
+          </div>
+        </div>
+        <div class="gen-actions">
+          <button class="btn-primary" onclick="var c='abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#$%^&*';var o='';for(var i=0;i<16;i++)o+=c[Math.floor(Math.random()*c.length)];document.getElementById('genOutput').textContent=o">Generate New</button>
+          <button class="btn-outline" onclick="navigator.clipboard.writeText(document.getElementById('genOutput').textContent)">Copy to Clipboard</button>
+        </div>
+      </div>
+    </section>
+    <section id="breaches" aria-labelledby="breach-heading">
+      <div class="section-header">
+        <h2 id="breach-heading">Breach Monitoring</h2>
+        <span class="badge">5 Active Alerts</span>
+      </div>
+      <div class="breach-grid">
+        <div class="breach-card">
+          <h4>LinkedIn Data Breach</h4>
+          <div class="breach-detail">Your LinkedIn credentials may be exposed in the 2024 data breach affecting 12M accounts.</div>
+          <div style="margin-bottom:8px"><span class="badge-breach breach-critical">Critical</span></div>
+          <div class="breach-meta"><span>Detected: 2 days ago</span><span>Affected: alex-morgan-dev</span></div>
+        </div>
+        <div class="breach-card">
+          <h4>Netflix Credential Leak</h4>
+          <div class="breach-detail">Password found in a public credential dump. Immediate rotation required.</div>
+          <div style="margin-bottom:8px"><span class="badge-breach breach-critical">Critical</span></div>
+          <div class="breach-meta"><span>Detected: 3 days ago</span><span>Affected: alex.morgan@gmail.com</span></div>
+        </div>
+        <div class="breach-card">
+          <h4>Twitter / X API Key Exposure</h4>
+          <div class="breach-detail">API key was inadvertently committed to a public repository. Key should be rotated.</div>
+          <div style="margin-bottom:8px"><span class="badge-breach breach-warning">Warning</span></div>
+          <div class="breach-meta"><span>Detected: 5 days ago</span><span>Affected: @alexmorgan_dev</span></div>
+        </div>
+        <div class="breach-card resolved">
+          <h4>Adobe Credential Breach</h4>
+          <div class="breach-detail">Credentials were exposed but password was already rotated. No action needed.</div>
+          <div style="margin-bottom:8px"><span class="badge-breach breach-resolved">Resolved</span></div>
+          <div class="breach-meta"><span>Detected: 12 days ago</span><span>Affected: alex.morgan@gmail.com</span></div>
+        </div>
+        <div class="breach-card resolved">
+          <h4>Dropbox Shared Link Leak</h4>
+          <div class="breach-detail">Shared folder link was publicly accessible. Link has been revoked and regenerated.</div>
+          <div style="margin-bottom:8px"><span class="badge-breach breach-resolved">Resolved</span></div>
+          <div class="breach-meta"><span>Detected: 20 days ago</span><span>Affected: alex.morgan@gmail.com</span></div>
+        </div>
+      </div>
+    </section>
+    <section id="team" aria-labelledby="team-heading">
+      <div class="section-header">
+        <h2 id="team-heading">Team Sharing</h2>
+        <span class="badge">8 Members</span>
+      </div>
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-avatar">AM</div>
+          <h4>Alex Morgan</h4>
+          <div class="role">Admin</div>
+          <div class="team-stats"><span>Shared: <strong>45</strong></span><span>Personal: <strong>202</strong></span></div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar" style="background:var(--cyan)">SK</div>
+          <h4>Sarah Kim</h4>
+          <div class="role">Developer</div>
+          <div class="team-stats"><span>Shared: <strong>32</strong></span><span>Personal: <strong>156</strong></span></div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar" style="background:var(--lime);color:var(--ink)">JP</div>
+          <h4>James Park</h4>
+          <div class="role">Designer</div>
+          <div class="team-stats"><span>Shared: <strong>18</strong></span><span>Personal: <strong>89</strong></span></div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar" style="background:var(--coral)">LW</div>
+          <h4>Lisa Wang</h4>
+          <div class="role">DevOps</div>
+          <div class="team-stats"><span>Shared: <strong>56</strong></span><span>Personal: <strong>134</strong></span></div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar" style="background:#8b5cf6">MR</div>
+          <h4>Mike Rodriguez</h4>
+          <div class="role">QA Lead</div>
+          <div class="team-stats"><span>Shared: <strong>22</strong></span><span>Personal: <strong>78</strong></span></div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar" style="background:#f59e0b">EJ</div>
+          <h4>Emma Johnson</h4>
+          <div class="role">PM</div>
+          <div class="team-stats"><span>Shared: <strong>15</strong></span><span>Personal: <strong>67</strong></span></div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar" style="background:#ec4899">DL</div>
+          <h4>David Lee</h4>
+          <div class="role">Backend Engineer</div>
+          <div class="team-stats"><span>Shared: <strong>28</strong></span><span>Personal: <strong>112</strong></span></div>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar" style="background:#14b8a6">RP</div>
+          <h4>Rachel Patel</h4>
+          <div class="role">Security Lead</div>
+          <div class="team-stats"><span>Shared: <strong>62</strong></span><span>Personal: <strong>95</strong></span></div>
+        </div>
+      </div>
+    </section>
+    <section id="activity" aria-labelledby="activity-heading">
+      <div class="section-header">
+        <h2 id="activity-heading">Recent Activity</h2>
+      </div>
+      <div class="activity-list">
+        <div class="activity-item">
+          <span class="activity-dot" style="background:#059669"></span>
+          <span><strong>Alex Morgan</strong> updated GitHub credentials</span>
+          <span class="activity-time">2 min ago</span>
+        </div>
+        <div class="activity-item">
+          <span class="activity-dot" style="background:var(--indigo)"></span>
+          <span><strong>Sarah Kim</strong> shared AWS staging vault with team</span>
+          <span class="activity-time">15 min ago</span>
+        </div>
+        <div class="activity-item">
+          <span class="activity-dot" style="background:var(--coral)"></span>
+          <span><strong>System</strong> detected weak password for LinkedIn</span>
+          <span class="activity-time">1 hour ago</span>
+        </div>
+        <div class="activity-item">
+          <span class="activity-dot" style="background:#059669"></span>
+          <span><strong>Lisa Wang</strong> rotated 3 database passwords</span>
+          <span class="activity-time">2 hours ago</span>
+        </div>
+        <div class="activity-item">
+          <span class="activity-dot" style="background:var(--indigo)"></span>
+          <span><strong>James Park</strong> added Figma credentials to shared vault</span>
+          <span class="activity-time">3 hours ago</span>
+        </div>
+        <div class="activity-item">
+          <span class="activity-dot" style="background:#059669"></span>
+          <span><strong>Mike Rodriguez</strong> enabled 2FA on Jira account</span>
+          <span class="activity-time">4 hours ago</span>
+        </div>
+        <div class="activity-item">
+          <span class="activity-dot" style="background:var(--coral)"></span>
+          <span><strong>System</strong> breach alert: Netflix credential leaked</span>
+          <span class="activity-time">5 hours ago</span>
+        </div>
+        <div class="activity-item">
+          <span class="activity-dot" style="background:var(--indigo)"></span>
+          <span><strong>Rachel Patel</strong> updated security policy for all vaults</span>
+          <span class="activity-time">6 hours ago</span>
+        </div>
+        <div class="activity-item">
+          <span class="activity-dot" style="background:#059669"></span>
+          <span><strong>David Lee</strong> rotated Stripe API keys</span>
+          <span class="activity-time">8 hours ago</span>
+        </div>
+        <div class="activity-item">
+          <span class="activity-dot" style="background:var(--indigo)"></span>
+          <span><strong>Emma Johnson</strong> exported quarterly security report</span>
+          <span class="activity-time">Yesterday</span>
+        </div>
+        <div class="activity-item">
+          <span class="activity-dot" style="background:#059669"></span>
+          <span><strong>System</strong> auto-rotated 5 expiring passwords</span>
+          <span class="activity-time">Yesterday</span>
+        </div>
+        <div class="activity-item">
+          <span class="activity-dot" style="background:var(--coral)"></span>
+          <span><strong>System</strong> detected duplicate passwords across 3 services</span>
+          <span class="activity-time">2 days ago</span>
+        </div>
+        <div class="activity-item">
+          <span class="activity-dot" style="background:var(--indigo)"></span>
+          <span><strong>Alex Morgan</strong> created new shared vault for Q2 project</span>
+          <span class="activity-time">2 days ago</span>
+        </div>
+        <div class="activity-item">
+          <span class="activity-dot" style="background:#059669"></span>
+          <span><strong>Rachel Patel</strong> completed security audit on all team credentials</span>
+          <span class="activity-time">3 days ago</span>
+        </div>
+        <div class="activity-item">
+          <span class="activity-dot" style="background:var(--indigo)"></span>
+          <span><strong>Sarah Kim</strong> migrated 24 credentials from LastPass</span>
+          <span class="activity-time">3 days ago</span>
+        </div>
+        <div class="activity-item">
+          <span class="activity-dot" style="background:#059669"></span>
+          <span><strong>System</strong> backup completed: 247 credentials encrypted and stored</span>
+          <span class="activity-time">4 days ago</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+<footer class="site-footer">
+  Vault Password Manager — designed by Studio · Standalone prototype · No real credentials stored
+</footer>
+</body>
+</html>
+<!-- SECURITY SCORE SECTION - inserted before closing main -->
+<div class="main" style="padding-top:0">
+  <section aria-labelledby="security-heading">
+    <div class="section-header">
+      <h2 id="security-heading">Security Score</h2>
+      <span class="badge">Overall: B+</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px;margin-bottom:32px">
+      <div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb;text-align:center">
+        <div style="font-size:0.8125rem;color:#6b7280;margin-bottom:4px">Password Strength</div>
+        <div style="font-family:'Manrope',sans-serif;font-size:2rem;font-weight:800;color:var(--indigo)">82%</div>
+        <div style="height:6px;background:#e5e7eb;border-radius:3px;margin-top:8px"><div style="height:100%;border-radius:3px;background:var(--indigo);width:82%"></div></div>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb;text-align:center">
+        <div style="font-size:0.8125rem;color:#6b7280;margin-bottom:4px">2FA Coverage</div>
+        <div style="font-family:'Manrope',sans-serif;font-size:2rem;font-weight:800;color:var(--cyan)">67%</div>
+        <div style="height:6px;background:#e5e7eb;border-radius:3px;margin-top:8px"><div style="height:100%;border-radius:3px;background:var(--cyan);width:67%"></div></div>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb;text-align:center">
+        <div style="font-size:0.8125rem;color:#6b7280;margin-bottom:4px">Unique Passwords</div>
+        <div style="font-family:'Manrope',sans-serif;font-size:2rem;font-weight:800;color:var(--lime)">91%</div>
+        <div style="height:6px;background:#e5e7eb;border-radius:3px;margin-top:8px"><div style="height:100%;border-radius:3px;background:var(--lime);width:91%"></div></div>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb;text-align:center">
+        <div style="font-size:0.8125rem;color:#6b7280;margin-bottom:4px">Breach Exposure</div>
+        <div style="font-family:'Manrope',sans-serif;font-size:2rem;font-weight:800;color:var(--coral)">2%</div>
+        <div style="height:6px;background:#e5e7eb;border-radius:3px;margin-top:8px"><div style="height:100%;border-radius:3px;background:var(--coral);width:2%"></div></div>
+      </div>
+      <div style="password:background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb;text-align:center">
+        <div style="font-size:0.8125rem;color:#6b7280;margin-bottom:4px">Password Reuse</div>
+        <div style="font-family:'Manrope',sans-serif;font-size:2rem;font-weight:800;color:#f59e0b">8%</div>
+        <div style="height:6px;background:#e5e7eb;border-radius:3px;margin-top:8px"><div style="height:100%;border-radius:3px;background:#f59e0b;width:8%"></div></div>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb;text-align:center">
+        <div style="font-size:0.8125rem;color:#6b7280;margin-bottom:4px">Avg Password Age</div>
+        <div style="font-family:'Manrope',sans-serif;font-size:2rem;font-weight:800;color:#8b5cf6">47d</div>
+        <div style="font-size:0.75rem;color:#6b7280;margin-top:4px">Recommended: &lt;90 days</div>
+      </div>
+    </div>
+  </section>
+  <section aria-labelledby="audit-heading">
+    <div class="section-header">
+      <h2 id="audit-heading">Audit Log</h2>
+      <span class="badge">Last 30 Days</span>
+    </div>
+    <table class="cred-table">
+      <thead>
+        <tr>
+          <th>Timestamp</th>
+          <th>User</th>
+          <th>Action</th>
+          <th>Target</th>
+          <th>IP Address</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>2025-02-10 14:32</td><td>Alex Morgan</td><td>Password Updated</td><td>GitHub</td><td>192.168.1.45</td><td><span class="badge-breach breach-resolved">Success</span></td></tr>
+        <tr><td>2025-02-10 14:15</td><td>Sarah Kim</td><td>Vault Shared</td><td>AWS Staging</td><td>192.168.1.67</td><td><span class="badge-breach breach-resolved">Success</span></td></tr>
+        <tr><td>2025-02-10 13:50</td><td>System</td><td>Breach Detected</td><td>LinkedIn</td><td>—</td><td><span class="badge-breach breach-critical">Alert</span></td></tr>
+        <tr><td>2025-02-10 12:30</td><td>Lisa Wang</td><td>Password Rotated</td><td>PostgreSQL Prod</td><td>192.168.1.23</td><td><span class="badge-breach breach-resolved">Success</span></td></tr>
+        <tr><td>2025-02-10 11:45</td><td>James Park</td><td>Credential Added</td><td>Figma</td><td>192.168.1.89</td><td><span class="badge-breach breach-resolved">Success</span></td></tr>
+        <tr><td>2025-02-10 10:20</td><td>Mike Rodriguez</td><td>2FA Enabled</td><td>Jira</td><td>192.168.1.34</td><td><span class="badge-breach breach-resolved">Success</span></td></tr>
+        <tr><td>2025-02-10 09:15</td><td>System</td><td>Auto-Rotate</td><td>5 Credentials</td><td>—</td><td><span class="badge-breach breach-warning">Partial</span></td></tr>
+        <tr><td>2025-02-09 16:40</td><td>Rachel Patel</td><td>Policy Updated</td><td>All Vaults</td><td>192.168.1.12</td><td><span class="badge-breach breach-resolved">Success</span></td></tr>
+        <tr><td>2025-02-09 14:55</td><td>David Lee</td><td>API Key Rotated</td><td>Stripe</td><td>192.168.1.78</td><td><span class="badge-breach breach-resolved">Success</span></td></tr>
+        <tr><td>2025-02-09 11:30</td><td>Alex Morgan</td><td>Export Report</td><td>Q1 Security</td><td>192.168.1.45</td><td><span class="badge-breach breach-resolved">Success</span></td></tr>
+        <tr><td>2025-02-08 17:20</td><td>Emma Johnson</td><td>Login Attempt</td><td>Dashboard</td><td>10.0.0.55</td><td><span class="badge-breach breach-critical">Failed</span></td></tr>
+        <tr><td>2025-02-08 17:21</td><td>Emma Johnson</td><td>Login Success</td><td>Dashboard</td><td>10.0.0.55</td><td><span class="badge-breach breach-resolved">Success</span></td></tr>
+        <tr><td>2025-02-08 09:00</td><td>System</td><td>Backup Completed</td><td>All Vaults</td><td>—</td><td><span class="badge-breach breach-resolved">Success</span></td></tr>
+        <tr><td>2025-02-07 15:10</td><td>Sarah Kim</td><td>Import Credentials</td><td>LastPass (24)</td><td>192.168.1.67</td><td><span class="badge-breach breach-resolved">Success</span></td></tr>
+        <tr><td>2025-02-07 10:45</td><td>System</td><td>Duplicate Detected</td><td>3 Services</td><td>—</td><td><span class="badge-breach breach-warning">Warning</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+</div>
+  <section aria-labelledby="settings-heading">
+    <div class="section-header">
+      <h2 id="settings-heading">Vault Settings</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px;margin-bottom:32px">
+      <div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb">
+        <h4 style="font-size:0.9375rem;margin-bottom:12px">Auto-Lock Timer</h4>
+        <p style="font-size:0.875rem;color:#6b7280;margin-bottom:12px">Automatically lock the vault after a period of inactivity.</p>
+        <div style="display:flex;align-items:center;gap:8px">
+          <input type="range" min="1" max="60" value="15" style="flex:1;accent-color:var(--indigo)">
+          <span style="font-weight:600;font-size:0.875rem;min-width:50px">15 min</span>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb">
+        <h4 style="font-size:0.9375rem;margin-bottom:12px">Password Rotation Policy</h4>
+        <p style="font-size:0.875rem;color:#6b7280;margin-bottom:12px">Force password rotation for all team members on schedule.</p>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn-primary" style="padding:6px 14px;font-size:0.8125rem">30 Days</button>
+          <button class="btn-outline" style="padding:6px 14px;font-size:0.8125rem">60 Days</button>
+          <button class="btn-outline" style="padding:6px 14px;font-size:0.8125rem">90 Days</button>
+          <button class="btn-outline" style="padding:6px 14px;font-size:0.8125rem">Custom</button>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb">
+        <h4 style="font-size:0.9375rem;margin-bottom:12px">Breach Notification</h4>
+        <p style="font-size:0.875rem;color:#6b7280;margin-bottom:12px">Get notified when credentials appear in known data breaches.</p>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label style="display:flex;align-items:center;gap:8px;font-size:0.875rem">
+            <input type="checkbox" checked style="accent-color:var(--indigo);width:16px;height:16px"> Email notifications
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:0.875rem">
+            <input type="checkbox" checked style="accent-color:var(--indigo);width:16px;height:16px"> In-app alerts
+          </label>
+          <label style="display:flex;align-items:center;gap:8px;font-size:0.875rem">
+            <input type="checkbox" style="accent-color:var(--indigo);width:16px;height:16px"> SMS notifications
+          </label>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb">
+        <h4 style="font-size:0.9375rem;margin-bottom:12px">Export & Backup</h4>
+        <p style="font-size:0.875rem;color:#6b7280;margin-bottom:12px">Export encrypted backups or import from another manager.</p>
+        <div style="display:flex;gap:8px">
+          <button class="btn-primary" style="padding:6px 14px;font-size:0.8125rem">Export Backup</button>
+          <button class="btn-outline" style="padding:6px 14px;font-size:0.8125rem">Import</button>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb">
+        <h4 style="font-size:0.9375rem;margin-bottom:12px">Two-Factor Authentication</h4>
+        <p style="font-size:0.875rem;color:#6b7280;margin-bottom:12px">Require 2FA for all team members accessing shared vaults.</p>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:44px;height:24px;border-radius:12px;background:var(--indigo);position:relative;cursor:pointer">
+            <div style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;right:2px"></div>
+          </div>
+          <span style="font-size:0.875rem;font-weight:600;color:var(--indigo)">Enabled</span>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb">
+        <h4 style="font-size:0.9375rem;margin-bottom:12px">Session History</h4>
+        <p style="font-size:0.875rem;color:#6b7280;margin-bottom:12px">View and manage active sessions across devices.</p>
+        <div style="font-size:0.8125rem;color:#6b7280">
+          <div style="margin-bottom:4px">🖥️ MacBook Pro — Active now</div>
+          <div style="margin-bottom:4px">📱 iPhone 15 — 2 hours ago</div>
+          <div>💻 Office PC — Yesterday</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+</main>
+<footer class="site-footer">
+  Vault Password Manager — designed by Studio · Standalone prototype · No real credentials stored
+</footer>
+</body>
+</html>
+<!-- PASSWORD HEALTH TIPS -->
+<div style="padding:0 24px 48px">
+  <section aria-labelledby="tips-heading">
+    <div class="section-header">
+      <h2 id="tips-heading">Security Recommendations</h2>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px">
+      <div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb;border-left:4px solid var(--coral)">
+        <h4 style="font-size:0.9375rem;margin-bottom:4px">Rotate LinkedIn Password</h4>
+        <p style="font-size:0.8125rem;color:#6b7280">Your credentials were found in the 2024 breach. Change immediately.</p>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb;border-left:4px solid var(--coral)">
+        <h4 style="font-size:0.9375rem;margin-bottom:4px">Enable 2FA on Netflix</h4>
+        <p style="font-size:0.8125rem;color:#6b7280">This service supports 2FA but it is not enabled on your account.</p>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb;border-left:4px solid #f59e0b">
+        <h4 style="font-size:0.9375rem;margin-bottom:4px">Update Weak Passwords</h4>
+        <p style="font-size:0.8125rem;color:#6b7280">18 passwords scored below acceptable strength. Generate new ones.</p>
+      </div>
+      <div style="background:#fff;border-radius:12px;padding:20px;border:1px solid #e5e7eb;border-left:4px solid #059669">
+        <h4 style="font-size:0.9375rem;margin-bottom:4px">Security Score Improved</h4>
+        <p style="font-size:0.8125rem;color:#6b7280">Your overall score increased from B to B+ this month. Keep going.</p>
+      </div>
+    </div>
+  </section>
+</div>
+<!-- COMPLIANCE NOTICE -->
+<div style="padding:0 24px 24px">
+  <div style="background:#fff;border-radius:12px;padding:16px 20px;border:1px solid #e5e7eb;display:flex;align-items:center;gap:12px">
+    <span style="font-size:1.25rem">🔒</span>
+    <div>
+      <div style="font-size:0.875rem;font-weight:600">End-to-End Encrypted</div>
+      <div style="font-size:0.8125rem;color:#6b7280">All credentials are encrypted with AES-256. Zero-knowledge architecture ensures only you can access your data.</div>
+    </div>
+  </div>
+</div>
