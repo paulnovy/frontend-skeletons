@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Cipher DevTools Hub is a developer platform marketplace skeleton with API catalog, SDK downloads, documentation links, and usage analytics.">
+  <title>Cipher DevTools Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>    :root {
+      --cloud: #F6F8FC; --ink: #19212B; --indigo: #4F46E5; --cyan: #06B6D4; --lime: #A3E635; --coral: #FB7185; --cloud-raised: rgba(246, 248, 252, 0.78); --cloud-solid: rgba(246, 248, 252, 1); --ink-muted: rgba(25, 33, 43, 0.66); --ink-soft: rgba(25, 33, 43, 0.12); --ink-faint: rgba(25, 33, 43, 0.07); --ink-panel: rgba(25, 33, 43, 0.96); --indigo-soft: rgba(79, 70, 229, 0.12); --indigo-line: rgba(79, 70, 229, 0.22); --cyan-soft: rgba(6, 182, 212, 0.14); --cyan-line: rgba(6, 182, 212, 0.30); --lime-soft: rgba(163, 230, 53, 0.22); --lime-line: rgba(163, 230, 53, 0.45); --coral-soft: rgba(251, 113, 133, 0.14); --coral-line: rgba(251, 113, 133, 0.36); --shadow: 0 24px 60px rgba(25, 33, 43, 0.12); --shadow-small: 0 12px 28px rgba(25, 33, 43, 0.08); --radius: 8px; --max: 1180px;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0; min-height: 100vh; color: var(--ink);
+      background:
+        linear-gradient(135deg, rgba(79, 70, 229, 0.08), rgba(6, 182, 212, 0.05) 42%, rgba(163, 230, 53, 0.08)),
+        var(--cloud);
+      font-family: "Inter", system-ui, sans-serif; font-size: 16px; line-height: 1.5;
+    }
+    body.drawer-open {
+      overflow: hidden;
+    }
+    a {
+      color: inherit; text-decoration: none;
+    }
+    button,
+    input {
+      font: inherit;
+    }
+    button {
+      cursor: pointer;
+    }
+    img,
+    svg {
+      display: block; max-width: 100%;
+    }
+    :focus-visible {
+      outline: 3px solid var(--cyan); outline-offset: 3px;
+    }
+    .page-shell {
+      min-height: 100vh; display: flex; flex-direction: column;
+    }
+    .topbar {
+      position: sticky; top: 0; z-index: 30; border-bottom: 1px solid var(--ink-faint); background: rgba(246, 248, 252, 0.92); backdrop-filter: blur(18px);
+    }
+    .nav-inner {
+      width: min(var(--max), calc(100% - 32px)); margin: 0 auto; min-height: 78px; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 22px;
+    }
+    .brand {
+      display: inline-flex; align-items: center; gap: 12px; font-family: "Manrope", system-ui, sans-serif; font-weight: 800; letter-spacing: 0;
+    }
+    .brand-mark {
+      width: 38px; height: 38px; display: grid; place-items: center; color: var(--cloud); background: var(--ink); border-radius: 8px; box-shadow: inset 0 0 0 2px rgba(6, 182, 212, 0.35);
+    }
+    .brand-mark span {
+      width: 16px; height: 16px; border: 2px solid var(--cyan); border-left-color: var(--lime); border-bottom-color: var(--indigo); transform: rotate(45deg);
+    }
+    .brand-copy {
+      display: flex; flex-direction: column; line-height: 1.05;
+    }
+    .brand-copy strong {
+      font-size: 1rem;
+    }
+    .brand-copy small {
+      margin-top: 4px; color: var(--ink-muted); font-family: "Inter", system-ui, sans-serif; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .nav-links {
+      display: flex; justify-content: center; align-items: center; gap: 4px;
+    }
+    .nav-links a {
+      padding: 10px 12px; color: var(--ink-muted); border-radius: 8px; font-size: 0.92rem; font-weight: 700;
+    }
+    .nav-links a:hover {
+      color: var(--ink); background: var(--ink-faint);
+    }
+    .nav-actions {
+      display: flex; align-items: center; justify-content: flex-end; gap: 12px;
+    }
+    .search-wrap {
+      width: 248px; position: relative;
+    }
+    .search-wrap label {
+      position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0);
+    }
+    .search-wrap input {
+      width: 100%; height: 42px; padding: 0 14px 0 40px; color: var(--ink); background: var(--cloud-solid); border: 1px solid var(--ink-soft); border-radius: 8px; box-shadow: var(--shadow-small);
+    }
+    .search-glyph {
+      position: absolute; left: 14px; top: 50%; width: 14px; height: 14px; border: 2px solid var(--ink-muted); border-radius: 50%; transform: translateY(-50%);
+    }
+    .search-glyph::after {
+      content: ""; position: absolute; width: 7px; height: 2px; right: -6px; bottom: -3px; background: var(--ink-muted); transform: rotate(45deg); border-radius: 2px;
+    }
+    .avatar {
+      width: 42px; height: 42px; display: grid; place-items: center; color: var(--cloud); background: linear-gradient(135deg, var(--indigo), var(--cyan)); border: 0; border-radius: 8px; font-weight: 800; box-shadow: var(--shadow-small);
+    }
+    .hamburger {
+      width: 44px; height: 44px; display: none; align-items: center; justify-content: center; border: 1px solid var(--ink-soft); border-radius: 8px; background: var(--cloud-solid);
+    }
+    .hamburger-lines {
+      width: 19px; display: grid; gap: 4px;
+    }
+    .hamburger-lines span {
+      height: 2px; background: var(--ink); border-radius: 2px;
+    }
+    .drawer-backdrop {
+      position: fixed; inset: 0; z-index: 39; background: rgba(25, 33, 43, 0.44); opacity: 0; pointer-events: none; transition: opacity 180ms ease;
+    }
+    .drawer-backdrop.is-visible {
+      opacity: 1; pointer-events: auto;
+    }
+    .mobile-drawer {
+      position: fixed; top: 0; right: 0; z-index: 40; width: min(340px, 88vw); height: 100vh; padding: 22px; background: var(--cloud); border-left: 1px solid var(--ink-soft); box-shadow: -24px 0 60px rgba(25, 33, 43, 0.18); transform: translateX(105%); transition: transform 220ms ease;
+    }
+    .mobile-drawer.is-open {
+      transform: translateX(0);
+    }
+    .drawer-head {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 18px; border-bottom: 1px solid var(--ink-faint);
+    }
+    .drawer-close {
+      width: 42px; height: 42px; display: grid; place-items: center; color: var(--ink); background: var(--cloud-solid); border: 1px solid var(--ink-soft); border-radius: 8px; font-size: 1.35rem; line-height: 1;
+    }
+    .drawer-links {
+      display: grid; gap: 8px; padding: 22px 0;
+    }
+    .drawer-links a {
+      padding: 13px 12px; background: rgba(25, 33, 43, 0.04); border: 1px solid var(--ink-faint); border-radius: 8px; font-weight: 800;
+    }
+    .drawer-search {
+      width: 100%;
+    }
+    main {
+      flex: 1;
+    }
+    .section {
+      width: min(var(--max), calc(100% - 32px)); margin: 0 auto; padding: 48px 0;
+    }
+    .hero {
+      padding-top: 48px;
+    }
+    .hero-grid {
+      display: grid; grid-template-columns: minmax(0, 0.92fr) minmax(420px, 1.08fr); gap: 28px; align-items: stretch;
+    }
+    .hero-copy {
+      min-height: 440px; display: flex; flex-direction: column; justify-content: center; padding: 40px 0;
+    }
+    .eyebrow {
+      width: fit-content; margin: 0 0 18px; padding: 8px 10px; color: var(--ink); background: var(--lime-soft); border: 1px solid var(--lime-line); border-radius: 8px; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    h1,
+    h2,
+    h3 {
+      margin: 0; color: var(--ink); font-family: "Manrope", system-ui, sans-serif; letter-spacing: 0; line-height: 1.04;
+    }
+    h1 {
+      max-width: 680px; font-size: clamp(2.7rem, 5vw, 5.2rem); font-weight: 800;
+    }
+    h2 {
+      font-size: clamp(1.6rem, 2.6vw, 2.45rem); font-weight: 800;
+    }
+    h3 {
+      font-size: 1.05rem; font-weight: 800;
+    }
+    .hero-copy p {
+      max-width: 640px; margin: 22px 0 0; color: var(--ink-muted); font-size: 1.05rem;
+    }
+    .hero-actions {
+      display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px;
+    }
+    .button {
+      display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: 0 16px; border: 1px solid transparent; border-radius: 8px; font-weight: 800;
+    }
+    .button.primary {
+      color: var(--cloud); background: var(--indigo); box-shadow: 0 14px 32px rgba(79, 70, 229, 0.26);
+    }
+    .button.secondary {
+      color: var(--ink); background: var(--cloud-solid); border-color: var(--ink-soft);
+    }
+    .hero-console {
+      display: grid; grid-template-rows: auto 1fr; overflow: hidden; background: var(--ink-panel); border: 1px solid rgba(246, 248, 252, 0.16); border-radius: 8px; box-shadow: var(--shadow);
+    }
+    .console-top {
+      display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px; border-bottom: 1px solid rgba(246, 248, 252, 0.12);
+    }
+    .window-dots {
+      display: flex; gap: 7px;
+    }
+    .window-dots span {
+      width: 10px; height: 10px; border-radius: 50%; background: var(--cyan);
+    }
+    .window-dots span:nth-child(2) {
+      background: var(--lime);
+    }
+    .window-dots span:nth-child(3) {
+      background: var(--coral);
+    }
+    .console-title {
+      color: rgba(246, 248, 252, 0.84); font-size: 0.84rem; font-weight: 800;
+    }
+    .console-body {
+      padding: 20px; display: grid; gap: 18px;
+    }
+    .code-line {
+      display: grid; grid-template-columns: 70px 1fr auto; gap: 12px; align-items: center; padding: 14px; color: rgba(246, 248, 252, 0.78); background: rgba(246, 248, 252, 0.06); border: 1px solid rgba(246, 248, 252, 0.10); border-radius: 8px; font-size: 0.88rem;
+    }
+    .code-method {
+      color: var(--lime); font-weight: 900;
+    }
+    .code-path {
+      color: var(--cloud); font-weight: 700; overflow-wrap: anywhere;
+    }
+    .code-status {
+      color: var(--cyan); font-weight: 900;
+    }
+    .console-metrics {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px;
+    }
+    .console-metric {
+      padding: 16px; background: rgba(246, 248, 252, 0.08); border: 1px solid rgba(246, 248, 252, 0.10); border-radius: 8px;
+    }
+    .console-metric span {
+      display: block; color: rgba(246, 248, 252, 0.58); font-size: 0.76rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .console-metric strong {
+      display: block; margin-top: 8px; color: var(--cloud); font-family: "Manrope", system-ui, sans-serif; font-size: 1.8rem; line-height: 1;
+    }
+    .deploy-card {
+      display: grid; gap: 12px; padding: 18px; background: rgba(79, 70, 229, 0.18); border: 1px solid rgba(6, 182, 212, 0.38); border-radius: 8px;
+    }
+    .deploy-card p {
+      margin: 0; color: rgba(246, 248, 252, 0.78);
+    }
+    .deploy-track {
+      height: 10px; overflow: hidden; background: rgba(246, 248, 252, 0.10); border-radius: 999px;
+    }
+    .deploy-fill {
+      width: 82%; height: 100%; background: linear-gradient(90deg, var(--cyan), var(--lime)); border-radius: inherit;
+    }
+    .section-head {
+      display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 22px;
+    }
+    .section-head p {
+      max-width: 560px; margin: 10px 0 0; color: var(--ink-muted);
+    }
+    .section-kicker {
+      margin: 0 0 8px; color: var(--indigo); font-size: 0.78rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em;
+    }
+    .kpi-strip {
+      padding-top: 12px;
+    }
+    .kpi-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+    }
+    .kpi-card {
+      min-height: 146px; padding: 20px; background: var(--cloud-raised); border: 1px solid var(--ink-soft); border-radius: 8px; box-shadow: var(--shadow-small);
+    }
+    .kpi-card span {
+      display: block; color: var(--ink-muted); font-size: 0.82rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .kpi-card strong {
+      display: block; margin-top: 18px; font-family: "Manrope", system-ui, sans-serif; font-size: clamp(2rem, 4vw, 3.1rem); line-height: 0.95;
+    }
+    .kpi-card em {
+      display: inline-flex; margin-top: 16px; padding: 6px 8px; color: var(--ink); background: var(--cyan-soft); border: 1px solid var(--cyan-line); border-radius: 8px; font-style: normal; font-size: 0.78rem; font-weight: 800;
+    }
+    .content-grid {
+      display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr); gap: 18px; align-items: start;
+    }
+    .api-grid {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px;
+    }
+    .api-card,
+    .sdk-row,
+    .doc-card,
+    .activity-item,
+    .analytics-panel {
+      background: var(--cloud-raised); border: 1px solid var(--ink-soft); border-radius: 8px; box-shadow: var(--shadow-small);
+    }
+    .api-card {
+      min-height: 218px; padding: 18px; display: flex; flex-direction: column; gap: 16px;
+    }
+    .api-head {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+    }
+    .version {
+      display: inline-flex; margin-top: 8px; color: var(--ink-muted); font-size: 0.82rem; font-weight: 800;
+    }
+    .status {
+      padding: 6px 8px; border-radius: 999px; font-size: 0.72rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap;
+    }
+    .status.live {
+      color: var(--ink); background: var(--lime-soft); border: 1px solid var(--lime-line);
+    }
+    .status.beta {
+      color: var(--ink); background: var(--cyan-soft); border: 1px solid var(--cyan-line);
+    }
+    .status.watch {
+      color: var(--ink); background: var(--coral-soft); border: 1px solid var(--coral-line);
+    }
+    .api-summary {
+      margin: 0; color: var(--ink-muted); font-size: 0.92rem;
+    }
+    .api-stats {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: auto;
+    }
+    .stat-box {
+      padding: 12px; background: rgba(246, 248, 252, 0.76); border: 1px solid var(--ink-faint); border-radius: 8px;
+    }
+    .stat-box span {
+      display: block; color: var(--ink-muted); font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em;
+    }
+    .stat-box strong {
+      display: block; margin-top: 6px; font-size: 1.08rem;
+    }
+    .sdk-list {
+      display: grid; gap: 12px;
+    }
+    .sdk-row {
+      min-height: 84px; padding: 14px; display: grid; grid-template-columns: 48px 1fr auto; align-items: center; gap: 14px;
+    }
+    .language-icon {
+      width: 48px; height: 48px; display: grid; place-items: center; color: var(--cloud); background: var(--ink); border: 2px solid var(--cyan-line); border-radius: 8px; font-weight: 900; font-size: 0.82rem;
+    }
+    .sdk-row h3 {
+      margin-bottom: 6px;
+    }
+    .sdk-meta {
+      color: var(--ink-muted); font-size: 0.86rem; font-weight: 700;
+    }
+    .download-count {
+      text-align: right; color: var(--ink); font-weight: 900; white-space: nowrap;
+    }
+    .download-count span {
+      display: block; margin-top: 4px; color: var(--ink-muted); font-size: 0.78rem; font-weight: 800;
+    }
+    .analytics-panel {
+      padding: 20px;
+    }
+    .chart-wrap {
+      min-height: 300px; display: grid; grid-template-columns: 44px 1fr; gap: 12px; margin-top: 18px;
+    }
+    .chart-axis {
+      display: grid; grid-template-rows: repeat(4, 1fr); color: var(--ink-muted); font-size: 0.72rem; font-weight: 800;
+    }
+    .bar-chart {
+      height: 260px; display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; align-items: end; padding: 12px;
+      background:
+        linear-gradient(to top, rgba(25, 33, 43, 0.08) 1px, transparent 1px) 0 0 / 100% 25%,
+        rgba(246, 248, 252, 0.72);
+      border: 1px solid var(--ink-faint); border-radius: 8px;
+    }
+    .bar {
+      min-width: 0; height: var(--h); display: flex; align-items: end; justify-content: center; position: relative; background: linear-gradient(180deg, var(--cyan), var(--indigo)); border-radius: 8px 8px 4px 4px;
+    }
+    .bar:nth-child(6) {
+      background: linear-gradient(180deg, var(--lime), var(--cyan));
+    }
+    .bar:nth-child(7) {
+      background: linear-gradient(180deg, var(--coral), var(--indigo));
+    }
+    .bar span {
+      position: absolute; bottom: -26px; color: var(--ink-muted); font-size: 0.72rem; font-weight: 800;
+    }
+    .bar strong {
+      position: absolute; top: -26px; color: var(--ink); font-size: 0.76rem; font-weight: 900;
+    }
+    .doc-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+    }
+    .doc-card {
+      min-height: 178px; padding: 18px; display: flex; flex-direction: column; gap: 16px; transition: transform 160ms ease, border-color 160ms ease;
+    }
+    .doc-card:hover {
+      transform: translateY(-3px); border-color: var(--indigo-line);
+    }
+    .doc-icon {
+      width: 42px; height: 42px; display: grid; place-items: center; color: var(--ink); background: var(--cyan-soft); border: 1px solid var(--cyan-line); border-radius: 8px; font-weight: 900;
+    }
+    .doc-card p {
+      margin: 0; color: var(--ink-muted); font-size: 0.92rem;
+    }
+    .doc-card span {
+      margin-top: auto; color: var(--indigo); font-weight: 900;
+    }
+    .activity-feed {
+      display: grid; gap: 12px;
+    }
+    .activity-item {
+      padding: 16px; display: grid; grid-template-columns: auto 1fr auto; gap: 14px; align-items: start;
+    }
+    .activity-dot {
+      width: 14px; height: 14px; margin-top: 5px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 0 6px var(--cyan-soft);
+    }
+    .activity-dot.lime {
+      background: var(--lime); box-shadow: 0 0 0 6px var(--lime-soft);
+    }
+    .activity-dot.coral {
+      background: var(--coral); box-shadow: 0 0 0 6px var(--coral-soft);
+    }
+    .activity-item p {
+      margin: 5px 0 0; color: var(--ink-muted); font-size: 0.92rem;
+    }
+    .activity-time {
+      color: var(--ink-muted); font-size: 0.8rem; font-weight: 800; white-space: nowrap;
+    }
+    .footer {
+      margin-top: 40px; padding: 30px 0; color: rgba(246, 248, 252, 0.78); background: var(--ink);
+    }
+    .footer-inner {
+      width: min(var(--max), calc(100% - 32px)); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 20px;
+    }
+    .footer strong {
+      color: var(--cloud); font-family: "Manrope", system-ui, sans-serif;
+    }
+    .footer-links {
+      display: flex; gap: 14px; font-weight: 800;
+    }
+    @media (max-width: 980px) {
+      .nav-inner {
+      grid-template-columns: auto auto; justify-content: space-between;
+      }
+      .nav-links,
+      .nav-actions .search-wrap,
+      .nav-actions .avatar {
+      display: none;
+      }
+      .hamburger {
+      display: inline-flex;
+      }
+      .hero-grid,
+      .content-grid {
+      grid-template-columns: 1fr;
+      }
+      .hero-copy {
+      min-height: auto; padding: 20px 0 0;
+      }
+      .kpi-grid,
+      .doc-grid {
+      grid-template-columns: repeat(2, 1fr);
+      }
+      .api-grid {
+      grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 640px) {
+      body {
+      font-size: 15px;
+      }
+      .section {
+      width: min(100% - 24px, var(--max)); padding: 34px 0;
+      }
+      .nav-inner {
+      width: min(100% - 24px, var(--max)); min-height: 68px;
+      }
+      .brand-copy small {
+      display: none;
+      }
+      h1 {
+      font-size: 2.65rem;
+      }
+      .hero-actions {
+      display: grid;
+      }
+      .button {
+      width: 100%;
+      }
+      .hero-console {
+      margin-top: 10px;
+      }
+      .console-metrics,
+      .kpi-grid,
+      .doc-grid {
+      grid-template-columns: 1fr;
+      }
+      .code-line {
+      grid-template-columns: 1fr;
+      }
+      .section-head {
+      display: block;
+      }
+      .sdk-row {
+      grid-template-columns: 46px 1fr;
+      }
+      .download-count {
+      grid-column: 2; text-align: left;
+      }
+      .chart-wrap {
+      grid-template-columns: 1fr;
+      }
+      .chart-axis {
+      display: none;
+      }
+      .bar-chart {
+      gap: 7px; padding: 10px;
+      }
+      .bar strong {
+      display: none;
+      }
+      .activity-item {
+      grid-template-columns: auto 1fr;
+      }
+      .activity-time {
+      grid-column: 2;
+      }
+      .footer-inner {
+      display: grid;
+      }
+      .footer-links {
+      flex-wrap: wrap;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+      scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <nav class="nav-inner" aria-label="Primary navigation">
+        <a class="brand" href="#dashboard" aria-label="Cipher DevTools Hub home">
+          <span class="brand-mark" aria-hidden="true"><span></span></span>
+          <span class="brand-copy">
+            <strong>Cipher DevTools Hub</strong>
+            <small>Developer Platform</small>
+          </span>
+        </a>
+        <div class="nav-links" aria-label="Primary sections">
+          <a href="#dashboard">Dashboard</a>
+          <a href="#apis">APIs</a>
+          <a href="#sdks">SDKs</a>
+          <a href="#docs">Docs</a>
+          <a href="#analytics">Analytics</a>
+        </div>
+        <div class="nav-actions">
+          <form class="search-wrap" role="search">
+            <label for="global-search">Search APIs, SDKs, and docs</label>
+            <span class="search-glyph" aria-hidden="true"></span>
+            <input id="global-search" type="search" autocomplete="off">
+          </form>
+          <button class="avatar" type="button" aria-label="Open user profile">ML</button>
+          <button class="hamburger" type="button" aria-label="Open menu" aria-controls="mobile-drawer" aria-expanded="false">
+            <span class="hamburger-lines" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <div class="drawer-backdrop" data-drawer-backdrop></div>
+    <aside class="mobile-drawer" id="mobile-drawer" aria-label="Mobile navigation" aria-hidden="true">
+      <div class="drawer-head">
+        <span class="brand">
+          <span class="brand-mark" aria-hidden="true"><span></span></span>
+          <span class="brand-copy">
+            <strong>Cipher Hub</strong>
+            <small>Mobile Menu</small>
+          </span>
+        </span>
+        <button class="drawer-close" type="button" aria-label="Close menu" data-drawer-close>&times;</button>
+      </div>
+      <div class="drawer-links">
+        <a href="#dashboard">Dashboard</a>
+        <a href="#apis">APIs</a>
+        <a href="#sdks">SDKs</a>
+        <a href="#docs">Docs</a>
+        <a href="#analytics">Analytics</a>
+      </div>
+      <form class="search-wrap drawer-search" role="search">
+        <label for="drawer-search">Search developer hub</label>
+        <span class="search-glyph" aria-hidden="true"></span>
+        <input id="drawer-search" type="search" autocomplete="off">
+      </form>
+    </aside>
+
+    <main id="dashboard">
+      <section class="section hero" aria-labelledby="hero-title">
+        <div class="hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow">Live API marketplace and docs workspace</p>
+            <h1 id="hero-title">Ship, document, and measure every developer surface.</h1>
+            <p>
+              Cipher DevTools Hub gives platform teams one polished command center for published APIs,
+              SDK distribution, documentation entry points, and adoption analytics.
+            </p>
+            <div class="hero-actions">
+              <a class="button primary" href="#apis">Browse APIs</a>
+              <a class="button secondary" href="#docs">Open Docs</a>
+            </div>
+          </div>
+          <div class="hero-console" aria-label="Developer console preview">
+            <div class="console-top">
+              <div class="window-dots" aria-hidden="true">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+              <div class="console-title">gateway.cipher.dev / production</div>
+            </div>
+            <div class="console-body">
+              <div class="code-line">
+                <span class="code-method">GET</span>
+                <span class="code-path">/v3/identity/verification</span>
+                <span class="code-status">200 OK</span>
+              </div>
+              <div class="code-line">
+                <span class="code-method">POST</span>
+                <span class="code-path">/v2/events/webhook</span>
+                <span class="code-status">202 LIVE</span>
+              </div>
+              <div class="code-line">
+                <span class="code-method">PATCH</span>
+                <span class="code-path">/v1/billing/subscriptions</span>
+                <span class="code-status">98 ms</span>
+              </div>
+              <div class="console-metrics">
+                <div class="console-metric">
+                  <span>Requests</span>
+                  <strong>8.4M</strong>
+                </div>
+                <div class="console-metric">
+                  <span>Errors</span>
+                  <strong>0.03%</strong>
+                </div>
+                <div class="console-metric">
+                  <span>Keys</span>
+                  <strong>12.7K</strong>
+                </div>
+              </div>
+              <div class="deploy-card">
+                <h3 style="color: var(--cloud);">SDK rollout readiness</h3>
+                <p>Node, Python, Go, and Swift packages are signed, mirrored, and ready for release.</p>
+                <div class="deploy-track" aria-label="SDK rollout readiness 82 percent">
+                  <div class="deploy-fill"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section kpi-strip" aria-labelledby="kpi-title">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">Platform pulse</p>
+            <h2 id="kpi-title">Marketplace KPIs</h2>
+          </div>
+          <p>One strip for leadership checks across catalog breadth, active usage, traffic, and uptime.</p>
+        </div>
+        <div class="kpi-grid">
+          <article class="kpi-card">
+            <span>Total APIs Published</span>
+            <strong>148</strong>
+            <em>+12 this quarter</em>
+          </article>
+          <article class="kpi-card">
+            <span>Active Developers</span>
+            <strong>32.4K</strong>
+            <em>6.8K weekly active</em>
+          </article>
+          <article class="kpi-card">
+            <span>Requests Today</span>
+            <strong>8.91M</strong>
+            <em>Peak at 10:20 UTC</em>
+          </article>
+          <article class="kpi-card">
+            <span>Uptime Percent</span>
+            <strong>99.98%</strong>
+            <em>All regions healthy</em>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="apis" aria-labelledby="api-title">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">API catalog</p>
+            <h2 id="api-title">Production-ready interfaces</h2>
+          </div>
+          <p>Cards show versioning, operational status, latency, and popularity for quick triage.</p>
+        </div>
+        <div class="content-grid">
+          <div class="api-grid">
+            <article class="api-card">
+              <div class="api-head">
+                <div>
+                  <h3>Identity Verification</h3>
+                  <span class="version">v3.8.1</span>
+                </div>
+                <span class="status live">Live</span>
+              </div>
+              <p class="api-summary">KYC checks, biometric match scoring, document review, and audit trails.</p>
+              <div class="api-stats">
+                <div class="stat-box"><span>Latency</span><strong>92 ms</strong></div>
+                <div class="stat-box"><span>Popularity</span><strong>94%</strong></div>
+              </div>
+            </article>
+            <article class="api-card">
+              <div class="api-head">
+                <div>
+                  <h3>Billing Ledger</h3>
+                  <span class="version">v2.4.0</span>
+                </div>
+                <span class="status live">Live</span>
+              </div>
+              <p class="api-summary">Subscriptions, invoices, entitlements, credits, and usage-based billing.</p>
+              <div class="api-stats">
+                <div class="stat-box"><span>Latency</span><strong>118 ms</strong></div>
+                <div class="stat-box"><span>Popularity</span><strong>88%</strong></div>
+              </div>
+            </article>
+            <article class="api-card">
+              <div class="api-head">
+                <div>
+                  <h3>Event Relay</h3>
+                  <span class="version">v1.12.5</span>
+                </div>
+                <span class="status beta">Beta</span>
+              </div>
+              <p class="api-summary">Webhook fanout, retry policies, dead-letter review, and signed delivery.</p>
+              <div class="api-stats">
+                <div class="stat-box"><span>Latency</span><strong>47 ms</strong></div>
+                <div class="stat-box"><span>Popularity</span><strong>76%</strong></div>
+              </div>
+            </article>
+            <article class="api-card">
+              <div class="api-head">
+                <div>
+                  <h3>Risk Signals</h3>
+                  <span class="version">v4.1.2</span>
+                </div>
+                <span class="status watch">Watch</span>
+              </div>
+              <p class="api-summary">Fraud signals, device reputation, velocity checks, and rule explainability.</p>
+              <div class="api-stats">
+                <div class="stat-box"><span>Latency</span><strong>141 ms</strong></div>
+                <div class="stat-box"><span>Popularity</span><strong>81%</strong></div>
+              </div>
+            </article>
+          </div>
+
+          <aside id="sdks" aria-labelledby="sdk-title">
+            <div class="section-head">
+              <div>
+                <p class="section-kicker">SDK downloads</p>
+                <h2 id="sdk-title">Signed client libraries</h2>
+              </div>
+            </div>
+            <div class="sdk-list">
+              <article class="sdk-row">
+                <span class="language-icon" aria-hidden="true">JS</span>
+                <div><h3>JavaScript SDK</h3><div class="sdk-meta">v5.14.2 · 1.8 MB</div></div>
+                <div class="download-count">421K<span>downloads</span></div>
+              </article>
+              <article class="sdk-row">
+                <span class="language-icon" aria-hidden="true">PY</span>
+                <div><h3>Python SDK</h3><div class="sdk-meta">v4.9.0 · 2.3 MB</div></div>
+                <div class="download-count">366K<span>downloads</span></div>
+              </article>
+              <article class="sdk-row">
+                <span class="language-icon" aria-hidden="true">GO</span>
+                <div><h3>Go SDK</h3><div class="sdk-meta">v3.7.6 · 1.1 MB</div></div>
+                <div class="download-count">198K<span>downloads</span></div>
+              </article>
+              <article class="sdk-row">
+                <span class="language-icon" aria-hidden="true">SW</span>
+                <div><h3>Swift SDK</h3><div class="sdk-meta">v2.3.4 · 3.0 MB</div></div>
+                <div class="download-count">112K<span>downloads</span></div>
+              </article>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section" id="analytics" aria-labelledby="analytics-title">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">Usage analytics</p>
+            <h2 id="analytics-title">API calls over the last 7 days</h2>
+          </div>
+          <p>The bar chart uses CSS sizing only, with call volume labels and day markers included in markup.</p>
+        </div>
+        <div class="analytics-panel">
+          <div class="chart-wrap">
+            <div class="chart-axis" aria-hidden="true">
+              <span>10M</span>
+              <span>7.5M</span>
+              <span>5M</span>
+              <span>2.5M</span>
+            </div>
+            <div class="bar-chart" aria-label="API calls chart for the last seven days">
+              <div class="bar" style="--h: 58%;"><strong>5.8M</strong><span>Thu</span></div>
+              <div class="bar" style="--h: 64%;"><strong>6.4M</strong><span>Fri</span></div>
+              <div class="bar" style="--h: 51%;"><strong>5.1M</strong><span>Sat</span></div>
+              <div class="bar" style="--h: 55%;"><strong>5.5M</strong><span>Sun</span></div>
+              <div class="bar" style="--h: 79%;"><strong>7.9M</strong><span>Mon</span></div>
+              <div class="bar" style="--h: 86%;"><strong>8.6M</strong><span>Tue</span></div>
+              <div class="bar" style="--h: 91%;"><strong>9.1M</strong><span>Wed</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="docs" aria-labelledby="docs-title">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">Documentation quick links</p>
+            <h2 id="docs-title">Developer paths that stay close to the work</h2>
+          </div>
+          <p>Fast entry points for onboarding, security setup, traffic limits, and event-driven integrations.</p>
+        </div>
+        <div class="doc-grid">
+          <a class="doc-card" href="#docs">
+            <span class="doc-icon" aria-hidden="true">01</span>
+            <h3>Getting Started</h3>
+            <p>Provision a workspace, create a sandbox key, and make the first signed request.</p>
+            <span>Open guide</span>
+          </a>
+          <a class="doc-card" href="#docs">
+            <span class="doc-icon" aria-hidden="true">02</span>
+            <h3>Authentication</h3>
+            <p>Use scoped API keys, OAuth clients, token rotation, and signed webhook secrets.</p>
+            <span>Review security</span>
+          </a>
+          <a class="doc-card" href="#docs">
+            <span class="doc-icon" aria-hidden="true">03</span>
+            <h3>Rate Limits</h3>
+            <p>Understand buckets, burst windows, retry headers, and partner tier upgrades.</p>
+            <span>Check limits</span>
+          </a>
+          <a class="doc-card" href="#docs">
+            <span class="doc-icon" aria-hidden="true">04</span>
+            <h3>Webhooks</h3>
+            <p>Configure destinations, verify signatures, replay events, and audit delivery status.</p>
+            <span>Build listener</span>
+          </a>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="activity-title">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">Recent activity</p>
+            <h2 id="activity-title">Developer platform feed</h2>
+          </div>
+          <p>Release, access, and lifecycle events are tuned for quick scanning by platform operators.</p>
+        </div>
+        <div class="activity-feed">
+          <article class="activity-item">
+            <span class="activity-dot lime" aria-hidden="true"></span>
+            <div>
+              <h3>API key created for Meridian Labs</h3>
+              <p>Scoped to Identity Verification read access with sandbox and production environments enabled.</p>
+            </div>
+            <time class="activity-time" datetime="2026-05-27T11:28:00Z">11:28 UTC</time>
+          </article>
+          <article class="activity-item">
+            <span class="activity-dot" aria-hidden="true"></span>
+            <div>
+              <h3>JavaScript SDK v5.14.2 released</h3>
+              <p>New retry helper, event relay typings, and improved browser bundle tree shaking.</p>
+            </div>
+            <time class="activity-time" datetime="2026-05-27T10:42:00Z">10:42 UTC</time>
+          </article>
+          <article class="activity-item">
+            <span class="activity-dot coral" aria-hidden="true"></span>
+            <div>
+              <h3>Billing Ledger v1 deprecation notice sent</h3>
+              <p>Remaining consumers received migration windows, compatibility notes, and owner contacts.</p>
+            </div>
+            <time class="activity-time" datetime="2026-05-27T09:15:00Z">09:15 UTC</time>
+          </article>
+          <article class="activity-item">
+            <span class="activity-dot" aria-hidden="true"></span>
+            <div>
+              <h3>Webhook replay queue drained</h3>
+              <p>Event Relay completed partner replay after endpoint recovery, with no dropped deliveries.</p>
+            </div>
+            <time class="activity-time" datetime="2026-05-27T08:36:00Z">08:36 UTC</time>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <p><strong>Cipher DevTools Hub</strong> — designed by Northstar Interface Studio.</p>
+        <div class="footer-links" aria-label="Footer links">
+          <a href="#apis">Catalog</a>
+          <a href="#sdks">SDKs</a>
+          <a href="#docs">Docs</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const body = document.body;
+    const menuButton = document.querySelector(".hamburger");
+    const drawer = document.querySelector("#mobile-drawer");
+    const closeButton = document.querySelector("[data-drawer-close]");
+    const backdrop = document.querySelector("[data-drawer-backdrop]");
+    const drawerLinks = drawer.querySelectorAll("a");
+    let lastFocus = null;
+
+    function openDrawer() {
+      lastFocus = document.activeElement;
+      body.classList.add("drawer-open");
+      drawer.classList.add("is-open");
+      backdrop.classList.add("is-visible");
+      drawer.setAttribute("aria-hidden", "false");
+      menuButton.setAttribute("aria-expanded", "true");
+      closeButton.focus();
+    }
+
+    function closeDrawer() {
+      body.classList.remove("drawer-open");
+      drawer.classList.remove("is-open");
+      backdrop.classList.remove("is-visible");
+      drawer.setAttribute("aria-hidden", "true");
+      menuButton.setAttribute("aria-expanded", "false");
+      if (lastFocus) {
+        lastFocus.focus();
+      }
+    }
+
+    menuButton.addEventListener("click", openDrawer);
+    closeButton.addEventListener("click", closeDrawer);
+    backdrop.addEventListener("click", closeDrawer);
+    drawerLinks.forEach((link) => link.addEventListener("click", closeDrawer));
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && drawer.classList.contains("is-open")) {
+        closeDrawer();
+      }
+    });
+  </script>
+</body>
+</html>
