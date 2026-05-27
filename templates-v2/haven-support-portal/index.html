@@ -1,0 +1,1455 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Haven Support Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --indigo: #4F46E5;
+      --cyan: #06B6D4;
+      --lime: #A3E635;
+      --coral: #FB7185;
+      --white: rgba(255, 255, 255, 0.92);
+      --ink-86: rgba(25, 33, 43, 0.86);
+      --ink-68: rgba(25, 33, 43, 0.68);
+      --ink-52: rgba(25, 33, 43, 0.52);
+      --ink-16: rgba(25, 33, 43, 0.16);
+      --ink-10: rgba(25, 33, 43, 0.10);
+      --ink-06: rgba(25, 33, 43, 0.06);
+      --indigo-16: rgba(79, 70, 229, 0.16);
+      --indigo-10: rgba(79, 70, 229, 0.10);
+      --cyan-16: rgba(6, 182, 212, 0.16);
+      --cyan-10: rgba(6, 182, 212, 0.10);
+      --lime-20: rgba(163, 230, 53, 0.20);
+      --lime-12: rgba(163, 230, 53, 0.12);
+      --coral-18: rgba(251, 113, 133, 0.18);
+      --coral-10: rgba(251, 113, 133, 0.10);
+      --shadow: 0 20px 60px rgba(25, 33, 43, 0.12);
+      --radius: 8px;
+      --radius-sm: 6px;
+      --max: 1440px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--cloud);
+      color: var(--ink);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    body.drawer-open {
+      overflow: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 3px;
+    }
+
+    .shell {
+      width: min(100%, var(--max));
+      margin: 0 auto;
+      padding: 0 28px 40px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(246, 248, 252, 0.88);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--ink-10);
+    }
+
+    .topbar-inner {
+      width: min(100%, var(--max));
+      min-height: 76px;
+      margin: 0 auto;
+      padding: 0 28px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: Manrope, Inter, sans-serif;
+      font-weight: 800;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      color: var(--cloud);
+      background: linear-gradient(135deg, var(--indigo), var(--cyan));
+      box-shadow: 0 14px 28px rgba(79, 70, 229, 0.24);
+    }
+
+    .brand-mark svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .nav-link {
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--ink-68);
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      color: var(--ink);
+      background: var(--ink-06);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .searchbox {
+      width: clamp(190px, 22vw, 310px);
+      height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      border: 1px solid var(--ink-10);
+      border-radius: var(--radius);
+      background: var(--white);
+    }
+
+    .searchbox svg {
+      width: 18px;
+      height: 18px;
+      color: var(--ink-52);
+      flex: 0 0 auto;
+    }
+
+    .searchbox input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      color: var(--ink);
+      background: transparent;
+      min-width: 0;
+    }
+
+    .icon-button {
+      position: relative;
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--ink-10);
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      color: var(--ink);
+      background: var(--white);
+    }
+
+    .icon-button svg {
+      width: 19px;
+      height: 19px;
+    }
+
+    .badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      min-width: 20px;
+      height: 20px;
+      padding: 0 5px;
+      border: 2px solid var(--cloud);
+      border-radius: 999px;
+      display: inline-grid;
+      place-items: center;
+      background: var(--coral);
+      color: var(--cloud);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .hamburger {
+      display: none;
+    }
+
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      background: rgba(25, 33, 43, 0.36);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+    }
+
+    .drawer-backdrop.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .mobile-drawer {
+      position: fixed;
+      z-index: 90;
+      top: 0;
+      right: 0;
+      width: min(88vw, 360px);
+      height: 100vh;
+      padding: 24px;
+      transform: translateX(100%);
+      transition: transform 220ms ease;
+      background: var(--cloud);
+      box-shadow: var(--shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .mobile-drawer.active {
+      transform: translateX(0);
+    }
+
+    .drawer-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .drawer-links {
+      display: grid;
+      gap: 8px;
+    }
+
+    .drawer-links .nav-link {
+      padding: 14px 12px;
+      background: var(--white);
+      border: 1px solid var(--ink-10);
+    }
+
+    main {
+      display: grid;
+      gap: 28px;
+      padding-top: 28px;
+    }
+
+    .command-band {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .hero-panel,
+    .signal-panel,
+    .section-panel,
+    .chat-panel,
+    .detail-panel,
+    .csat-panel {
+      border: 1px solid var(--ink-10);
+      border-radius: var(--radius);
+      background: var(--white);
+      box-shadow: 0 14px 40px rgba(25, 33, 43, 0.08);
+    }
+
+    .hero-panel {
+      padding: 28px;
+      display: grid;
+      gap: 22px;
+      overflow: hidden;
+      position: relative;
+      min-height: 250px;
+    }
+
+    .hero-panel::after {
+      content: "";
+      position: absolute;
+      right: 28px;
+      bottom: 24px;
+      width: 180px;
+      height: 180px;
+      border: 1px solid rgba(79, 70, 229, 0.22);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(6, 182, 212, 0.22) 0 30%, transparent 31%),
+        conic-gradient(from 35deg, var(--indigo) 0 34%, var(--cyan) 34% 68%, var(--lime) 68% 84%, var(--coral) 84% 100%);
+      opacity: 0.72;
+      filter: saturate(0.95);
+    }
+
+    .eyebrow {
+      width: fit-content;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border: 1px solid var(--cyan-16);
+      border-radius: 999px;
+      color: var(--ink-68);
+      background: var(--cyan-10);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .live-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--cyan);
+      box-shadow: 0 0 0 5px var(--cyan-16);
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      font-family: Manrope, Inter, sans-serif;
+      color: var(--ink);
+      letter-spacing: 0;
+    }
+
+    h1 {
+      max-width: 680px;
+      font-size: clamp(34px, 5vw, 64px);
+      line-height: 0.98;
+      font-weight: 800;
+    }
+
+    h2 {
+      font-size: clamp(22px, 3vw, 34px);
+      line-height: 1.05;
+      font-weight: 800;
+    }
+
+    h3 {
+      font-size: 17px;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .hero-copy {
+      max-width: 620px;
+      color: var(--ink-68);
+      font-size: 16px;
+      margin: 0;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .button {
+      min-height: 44px;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      padding: 0 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .button svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .button.primary {
+      color: var(--cloud);
+      background: var(--indigo);
+    }
+
+    .button.secondary {
+      color: var(--ink);
+      background: var(--cloud);
+      border-color: var(--ink-10);
+    }
+
+    .signal-panel {
+      padding: 24px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .handoff-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 14px;
+      border-radius: var(--radius);
+      background: var(--cloud);
+      border: 1px solid var(--ink-06);
+    }
+
+    .avatar-stack {
+      display: flex;
+      align-items: center;
+    }
+
+    .avatar {
+      width: 34px;
+      height: 34px;
+      border: 2px solid var(--cloud);
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: var(--indigo-16);
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 900;
+      margin-left: -8px;
+    }
+
+    .avatar:first-child {
+      margin-left: 0;
+    }
+
+    .handoff-title {
+      margin: 0;
+      font-weight: 900;
+    }
+
+    .handoff-meta {
+      margin: 0;
+      color: var(--ink-52);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .status-pill {
+      min-width: 72px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .status-pill.good {
+      background: var(--lime-20);
+      color: var(--ink);
+    }
+
+    .status-pill.warn {
+      background: var(--coral-18);
+      color: var(--ink);
+    }
+
+    .status-pill.info {
+      background: var(--cyan-16);
+      color: var(--ink);
+    }
+
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .kpi-card {
+      min-height: 140px;
+      padding: 20px;
+      border-radius: var(--radius);
+      border: 1px solid var(--ink-10);
+      background: var(--white);
+      display: grid;
+      align-content: space-between;
+      gap: 18px;
+      box-shadow: 0 10px 28px rgba(25, 33, 43, 0.06);
+    }
+
+    .kpi-label {
+      color: var(--ink-52);
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .kpi-value {
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 34px;
+      line-height: 1;
+      font-weight: 800;
+    }
+
+    .kpi-trend {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--ink-68);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .trend-bar {
+      width: 42px;
+      height: 7px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--ink-10);
+    }
+
+    .trend-bar span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--cyan);
+    }
+
+    .layout-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.55fr) minmax(340px, 0.85fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .stack {
+      display: grid;
+      gap: 22px;
+    }
+
+    .section-panel {
+      overflow: hidden;
+    }
+
+    .section-head {
+      padding: 22px 22px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: 1px solid var(--ink-10);
+    }
+
+    .section-title {
+      display: grid;
+      gap: 5px;
+    }
+
+    .section-title p {
+      margin: 0;
+      color: var(--ink-52);
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 860px;
+    }
+
+    th,
+    td {
+      padding: 15px 18px;
+      border-bottom: 1px solid var(--ink-10);
+      text-align: left;
+      vertical-align: middle;
+      font-size: 14px;
+    }
+
+    th {
+      color: var(--ink-52);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: rgba(246, 248, 252, 0.74);
+    }
+
+    th button {
+      border: 0;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: inherit;
+      background: transparent;
+      font-weight: inherit;
+      text-transform: inherit;
+      letter-spacing: inherit;
+    }
+
+    th svg {
+      width: 13px;
+      height: 13px;
+    }
+
+    td strong {
+      display: block;
+      font-weight: 900;
+    }
+
+    .muted {
+      color: var(--ink-52);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .priority,
+    .ticket-status {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 76px;
+      padding: 6px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .priority.high {
+      background: var(--coral-18);
+    }
+
+    .priority.medium {
+      background: var(--indigo-16);
+    }
+
+    .priority.low {
+      background: var(--lime-20);
+    }
+
+    .ticket-status.open {
+      background: var(--cyan-16);
+    }
+
+    .ticket-status.pending {
+      background: var(--indigo-10);
+    }
+
+    .ticket-status.resolved {
+      background: var(--lime-12);
+    }
+
+    .kb-tools {
+      padding: 18px 22px 0;
+    }
+
+    .wide-search {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0 14px;
+      border: 1px solid var(--ink-10);
+      border-radius: var(--radius);
+      background: var(--cloud);
+    }
+
+    .wide-search input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .article-grid {
+      padding: 18px 22px 22px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .article-card {
+      min-height: 176px;
+      padding: 18px;
+      border: 1px solid var(--ink-10);
+      border-radius: var(--radius);
+      background: var(--cloud);
+      display: grid;
+      align-content: space-between;
+      gap: 16px;
+    }
+
+    .article-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      background: var(--indigo-10);
+      color: var(--indigo);
+    }
+
+    .article-icon svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .article-card h3 {
+      margin-top: 10px;
+    }
+
+    .article-stats {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--ink-52);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .chat-panel {
+      position: sticky;
+      top: 98px;
+      overflow: hidden;
+    }
+
+    .chat-shell {
+      display: grid;
+      grid-template-columns: 0.86fr 1.14fr;
+      min-height: 520px;
+    }
+
+    .conversation-list {
+      border-right: 1px solid var(--ink-10);
+      background: rgba(246, 248, 252, 0.66);
+    }
+
+    .conversation-item {
+      width: 100%;
+      min-height: 84px;
+      border: 0;
+      border-bottom: 1px solid var(--ink-10);
+      padding: 14px;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 11px;
+      text-align: left;
+      background: transparent;
+    }
+
+    .conversation-item.active {
+      background: var(--cyan-10);
+    }
+
+    .conversation-item .avatar {
+      margin: 0;
+      border-color: var(--white);
+      background: var(--cyan-16);
+    }
+
+    .conversation-copy {
+      min-width: 0;
+    }
+
+    .conversation-copy strong,
+    .conversation-copy span {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .conversation-copy span {
+      color: var(--ink-52);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .message-pane {
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      min-width: 0;
+    }
+
+    .message-head {
+      padding: 16px;
+      border-bottom: 1px solid var(--ink-10);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .messages {
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+      background: var(--cloud);
+    }
+
+    .bubble {
+      max-width: 82%;
+      padding: 11px 13px;
+      border-radius: 16px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .bubble.customer {
+      justify-self: start;
+      color: var(--ink);
+      background: var(--white);
+      border: 1px solid var(--ink-10);
+      border-bottom-left-radius: 6px;
+    }
+
+    .bubble.agent {
+      justify-self: end;
+      color: var(--cloud);
+      background: var(--indigo);
+      border-bottom-right-radius: 6px;
+    }
+
+    .composer {
+      padding: 14px;
+      border-top: 1px solid var(--ink-10);
+      display: grid;
+      gap: 10px;
+      background: var(--white);
+    }
+
+    .canned-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .canned-row button {
+      border: 1px solid var(--ink-10);
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: var(--cloud);
+      color: var(--ink-68);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .input-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+    }
+
+    .input-row input,
+    textarea,
+    select {
+      border: 1px solid var(--ink-10);
+      border-radius: var(--radius);
+      background: var(--cloud);
+      color: var(--ink);
+      outline: 0;
+    }
+
+    .input-row input {
+      min-height: 44px;
+      padding: 0 12px;
+    }
+
+    .detail-panel {
+      overflow: hidden;
+    }
+
+    details {
+      border-top: 1px solid var(--ink-10);
+    }
+
+    details:first-of-type {
+      border-top: 0;
+    }
+
+    summary {
+      min-height: 68px;
+      padding: 18px 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      cursor: pointer;
+      font-weight: 900;
+    }
+
+    summary::marker {
+      color: var(--indigo);
+    }
+
+    .ticket-detail-body {
+      padding: 0 22px 22px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .thread {
+      display: grid;
+      gap: 12px;
+    }
+
+    .thread-item {
+      padding: 14px;
+      border-radius: var(--radius);
+      background: var(--cloud);
+      border: 1px solid var(--ink-10);
+    }
+
+    .thread-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 6px;
+      color: var(--ink-52);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    .detail-form {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .field label {
+      color: var(--ink-52);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+    }
+
+    select {
+      min-height: 44px;
+      padding: 0 10px;
+    }
+
+    textarea {
+      min-height: 92px;
+      padding: 11px 12px;
+      resize: vertical;
+      grid-column: 1 / -1;
+    }
+
+    .csat-panel {
+      padding: 22px;
+      display: grid;
+      gap: 20px;
+    }
+
+    .csat-body {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 22px;
+      align-items: center;
+    }
+
+    .donut {
+      width: 178px;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: conic-gradient(var(--lime) 0 58%, var(--cyan) 58% 78%, var(--indigo) 78% 92%, var(--coral) 92% 100%);
+      position: relative;
+      display: grid;
+      place-items: center;
+    }
+
+    .donut::after {
+      content: "";
+      position: absolute;
+      inset: 24px;
+      border-radius: inherit;
+      background: var(--white);
+    }
+
+    .donut-value {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+    }
+
+    .donut-value strong {
+      display: block;
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 34px;
+      line-height: 1;
+    }
+
+    .donut-value span {
+      color: var(--ink-52);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .rating-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .rating-row {
+      display: grid;
+      grid-template-columns: 70px 1fr 42px;
+      align-items: center;
+      gap: 10px;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .rating-track {
+      height: 10px;
+      border-radius: 999px;
+      background: var(--ink-10);
+      overflow: hidden;
+    }
+
+    .rating-track span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--indigo);
+    }
+
+    .rating-track .excellent {
+      background: var(--lime);
+    }
+
+    .rating-track .solid {
+      background: var(--cyan);
+    }
+
+    .rating-track .weak {
+      background: var(--coral);
+    }
+
+    .footer {
+      margin-top: 12px;
+      padding: 24px 0 0;
+      color: var(--ink-52);
+      font-size: 14px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    @media (max-width: 1180px) {
+      .command-band,
+      .layout-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .chat-panel {
+        position: static;
+      }
+    }
+
+    @media (max-width: 940px) {
+      .nav-links,
+      .top-actions .searchbox {
+        display: none;
+      }
+
+      .hamburger {
+        display: grid;
+      }
+
+      .topbar-inner {
+        grid-template-columns: auto auto;
+        justify-content: space-between;
+      }
+
+      .kpi-strip,
+      .article-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .hero-panel::after {
+        width: 132px;
+        height: 132px;
+        opacity: 0.38;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .shell,
+      .topbar-inner {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+
+      main {
+        gap: 18px;
+      }
+
+      .hero-panel,
+      .signal-panel,
+      .section-head,
+      .csat-panel {
+        padding: 18px;
+      }
+
+      .kpi-strip,
+      .article-grid,
+      .chat-shell,
+      .csat-body,
+      .detail-form {
+        grid-template-columns: 1fr;
+      }
+
+      .article-grid {
+        padding: 14px 18px 18px;
+      }
+
+      .conversation-list {
+        border-right: 0;
+        border-bottom: 1px solid var(--ink-10);
+      }
+
+      .section-head,
+      summary,
+      .message-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .input-row {
+        grid-template-columns: 1fr;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .csat-body {
+        justify-items: center;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="brand" href="#dashboard" aria-label="Haven Support Portal home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 7v6c0 5 3.4 7.8 8 9 4.6-1.2 8-4 8-9V7l-8-4Z"/><path d="m9 12 2 2 4-5"/></svg>
+        </span>
+        <span>Haven Support</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a class="nav-link active" href="#dashboard">Dashboard</a>
+        <a class="nav-link" href="#tickets">Tickets</a>
+        <a class="nav-link" href="#knowledge">Knowledge Base</a>
+        <a class="nav-link" href="#live-chat">Live Chat</a>
+        <a class="nav-link" href="#settings">Settings</a>
+      </nav>
+      <div class="top-actions">
+        <label class="searchbox" aria-label="Global support search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+          <input type="search" aria-label="Search tickets and articles">
+        </label>
+        <button class="icon-button" aria-label="View notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+          <span class="badge" aria-label="6 unread notifications">6</span>
+        </button>
+        <button class="icon-button hamburger" id="openDrawer" aria-label="Open navigation menu" aria-controls="mobileDrawer" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <div class="drawer-backdrop" id="drawerBackdrop" tabindex="-1"></div>
+  <aside class="mobile-drawer" id="mobileDrawer" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="drawer-head">
+      <span class="brand"><span class="brand-mark" aria-hidden="true">H</span><span>Haven Support</span></span>
+      <button class="icon-button" id="closeDrawer" aria-label="Close navigation menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <label class="searchbox" aria-label="Mobile support search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input type="search" aria-label="Search support content">
+    </label>
+    <nav class="drawer-links" aria-label="Mobile navigation links">
+      <a class="nav-link active" href="#dashboard">Dashboard</a>
+      <a class="nav-link" href="#tickets">Tickets</a>
+      <a class="nav-link" href="#knowledge">Knowledge Base</a>
+      <a class="nav-link" href="#live-chat">Live Chat</a>
+      <a class="nav-link" href="#settings">Settings</a>
+    </nav>
+  </aside>
+  <main class="shell" id="dashboard">
+    <section class="command-band" aria-labelledby="portal-title">
+      <div class="hero-panel">
+        <span class="eyebrow"><span class="live-dot"></span>Live queue monitoring</span>
+        <h1 id="portal-title">Support operations that feel calm under pressure.</h1>
+        <p class="hero-copy">Haven brings tickets, self-service answers, and live conversations into one focused workspace for service teams that need clarity fast.</p>
+        <div class="hero-actions">
+          <a class="button primary" href="#tickets">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+            Review queue
+          </a>
+          <a class="button secondary" href="#knowledge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5z"/></svg>
+            Improve articles
+          </a>
+        </div>
+      </div>
+      <aside class="signal-panel" aria-label="Team handoff signals">
+        <div class="handoff-row">
+          <div class="avatar-stack" aria-hidden="true"><span class="avatar">AD</span><span class="avatar">RM</span><span class="avatar">SK</span></div>
+          <div><p class="handoff-title">Enterprise desk</p><p class="handoff-meta">12 active cases assigned</p></div>
+          <span class="status-pill good">OK</span>
+        </div>
+        <div class="handoff-row">
+          <div class="avatar-stack" aria-hidden="true"><span class="avatar">NL</span><span class="avatar">TV</span></div>
+          <div><p class="handoff-title">Billing review</p><p class="handoff-meta">SLA risk in 38 minutes</p></div>
+          <span class="status-pill warn">Watch</span>
+        </div>
+        <div class="handoff-row">
+          <div class="avatar-stack" aria-hidden="true"><span class="avatar">JP</span><span class="avatar">MC</span></div>
+          <div><p class="handoff-title">Chat coverage</p><p class="handoff-meta">4 minute median wait</p></div>
+          <span class="status-pill info">Live</span>
+        </div>
+      </aside>
+    </section>
+    <section class="kpi-strip" aria-label="Support performance indicators">
+      <article class="kpi-card"><span class="kpi-label">Open tickets</span><strong class="kpi-value">148</strong><span class="kpi-trend"><span class="trend-bar"><span style="width:64%"></span></span>22 high priority</span></article>
+      <article class="kpi-card"><span class="kpi-label">Avg response</span><strong class="kpi-value">18m</strong><span class="kpi-trend"><span class="trend-bar"><span style="width:78%"></span></span>8m faster today</span></article>
+      <article class="kpi-card"><span class="kpi-label">Satisfaction</span><strong class="kpi-value">94%</strong><span class="kpi-trend"><span class="trend-bar"><span style="width:94%"></span></span>1,204 ratings</span></article>
+      <article class="kpi-card"><span class="kpi-label">Resolved today</span><strong class="kpi-value">67</strong><span class="kpi-trend"><span class="trend-bar"><span style="width:71%"></span></span>19 before noon</span></article>
+    </section>
+    <div class="layout-grid">
+      <div class="stack">
+        <section class="section-panel" id="tickets" aria-labelledby="tickets-title">
+          <div class="section-head">
+            <div class="section-title"><h2 id="tickets-title">Ticket queue</h2><p>Sorted views for service desk triage and ownership.</p></div>
+            <button class="button secondary" type="button">Export view</button>
+          </div>
+          <div class="table-wrap">
+            <table id="ticketTable">
+              <caption class="muted" style="position:absolute;left:-9999px">Current customer support tickets</caption>
+              <thead>
+                <tr>
+                  <th><button type="button" data-sort="0">ID <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg></button></th>
+                  <th><button type="button" data-sort="1">Subject <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg></button></th>
+                  <th><button type="button" data-sort="2">Requester <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg></button></th>
+                  <th><button type="button" data-sort="3">Priority <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg></button></th>
+                  <th><button type="button" data-sort="4">Status <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg></button></th>
+                  <th><button type="button" data-sort="5">Assignee <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg></button></th>
+                  <th><button type="button" data-sort="6">Last update <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5M7 9l5-5 5 5"/></svg></button></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td><strong>HV-4821</strong></td><td>Password reset loop on SSO</td><td>Priya Shah</td><td><span class="priority high">High</span></td><td><span class="ticket-status open">Open</span></td><td>Amelia Diaz</td><td>9 minutes ago</td></tr>
+                <tr><td><strong>HV-4819</strong></td><td>Invoice export missing tax ID</td><td>Marcus Lee</td><td><span class="priority medium">Medium</span></td><td><span class="ticket-status pending">Pending</span></td><td>Noah Lane</td><td>18 minutes ago</td></tr>
+                <tr><td><strong>HV-4814</strong></td><td>Workspace invite expired early</td><td>Elena Ruiz</td><td><span class="priority low">Low</span></td><td><span class="ticket-status resolved">Resolved</span></td><td>Riley Moore</td><td>31 minutes ago</td></tr>
+                <tr><td><strong>HV-4808</strong></td><td>Webhook retries not visible</td><td>Jordan Kim</td><td><span class="priority high">High</span></td><td><span class="ticket-status open">Open</span></td><td>Sofia Kent</td><td>42 minutes ago</td></tr>
+                <tr><td><strong>HV-4797</strong></td><td>Plan upgrade confirmation</td><td>Cam Grant</td><td><span class="priority medium">Medium</span></td><td><span class="ticket-status pending">Pending</span></td><td>Tom Vale</td><td>1 hour ago</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+        <section class="section-panel" id="knowledge" aria-labelledby="knowledge-title">
+          <div class="section-head">
+            <div class="section-title"><h2 id="knowledge-title">Knowledge base</h2><p>Article health, reach, and customer usefulness at a glance.</p></div>
+            <button class="button primary" type="button">New article</button>
+          </div>
+          <div class="kb-tools">
+            <label class="wide-search" aria-label="Search knowledge base articles">
+              <svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+              <input type="search" aria-label="Knowledge base search">
+            </label>
+          </div>
+          <div class="article-grid">
+            <article class="article-card"><div><span class="article-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/></svg></span><h3>Connect SSO for enterprise teams</h3></div><div class="article-stats"><span>18.4k views</span><span>97% helpful</span></div></article>
+            <article class="article-card"><div><span class="article-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16v10H4z"/><path d="M8 11h8"/></svg></span><h3>Understand invoices and taxes</h3></div><div class="article-stats"><span>12.1k views</span><span>91% helpful</span></div></article>
+            <article class="article-card"><div><span class="article-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3v9h-9"/></svg></span><h3>Recover a locked workspace</h3></div><div class="article-stats"><span>9.8k views</span><span>88% helpful</span></div></article>
+            <article class="article-card"><div><span class="article-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg></span><h3>Migrate users between plans</h3></div><div class="article-stats"><span>7.4k views</span><span>93% helpful</span></div></article>
+            <article class="article-card"><div><span class="article-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16v16H4z"/><path d="M9 9h6v6H9z"/></svg></span><h3>Configure webhook delivery</h3></div><div class="article-stats"><span>6.6k views</span><span>86% helpful</span></div></article>
+            <article class="article-card"><div><span class="article-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></span><h3>Write a clear support request</h3></div><div class="article-stats"><span>5.9k views</span><span>95% helpful</span></div></article>
+          </div>
+        </section>
+        <section class="detail-panel" id="settings" aria-labelledby="detail-title">
+          <div class="section-head"><div class="section-title"><h2 id="detail-title">Ticket detail</h2><p>Conversation history, internal notes, status changes, and ownership.</p></div></div>
+          <details open>
+            <summary><span>HV-4821 · Password reset loop on SSO</span><span class="status-pill warn">SLA 38m</span></summary>
+            <div class="ticket-detail-body">
+              <div class="thread">
+                <article class="thread-item"><div class="thread-meta"><span>Customer · Priya Shah</span><span>09:12</span></div><p>Users are redirected back to sign in after completing our identity provider challenge.</p></article>
+                <article class="thread-item"><div class="thread-meta"><span>Agent · Amelia Diaz</span><span>09:18</span></div><p>I confirmed the identity provider certificate rotated this morning and asked for the new metadata URL.</p></article>
+                <article class="thread-item"><div class="thread-meta"><span>Internal note</span><span>09:24</span></div><p>Enterprise workspace has priority escalation. Keep billing admin copied on resolution summary.</p></article>
+              </div>
+              <form class="detail-form">
+                <label class="field"><span>Status change</span><select aria-label="Change ticket status"><option>Open</option><option>Pending customer</option><option>Resolved</option></select></label>
+                <label class="field"><span>Assignee</span><select aria-label="Assign ticket owner"><option>Amelia Diaz</option><option>Riley Moore</option><option>Sofia Kent</option></select></label>
+                <textarea aria-label="Internal note entry">Certificate metadata requested from customer success manager.</textarea>
+                <button class="button primary" type="button">Save detail</button>
+              </form>
+            </div>
+          </details>
+          <details>
+            <summary><span>HV-4808 · Webhook retries not visible</span><span class="status-pill info">Engineering</span></summary>
+            <div class="ticket-detail-body"><div class="thread"><article class="thread-item"><div class="thread-meta"><span>Customer · Jordan Kim</span><span>08:41</span></div><p>Retry attempts succeed but the event log still shows failed delivery.</p></article></div></div>
+          </details>
+        </section>
+      </div>
+      <aside class="stack">
+        <section class="chat-panel" id="live-chat" aria-labelledby="chat-title">
+          <div class="section-head"><div class="section-title"><h2 id="chat-title">Live chat</h2><p>Active conversations and assisted reply flow.</p></div><span class="status-pill info">7 live</span></div>
+          <div class="chat-shell">
+            <div class="conversation-list" aria-label="Conversation list">
+              <button class="conversation-item active" type="button"><span class="avatar">PS</span><span class="conversation-copy"><strong>Priya Shah</strong><span>SSO redirect issue</span></span></button>
+              <button class="conversation-item" type="button"><span class="avatar">ML</span><span class="conversation-copy"><strong>Marcus Lee</strong><span>Invoice export details</span></span></button>
+              <button class="conversation-item" type="button"><span class="avatar">ER</span><span class="conversation-copy"><strong>Elena Ruiz</strong><span>Invite expiration window</span></span></button>
+              <button class="conversation-item" type="button"><span class="avatar">CG</span><span class="conversation-copy"><strong>Cam Grant</strong><span>Plan confirmation</span></span></button>
+            </div>
+            <div class="message-pane">
+              <div class="message-head"><div><h3>Priya Shah</h3><span class="muted">Enterprise account · online now</span></div><span class="status-pill good">Healthy</span></div>
+              <div class="messages" aria-live="polite">
+                <div class="bubble customer">We changed our certificate this morning and SSO started looping.</div>
+                <div class="bubble agent">I am checking the metadata and will confirm the updated login endpoint.</div>
+                <div class="bubble customer">Thank you. We have several managers blocked from approving renewals.</div>
+                <div class="bubble agent">I have escalated the case and will keep this chat open during verification.</div>
+              </div>
+              <form class="composer">
+                <div class="canned-row" aria-label="Canned responses"><button type="button">Ask for logs</button><button type="button">Share article</button><button type="button">Escalate</button></div>
+                <div class="input-row"><input aria-label="Live chat message" value="Thanks for the detail. I am checking the certificate chain now."><button class="button primary" type="button">Send</button></div>
+              </form>
+            </div>
+          </div>
+        </section>
+        <section class="csat-panel" aria-labelledby="csat-title">
+          <div class="section-title"><h2 id="csat-title">Customer satisfaction</h2><p>Ratings from resolved cases and live chat follow-ups.</p></div>
+          <div class="csat-body">
+            <div class="donut" role="img" aria-label="Customer satisfaction donut chart showing 94 percent score"><div class="donut-value"><strong>94%</strong><span>CSAT</span></div></div>
+            <div class="rating-list">
+              <div class="rating-row"><span>5 stars</span><span class="rating-track"><span class="excellent" style="width:58%"></span></span><span>58%</span></div>
+              <div class="rating-row"><span>4 stars</span><span class="rating-track"><span class="solid" style="width:20%"></span></span><span>20%</span></div>
+              <div class="rating-row"><span>3 stars</span><span class="rating-track"><span style="width:14%"></span></span><span>14%</span></div>
+              <div class="rating-row"><span>2 stars</span><span class="rating-track"><span class="weak" style="width:6%"></span></span><span>6%</span></div>
+              <div class="rating-row"><span>1 star</span><span class="rating-track"><span class="weak" style="width:2%"></span></span><span>2%</span></div>
+            </div>
+          </div>
+        </section>
+      </aside>
+    </div>
+  </main>
+  <footer class="shell footer">Haven Support Portal — designed by Northstar Studio</footer>
+  <script>
+    const body = document.body;
+    const openDrawer = document.getElementById('openDrawer');
+    const closeDrawer = document.getElementById('closeDrawer');
+    const drawer = document.getElementById('mobileDrawer');
+    const backdrop = document.getElementById('drawerBackdrop');
+    const drawerLinks = drawer.querySelectorAll('a');
+
+    function setDrawer(isOpen) {
+      drawer.classList.toggle('active', isOpen);
+      backdrop.classList.toggle('active', isOpen);
+      body.classList.toggle('drawer-open', isOpen);
+      drawer.setAttribute('aria-hidden', String(!isOpen));
+      openDrawer.setAttribute('aria-expanded', String(isOpen));
+      if (isOpen) closeDrawer.focus();
+    }
+
+    openDrawer.addEventListener('click', () => setDrawer(true));
+    closeDrawer.addEventListener('click', () => setDrawer(false));
+    backdrop.addEventListener('click', () => setDrawer(false));
+    drawerLinks.forEach((link) => link.addEventListener('click', () => setDrawer(false)));
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && drawer.classList.contains('active')) setDrawer(false);
+    });
+
+    const table = document.getElementById('ticketTable');
+    const sortButtons = table.querySelectorAll('th button');
+    let activeSort = { index: 0, direction: 1 };
+
+    sortButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const index = Number(button.dataset.sort);
+        activeSort.direction = activeSort.index === index ? activeSort.direction * -1 : 1;
+        activeSort.index = index;
+        const rows = Array.from(table.tBodies[0].rows);
+        rows.sort((a, b) => {
+          const left = a.cells[index].innerText.trim();
+          const right = b.cells[index].innerText.trim();
+          return left.localeCompare(right, undefined, { numeric: true }) * activeSort.direction;
+        });
+        rows.forEach((row) => table.tBodies[0].appendChild(row));
+      });
+    });
+  </script>
+</body>
+</html>
