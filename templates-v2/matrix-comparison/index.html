@@ -1,0 +1,1486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Matrix Comparison is a premium SaaS comparison tool for feature matrices, pricing tables, reviews, and buying recommendations.">
+  <title>Matrix Comparison</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --indigo: #4F46E5;
+      --cyan: #06B6D4;
+      --lime: #A3E635;
+      --coral: #FB7185;
+      --cloud-strong: rgba(246, 248, 252, 0.94);
+      --cloud-soft: rgba(246, 248, 252, 0.64);
+      --ink-soft: rgba(25, 33, 43, 0.72);
+      --ink-muted: rgba(25, 33, 43, 0.54);
+      --ink-faint: rgba(25, 33, 43, 0.12);
+      --ink-line: rgba(25, 33, 43, 0.18);
+      --indigo-soft: rgba(79, 70, 229, 0.12);
+      --indigo-line: rgba(79, 70, 229, 0.24);
+      --cyan-soft: rgba(6, 182, 212, 0.14);
+      --cyan-line: rgba(6, 182, 212, 0.26);
+      --lime-soft: rgba(163, 230, 53, 0.18);
+      --lime-line: rgba(163, 230, 53, 0.36);
+      --coral-soft: rgba(251, 113, 133, 0.14);
+      --coral-line: rgba(251, 113, 133, 0.32);
+      --panel: rgba(255, 255, 255, 0.86);
+      --shadow: 0 24px 70px rgba(25, 33, 43, 0.10);
+      --shadow-tight: 0 14px 36px rgba(25, 33, 43, 0.10);
+      --radius: 8px;
+      --container: 1180px;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--cloud);
+      color: var(--ink);
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+    body.menu-open {
+      overflow: hidden;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+    button,
+    select {
+      cursor: pointer;
+    }
+    img,
+    svg {
+      display: block;
+    }
+    .skip-link {
+      position: fixed;
+      left: 16px;
+      top: 16px;
+      z-index: 1000;
+      transform: translateY(-150%);
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--cloud);
+      padding: 10px 14px;
+      font-weight: 800;
+      transition: transform 180ms ease;
+    }
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+    .page-shell {
+      min-height: 100vh;
+      overflow: hidden;
+    }
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid var(--ink-faint);
+      background: rgba(246, 248, 252, 0.88);
+      backdrop-filter: blur(18px);
+    }
+    .nav-wrap {
+      width: min(100% - 32px, var(--container));
+      margin: 0 auto;
+      min-height: 76px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 24px;
+      align-items: center;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Manrope", sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: var(--ink);
+      color: var(--cloud);
+      box-shadow: inset 0 0 0 1px rgba(246, 248, 252, 0.18);
+    }
+    .brand-mark svg {
+      width: 20px;
+      height: 20px;
+    }
+    .desktop-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .desktop-nav a,
+    .drawer-nav a {
+      border-radius: var(--radius);
+      color: var(--ink-soft);
+      font-weight: 700;
+      padding: 10px 12px;
+      transition: color 160ms ease, background 160ms ease;
+    }
+    .desktop-nav a:hover,
+    .drawer-nav a:hover {
+      background: var(--indigo-soft);
+      color: var(--indigo);
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: end;
+    }
+    .search-box {
+      position: relative;
+      min-width: 230px;
+    }
+    .search-box svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      width: 18px;
+      height: 18px;
+      transform: translateY(-50%);
+      color: var(--ink-muted);
+      pointer-events: none;
+    }
+    .search-box input {
+      width: 100%;
+      border: 1px solid var(--ink-faint);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--ink);
+      padding: 10px 12px 10px 38px;
+      outline: none;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+    .search-box input:focus {
+      border-color: var(--indigo);
+      box-shadow: 0 0 0 4px var(--indigo-soft);
+    }
+    .button {
+      min-height: 42px;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 14px;
+      font-weight: 800;
+      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease, border-color 160ms ease;
+    }
+    .button svg {
+      width: 18px;
+      height: 18px;
+      flex: 0 0 auto;
+    }
+    .button-primary {
+      background: var(--indigo);
+      color: var(--cloud);
+      box-shadow: 0 14px 28px rgba(79, 70, 229, 0.22);
+    }
+    .button-secondary {
+      border-color: var(--ink-faint);
+      background: rgba(255, 255, 255, 0.74);
+      color: var(--ink);
+    }
+    .button-ghost {
+      border-color: var(--ink-faint);
+      background: transparent;
+      color: var(--ink);
+    }
+    .button:hover {
+      transform: translateY(-1px);
+    }
+    .button:active {
+      transform: translateY(0);
+    }
+    .hamburger {
+      display: none;
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--ink-faint);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.78);
+      color: var(--ink);
+      align-items: center;
+      justify-content: center;
+    }
+    .hamburger svg {
+      width: 22px;
+      height: 22px;
+    }
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      display: none;
+      background: rgba(25, 33, 43, 0.36);
+    }
+    .drawer-backdrop[data-open="true"] {
+      display: block;
+    }
+    .mobile-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 100;
+      width: min(86vw, 360px);
+      min-height: 100vh;
+      padding: 18px;
+      background: var(--cloud);
+      border-left: 1px solid var(--ink-faint);
+      box-shadow: -24px 0 64px rgba(25, 33, 43, 0.20);
+      transform: translateX(105%);
+      transition: transform 240ms ease;
+    }
+    .mobile-drawer[data-open="true"] {
+      transform: translateX(0);
+    }
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--ink-faint);
+    }
+    .drawer-close {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--ink-faint);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.74);
+      color: var(--ink);
+      display: grid;
+      place-items: center;
+    }
+    .drawer-close svg {
+      width: 20px;
+      height: 20px;
+    }
+    .drawer-nav {
+      display: grid;
+      gap: 8px;
+      padding: 20px 0;
+    }
+    .drawer-search {
+      min-width: 0;
+      margin-bottom: 14px;
+    }
+    .hero {
+      position: relative;
+      padding: 74px 0 48px;
+    }
+    .hero::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(79, 70, 229, 0.11), transparent 34%),
+        linear-gradient(315deg, rgba(6, 182, 212, 0.14), transparent 38%);
+      pointer-events: none;
+    }
+    .hero-grid {
+      position: relative;
+      width: min(100% - 32px, var(--container));
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(330px, 0.92fr);
+      gap: 36px;
+      align-items: center;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 16px;
+      border: 1px solid var(--cyan-line);
+      border-radius: 999px;
+      background: var(--cyan-soft);
+      color: var(--ink);
+      padding: 7px 12px;
+      font-size: 0.84rem;
+      font-weight: 800;
+    }
+    .eyebrow-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--cyan);
+      box-shadow: 0 0 0 5px var(--cyan-soft);
+    }
+    h1,
+    h2,
+    h3,
+    .section-kicker {
+      font-family: "Manrope", sans-serif;
+      letter-spacing: 0;
+    }
+    h1 {
+      max-width: 790px;
+      margin: 0;
+      font-size: clamp(2.75rem, 7vw, 5.8rem);
+      line-height: 0.96;
+      font-weight: 800;
+    }
+    .hero-copy {
+      max-width: 660px;
+      margin: 22px 0 0;
+      color: var(--ink-soft);
+      font-size: clamp(1rem, 2vw, 1.18rem);
+    }
+    .hero-controls {
+      margin-top: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+    .select-field {
+      position: relative;
+      min-width: min(100%, 310px);
+    }
+    .select-field label,
+    .field-label {
+      display: block;
+      margin: 0 0 8px;
+      color: var(--ink-muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .select-field select,
+    .product-card select {
+      width: 100%;
+      min-height: 48px;
+      border: 1px solid var(--ink-faint);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.86);
+      color: var(--ink);
+      padding: 0 42px 0 14px;
+      outline: none;
+      appearance: none;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+    .select-field::after,
+    .product-select-wrap::after {
+      content: "";
+      position: absolute;
+      right: 14px;
+      bottom: 18px;
+      width: 8px;
+      height: 8px;
+      border-right: 2px solid var(--ink-muted);
+      border-bottom: 2px solid var(--ink-muted);
+      transform: rotate(45deg);
+      pointer-events: none;
+    }
+    .select-field select:focus,
+    .product-card select:focus {
+      border-color: var(--indigo);
+      box-shadow: 0 0 0 4px var(--indigo-soft);
+    }
+    .hero-panel {
+      border: 1px solid var(--ink-faint);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+    .hero-panel-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--ink-faint);
+    }
+    .hero-panel-title {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 900;
+    }
+    .signal-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--lime-line);
+      border-radius: 999px;
+      background: var(--lime-soft);
+      color: var(--ink);
+      padding: 6px 10px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .signal-pill::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--lime);
+    }
+    .score-list {
+      display: grid;
+      gap: 14px;
+      margin-top: 16px;
+    }
+    .score-item {
+      display: grid;
+      gap: 8px;
+    }
+    .score-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+    .meter {
+      height: 9px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: var(--ink-faint);
+    }
+    .meter span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--indigo);
+    }
+    .meter .cyan {
+      background: var(--cyan);
+    }
+    .meter .lime {
+      background: var(--lime);
+    }
+    .section {
+      width: min(100% - 32px, var(--container));
+      margin: 0 auto;
+      padding: 52px 0;
+    }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 20px;
+    }
+    .section-kicker {
+      margin: 0 0 8px;
+      color: var(--indigo);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .section h2 {
+      margin: 0;
+      font-size: clamp(1.65rem, 3vw, 2.6rem);
+      line-height: 1.05;
+    }
+    .section-note {
+      max-width: 520px;
+      margin: 0;
+      color: var(--ink-soft);
+    }
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .product-card,
+    .pricing-card,
+    .recommend-card,
+    .review-card {
+      border: 1px solid var(--ink-faint);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: var(--shadow-tight);
+    }
+    .product-card {
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+    .product-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+    }
+    .logo-mark {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius);
+      border: 1px solid var(--ink-faint);
+      display: grid;
+      place-items: center;
+      color: var(--cloud);
+      background: var(--ink);
+      font-weight: 900;
+    }
+    .logo-mark.indigo {
+      background: var(--indigo);
+    }
+    .logo-mark.cyan {
+      background: var(--cyan);
+      color: var(--ink);
+    }
+    .icon-button {
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--ink-faint);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.66);
+      color: var(--ink-muted);
+      display: grid;
+      place-items: center;
+      transition: color 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+    .icon-button svg {
+      width: 18px;
+      height: 18px;
+    }
+    .icon-button:hover {
+      border-color: var(--coral-line);
+      background: var(--coral-soft);
+      color: var(--coral);
+    }
+    .product-select-wrap {
+      position: relative;
+    }
+    .product-card dl {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 0;
+    }
+    .product-card dt {
+      color: var(--ink-muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .product-card dd {
+      margin: 2px 0 0;
+      font-weight: 900;
+    }
+    .matrix-panel {
+      border: 1px solid var(--ink-faint);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.78);
+      box-shadow: var(--shadow-tight);
+      overflow: hidden;
+    }
+    .matrix-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--ink-faint);
+    }
+    .matrix-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .tab {
+      border: 1px solid var(--ink-faint);
+      border-radius: 999px;
+      background: transparent;
+      color: var(--ink-soft);
+      padding: 8px 12px;
+      font-weight: 800;
+    }
+    .tab[aria-selected="true"] {
+      border-color: var(--indigo-line);
+      background: var(--indigo-soft);
+      color: var(--indigo);
+    }
+    .matrix-scroll {
+      overflow-x: auto;
+      scrollbar-color: var(--indigo) var(--cloud);
+    }
+    table {
+      width: 100%;
+      min-width: 820px;
+      border-collapse: separate;
+      border-spacing: 0;
+    }
+    th,
+    td {
+      border-bottom: 1px solid var(--ink-faint);
+      padding: 15px 16px;
+      text-align: center;
+      vertical-align: middle;
+    }
+    th:first-child,
+    td:first-child {
+      position: sticky;
+      left: 0;
+      z-index: 2;
+      text-align: left;
+      background: rgba(255, 255, 255, 0.96);
+      min-width: 250px;
+      box-shadow: 1px 0 0 var(--ink-faint);
+    }
+    thead th {
+      top: 0;
+      z-index: 3;
+      color: var(--ink);
+      font-size: 0.86rem;
+      text-transform: uppercase;
+      background: rgba(246, 248, 252, 0.96);
+    }
+    tbody tr:last-child td {
+      border-bottom: 0;
+    }
+    .feature-name {
+      display: grid;
+      gap: 4px;
+    }
+    .feature-name strong {
+      font-weight: 900;
+    }
+    .feature-name span {
+      color: var(--ink-muted);
+      font-size: 0.84rem;
+    }
+    .badge {
+      min-width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      display: inline-grid;
+      place-items: center;
+      font-weight: 900;
+      border: 1px solid transparent;
+    }
+    .badge.ok {
+      border-color: var(--lime-line);
+      background: var(--lime-soft);
+      color: var(--ink);
+    }
+    .badge.no {
+      border-color: var(--coral-line);
+      background: var(--coral-soft);
+      color: var(--coral);
+    }
+    .badge.mid {
+      border-color: var(--cyan-line);
+      background: var(--cyan-soft);
+      color: var(--ink);
+      font-size: 0.82rem;
+      padding: 0 10px;
+    }
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .pricing-card {
+      padding: 20px;
+      display: grid;
+      gap: 18px;
+      position: relative;
+      overflow: hidden;
+    }
+    .pricing-card.featured {
+      border-color: var(--indigo-line);
+      box-shadow: 0 22px 54px rgba(79, 70, 229, 0.16);
+    }
+    .pricing-card.featured::before {
+      content: "Recommended";
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      border-radius: 999px;
+      background: var(--indigo-soft);
+      color: var(--indigo);
+      padding: 6px 10px;
+      font-size: 0.75rem;
+      font-weight: 900;
+    }
+    .plan-name {
+      margin: 0;
+      font-family: "Manrope", sans-serif;
+      font-size: 1.2rem;
+      font-weight: 900;
+    }
+    .price {
+      display: flex;
+      align-items: end;
+      gap: 6px;
+      margin: 0;
+    }
+    .price strong {
+      font-family: "Manrope", sans-serif;
+      font-size: 2.4rem;
+      line-height: 1;
+    }
+    .price span {
+      color: var(--ink-muted);
+      font-weight: 800;
+    }
+    .feature-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 10px;
+    }
+    .feature-list li {
+      display: flex;
+      gap: 10px;
+      align-items: start;
+      color: var(--ink-soft);
+    }
+    .feature-list li::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--lime);
+      margin-top: 7px;
+      flex: 0 0 auto;
+    }
+    .recommend-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .recommend-card {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+    .recommend-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      background: var(--indigo-soft);
+      color: var(--indigo);
+    }
+    .recommend-icon svg {
+      width: 22px;
+      height: 22px;
+    }
+    .recommend-card h3 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+    .recommend-card p {
+      margin: 0;
+      color: var(--ink-soft);
+    }
+    .reason-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: grid;
+      gap: 8px;
+    }
+    .reason-list li {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      border-top: 1px solid var(--ink-faint);
+      padding-top: 8px;
+      color: var(--ink-muted);
+      font-weight: 800;
+    }
+    .reason-list strong {
+      color: var(--ink);
+    }
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .review-card {
+      padding: 18px;
+      display: grid;
+      gap: 14px;
+    }
+    .rating-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .rating-score {
+      font-family: "Manrope", sans-serif;
+      font-size: 2.2rem;
+      line-height: 1;
+      font-weight: 900;
+    }
+    .stars {
+      color: var(--indigo);
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+    .review-card p {
+      margin: 0;
+      color: var(--ink-soft);
+    }
+    .review-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--ink-muted);
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+    .site-footer {
+      margin-top: 34px;
+      border-top: 1px solid var(--ink-faint);
+      background: var(--ink);
+      color: var(--cloud);
+    }
+    .footer-inner {
+      width: min(100% - 32px, var(--container));
+      margin: 0 auto;
+      padding: 28px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .footer-links {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      color: rgba(246, 248, 252, 0.72);
+      font-weight: 700;
+    }
+    .footer-credit {
+      margin: 0;
+      color: rgba(246, 248, 252, 0.82);
+      font-weight: 800;
+    }
+    :focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 3px;
+    }
+    @media (max-width: 980px) {
+      .nav-wrap {
+        grid-template-columns: auto auto;
+      }
+      .desktop-nav,
+      .nav-actions .search-box,
+      .nav-actions .button-primary {
+        display: none;
+      }
+      .hamburger {
+        display: inline-flex;
+      }
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+      .product-grid,
+      .pricing-grid,
+      .recommend-grid,
+      .review-grid {
+        grid-template-columns: 1fr;
+      }
+      .section-head {
+        align-items: start;
+        flex-direction: column;
+      }
+    }
+    @media (max-width: 640px) {
+      .hero {
+        padding-top: 48px;
+      }
+      .nav-wrap,
+      .section,
+      .hero-grid,
+      .footer-inner {
+        width: min(100% - 24px, var(--container));
+      }
+      h1 {
+        font-size: clamp(2.35rem, 15vw, 4rem);
+      }
+      .hero-controls {
+        align-items: stretch;
+        flex-direction: column;
+      }
+      .select-field,
+      .hero-controls .button {
+        width: 100%;
+      }
+      .matrix-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+      }
+      .product-card dl {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="page-shell">
+    <header class="site-header" aria-label="Primary navigation">
+      <div class="nav-wrap">
+        <a class="brand" href="#top" aria-label="Matrix Comparison home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 5h16"></path>
+              <path d="M4 12h16"></path>
+              <path d="M4 19h16"></path>
+              <path d="M8 3v18"></path>
+              <path d="M16 3v18"></path>
+            </svg>
+          </span>
+          <span>Matrix Comparison</span>
+        </a>
+        <nav class="desktop-nav" aria-label="Main menu">
+          <a href="#compare">Compare</a>
+          <a href="#products">Products</a>
+          <a href="#categories">Categories</a>
+          <a href="#guides">Guides</a>
+        </nav>
+        <div class="nav-actions">
+          <label class="search-box" aria-label="Search products">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            <input type="search" name="site-search" aria-label="Search product library" value="" autocomplete="off">
+          </label>
+          <a class="button button-primary" href="#selector">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 5v14"></path>
+              <path d="M5 12h14"></path>
+            </svg>
+            Add product
+          </a>
+          <button class="hamburger" type="button" aria-label="Open menu" aria-controls="mobile-drawer" aria-expanded="false" data-menu-open>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 6h16"></path>
+              <path d="M4 12h16"></path>
+              <path d="M4 18h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+    <div class="drawer-backdrop" data-drawer-backdrop data-open="false"></div>
+    <aside class="mobile-drawer" id="mobile-drawer" data-drawer data-open="false" aria-label="Mobile menu" aria-hidden="true">
+      <div class="drawer-head">
+        <a class="brand" href="#top">
+          <span class="brand-mark" aria-hidden="true">MC</span>
+          <span>Matrix Comparison</span>
+        </a>
+        <button class="drawer-close" type="button" aria-label="Close menu" data-menu-close>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M18 6 6 18"></path>
+            <path d="m6 6 12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <nav class="drawer-nav" aria-label="Mobile navigation">
+        <a href="#compare">Compare</a>
+        <a href="#products">Products</a>
+        <a href="#categories">Categories</a>
+        <a href="#guides">Guides</a>
+      </nav>
+      <label class="search-box drawer-search" aria-label="Search products in menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+        <input type="search" name="drawer-search" aria-label="Search products from menu" autocomplete="off">
+      </label>
+      <a class="button button-primary" href="#selector">Add product</a>
+    </aside>
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero-grid">
+          <div>
+            <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Live SaaS buying model</p>
+            <h1 id="hero-title">Compare software with a matrix built for decisive teams.</h1>
+            <p class="hero-copy">Shortlist SaaS products, measure feature depth, inspect pricing fit, and generate ranked recommendations from one focused comparison workspace.</p>
+            <div class="hero-controls">
+              <div class="select-field">
+                <label for="hero-product">Start with a product</label>
+                <select id="hero-product" name="hero-product">
+                  <option>Atlas CRM</option>
+                  <option>Northstar Desk</option>
+                  <option>PulseOps Suite</option>
+                  <option>SignalFlow Analytics</option>
+                </select>
+              </div>
+              <a class="button button-primary" href="#compare">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M4 19V5"></path>
+                  <path d="M4 19h16"></path>
+                  <path d="m8 15 3-4 3 2 4-6"></path>
+                </svg>
+                Build matrix
+              </a>
+            </div>
+          </div>
+          <aside class="hero-panel" aria-label="Recommendation summary">
+            <div class="hero-panel-top">
+              <p class="hero-panel-title">Current comparison health</p>
+              <span class="signal-pill">Ready</span>
+            </div>
+            <div class="score-list">
+              <div class="score-item">
+                <div class="score-head"><span>Feature coverage</span><span>92%</span></div>
+                <div class="meter" aria-hidden="true"><span style="width: 92%"></span></div>
+              </div>
+              <div class="score-item">
+                <div class="score-head"><span>Pricing confidence</span><span>84%</span></div>
+                <div class="meter" aria-hidden="true"><span class="cyan" style="width: 84%"></span></div>
+              </div>
+              <div class="score-item">
+                <div class="score-head"><span>Review reliability</span><span>89%</span></div>
+                <div class="meter" aria-hidden="true"><span class="lime" style="width: 89%"></span></div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+      <section class="section" id="selector" aria-labelledby="selector-title">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">Product selector</p>
+            <h2 id="selector-title">Three product slots tuned for fast switching.</h2>
+          </div>
+          <p class="section-note">Search, swap, or remove a product while the comparison view keeps pricing, features, reviews, and recommendations aligned.</p>
+        </div>
+        <div class="product-grid" id="products">
+          <article class="product-card">
+            <div class="product-top">
+              <div class="logo-mark indigo" aria-hidden="true">A</div>
+              <button class="icon-button" type="button" aria-label="Remove Atlas CRM" data-remove-product>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M18 6 6 18"></path>
+                  <path d="m6 6 12 12"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="product-select-wrap">
+              <label class="field-label" for="product-one">Product one</label>
+              <select id="product-one" name="product-one">
+                <option>Atlas CRM</option>
+                <option>Northstar Desk</option>
+                <option>PulseOps Suite</option>
+              </select>
+            </div>
+            <dl>
+              <div><dt>Match score</dt><dd>94%</dd></div>
+              <div><dt>Market rank</dt><dd>#2</dd></div>
+            </dl>
+          </article>
+          <article class="product-card">
+            <div class="product-top">
+              <div class="logo-mark cyan" aria-hidden="true">N</div>
+              <button class="icon-button" type="button" aria-label="Remove Northstar Desk" data-remove-product>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M18 6 6 18"></path>
+                  <path d="m6 6 12 12"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="product-select-wrap">
+              <label class="field-label" for="product-two">Product two</label>
+              <select id="product-two" name="product-two">
+                <option>Northstar Desk</option>
+                <option>Atlas CRM</option>
+                <option>SignalFlow Analytics</option>
+              </select>
+            </div>
+            <dl>
+              <div><dt>Match score</dt><dd>88%</dd></div>
+              <div><dt>Market rank</dt><dd>#4</dd></div>
+            </dl>
+          </article>
+          <article class="product-card">
+            <div class="product-top">
+              <div class="logo-mark" aria-hidden="true">P</div>
+              <button class="icon-button" type="button" aria-label="Remove PulseOps Suite" data-remove-product>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M18 6 6 18"></path>
+                  <path d="m6 6 12 12"></path>
+                </svg>
+              </button>
+            </div>
+            <div class="product-select-wrap">
+              <label class="field-label" for="product-three">Product three</label>
+              <select id="product-three" name="product-three">
+                <option>PulseOps Suite</option>
+                <option>Atlas CRM</option>
+                <option>Northstar Desk</option>
+              </select>
+            </div>
+            <dl>
+              <div><dt>Match score</dt><dd>91%</dd></div>
+              <div><dt>Market rank</dt><dd>#3</dd></div>
+            </dl>
+          </article>
+        </div>
+      </section>
+      <section class="section" id="compare" aria-labelledby="matrix-title">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">Feature matrix</p>
+            <h2 id="matrix-title">Side-by-side capability detail without buried decisions.</h2>
+          </div>
+          <p class="section-note">The first column stays visible while buyers scan support, security, automation, analytics, and admin requirements.</p>
+        </div>
+        <div class="matrix-panel">
+          <div class="matrix-toolbar">
+            <div class="matrix-tabs" role="tablist" aria-label="Matrix filters">
+              <button class="tab" type="button" role="tab" aria-selected="true">All features</button>
+              <button class="tab" type="button" role="tab" aria-selected="false">Security</button>
+              <button class="tab" type="button" role="tab" aria-selected="false">Automation</button>
+              <button class="tab" type="button" role="tab" aria-selected="false">Analytics</button>
+            </div>
+            <button class="button button-secondary" type="button">Export view</button>
+          </div>
+          <div class="matrix-scroll" tabindex="0" aria-label="Scrollable feature comparison table">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Feature</th>
+                  <th scope="col">Atlas CRM</th>
+                  <th scope="col">Northstar Desk</th>
+                  <th scope="col">PulseOps Suite</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><span class="feature-name"><strong>Workflow automation</strong><span>Visual rules, triggers, and approvals</span></span></td>
+                  <td><span class="badge ok" aria-label="Included">✓</span></td>
+                  <td><span class="badge ok" aria-label="Included">✓</span></td>
+                  <td><span class="badge ok" aria-label="Included">✓</span></td>
+                </tr>
+                <tr>
+                  <td><span class="feature-name"><strong>AI account summaries</strong><span>Briefs generated from activity and notes</span></span></td>
+                  <td><span class="badge ok" aria-label="Included">✓</span></td>
+                  <td><span class="badge mid">Add-on</span></td>
+                  <td><span class="badge ok" aria-label="Included">✓</span></td>
+                </tr>
+                <tr>
+                  <td><span class="feature-name"><strong>Native help center</strong><span>Knowledge base publishing and search</span></span></td>
+                  <td><span class="badge mid">Basic</span></td>
+                  <td><span class="badge ok" aria-label="Included">✓</span></td>
+                  <td><span class="badge ok" aria-label="Included">✓</span></td>
+                </tr>
+                <tr>
+                  <td><span class="feature-name"><strong>Custom objects</strong><span>Model unique entities and relationships</span></span></td>
+                  <td><span class="badge ok" aria-label="Included">✓</span></td>
+                  <td><span class="badge no" aria-label="Not included">✗</span></td>
+                  <td><span class="badge ok" aria-label="Included">✓</span></td>
+                </tr>
+                <tr>
+                  <td><span class="feature-name"><strong>SAML single sign-on</strong><span>Enterprise identity provider support</span></span></td>
+                  <td><span class="badge ok" aria-label="Included">✓</span></td>
+                  <td><span class="badge mid">Team+</span></td>
+                  <td><span class="badge ok" aria-label="Included">✓</span></td>
+                </tr>
+                <tr>
+                  <td><span class="feature-name"><strong>Audit logs</strong><span>Admin visibility for sensitive changes</span></span></td>
+                  <td><span class="badge ok" aria-label="Included">✓</span></td>
+                  <td><span class="badge mid">90 days</span></td>
+                  <td><span class="badge ok" aria-label="Included">✓</span></td>
+                </tr>
+                <tr>
+                  <td><span class="feature-name"><strong>API rate limits</strong><span>High-volume integrations and syncs</span></span></td>
+                  <td><span class="badge mid">High</span></td>
+                  <td><span class="badge mid">Medium</span></td>
+                  <td><span class="badge ok" aria-label="Included">✓</span></td>
+                </tr>
+                <tr>
+                  <td><span class="feature-name"><strong>Revenue forecasting</strong><span>Pipeline projections and weighted trends</span></span></td>
+                  <td><span class="badge ok" aria-label="Included">✓</span></td>
+                  <td><span class="badge no" aria-label="Not included">✗</span></td>
+                  <td><span class="badge mid">Basic</span></td>
+                </tr>
+                <tr>
+                  <td><span class="feature-name"><strong>Conversation routing</strong><span>Assign incoming requests by skill and load</span></span></td>
+                  <td><span class="badge mid">Rules</span></td>
+                  <td><span class="badge ok" aria-label="Included">✓</span></td>
+                  <td><span class="badge ok" aria-label="Included">✓</span></td>
+                </tr>
+                <tr>
+                  <td><span class="feature-name"><strong>Usage-based alerts</strong><span>Live notifications for limit thresholds</span></span></td>
+                  <td><span class="badge ok" aria-label="Included">✓</span></td>
+                  <td><span class="badge mid">Email</span></td>
+                  <td><span class="badge ok" aria-label="Included">✓</span></td>
+                </tr>
+                <tr>
+                  <td><span class="feature-name"><strong>Data residency</strong><span>Regional hosting and processing controls</span></span></td>
+                  <td><span class="badge mid">EU</span></td>
+                  <td><span class="badge no" aria-label="Not included">✗</span></td>
+                  <td><span class="badge ok" aria-label="Included">✓</span></td>
+                </tr>
+                <tr>
+                  <td><span class="feature-name"><strong>In-app experiments</strong><span>Feature flags and audience targeting</span></span></td>
+                  <td><span class="badge no" aria-label="Not included">✗</span></td>
+                  <td><span class="badge mid">Beta</span></td>
+                  <td><span class="badge ok" aria-label="Included">✓</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="categories" aria-labelledby="pricing-title">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">Pricing comparison</p>
+            <h2 id="pricing-title">Plans aligned by buyer intent, not marketing names.</h2>
+          </div>
+          <p class="section-note">Each card highlights the plan most teams would evaluate after the initial product shortlist.</p>
+        </div>
+        <div class="pricing-grid">
+          <article class="pricing-card featured">
+            <div>
+              <p class="plan-name">Atlas CRM Growth</p>
+              <p class="price"><strong>$49</strong><span>per seat</span></p>
+            </div>
+            <ul class="feature-list">
+              <li>Pipeline automation with approval paths</li>
+              <li>Forecasting dashboards for revenue teams</li>
+              <li>SAML, audit logs, and admin policies</li>
+              <li>Priority implementation support</li>
+            </ul>
+            <a class="button button-primary" href="#guides">View buying guide</a>
+          </article>
+          <article class="pricing-card">
+            <div>
+              <p class="plan-name">Northstar Desk Team</p>
+              <p class="price"><strong>$35</strong><span>per seat</span></p>
+            </div>
+            <ul class="feature-list">
+              <li>Help center, routing, and ticket queues</li>
+              <li>Team analytics with exportable reports</li>
+              <li>Shared inbox and service level tracking</li>
+              <li>Chat and email support channels</li>
+            </ul>
+            <a class="button button-secondary" href="#guides">Compare plan</a>
+          </article>
+          <article class="pricing-card">
+            <div>
+              <p class="plan-name">PulseOps Suite Scale</p>
+              <p class="price"><strong>$59</strong><span>per seat</span></p>
+            </div>
+            <ul class="feature-list">
+              <li>Operations analytics and product alerts</li>
+              <li>Regional data controls and audit trails</li>
+              <li>High-volume API access for system syncs</li>
+              <li>Experiment controls for growth teams</li>
+            </ul>
+            <a class="button button-secondary" href="#guides">Review fit</a>
+          </article>
+        </div>
+      </section>
+      <section class="section" aria-labelledby="recommend-title">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">Recommendation engine</p>
+            <h2 id="recommend-title">Best-fit guidance with visible reasoning.</h2>
+          </div>
+          <p class="section-note">Recommendations combine feature depth, plan cost, review quality, and risk signals into practical buying guidance.</p>
+        </div>
+        <div class="recommend-grid">
+          <article class="recommend-card">
+            <div class="recommend-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 2v20"></path>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"></path>
+              </svg>
+            </div>
+            <h3>Best Value</h3>
+            <p>Northstar Desk keeps cost low while covering service workflows and team reporting.</p>
+            <ul class="reason-list">
+              <li><span>Price index</span><strong>91</strong></li>
+              <li><span>Support fit</span><strong>96</strong></li>
+              <li><span>Admin load</span><strong>Low</strong></li>
+            </ul>
+          </article>
+          <article class="recommend-card">
+            <div class="recommend-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2 7.5 14 3 9.6l6.2-.9L12 3Z"></path>
+              </svg>
+            </div>
+            <h3>Best Features</h3>
+            <p>PulseOps Suite leads on operations depth, data controls, and product analytics.</p>
+            <ul class="reason-list">
+              <li><span>Coverage</span><strong>97%</strong></li>
+              <li><span>Security</span><strong>Strong</strong></li>
+              <li><span>Scale fit</span><strong>High</strong></li>
+            </ul>
+          </article>
+          <article class="recommend-card">
+            <div class="recommend-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+            </div>
+            <h3>Most Popular</h3>
+            <p>Atlas CRM has the strongest adoption pattern for revenue teams with complex sales motions.</p>
+            <ul class="reason-list">
+              <li><span>Review count</span><strong>3,842</strong></li>
+              <li><span>Retention</span><strong>94%</strong></li>
+              <li><span>Time to value</span><strong>21 days</strong></li>
+            </ul>
+          </article>
+        </div>
+      </section>
+      <section class="section" id="guides" aria-labelledby="reviews-title">
+        <div class="section-head">
+          <div>
+            <p class="section-kicker">User reviews</p>
+            <h2 id="reviews-title">Ratings grounded in volume and sentiment.</h2>
+          </div>
+          <p class="section-note">Review summaries expose both average score and sample size so buyers can weigh popularity against product fit.</p>
+        </div>
+        <div class="review-grid">
+          <article class="review-card">
+            <div class="rating-row">
+              <div>
+                <div class="rating-score">4.7</div>
+                <div class="stars" aria-label="Four point seven out of five stars">★★★★★</div>
+              </div>
+              <div class="logo-mark indigo" aria-hidden="true">A</div>
+            </div>
+            <p>Revenue leaders praise the forecasting model, admin controls, and account visibility across handoffs.</p>
+            <div class="review-meta"><span>3,842 reviews</span><span>94% recommend</span></div>
+          </article>
+          <article class="review-card">
+            <div class="rating-row">
+              <div>
+                <div class="rating-score">4.5</div>
+                <div class="stars" aria-label="Four point five out of five stars">★★★★☆</div>
+              </div>
+              <div class="logo-mark cyan" aria-hidden="true">N</div>
+            </div>
+            <p>Support teams highlight setup speed, clean routing controls, and an approachable agent workspace.</p>
+            <div class="review-meta"><span>2,916 reviews</span><span>91% recommend</span></div>
+          </article>
+          <article class="review-card">
+            <div class="rating-row">
+              <div>
+                <div class="rating-score">4.6</div>
+                <div class="stars" aria-label="Four point six out of five stars">★★★★★</div>
+              </div>
+              <div class="logo-mark" aria-hidden="true">P</div>
+            </div>
+            <p>Operations teams value the analytics depth, residency controls, and high-volume API reliability.</p>
+            <div class="review-meta"><span>1,728 reviews</span><span>93% recommend</span></div>
+          </article>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p class="footer-credit">Matrix Comparison — designed by Northline Studio.</p>
+        <nav class="footer-links" aria-label="Footer navigation">
+          <a href="#compare">Matrix</a>
+          <a href="#categories">Pricing</a>
+          <a href="#guides">Reviews</a>
+        </nav>
+      </div>
+    </footer>
+  </div>
+  <script>
+    const body = document.body;
+    const drawer = document.querySelector('[data-drawer]');
+    const backdrop = document.querySelector('[data-drawer-backdrop]');
+    const openButton = document.querySelector('[data-menu-open]');
+    const closeButton = document.querySelector('[data-menu-close]');
+    const drawerLinks = [...document.querySelectorAll('.drawer-nav a, .mobile-drawer .button')];
+    const removeButtons = document.querySelectorAll('[data-remove-product]');
+    const tabs = document.querySelectorAll('.tab');
+    function setDrawer(open) {
+      drawer.dataset.open = String(open);
+      backdrop.dataset.open = String(open);
+      drawer.setAttribute('aria-hidden', String(!open));
+      openButton.setAttribute('aria-expanded', String(open));
+      body.classList.toggle('menu-open', open);
+      if (open) {
+        closeButton.focus();
+      } else {
+        openButton.focus();
+      }
+    }
+    openButton.addEventListener('click', () => setDrawer(true));
+    closeButton.addEventListener('click', () => setDrawer(false));
+    backdrop.addEventListener('click', () => setDrawer(false));
+    drawerLinks.forEach((link) => link.addEventListener('click', () => setDrawer(false)));
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && drawer.dataset.open === 'true') {
+        setDrawer(false);
+      }
+    });
+    removeButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const card = button.closest('.product-card');
+        card.style.opacity = '0.55';
+        card.querySelector('select').disabled = true;
+        button.disabled = true;
+        button.setAttribute('aria-label', 'Product slot removed');
+      });
+    });
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        tabs.forEach((item) => item.setAttribute('aria-selected', 'false'));
+        tab.setAttribute('aria-selected', 'true');
+      });
+    });
+  </script>
+</body>
+</html>
