@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zen HR Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --indigo: #4F46E5;
+      --cyan: #06B6D4;
+      --lime: #A3E635;
+      --coral: #FB7185;
+      --cloud-soft: rgba(246, 248, 252, 0.72);
+      --cloud-strong: rgba(246, 248, 252, 0.96);
+      --ink-soft: rgba(25, 33, 43, 0.68);
+      --ink-muted: rgba(25, 33, 43, 0.48);
+      --ink-line: rgba(25, 33, 43, 0.12);
+      --ink-faint: rgba(25, 33, 43, 0.06);
+      --indigo-soft: rgba(79, 70, 229, 0.12);
+      --indigo-mid: rgba(79, 70, 229, 0.24);
+      --cyan-soft: rgba(6, 182, 212, 0.14);
+      --lime-soft: rgba(163, 230, 53, 0.22);
+      --coral-soft: rgba(251, 113, 133, 0.16);
+      --shadow: 0 24px 60px rgba(25, 33, 43, 0.12);
+      --radius: 8px;
+      --radius-small: 6px;
+      --max: 1240px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(135deg, rgba(79, 70, 229, 0.08), transparent 30%),
+        linear-gradient(315deg, rgba(6, 182, 212, 0.12), transparent 34%),
+        var(--cloud);
+      color: var(--ink);
+      font-family: "Inter", system-ui, sans-serif;
+      letter-spacing: 0;
+    }
+
+    body.drawer-open {
+      overflow: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 3px;
+    }
+
+    .skip-link {
+      position: absolute;
+      left: 1rem;
+      top: -4rem;
+      z-index: 50;
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-small);
+      background: var(--ink);
+      color: var(--cloud);
+      transition: top 180ms ease;
+    }
+
+    .skip-link:focus {
+      top: 1rem;
+    }
+
+    .shell {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      border-bottom: 1px solid var(--ink-line);
+      background: rgba(246, 248, 252, 0.86);
+      backdrop-filter: blur(18px);
+    }
+
+    .topbar {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 1rem;
+      min-height: 76px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-family: "Manrope", system-ui, sans-serif;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--lime);
+      box-shadow: 0 12px 28px rgba(25, 33, 43, 0.18);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+    }
+
+    .nav-links a {
+      padding: 0.62rem 0.85rem;
+      border-radius: var(--radius-small);
+      color: var(--ink-soft);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .nav-links a:hover {
+      background: var(--indigo-soft);
+      color: var(--ink);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.7rem;
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      width: min(280px, 26vw);
+      padding: 0.62rem 0.8rem;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.72);
+    }
+
+    .search input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .icon-button {
+      position: relative;
+      display: inline-grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: var(--cloud-strong);
+      color: var(--ink);
+    }
+
+    .badge-dot {
+      position: absolute;
+      right: 6px;
+      top: 6px;
+      display: grid;
+      place-items: center;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 4px;
+      border-radius: 999px;
+      background: var(--coral);
+      color: var(--cloud);
+      font-size: 0.68rem;
+      font-weight: 800;
+    }
+
+    .hamburger {
+      display: none;
+    }
+
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 38;
+      display: none;
+      background: rgba(25, 33, 43, 0.34);
+    }
+
+    .mobile-drawer {
+      position: fixed;
+      inset: 0 0 0 auto;
+      z-index: 40;
+      width: min(340px, 88vw);
+      padding: 1rem;
+      transform: translateX(104%);
+      transition: transform 220ms ease;
+      border-left: 1px solid var(--ink-line);
+      background: var(--cloud);
+      box-shadow: var(--shadow);
+    }
+
+    .mobile-drawer.is-open {
+      transform: translateX(0);
+    }
+
+    .drawer-backdrop.is-open {
+      display: block;
+    }
+
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .drawer-nav {
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    .drawer-nav a {
+      padding: 0.95rem;
+      border-radius: var(--radius);
+      background: rgba(25, 33, 43, 0.05);
+      color: var(--ink);
+      font-weight: 800;
+    }
+
+    .hero {
+      padding: 42px 0 22px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: 1.2rem;
+      align-items: stretch;
+    }
+
+    .hero-copy {
+      padding: clamp(1.25rem, 3vw, 2.4rem);
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.72);
+      box-shadow: var(--shadow);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      margin-bottom: 1rem;
+      padding: 0.42rem 0.6rem;
+      border: 1px solid var(--cyan);
+      border-radius: 999px;
+      color: var(--ink-soft);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--cyan);
+      box-shadow: 0 0 0 7px rgba(6, 182, 212, 0.15);
+    }
+
+    h1,
+    h2,
+    h3,
+    h4 {
+      margin: 0;
+      font-family: "Manrope", system-ui, sans-serif;
+      letter-spacing: 0;
+    }
+
+    h1 {
+      max-width: 760px;
+      font-size: clamp(2.45rem, 6vw, 5.8rem);
+      line-height: 0.94;
+    }
+
+    h2 {
+      font-size: clamp(1.55rem, 3vw, 2.45rem);
+      line-height: 1.05;
+    }
+
+    h3 {
+      font-size: 1.05rem;
+      line-height: 1.2;
+    }
+
+    p {
+      margin: 0;
+      color: var(--ink-soft);
+      line-height: 1.65;
+    }
+
+    .hero-copy p {
+      max-width: 680px;
+      margin-top: 1rem;
+      font-size: 1.02rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 1.4rem;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.48rem;
+      min-height: 44px;
+      padding: 0.7rem 1rem;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      font-weight: 800;
+    }
+
+    .button.primary {
+      background: var(--indigo);
+      color: var(--cloud);
+    }
+
+    .button.secondary {
+      border-color: var(--ink-line);
+      background: rgba(246, 248, 252, 0.86);
+      color: var(--ink);
+    }
+
+    .summary-panel {
+      display: grid;
+      gap: 0.9rem;
+      padding: 1rem;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--cloud);
+      box-shadow: var(--shadow);
+    }
+
+    .panel-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.85rem;
+      border: 1px solid rgba(246, 248, 252, 0.12);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.05);
+    }
+
+    .panel-row strong {
+      display: block;
+      margin-bottom: 0.18rem;
+      font-family: "Manrope", system-ui, sans-serif;
+    }
+
+    .panel-row span {
+      color: rgba(246, 248, 252, 0.68);
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .panel-meter {
+      width: 82px;
+      height: 8px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(246, 248, 252, 0.16);
+    }
+
+    .panel-meter i {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--lime);
+    }
+
+    .section {
+      padding: 28px 0;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .section-head p {
+      max-width: 620px;
+    }
+
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.85rem;
+    }
+
+    .kpi {
+      min-height: 128px;
+      padding: 1rem;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.78);
+      box-shadow: 0 16px 40px rgba(25, 33, 43, 0.07);
+    }
+
+    .kpi span {
+      color: var(--ink-muted);
+      font-size: 0.8rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .kpi strong {
+      display: block;
+      margin-top: 0.6rem;
+      font-family: "Manrope", system-ui, sans-serif;
+      font-size: 2.15rem;
+      line-height: 1;
+    }
+
+    .kpi small {
+      display: block;
+      margin-top: 0.55rem;
+      color: var(--ink-soft);
+      font-weight: 700;
+    }
+
+    .tool-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      gap: 0.7rem;
+      margin-bottom: 1rem;
+    }
+
+    .control {
+      min-height: 44px;
+      width: 100%;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: var(--cloud-strong);
+      color: var(--ink);
+      padding: 0 0.85rem;
+    }
+
+    .employee-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+
+    .employee-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 0.85rem;
+      padding: 1rem;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.86);
+    }
+
+    .avatar {
+      display: grid;
+      place-items: center;
+      width: 54px;
+      height: 54px;
+      border-radius: var(--radius);
+      background: var(--indigo-soft);
+      color: var(--indigo);
+      font-weight: 900;
+    }
+
+    .employee-meta {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem;
+      margin: 0.45rem 0;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.32rem;
+      min-height: 26px;
+      padding: 0.25rem 0.52rem;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 900;
+    }
+
+    .pill.indigo {
+      background: var(--indigo-soft);
+      color: var(--indigo);
+    }
+
+    .pill.cyan {
+      background: var(--cyan-soft);
+      color: var(--ink);
+    }
+
+    .pill.lime {
+      background: var(--lime-soft);
+      color: var(--ink);
+    }
+
+    .pill.coral {
+      background: var(--coral-soft);
+      color: var(--ink);
+    }
+
+    .employee-card p {
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.88);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    th,
+    td {
+      padding: 0.9rem;
+      border-bottom: 1px solid var(--ink-line);
+      text-align: left;
+      vertical-align: middle;
+    }
+
+    th {
+      color: var(--ink-muted);
+      font-size: 0.75rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .action-pair {
+      display: flex;
+      gap: 0.45rem;
+    }
+
+    .mini-button {
+      min-height: 34px;
+      padding: 0.42rem 0.62rem;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius-small);
+      background: var(--cloud-strong);
+      color: var(--ink);
+      font-weight: 900;
+    }
+
+    .mini-button.approve {
+      background: var(--lime-soft);
+    }
+
+    .mini-button.reject {
+      background: var(--coral-soft);
+    }
+
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.9rem;
+    }
+
+    .review-card {
+      padding: 1rem;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.84);
+    }
+
+    .review-card header {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 0.7rem;
+    }
+
+    .progress {
+      height: 10px;
+      overflow: hidden;
+      margin: 0.9rem 0;
+      border-radius: 999px;
+      background: rgba(25, 33, 43, 0.08);
+    }
+
+    .progress span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--indigo), var(--cyan));
+    }
+
+    .split-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.82fr);
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .org-chart {
+      padding: 1rem;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.84);
+    }
+
+    .org-node {
+      position: relative;
+      margin: 0.5rem 0;
+      padding: 0.8rem;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: var(--cloud-strong);
+    }
+
+    .org-node.lead {
+      background: var(--ink);
+      color: var(--cloud);
+    }
+
+    .org-children {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.7rem;
+      margin-top: 0.8rem;
+      padding-top: 0.8rem;
+      border-top: 1px dashed var(--ink-line);
+    }
+
+    .org-node small {
+      display: block;
+      margin-top: 0.2rem;
+      color: inherit;
+      opacity: 0.68;
+      font-weight: 800;
+    }
+
+    .announcements {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .announcement {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 1rem;
+      padding: 0.95rem;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.86);
+    }
+
+    .announcement time {
+      display: block;
+      margin-top: 0.28rem;
+      color: var(--ink-muted);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .site-footer {
+      padding: 34px 0 46px;
+      color: var(--ink-soft);
+    }
+
+    .footer-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding-top: 1.2rem;
+      border-top: 1px solid var(--ink-line);
+      font-weight: 800;
+    }
+
+    .empty-state {
+      display: none;
+      padding: 1rem;
+      border: 1px dashed var(--ink-line);
+      border-radius: var(--radius);
+      color: var(--ink-soft);
+      font-weight: 800;
+    }
+
+    @media (max-width: 980px) {
+      .nav-links,
+      .top-actions .search {
+        display: none;
+      }
+
+      .hamburger {
+        display: inline-grid;
+      }
+
+      .hero-grid,
+      .split-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-strip,
+      .employee-grid,
+      .review-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .org-children {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .shell {
+        width: min(100% - 22px, var(--max));
+      }
+
+      .topbar {
+        min-height: 66px;
+      }
+
+      .hero {
+        padding-top: 24px;
+      }
+
+      .hero-copy {
+        padding: 1rem;
+      }
+
+      h1 {
+        font-size: clamp(2.25rem, 15vw, 3.8rem);
+      }
+
+      .section-head,
+      .footer-line {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .kpi-strip,
+      .employee-grid,
+      .review-grid,
+      .tool-row {
+        grid-template-columns: 1fr;
+      }
+
+      .employee-card {
+        grid-template-columns: 1fr;
+      }
+
+      .announcement {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="shell topbar">
+      <a class="brand" href="#dashboard" aria-label="Zen HR Platform home">
+        <span class="brand-mark">ZH</span>
+        <span>Zen HR</span>
+      </a>
+      <nav class="nav-links" aria-label="Primary navigation">
+        <a href="#dashboard">Dashboard</a>
+        <a href="#employees">Employees</a>
+        <a href="#leave">Leave</a>
+        <a href="#reviews">Reviews</a>
+        <a href="#settings">Settings</a>
+      </nav>
+      <div class="top-actions">
+        <label class="search" aria-label="Search people and policies">
+          <span aria-hidden="true">⌕</span>
+          <input id="globalSearch" type="search" aria-label="Search people and policies">
+        </label>
+        <button class="icon-button" type="button" aria-label="Notifications">
+          <span aria-hidden="true">🔔</span>
+          <span class="badge-dot" aria-label="3 unread notifications">3</span>
+        </button>
+        <button class="icon-button hamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobileDrawer">
+          <span aria-hidden="true">☰</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="drawer-backdrop" data-close-drawer></div>
+  <aside class="mobile-drawer" id="mobileDrawer" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="drawer-head">
+      <a class="brand" href="#dashboard">
+        <span class="brand-mark">ZH</span>
+        <span>Zen HR</span>
+      </a>
+      <button class="icon-button" type="button" aria-label="Close menu" data-close-drawer>
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+    <nav class="drawer-nav" aria-label="Mobile primary navigation">
+      <a href="#dashboard">Dashboard</a>
+      <a href="#employees">Employees</a>
+      <a href="#leave">Leave</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#settings">Settings</a>
+    </nav>
+  </aside>
+
+  <main id="main">
+    <section class="hero" id="dashboard" aria-labelledby="pageTitle">
+      <div class="shell hero-grid">
+        <div class="hero-copy">
+          <div class="eyebrow"><span class="live-dot"></span> Live people operations</div>
+          <h1 id="pageTitle">Zen HR Platform</h1>
+          <p>One calm command center for employee records, leave decisions, review cycles, department health, and company-wide HR announcements.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#employees">Review employees</a>
+            <a class="button secondary" href="#leave">Approve leave</a>
+          </div>
+        </div>
+        <aside class="summary-panel" aria-label="Operational highlights">
+          <div class="panel-row">
+            <div>
+              <strong>Engineering hiring</strong>
+              <span>4 roles moving through final interviews</span>
+            </div>
+            <div class="panel-meter" aria-label="72 percent complete"><i style="width: 72%"></i></div>
+          </div>
+          <div class="panel-row">
+            <div>
+              <strong>Review readiness</strong>
+              <span>Managers completing calibration notes</span>
+            </div>
+            <div class="panel-meter" aria-label="61 percent complete"><i style="width: 61%"></i></div>
+          </div>
+          <div class="panel-row">
+            <div>
+              <strong>Policy updates</strong>
+              <span>Remote-work handbook acknowledged by 91%</span>
+            </div>
+            <div class="panel-meter" aria-label="91 percent complete"><i style="width: 91%"></i></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="kpiTitle">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <h2 id="kpiTitle">Workforce snapshot</h2>
+            <p>Core signals for today’s staffing, time away, recruiting, and review operations.</p>
+          </div>
+        </div>
+        <div class="kpi-strip">
+          <article class="kpi">
+            <span>Total employees</span>
+            <strong>248</strong>
+            <small>+12 since last quarter</small>
+          </article>
+          <article class="kpi">
+            <span>On leave today</span>
+            <strong>18</strong>
+            <small>7.2% of workforce</small>
+          </article>
+          <article class="kpi">
+            <span>Open positions</span>
+            <strong>11</strong>
+            <small>4 priority hires</small>
+          </article>
+          <article class="kpi">
+            <span>Upcoming reviews</span>
+            <strong>36</strong>
+            <small>Due within 14 days</small>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="employees" aria-labelledby="employeesTitle">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <h2 id="employeesTitle">Employee directory</h2>
+            <p>Search by employee or role, then filter by department or active leave status.</p>
+          </div>
+        </div>
+        <div class="tool-row">
+          <input class="control" id="employeeSearch" type="search" aria-label="Search employees">
+          <select class="control" id="departmentFilter" aria-label="Filter by department">
+            <option value="all">All departments</option>
+            <option value="People">People</option>
+            <option value="Engineering">Engineering</option>
+            <option value="Product">Product</option>
+            <option value="Revenue">Revenue</option>
+            <option value="Finance">Finance</option>
+          </select>
+          <select class="control" id="statusFilter" aria-label="Filter by status">
+            <option value="all">All statuses</option>
+            <option value="Active">Active</option>
+            <option value="On Leave">On Leave</option>
+          </select>
+        </div>
+        <div class="employee-grid" id="employeeGrid">
+          <article class="employee-card" data-name="Maya Chen" data-role="Chief People Officer" data-department="People" data-status="Active">
+            <div class="avatar">MC</div>
+            <div>
+              <h3>Maya Chen</h3>
+              <div class="employee-meta">
+                <span class="pill indigo">People</span>
+                <span class="pill lime">Active</span>
+              </div>
+              <p>Chief People Officer · New York</p>
+            </div>
+          </article>
+          <article class="employee-card" data-name="Jon Bell" data-role="Engineering Manager" data-department="Engineering" data-status="Active">
+            <div class="avatar">JB</div>
+            <div>
+              <h3>Jon Bell</h3>
+              <div class="employee-meta">
+                <span class="pill cyan">Engineering</span>
+                <span class="pill lime">Active</span>
+              </div>
+              <p>Engineering Manager · Warsaw</p>
+            </div>
+          </article>
+          <article class="employee-card" data-name="Ari Okafor" data-role="Senior Product Designer" data-department="Product" data-status="On Leave">
+            <div class="avatar">AO</div>
+            <div>
+              <h3>Ari Okafor</h3>
+              <div class="employee-meta">
+                <span class="pill indigo">Product</span>
+                <span class="pill coral">On Leave</span>
+              </div>
+              <p>Senior Product Designer · London</p>
+            </div>
+          </article>
+          <article class="employee-card" data-name="Nina Patel" data-role="Account Executive" data-department="Revenue" data-status="Active">
+            <div class="avatar">NP</div>
+            <div>
+              <h3>Nina Patel</h3>
+              <div class="employee-meta">
+                <span class="pill cyan">Revenue</span>
+                <span class="pill lime">Active</span>
+              </div>
+              <p>Account Executive · Toronto</p>
+            </div>
+          </article>
+          <article class="employee-card" data-name="Mateo Ruiz" data-role="Finance Lead" data-department="Finance" data-status="Active">
+            <div class="avatar">MR</div>
+            <div>
+              <h3>Mateo Ruiz</h3>
+              <div class="employee-meta">
+                <span class="pill indigo">Finance</span>
+                <span class="pill lime">Active</span>
+              </div>
+              <p>Finance Lead · Madrid</p>
+            </div>
+          </article>
+          <article class="employee-card" data-name="Elena Novak" data-role="People Partner" data-department="People" data-status="On Leave">
+            <div class="avatar">EN</div>
+            <div>
+              <h3>Elena Novak</h3>
+              <div class="employee-meta">
+                <span class="pill indigo">People</span>
+                <span class="pill coral">On Leave</span>
+              </div>
+              <p>People Partner · Prague</p>
+            </div>
+          </article>
+        </div>
+        <div class="empty-state" id="employeeEmpty">No employees match the current filters.</div>
+      </div>
+    </section>
+
+    <section class="section" id="leave" aria-labelledby="leaveTitle">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <h2 id="leaveTitle">Leave management</h2>
+            <p>Review pending requests with enough context to decide quickly and consistently.</p>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Employee</th>
+                <th>Type</th>
+                <th>Dates</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Mika Stone</td>
+                <td>Vacation</td>
+                <td>Jun 10-14</td>
+                <td><span class="pill indigo">Pending</span></td>
+                <td>
+                  <div class="action-pair">
+                    <button class="mini-button approve" type="button">Approve</button>
+                    <button class="mini-button reject" type="button">Reject</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>Ari Okafor</td>
+                <td>Sick</td>
+                <td>May 27-29</td>
+                <td><span class="pill lime">Approved</span></td>
+                <td>
+                  <div class="action-pair">
+                    <button class="mini-button" type="button">View</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>Elena Novak</td>
+                <td>Personal</td>
+                <td>May 28</td>
+                <td><span class="pill indigo">Pending</span></td>
+                <td>
+                  <div class="action-pair">
+                    <button class="mini-button approve" type="button">Approve</button>
+                    <button class="mini-button reject" type="button">Reject</button>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td>Owen Grant</td>
+                <td>Vacation</td>
+                <td>Jun 03-07</td>
+                <td><span class="pill coral">Rejected</span></td>
+                <td>
+                  <div class="action-pair">
+                    <button class="mini-button" type="button">Review</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="reviews" aria-labelledby="reviewsTitle">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <h2 id="reviewsTitle">Performance reviews</h2>
+            <p>Track cycle readiness, participant counts, and manager completion progress.</p>
+          </div>
+        </div>
+        <div class="review-grid">
+          <article class="review-card">
+            <header>
+              <h3>Midyear Growth Cycle</h3>
+              <span class="pill indigo">Due Jun 21</span>
+            </header>
+            <p>142 participants · engineering, product, design</p>
+            <div class="progress" aria-label="68 percent complete"><span style="width: 68%"></span></div>
+            <p>Manager notes and self reflections are ahead of schedule.</p>
+          </article>
+          <article class="review-card">
+            <header>
+              <h3>Sales Calibration</h3>
+              <span class="pill coral">Due Jun 05</span>
+            </header>
+            <p>38 participants · revenue organization</p>
+            <div class="progress" aria-label="41 percent complete"><span style="width: 41%"></span></div>
+            <p>Enablement team is preparing quota context for reviewers.</p>
+          </article>
+          <article class="review-card">
+            <header>
+              <h3>Leadership Feedback</h3>
+              <span class="pill cyan">Due Jul 12</span>
+            </header>
+            <p>24 participants · directors and executives</p>
+            <div class="progress" aria-label="76 percent complete"><span style="width: 76%"></span></div>
+            <p>Peer feedback is open and calibration windows are booked.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="orgTitle">
+      <div class="shell split-grid">
+        <div>
+          <div class="section-head">
+            <div>
+              <h2 id="orgTitle">Org chart</h2>
+              <p>A simplified department tree that makes reporting lines and team ownership easy to scan.</p>
+            </div>
+          </div>
+          <div class="org-chart" role="tree" aria-label="Department hierarchy">
+            <div class="org-node lead" role="treeitem">
+              <strong>Maya Chen</strong>
+              <small>Chief People Officer</small>
+            </div>
+            <div class="org-children" role="group">
+              <div class="org-node" role="treeitem">
+                <strong>People Ops</strong>
+                <small>Benefits · compliance · payroll</small>
+              </div>
+              <div class="org-node" role="treeitem">
+                <strong>Talent</strong>
+                <small>Recruiting · onboarding · mobility</small>
+              </div>
+              <div class="org-node" role="treeitem">
+                <strong>Performance</strong>
+                <small>Reviews · growth · engagement</small>
+              </div>
+            </div>
+          </div>
+        </div>
+        <aside id="settings" aria-labelledby="announcementsTitle">
+          <div class="section-head">
+            <div>
+              <h2 id="announcementsTitle">Announcements</h2>
+              <p>Recent HR updates with visible priority and timing.</p>
+            </div>
+          </div>
+          <div class="announcements">
+            <article class="announcement">
+              <div>
+                <h3>Hybrid policy acknowledgement</h3>
+                <time datetime="2026-05-27">May 27, 2026</time>
+              </div>
+              <span class="pill coral">High</span>
+            </article>
+            <article class="announcement">
+              <div>
+                <h3>Open enrollment office hours</h3>
+                <time datetime="2026-05-24">May 24, 2026</time>
+              </div>
+              <span class="pill indigo">Medium</span>
+            </article>
+            <article class="announcement">
+              <div>
+                <h3>Wellbeing stipend refresh</h3>
+                <time datetime="2026-05-20">May 20, 2026</time>
+              </div>
+              <span class="pill lime">Normal</span>
+            </article>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-line">
+      <span>Zen HR Platform — designed by Northstar Systems Studio</span>
+      <span>People operations, clearer by design.</span>
+    </div>
+  </footer>
+
+  <script>
+    const body = document.body;
+    const drawer = document.querySelector('#mobileDrawer');
+    const backdrop = document.querySelector('.drawer-backdrop');
+    const menuButton = document.querySelector('.hamburger');
+    const closeTargets = document.querySelectorAll('[data-close-drawer]');
+    const drawerLinks = document.querySelectorAll('.drawer-nav a');
+    const employeeSearch = document.querySelector('#employeeSearch');
+    const departmentFilter = document.querySelector('#departmentFilter');
+    const statusFilter = document.querySelector('#statusFilter');
+    const employeeCards = Array.from(document.querySelectorAll('.employee-card'));
+    const employeeEmpty = document.querySelector('#employeeEmpty');
+
+    function openDrawer() {
+      drawer.classList.add('is-open');
+      backdrop.classList.add('is-open');
+      body.classList.add('drawer-open');
+      drawer.setAttribute('aria-hidden', 'false');
+      menuButton.setAttribute('aria-expanded', 'true');
+      const firstLink = drawer.querySelector('a');
+      if (firstLink) {
+        firstLink.focus();
+      }
+    }
+
+    function closeDrawer() {
+      drawer.classList.remove('is-open');
+      backdrop.classList.remove('is-open');
+      body.classList.remove('drawer-open');
+      drawer.setAttribute('aria-hidden', 'true');
+      menuButton.setAttribute('aria-expanded', 'false');
+      menuButton.focus();
+    }
+
+    function applyEmployeeFilters() {
+      const query = employeeSearch.value.trim().toLowerCase();
+      const department = departmentFilter.value;
+      const status = statusFilter.value;
+      let visible = 0;
+
+      employeeCards.forEach((card) => {
+        const haystack = `${card.dataset.name} ${card.dataset.role}`.toLowerCase();
+        const matchesQuery = !query || haystack.includes(query);
+        const matchesDepartment = department === 'all' || card.dataset.department === department;
+        const matchesStatus = status === 'all' || card.dataset.status === status;
+        const shouldShow = matchesQuery && matchesDepartment && matchesStatus;
+        card.hidden = !shouldShow;
+        if (shouldShow) {
+          visible += 1;
+        }
+      });
+
+      employeeEmpty.style.display = visible ? 'none' : 'block';
+    }
+
+    menuButton.addEventListener('click', openDrawer);
+
+    closeTargets.forEach((target) => {
+      target.addEventListener('click', closeDrawer);
+    });
+
+    drawerLinks.forEach((link) => {
+      link.addEventListener('click', closeDrawer);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && drawer.classList.contains('is-open')) {
+        closeDrawer();
+      }
+    });
+
+    [employeeSearch, departmentFilter, statusFilter].forEach((control) => {
+      control.addEventListener('input', applyEmployeeFilters);
+      control.addEventListener('change', applyEmployeeFilters);
+    });
+
+    applyEmployeeFilters();
+  </script>
+</body>
+</html>
