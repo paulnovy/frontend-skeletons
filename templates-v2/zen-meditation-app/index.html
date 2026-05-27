@@ -1,0 +1,1376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zen Meditation App</title>
+  <meta name="description" content="A premium meditation and mindfulness app interface with guided sessions, breathing exercises, soundscape mixing, and progress tracking.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --indigo: #4F46E5;
+      --cyan: #06B6D4;
+      --lime: #A3E635;
+      --coral: #FB7185;
+      --cloud-strong: rgba(246, 248, 252, 0.96);
+      --cloud-soft: rgba(246, 248, 252, 0.72);
+      --ink-soft: rgba(25, 33, 43, 0.72);
+      --ink-muted: rgba(25, 33, 43, 0.56);
+      --ink-faint: rgba(25, 33, 43, 0.12);
+      --indigo-soft: rgba(79, 70, 229, 0.12);
+      --cyan-soft: rgba(6, 182, 212, 0.14);
+      --lime-soft: rgba(163, 230, 53, 0.22);
+      --coral-soft: rgba(251, 113, 133, 0.14);
+      --panel: rgba(255, 255, 255, 0.78);
+      --panel-solid: rgba(255, 255, 255, 0.94);
+      --shadow: 0 24px 60px rgba(25, 33, 43, 0.12);
+      --radius: 8px;
+      --radius-lg: 8px;
+      --ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 8% 4%, rgba(6, 182, 212, 0.14), transparent 28rem),
+        radial-gradient(circle at 96% 20%, rgba(79, 70, 229, 0.13), transparent 30rem),
+        linear-gradient(180deg, var(--cloud) 0%, rgba(246, 248, 252, 0.86) 44%, var(--cloud) 100%);
+    }
+
+    body.drawer-open {
+      overflow: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    img,
+    svg {
+      display: block;
+    }
+
+    .skip-link {
+      position: fixed;
+      top: 0.75rem;
+      left: 0.75rem;
+      z-index: 200;
+      transform: translateY(-150%);
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius);
+      color: var(--cloud);
+      background: var(--ink);
+      transition: transform 180ms var(--ease);
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    :focus-visible {
+      outline: 3px solid rgba(6, 182, 212, 0.72);
+      outline-offset: 3px;
+    }
+
+    .page {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--ink-faint);
+      background: rgba(246, 248, 252, 0.86);
+      backdrop-filter: blur(22px);
+    }
+
+    .nav-shell {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 1rem;
+      min-height: 76px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-family: "Manrope", sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      color: var(--cloud);
+      background:
+        radial-gradient(circle at 32% 28%, rgba(163, 230, 53, 0.68), transparent 34%),
+        linear-gradient(135deg, var(--indigo), var(--cyan));
+      box-shadow: 0 10px 28px rgba(79, 70, 229, 0.24);
+    }
+
+    .brand-mark span {
+      width: 18px;
+      height: 18px;
+      border: 3px solid currentColor;
+      border-radius: 50%;
+      border-top-color: transparent;
+      transform: rotate(-32deg);
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .nav-links a {
+      padding: 0.65rem 0.85rem;
+      border-radius: var(--radius);
+      color: var(--ink-soft);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .nav-links a:hover {
+      color: var(--ink);
+      background: rgba(25, 33, 43, 0.06);
+    }
+
+    .nav-actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 0.7rem;
+    }
+
+    .search {
+      position: relative;
+      width: min(240px, 22vw);
+    }
+
+    .search svg {
+      position: absolute;
+      top: 50%;
+      left: 0.8rem;
+      width: 17px;
+      height: 17px;
+      transform: translateY(-50%);
+      color: var(--ink-muted);
+      pointer-events: none;
+    }
+
+    .search input {
+      width: 100%;
+      height: 42px;
+      padding: 0 0.9rem 0 2.25rem;
+      border: 1px solid var(--ink-faint);
+      border-radius: var(--radius);
+      color: var(--ink);
+      background: var(--panel-solid);
+    }
+
+    .streak-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-height: 42px;
+      padding: 0 0.85rem;
+      border: 1px solid rgba(163, 230, 53, 0.44);
+      border-radius: var(--radius);
+      color: var(--ink);
+      background: var(--lime-soft);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .hamburger {
+      display: none;
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--ink-faint);
+      border-radius: var(--radius);
+      color: var(--ink);
+      background: var(--panel-solid);
+    }
+
+    .hamburger span {
+      display: block;
+      width: 18px;
+      height: 2px;
+      margin: 4px auto;
+      border-radius: 999px;
+      background: currentColor;
+      transition: transform 180ms var(--ease), opacity 180ms var(--ease);
+    }
+
+    .hamburger[aria-expanded="true"] span:nth-child(1) {
+      transform: translateY(6px) rotate(45deg);
+    }
+
+    .hamburger[aria-expanded="true"] span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .hamburger[aria-expanded="true"] span:nth-child(3) {
+      transform: translateY(-6px) rotate(-45deg);
+    }
+
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 140;
+      display: none;
+      background: rgba(25, 33, 43, 0.32);
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 150;
+      width: min(360px, 88vw);
+      height: 100vh;
+      padding: 1.25rem;
+      border-left: 1px solid var(--ink-faint);
+      background: var(--cloud-strong);
+      box-shadow: -20px 0 60px rgba(25, 33, 43, 0.18);
+      transform: translateX(104%);
+      transition: transform 260ms var(--ease);
+    }
+
+    .drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-backdrop.open {
+      display: block;
+    }
+
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .drawer-close {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--ink-faint);
+      border-radius: var(--radius);
+      color: var(--ink);
+      background: var(--panel-solid);
+    }
+
+    .drawer nav {
+      display: grid;
+      gap: 0.5rem;
+      margin: 1rem 0;
+    }
+
+    .drawer nav a {
+      padding: 0.95rem 1rem;
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.66);
+      font-weight: 800;
+    }
+
+    .section {
+      padding: 4.25rem 0;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1.35rem;
+    }
+
+    .eyebrow {
+      margin: 0 0 0.35rem;
+      color: var(--indigo);
+      font-size: 0.76rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      font-family: "Manrope", sans-serif;
+      letter-spacing: 0;
+      line-height: 1.04;
+    }
+
+    h1 {
+      max-width: 700px;
+      font-size: clamp(3rem, 8vw, 6.7rem);
+      font-weight: 800;
+    }
+
+    h2 {
+      font-size: clamp(2rem, 4vw, 3.35rem);
+      font-weight: 800;
+    }
+
+    h3 {
+      font-size: 1.16rem;
+      font-weight: 800;
+    }
+
+    p {
+      line-height: 1.65;
+    }
+
+    .hero {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(300px, 0.95fr);
+      align-items: center;
+      gap: 2rem;
+      min-height: calc(100vh - 76px);
+      padding: 4rem 0 3rem;
+    }
+
+    .hero-copy {
+      display: grid;
+      gap: 1.35rem;
+    }
+
+    .hero-copy > p {
+      max-width: 620px;
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 1.06rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.85rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.55rem;
+      min-height: 46px;
+      padding: 0 1rem;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      font-weight: 900;
+      transition: transform 180ms var(--ease), box-shadow 180ms var(--ease), background 180ms var(--ease);
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      color: var(--cloud);
+      background: var(--indigo);
+      box-shadow: 0 18px 38px rgba(79, 70, 229, 0.28);
+    }
+
+    .btn-secondary {
+      color: var(--ink);
+      border-color: var(--ink-faint);
+      background: var(--panel-solid);
+    }
+
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.85rem;
+      max-width: 610px;
+    }
+
+    .metric {
+      padding: 1rem;
+      border: 1px solid var(--ink-faint);
+      border-radius: var(--radius-lg);
+      background: var(--panel);
+    }
+
+    .metric strong {
+      display: block;
+      font-family: "Manrope", sans-serif;
+      font-size: 1.55rem;
+      line-height: 1;
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 0.35rem;
+      color: var(--ink-muted);
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .hero-visual {
+      position: relative;
+      display: grid;
+      place-items: center;
+      min-height: 520px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background:
+        linear-gradient(135deg, rgba(79, 70, 229, 0.98), rgba(6, 182, 212, 0.9)),
+        var(--ink);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-visual::before,
+    .hero-visual::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero-visual::before {
+      width: 420px;
+      height: 420px;
+      border: 1px solid rgba(246, 248, 252, 0.25);
+      animation: slow-spin 18s linear infinite;
+    }
+
+    .hero-visual::after {
+      width: 250px;
+      height: 250px;
+      background: rgba(163, 230, 53, 0.16);
+      filter: blur(2px);
+      animation: breathe 7s var(--ease) infinite;
+    }
+
+    .breathing-orb {
+      position: relative;
+      z-index: 2;
+      display: grid;
+      place-items: center;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      color: var(--cloud);
+      background:
+        radial-gradient(circle at 40% 32%, rgba(246, 248, 252, 0.68), transparent 24%),
+        radial-gradient(circle at 70% 74%, rgba(163, 230, 53, 0.42), transparent 34%),
+        rgba(246, 248, 252, 0.16);
+      border: 1px solid rgba(246, 248, 252, 0.44);
+      box-shadow: inset 0 0 80px rgba(246, 248, 252, 0.18), 0 24px 90px rgba(25, 33, 43, 0.24);
+      animation: breathe 7s var(--ease) infinite;
+    }
+
+    .orb-content {
+      text-align: center;
+    }
+
+    .orb-content strong {
+      display: block;
+      font-family: "Manrope", sans-serif;
+      font-size: 2.8rem;
+      line-height: 1;
+    }
+
+    .orb-content span {
+      display: block;
+      margin-top: 0.55rem;
+      color: rgba(246, 248, 252, 0.84);
+      font-weight: 800;
+    }
+
+    .floating-session {
+      position: absolute;
+      right: 1.2rem;
+      bottom: 1.2rem;
+      left: 1.2rem;
+      z-index: 3;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      border: 1px solid rgba(246, 248, 252, 0.24);
+      border-radius: var(--radius-lg);
+      color: var(--cloud);
+      background: rgba(25, 33, 43, 0.42);
+      backdrop-filter: blur(14px);
+    }
+
+    .floating-session p {
+      margin: 0.25rem 0 0;
+      color: rgba(246, 248, 252, 0.74);
+      font-size: 0.88rem;
+    }
+
+    .pulse-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      margin-right: 0.45rem;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.62);
+      animation: pulse 1.8s infinite;
+    }
+
+    .grid {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .session-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .exercise-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .badge-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .card {
+      position: relative;
+      min-width: 0;
+      padding: 1rem;
+      border: 1px solid var(--ink-faint);
+      border-radius: var(--radius-lg);
+      background: var(--panel-solid);
+      box-shadow: 0 12px 32px rgba(25, 33, 43, 0.06);
+    }
+
+    .session-card {
+      display: grid;
+      gap: 1rem;
+      min-height: 246px;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.85rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 0.6rem;
+      border-radius: 999px;
+      font-size: 0.73rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .badge.focus {
+      color: var(--indigo);
+      background: var(--indigo-soft);
+    }
+
+    .badge.sleep {
+      color: var(--cyan);
+      background: var(--cyan-soft);
+    }
+
+    .badge.stress {
+      color: var(--coral);
+      background: var(--coral-soft);
+    }
+
+    .badge.anxiety {
+      color: var(--ink);
+      background: var(--lime-soft);
+    }
+
+    .duration {
+      color: var(--ink-muted);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .difficulty {
+      display: flex;
+      gap: 0.25rem;
+      align-items: center;
+    }
+
+    .difficulty span {
+      width: 24px;
+      height: 6px;
+      border-radius: 999px;
+      background: rgba(25, 33, 43, 0.12);
+    }
+
+    .difficulty .on {
+      background: var(--indigo);
+    }
+
+    .play-button {
+      display: inline-grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      border: 0;
+      border-radius: 50%;
+      color: var(--cloud);
+      background: var(--indigo);
+      box-shadow: 0 12px 28px rgba(79, 70, 229, 0.24);
+    }
+
+    .play-button svg {
+      width: 19px;
+      height: 19px;
+      transform: translateX(1px);
+    }
+
+    .session-card p,
+    .exercise-card p,
+    .achievement-card p {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 0.92rem;
+    }
+
+    .exercise-card {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .mini-orb-wrap {
+      display: grid;
+      place-items: center;
+      height: 148px;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--indigo-soft), var(--cyan-soft));
+    }
+
+    .mini-orb {
+      width: 86px;
+      height: 86px;
+      border-radius: 50%;
+      border: 1px solid rgba(79, 70, 229, 0.26);
+      background:
+        radial-gradient(circle at 36% 28%, rgba(246, 248, 252, 0.92), transparent 28%),
+        rgba(6, 182, 212, 0.22);
+      animation: breathe 6s var(--ease) infinite;
+    }
+
+    .control-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+
+    select {
+      min-height: 40px;
+      padding: 0 0.75rem;
+      border: 1px solid var(--ink-faint);
+      border-radius: var(--radius);
+      color: var(--ink);
+      background: var(--cloud);
+      font-weight: 800;
+    }
+
+    .progress-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: 1rem;
+    }
+
+    .calendar {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap: 0.55rem;
+    }
+
+    .day {
+      min-height: 112px;
+      padding: 0.75rem;
+      border: 1px solid var(--ink-faint);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.66);
+    }
+
+    .day strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 0.82rem;
+    }
+
+    .dots {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.28rem;
+    }
+
+    .dots i {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--cyan);
+    }
+
+    .dots i.lime {
+      background: var(--lime);
+    }
+
+    .progress-stats {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .stat-card {
+      padding: 1rem;
+      border: 1px solid var(--ink-faint);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.68);
+    }
+
+    .stat-card strong {
+      display: block;
+      font-family: "Manrope", sans-serif;
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .stat-card span {
+      display: block;
+      margin-top: 0.35rem;
+      color: var(--ink-muted);
+      font-weight: 800;
+    }
+
+    .mood-bars {
+      display: grid;
+      gap: 0.75rem;
+      margin-top: 0.9rem;
+    }
+
+    .mood-line {
+      display: grid;
+      grid-template-columns: 70px 1fr 42px;
+      align-items: center;
+      gap: 0.65rem;
+      color: var(--ink-soft);
+      font-weight: 800;
+      font-size: 0.86rem;
+    }
+
+    .bar {
+      height: 10px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(25, 33, 43, 0.1);
+    }
+
+    .bar span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--indigo);
+    }
+
+    .bar .after {
+      background: var(--cyan);
+    }
+
+    .mixer-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .sound-card {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .sound-icon {
+      display: grid;
+      place-items: center;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      color: var(--indigo);
+      background: var(--indigo-soft);
+    }
+
+    .sound-card:nth-child(even) .sound-icon {
+      color: var(--cyan);
+      background: var(--cyan-soft);
+    }
+
+    .sound-card input[type="range"] {
+      width: 100%;
+      accent-color: var(--indigo);
+    }
+
+    .sound-controls {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.7rem;
+    }
+
+    .toggle {
+      width: 46px;
+      height: 30px;
+      border: 0;
+      border-radius: 999px;
+      background: rgba(25, 33, 43, 0.14);
+      padding: 3px;
+    }
+
+    .toggle span {
+      display: block;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--cloud);
+      box-shadow: 0 4px 12px rgba(25, 33, 43, 0.18);
+      transition: transform 180ms var(--ease), background 180ms var(--ease);
+    }
+
+    .toggle.active {
+      background: var(--cyan);
+    }
+
+    .toggle.active span {
+      transform: translateX(16px);
+    }
+
+    .achievement-card {
+      display: grid;
+      gap: 0.8rem;
+      min-height: 190px;
+    }
+
+    .achievement-medal {
+      display: grid;
+      place-items: center;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      color: var(--ink);
+      background: var(--lime-soft);
+      border: 1px solid rgba(163, 230, 53, 0.48);
+      font-weight: 900;
+    }
+
+    .achievement-card.locked {
+      opacity: 0.62;
+    }
+
+    .achievement-card.locked .achievement-medal {
+      color: var(--ink-muted);
+      background: rgba(25, 33, 43, 0.08);
+      border-color: rgba(25, 33, 43, 0.12);
+    }
+
+    .lock-label {
+      color: var(--ink-muted);
+      font-size: 0.76rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .footer {
+      padding: 2rem 0 2.5rem;
+      border-top: 1px solid var(--ink-faint);
+      color: var(--ink-muted);
+      font-weight: 800;
+    }
+
+    .footer .page {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      padding: 0.45rem 0.65rem;
+      border-radius: 999px;
+      color: var(--ink);
+      background: var(--cyan-soft);
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    @keyframes breathe {
+      0%, 100% {
+        transform: scale(0.88);
+      }
+      50% {
+        transform: scale(1.08);
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.62);
+      }
+      70% {
+        box-shadow: 0 0 0 12px rgba(6, 182, 212, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(6, 182, 212, 0);
+      }
+    }
+
+    @keyframes slow-spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 980px) {
+      .nav-links,
+      .search,
+      .nav-actions .streak-badge {
+        display: none;
+      }
+
+      .hamburger {
+        display: block;
+      }
+
+      .nav-shell {
+        grid-template-columns: auto 1fr auto;
+      }
+
+      .hero,
+      .progress-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        min-height: auto;
+      }
+
+      .hero-visual {
+        min-height: 430px;
+      }
+
+      .session-grid,
+      .mixer-grid,
+      .badge-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .exercise-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page {
+        width: min(100% - 24px, 1180px);
+      }
+
+      .section {
+        padding: 3rem 0;
+      }
+
+      .section-heading {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .hero {
+        padding-top: 2.5rem;
+      }
+
+      h1 {
+        font-size: clamp(2.5rem, 16vw, 4.5rem);
+      }
+
+      .metric-row,
+      .session-grid,
+      .mixer-grid,
+      .badge-grid,
+      .calendar {
+        grid-template-columns: 1fr;
+      }
+
+      .day {
+        min-height: auto;
+      }
+
+      .floating-session {
+        position: relative;
+        right: auto;
+        bottom: auto;
+        left: auto;
+        width: calc(100% - 2rem);
+        margin-top: -5rem;
+      }
+
+      .breathing-orb {
+        width: 220px;
+        height: 220px;
+      }
+
+      .hero-visual {
+        min-height: 370px;
+      }
+
+      .footer .page {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="topbar" id="home">
+    <div class="page nav-shell" aria-label="Primary navigation">
+      <a class="brand" href="#home" aria-label="Zen Meditation App home">
+        <span class="brand-mark" aria-hidden="true"><span></span></span>
+        <span>Zen Meditation</span>
+      </a>
+      <nav class="nav-links" aria-label="Main links">
+        <a href="#home">Home</a>
+        <a href="#sessions">Sessions</a>
+        <a href="#breathing">Breathing</a>
+        <a href="#progress">Progress</a>
+        <a href="#settings">Settings</a>
+      </nav>
+      <div class="nav-actions">
+        <label class="search" aria-label="Search sessions">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M10.7 18a7.3 7.3 0 1 1 5.2-2.2l4.1 4.1-1.4 1.4-4.1-4.1a7.2 7.2 0 0 1-3.8.8Zm0-2a5.3 5.3 0 1 0 0-10.6 5.3 5.3 0 0 0 0 10.6Z"/></svg>
+          <input type="search" aria-label="Search sessions">
+        </label>
+        <span class="streak-badge" aria-label="Current streak 14 days"><span aria-hidden="true">●</span>14 day streak</span>
+        <button class="hamburger" type="button" aria-label="Open menu" aria-controls="mobile-drawer" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="drawer-backdrop" data-close-drawer></div>
+  <aside class="drawer" id="mobile-drawer" aria-label="Mobile menu" aria-hidden="true">
+    <div class="drawer-head">
+      <a class="brand" href="#home" data-close-drawer>
+        <span class="brand-mark" aria-hidden="true"><span></span></span>
+        <span>Zen Meditation</span>
+      </a>
+      <button class="drawer-close" type="button" aria-label="Close menu" data-close-drawer>×</button>
+    </div>
+    <label class="search" aria-label="Search sessions in menu" style="display:block;width:100%;">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M10.7 18a7.3 7.3 0 1 1 5.2-2.2l4.1 4.1-1.4 1.4-4.1-4.1a7.2 7.2 0 0 1-3.8.8Zm0-2a5.3 5.3 0 1 0 0-10.6 5.3 5.3 0 0 0 0 10.6Z"/></svg>
+      <input type="search" aria-label="Search sessions">
+    </label>
+    <nav aria-label="Mobile links">
+      <a href="#home" data-close-drawer>Home</a>
+      <a href="#sessions" data-close-drawer>Sessions</a>
+      <a href="#breathing" data-close-drawer>Breathing</a>
+      <a href="#progress" data-close-drawer>Progress</a>
+      <a href="#settings" data-close-drawer>Settings</a>
+    </nav>
+    <span class="streak-badge"><span aria-hidden="true">●</span>14 day streak</span>
+  </aside>
+
+  <main id="main">
+    <section class="page hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow">Good evening, Maya</p>
+        <h1 id="hero-title">Settle into a calmer rhythm.</h1>
+        <p>Your daily plan combines a grounded focus session, a guided breathing reset, and a soft soundscape built around your current streak.</p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#sessions">Start Today's Session</a>
+          <a class="btn btn-secondary" href="#breathing">Open Breathing Timer</a>
+        </div>
+        <div class="metric-row" aria-label="Daily meditation summary">
+          <div class="metric"><strong>14</strong><span>day current streak</span></div>
+          <div class="metric"><strong>32</strong><span>minutes this week</span></div>
+          <div class="metric"><strong>86%</strong><span>mood lift after practice</span></div>
+        </div>
+      </div>
+      <div class="hero-visual" aria-label="Animated breathing circle and active session">
+        <div class="breathing-orb" aria-hidden="true">
+          <div class="orb-content"><strong>4</strong><span>inhale slowly</span></div>
+        </div>
+        <div class="floating-session">
+          <div>
+            <strong><span class="pulse-dot" aria-hidden="true"></span>Daily Calm Focus</strong>
+            <p>12 minutes · Focus · gentle guidance</p>
+          </div>
+          <button class="play-button" type="button" aria-label="Play Daily Calm Focus">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="page section" id="sessions" aria-labelledby="sessions-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Guided library</p>
+          <h2 id="sessions-title">Choose your next session.</h2>
+        </div>
+        <span class="status-pill"><span class="pulse-dot" aria-hidden="true"></span>Live recommendations</span>
+      </div>
+      <div class="grid session-grid">
+        <article class="card session-card">
+          <div class="card-top"><span class="badge focus">Focus</span><span class="duration">12 min</span></div>
+          <div><h3>Deep Work Arrival</h3><p>Clear mental clutter before a demanding block of creative work.</p></div>
+          <div class="difficulty" aria-label="Beginner difficulty"><span class="on"></span><span></span><span></span></div>
+          <button class="play-button" type="button" aria-label="Play Deep Work Arrival"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg></button>
+        </article>
+        <article class="card session-card">
+          <div class="card-top"><span class="badge sleep">Sleep</span><span class="duration">24 min</span></div>
+          <div><h3>Moonlit Unwind</h3><p>Release the day with body scanning and soft attention cues.</p></div>
+          <div class="difficulty" aria-label="Intermediate difficulty"><span class="on"></span><span class="on"></span><span></span></div>
+          <button class="play-button" type="button" aria-label="Play Moonlit Unwind"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg></button>
+        </article>
+        <article class="card session-card">
+          <div class="card-top"><span class="badge stress">Stress</span><span class="duration">9 min</span></div>
+          <div><h3>Pressure Release</h3><p>Use steady breath and labeling to soften high-pressure moments.</p></div>
+          <div class="difficulty" aria-label="Beginner difficulty"><span class="on"></span><span></span><span></span></div>
+          <button class="play-button" type="button" aria-label="Play Pressure Release"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg></button>
+        </article>
+        <article class="card session-card">
+          <div class="card-top"><span class="badge anxiety">Anxiety</span><span class="duration">16 min</span></div>
+          <div><h3>Steady Ground</h3><p>Anchor attention in sound, breath, and body sensations.</p></div>
+          <div class="difficulty" aria-label="Advanced difficulty"><span class="on"></span><span class="on"></span><span class="on"></span></div>
+          <button class="play-button" type="button" aria-label="Play Steady Ground"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5v14l11-7z"/></svg></button>
+        </article>
+      </div>
+    </section>
+
+    <section class="page section" id="breathing" aria-labelledby="breathing-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Breathing exercises</p>
+          <h2 id="breathing-title">Reset your nervous system.</h2>
+        </div>
+      </div>
+      <div class="grid exercise-grid">
+        <article class="card exercise-card">
+          <div class="mini-orb-wrap"><div class="mini-orb" aria-hidden="true"></div></div>
+          <div><h3>Box Breathing</h3><p>Four counts in, hold, out, and hold for steady focus.</p></div>
+          <div class="control-row"><select aria-label="Box Breathing duration"><option>3 minutes</option><option>5 minutes</option><option>8 minutes</option></select><button class="btn btn-primary" type="button">Start</button></div>
+        </article>
+        <article class="card exercise-card">
+          <div class="mini-orb-wrap"><div class="mini-orb" aria-hidden="true"></div></div>
+          <div><h3>4-7-8 Release</h3><p>Lengthen the exhale to encourage a slower evening cadence.</p></div>
+          <div class="control-row"><select aria-label="4-7-8 Release duration"><option>4 minutes</option><option>6 minutes</option><option>10 minutes</option></select><button class="btn btn-primary" type="button">Start</button></div>
+        </article>
+        <article class="card exercise-card">
+          <div class="mini-orb-wrap"><div class="mini-orb" aria-hidden="true"></div></div>
+          <div><h3>Equal Breath</h3><p>Match inhale and exhale lengths to rebuild balance.</p></div>
+          <div class="control-row"><select aria-label="Equal Breath duration"><option>2 minutes</option><option>5 minutes</option><option>12 minutes</option></select><button class="btn btn-primary" type="button">Start</button></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="page section" id="progress" aria-labelledby="progress-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Progress tracking</p>
+          <h2 id="progress-title">Your week at a glance.</h2>
+        </div>
+      </div>
+      <div class="progress-layout">
+        <div class="card">
+          <div class="calendar" aria-label="Weekly meditation calendar">
+            <div class="day"><strong>Mon</strong><div class="dots"><i></i><i class="lime"></i></div></div>
+            <div class="day"><strong>Tue</strong><div class="dots"><i></i></div></div>
+            <div class="day"><strong>Wed</strong><div class="dots"><i></i><i></i><i class="lime"></i></div></div>
+            <div class="day"><strong>Thu</strong><div class="dots"><i class="lime"></i></div></div>
+            <div class="day"><strong>Fri</strong><div class="dots"><i></i><i class="lime"></i></div></div>
+            <div class="day"><strong>Sat</strong><div class="dots"><i></i></div></div>
+            <div class="day"><strong>Sun</strong><div class="dots"><i></i><i class="lime"></i></div></div>
+          </div>
+        </div>
+        <div class="progress-stats">
+          <div class="stat-card"><strong>148</strong><span>total mindful minutes</span></div>
+          <div class="stat-card"><strong>14</strong><span>consecutive days</span></div>
+          <div class="stat-card">
+            <strong>+31%</strong><span>mood improvement after sessions</span>
+            <div class="mood-bars">
+              <div class="mood-line"><span>Before</span><div class="bar"><span style="width:54%"></span></div><span>5.4</span></div>
+              <div class="mood-line"><span>After</span><div class="bar"><span class="after" style="width:85%"></span></div><span>8.5</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page section" id="settings" aria-labelledby="mixer-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Soundscape mixer</p>
+          <h2 id="mixer-title">Layer the room around you.</h2>
+        </div>
+      </div>
+      <div class="grid mixer-grid">
+        <article class="card sound-card">
+          <div class="sound-icon" aria-hidden="true">Rain</div><h3>Rain</h3>
+          <input type="range" min="0" max="100" value="64" aria-label="Rain volume">
+          <div class="sound-controls"><span>64%</span><button class="toggle active" type="button" aria-label="Pause rain"><span></span></button></div>
+        </article>
+        <article class="card sound-card">
+          <div class="sound-icon" aria-hidden="true">Sea</div><h3>Ocean</h3>
+          <input type="range" min="0" max="100" value="48" aria-label="Ocean volume">
+          <div class="sound-controls"><span>48%</span><button class="toggle active" type="button" aria-label="Pause ocean"><span></span></button></div>
+        </article>
+        <article class="card sound-card">
+          <div class="sound-icon" aria-hidden="true">Bird</div><h3>Birds</h3>
+          <input type="range" min="0" max="100" value="28" aria-label="Birds volume">
+          <div class="sound-controls"><span>28%</span><button class="toggle" type="button" aria-label="Play birds"><span></span></button></div>
+        </article>
+        <article class="card sound-card">
+          <div class="sound-icon" aria-hidden="true">Wind</div><h3>Wind</h3>
+          <input type="range" min="0" max="100" value="36" aria-label="Wind volume">
+          <div class="sound-controls"><span>36%</span><button class="toggle" type="button" aria-label="Play wind"><span></span></button></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="page section" aria-labelledby="badges-title">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">Achievement badges</p>
+          <h2 id="badges-title">Milestones worth keeping.</h2>
+        </div>
+      </div>
+      <div class="grid badge-grid">
+        <article class="card achievement-card"><div class="achievement-medal">7</div><h3>Seven-Day Streak</h3><p>Completed a session every day for one full week.</p><span class="lock-label">Unlocked</span></article>
+        <article class="card achievement-card"><div class="achievement-medal">100</div><h3>Hundred Minutes</h3><p>Logged more than one hundred mindful minutes.</p><span class="lock-label">Unlocked</span></article>
+        <article class="card achievement-card"><div class="achievement-medal">AM</div><h3>Morning Anchor</h3><p>Practiced before noon on five separate days.</p><span class="lock-label">Unlocked</span></article>
+        <article class="card achievement-card locked"><div class="achievement-medal">30</div><h3>Thirty-Day Streak</h3><p>Reach thirty consecutive days of guided practice.</p><span class="lock-label">Locked</span></article>
+        <article class="card achievement-card"><div class="achievement-medal">ZZ</div><h3>Sleep Ritual</h3><p>Finished three evening wind-down sessions this week.</p><span class="lock-label">Unlocked</span></article>
+        <article class="card achievement-card locked"><div class="achievement-medal">500</div><h3>Five Hundred Minutes</h3><p>Build a long-term foundation with five hundred minutes.</p><span class="lock-label">Locked</span></article>
+        <article class="card achievement-card"><div class="achievement-medal">FO</div><h3>Focus Builder</h3><p>Completed four focus sessions in a single work week.</p><span class="lock-label">Unlocked</span></article>
+        <article class="card achievement-card locked"><div class="achievement-medal">MX</div><h3>Sound Curator</h3><p>Create and save five layered soundscape mixes.</p><span class="lock-label">Locked</span></article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="page">
+      <span>Zen Meditation App — designed by Stillwater Studio</span>
+      <span>Mindful minutes, clearer days.</span>
+    </div>
+  </footer>
+
+  <script>
+    const body = document.body;
+    const menuButton = document.querySelector('.hamburger');
+    const drawer = document.querySelector('.drawer');
+    const backdrop = document.querySelector('.drawer-backdrop');
+    const closeTargets = document.querySelectorAll('[data-close-drawer]');
+    const toggles = document.querySelectorAll('.toggle');
+    const ranges = document.querySelectorAll('.sound-card input[type="range"]');
+
+    function setDrawer(open) {
+      body.classList.toggle('drawer-open', open);
+      drawer.classList.toggle('open', open);
+      backdrop.classList.toggle('open', open);
+      drawer.setAttribute('aria-hidden', String(!open));
+      menuButton.setAttribute('aria-expanded', String(open));
+      menuButton.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      if (open) {
+        const firstLink = drawer.querySelector('a, button, input');
+        firstLink && firstLink.focus();
+      } else {
+        menuButton.focus();
+      }
+    }
+
+    menuButton.addEventListener('click', () => {
+      const open = menuButton.getAttribute('aria-expanded') !== 'true';
+      setDrawer(open);
+    });
+
+    closeTargets.forEach((target) => {
+      target.addEventListener('click', () => setDrawer(false));
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && drawer.classList.contains('open')) {
+        setDrawer(false);
+      }
+    });
+
+    toggles.forEach((toggle) => {
+      toggle.addEventListener('click', () => {
+        toggle.classList.toggle('active');
+        const playing = toggle.classList.contains('active');
+        const name = toggle.closest('.sound-card').querySelector('h3').textContent.toLowerCase();
+        toggle.setAttribute('aria-label', `${playing ? 'Pause' : 'Play'} ${name}`);
+      });
+    });
+
+    ranges.forEach((range) => {
+      range.addEventListener('input', () => {
+        const value = range.closest('.sound-card').querySelector('.sound-controls span');
+        value.textContent = `${range.value}%`;
+      });
+    });
+  </script>
+</body>
+</html>
