@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurora AI Command Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+      <style>
+    :root{
+    --cloud:#F6F8FC;--cloud-90:rgba(246,248,252,0.9);--cloud-78:rgba(246,248,252,0.78);--cloud-58:rgba(246,248,252,0.58);--cloud-24:rgba(246,248,252,0.24);--ink:#19212B;--ink-92:rgba(25,33,43,0.92);--ink-72:rgba(25,33,43,0.72);--ink-58:rgba(25,33,43,0.58);--ink-42:rgba(25,33,43,0.42);--ink-16:rgba(25,33,43,0.16);--ink-10:rgba(25,33,43,0.1);--indigo:#4F46E5;--indigo-82:rgba(79,70,229,0.82);--indigo-26:rgba(79,70,229,0.26);--indigo-14:rgba(79,70,229,0.14);--cyan:#06B6D4;--cyan-78:rgba(6,182,212,0.78);--cyan-22:rgba(6,182,212,0.22);--lime:#A3E635;--lime-72:rgba(163,230,53,0.72);--lime-22:rgba(163,230,53,0.22);--coral:#FB7185;--coral-82:rgba(251,113,133,0.82);--coral-24:rgba(251,113,133,0.24);--shadow:0 24px 80px rgba(25,33,43,0.12);--card:rgba(246,248,252,0.78);--radius:8px;--max:1240px}
+    *{
+    box-sizing:border-box}
+    html{
+    scroll-behavior:smooth}
+    body{
+    margin:0;min-height:100vh;color:var(--ink);background:radial-gradient(circle at 8% 6%,var(--cyan-22),transparent 28rem),radial-gradient(circle at 86% 4%,var(--indigo-14),transparent 32rem),linear-gradient(180deg,var(--cloud),var(--cloud));font-family:"Inter",system-ui,sans-serif;line-height:1.5}
+    body.drawer-open{
+    overflow:hidden}
+    a{
+    color:inherit;text-decoration:none}
+    button,input,select{
+    font:inherit}
+    button{
+    cursor:pointer}
+    :focus-visible{
+    outline:3px solid var(--cyan);outline-offset:3px}
+    .page-shell{
+    min-height:100vh;overflow:hidden}
+    .sr-text{
+    position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    .topbar{
+    position:sticky;top:0;z-index:50;border-bottom:1px solid var(--ink-10);background:var(--cloud-90);backdrop-filter:blur(18px)}
+    .nav-inner{
+    width:min(100% - 32px,var(--max));min-height:76px;margin:0 auto;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:20px}
+    .brand{
+    display:inline-flex;align-items:center;gap:10px;font-family:"Manrope",sans-serif;font-size:1.02rem;font-weight:800;letter-spacing:0}
+    .brand-mark{
+    width:36px;height:36px;display:grid;place-items:center;border-radius:var(--radius);color:var(--cloud);background:linear-gradient(135deg,var(--indigo),var(--cyan));box-shadow:0 14px 34px var(--indigo-26);font-weight:800}
+    .nav-links{
+    display:flex;align-items:center;justify-content:center;gap:6px}
+    .nav-links a{
+    padding:10px 12px;border-radius:var(--radius);color:var(--ink-72);font-size:0.92rem;font-weight:700}
+    .nav-links a:hover{
+    color:var(--ink);background:var(--indigo-14)}
+    .nav-actions{
+    display:flex;align-items:center;justify-content:flex-end;gap:10px}
+    .search-wrap{
+    position:relative;width:260px}
+    .search-wrap span{
+    position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--ink-42);font-weight:800}
+    .search-wrap input{
+    width:100%;height:42px;padding:0 12px 0 34px;border:1px solid var(--ink-10);border-radius:var(--radius);color:var(--ink);background:var(--cloud-78);font-weight:600}
+    .selector{
+    height:42px;min-width:178px;border:1px solid var(--ink-10);border-radius:var(--radius);padding:0 34px 0 12px;color:var(--ink);background:var(--cloud-78);font-weight:700}
+    .hamburger{
+    width:42px;height:42px;display:none;place-items:center;border:1px solid var(--ink-10);border-radius:var(--radius);color:var(--ink);background:var(--cloud-78)}
+    .hamburger-lines{
+    width:18px;display:grid;gap:4px}
+    .hamburger-lines i{
+    display:block;height:2px;border-radius:2px;background:var(--ink)}
+    .drawer-backdrop{
+    position:fixed;inset:0;z-index:80;opacity:0;pointer-events:none;background:rgba(25,33,43,0.42);transition:opacity 180ms ease}
+    .drawer{
+    position:fixed;inset:0 0 0 auto;z-index:90;width:min(88vw,360px);padding:24px;transform:translateX(102%);transition:transform 220ms ease;background:var(--cloud);border-left:1px solid var(--ink-10);box-shadow:var(--shadow)}
+    body.drawer-open .drawer-backdrop{
+    opacity:1;pointer-events:auto}
+    body.drawer-open .drawer{
+    transform:translateX(0)}
+    .drawer-head{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:22px}
+    .drawer-close{
+    width:40px;height:40px;border:1px solid var(--ink-10);border-radius:var(--radius);color:var(--ink);background:var(--cloud);font-size:1.3rem;line-height:1}
+    .drawer-links{
+    display:grid;gap:10px;margin-bottom:18px}
+    .drawer-links a{
+    padding:13px 12px;border-radius:var(--radius);background:var(--cloud-78);border:1px solid var(--ink-10);font-weight:800}
+    .hero{
+    width:min(100% - 32px,var(--max));margin:0 auto;padding:56px 0 30px;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(360px,0.95fr);gap:28px;align-items:stretch}
+    .hero-copy{
+    padding:34px 0}
+    .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;margin-bottom:18px;color:var(--indigo);font-weight:800;text-transform:uppercase;letter-spacing:0;font-size:0.78rem}
+    .live-dot{
+    width:10px;height:10px;border-radius:999px;background:var(--cyan);box-shadow:0 0 0 7px var(--cyan-22);animation:pulse 1800ms ease-in-out infinite}
+    h1,h2,h3{
+    font-family:"Manrope",sans-serif;line-height:1.05;letter-spacing:0;margin:0}
+    h1{
+    max-width:740px;font-size:clamp(2.7rem,5.4vw,5.8rem);font-weight:800}
+    .hero-copy p{
+    max-width:640px;margin:22px 0 0;color:var(--ink-72);font-size:1.05rem}
+    .hero-actions{
+    display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+    .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 16px;border-radius:var(--radius);border:1px solid var(--ink-10);font-weight:800;color:var(--ink);background:var(--cloud)}
+    .btn.primary{
+    color:var(--cloud);border-color:var(--indigo);background:var(--indigo);box-shadow:0 18px 38px var(--indigo-26)}
+    .hero-panel{
+    position:relative;min-height:460px;padding:20px;overflow:hidden;border-radius:var(--radius);border:1px solid var(--ink-10);background:linear-gradient(145deg,var(--ink),var(--ink-92));box-shadow:var(--shadow);color:var(--cloud)}
+    .hero-panel::before{
+    content:"";position:absolute;inset:-20% -10% auto 30%;height:320px;background:radial-gradient(circle,var(--cyan-78),transparent 68%);opacity:0.42}
+    .ops-window{
+    position:relative;height:100%;display:grid;grid-template-rows:auto 1fr auto;gap:16px}
+    .ops-top{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:14px;border-bottom:1px solid var(--cloud-24)}
+    .window-dots{
+    display:flex;gap:7px}
+    .window-dots i{
+    width:10px;height:10px;border-radius:50%;background:var(--cloud-58)}
+    .ops-state{
+    display:inline-flex;align-items:center;gap:8px;font-weight:800;color:var(--lime);font-size:0.86rem}
+    .ops-grid{
+    display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .ops-tile{
+    padding:16px;border:1px solid var(--cloud-24);border-radius:var(--radius);background:rgba(246,248,252,0.08)}
+    .ops-tile small{
+    color:var(--cloud-58);font-weight:700}
+    .ops-tile strong{
+    display:block;margin-top:8px;font-size:1.55rem;font-family:"Manrope",sans-serif}
+    .signal-chart{
+    height:132px;display:flex;align-items:end;gap:8px;padding:14px;border:1px solid var(--cloud-24);border-radius:var(--radius);background:rgba(246,248,252,0.08)}
+    .signal-chart i{
+    flex:1;min-width:8px;border-radius:4px 4px 0 0;background:linear-gradient(180deg,var(--cyan),var(--indigo));animation:rise 1200ms ease both}
+    .kpi-strip{
+    width:min(100% - 32px,var(--max));margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:14px;padding:10px 0 34px}
+    .kpi{
+    padding:18px;border:1px solid var(--ink-10);border-radius:var(--radius);background:var(--card);box-shadow:0 14px 42px rgba(25,33,43,0.06)}
+    .kpi span{
+    color:var(--ink-58);font-size:0.82rem;font-weight:800;text-transform:uppercase}
+    .kpi strong{
+    display:block;margin-top:8px;font-family:"Manrope",sans-serif;font-size:clamp(1.7rem,3vw,2.65rem);line-height:1}
+    .kpi em{
+    display:block;margin-top:10px;color:var(--cyan);font-style:normal;font-size:0.86rem;font-weight:800}
+    main{
+    padding-bottom:54px}
+    .section{
+    width:min(100% - 32px,var(--max));margin:0 auto;padding:18px 0}
+    .section-head{
+    display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:16px}
+    .section-head h2{
+    font-size:clamp(1.45rem,2.8vw,2.2rem)}
+    .section-head p{
+    max-width:560px;margin:8px 0 0;color:var(--ink-58);font-weight:600}
+    .dashboard-grid{
+    width:min(100% - 32px,var(--max));margin:0 auto;display:grid;grid-template-columns:1.12fr 0.88fr;gap:18px;align-items:start}
+    .panel{
+    border:1px solid var(--ink-10);border-radius:var(--radius);background:var(--card);box-shadow:0 18px 58px rgba(25,33,43,0.07)}
+    .panel-head{
+    padding:18px 18px 0;display:flex;justify-content:space-between;gap:12px}
+    .panel-head h3{
+    font-size:1.08rem}
+    .panel-head span{
+    color:var(--ink-58);font-size:0.84rem;font-weight:800}
+    .model-grid{
+    display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:18px}
+    .model-card{
+    min-height:178px;padding:16px;border:1px solid var(--ink-10);border-radius:var(--radius);background:var(--cloud-58)}
+    .model-top{
+    display:flex;align-items:start;justify-content:space-between;gap:10px}
+    .model-name{
+    display:grid;gap:5px}
+    .model-name strong{
+    font-family:"Manrope",sans-serif;font-size:1.08rem}
+    .model-name span{
+    color:var(--ink-58);font-size:0.82rem;font-weight:700}
+    .status-pill{
+    display:inline-flex;align-items:center;gap:6px;padding:6px 8px;border-radius:999px;background:var(--lime-22);color:var(--ink);font-size:0.75rem;font-weight:800;white-space:nowrap}
+    .status-pill.warn{
+    background:var(--coral-24)}
+    .status-pill i{
+    width:8px;height:8px;border-radius:999px;background:var(--lime)}
+    .status-pill.warn i{
+    background:var(--coral)}
+    .model-metrics{
+    display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+    .metric{
+    padding:10px;border-radius:var(--radius);background:rgba(25,33,43,0.05)}
+    .metric span{
+    display:block;color:var(--ink-58);font-size:0.72rem;font-weight:800;text-transform:uppercase}
+    .metric strong{
+    display:block;margin-top:5px;font-size:0.98rem}
+    .prompt-list{
+    display:grid;gap:10px;padding:18px}
+    .prompt-row{
+    display:grid;grid-template-columns:minmax(160px,1fr) repeat(4,auto);gap:12px;align-items:center;padding:12px;border:1px solid var(--ink-10);border-radius:var(--radius);background:var(--cloud-58)}
+    .prompt-main{
+    display:grid;gap:3px;min-width:0}
+    .prompt-main strong{
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .prompt-main span,.prompt-chip{
+    color:var(--ink-58);font-size:0.78rem;font-weight:800}
+    .prompt-chip{
+    padding:6px 8px;border-radius:999px;background:var(--indigo-14);color:var(--ink);white-space:nowrap}
+    .analytics{
+    padding:18px}
+    .chart-frame{
+    height:310px;display:grid;grid-template-rows:1fr auto;gap:12px;padding:16px;border:1px solid var(--ink-10);border-radius:var(--radius);background:linear-gradient(180deg,rgba(25,33,43,0.06) 1px,transparent 1px),var(--cloud-58);background-size:100% 52px}
+    .volume-bars{
+    display:flex;align-items:end;gap:10px;min-height:0}
+    .bar{
+    position:relative;flex:1;min-width:10px;border-radius:6px 6px 0 0;background:linear-gradient(180deg,var(--cyan),var(--indigo));box-shadow:inset 0 1px 0 var(--cloud-58)}
+    .bar::after{
+    content:"";position:absolute;left:50%;top:0;width:8px;height:8px;transform:translate(-50%,-50%);border-radius:999px;background:var(--lime);box-shadow:0 0 0 6px var(--lime-22)}
+    .chart-labels{
+    display:grid;grid-template-columns:repeat(8,1fr);gap:8px;color:var(--ink-58);font-size:0.76rem;font-weight:800;text-align:center}
+    .side-stack{
+    display:grid;gap:18px}
+    .cost-list{
+    display:grid;gap:13px;padding:18px}
+    .cost-row{
+    display:grid;gap:8px}
+    .cost-label{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:800}
+    .cost-label span{
+    color:var(--ink-58);font-size:0.86rem}
+    .cost-track{
+    height:12px;overflow:hidden;border-radius:999px;background:var(--ink-10)}
+    .cost-fill{
+    height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--indigo),var(--cyan))}
+    .activity-feed{
+    display:grid;gap:0;padding:6px 18px 18px}
+    .activity-item{
+    display:grid;grid-template-columns:auto 1fr;gap:12px;padding:13px 0;border-bottom:1px solid var(--ink-10)}
+    .activity-item:last-child{
+    border-bottom:0}
+    .activity-dot{
+    width:12px;height:12px;margin-top:5px;border-radius:999px;background:var(--cyan);box-shadow:0 0 0 6px var(--cyan-22)}
+    .activity-dot.ok{
+    background:var(--lime);box-shadow:0 0 0 6px var(--lime-22)}
+    .activity-dot.alert{
+    background:var(--coral);box-shadow:0 0 0 6px var(--coral-24)}
+    .activity-copy{
+    display:grid;gap:3px}
+    .activity-copy time{
+    color:var(--ink-58);font-size:0.78rem;font-weight:800}
+    .activity-copy strong{
+    font-size:0.93rem}
+    .activity-copy span{
+    color:var(--ink-58);font-size:0.86rem;font-weight:600}
+    .footer{
+    border-top:1px solid var(--ink-10);background:var(--ink);color:var(--cloud)}
+    .footer-inner{
+    width:min(100% - 32px,var(--max));margin:0 auto;padding:28px 0;display:flex;align-items:center;justify-content:space-between;gap:18px;color:var(--cloud-78);font-weight:700}
+    .footer-links{
+    display:flex;flex-wrap:wrap;gap:14px}
+    .footer-links a{
+    color:var(--cloud);font-weight:800}
+    @keyframes pulse{
+    0%,100%{
+    transform:scale(1)}
+    50%{
+    transform:scale(0.72)}
+    }
+    @keyframes rise{
+    from{
+    transform:scaleY(0.32);transform-origin:bottom}
+    to{
+    transform:scaleY(1);transform-origin:bottom}
+    }
+    @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{
+    animation-duration:0.01ms !important;animation-iteration-count:1 !important;scroll-behavior:auto !important;transition-duration:0.01ms !important}
+    }
+    @media (max-width:1100px){
+    .nav-inner{
+    grid-template-columns:auto auto}
+    .nav-links,.nav-actions .search-wrap,.nav-actions .selector{
+    display:none}
+    .hamburger{
+    display:grid}
+    .hero{
+    grid-template-columns:1fr;padding-top:36px}
+    .hero-panel{
+    min-height:420px}
+    .dashboard-grid{
+    grid-template-columns:1fr}
+    }
+    @media (max-width:760px){
+    .nav-inner,.hero,.kpi-strip,.section,.dashboard-grid,.footer-inner{
+    width:min(100% - 24px,var(--max))}
+    .hero-copy{
+    padding:20px 0 8px}
+    .hero-copy p{
+    font-size:0.98rem}
+    .hero-panel{
+    min-height:auto}
+    .ops-grid,.kpi-strip,.model-grid{
+    grid-template-columns:1fr}
+    .section-head{
+    align-items:start;flex-direction:column}
+    .prompt-row{
+    grid-template-columns:1fr 1fr}
+    .prompt-main{
+    grid-column:1 / -1}
+    .chart-frame{
+    height:250px}
+    .volume-bars{
+    gap:6px}
+    .chart-labels{
+    grid-template-columns:repeat(4,1fr)}
+    .chart-labels span:nth-child(n+5){
+    display:none}
+    .footer-inner{
+    align-items:flex-start;flex-direction:column}
+    }
+    @media (max-width:440px){
+    h1{
+    font-size:2.42rem}
+    .hero-actions{
+    display:grid}
+    .btn{
+    width:100%}
+    .ops-tile strong{
+    font-size:1.3rem}
+    .prompt-row{
+    grid-template-columns:1fr}
+    .prompt-chip{
+    width:fit-content}
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar" id="top">
+      <nav class="nav-inner" aria-label="Primary navigation">
+        <a class="brand" href="#top" aria-label="Aurora AI Command Center home">
+          <span class="brand-mark" aria-hidden="true">A</span>
+          <span>Aurora AI</span>
+        </a>
+        <div class="nav-links" aria-label="Main sections">
+          <a href="#models">Models</a>
+          <a href="#prompts">Prompts</a>
+          <a href="#analytics">Analytics</a>
+          <a href="#costs">Costs</a>
+          <a href="#activity">Activity</a>
+        </div>
+        <div class="nav-actions">
+          <label class="search-wrap">
+            <span aria-hidden="true">⌕</span>
+            <input type="search" aria-label="Search operations" value="latency alerts">
+          </label>
+          <label>
+            <span class="sr-text">Environment and model group</span>
+            <select class="selector" aria-label="Environment and model group">
+              <option>Production · All models</option>
+              <option>Staging · Retrieval</option>
+              <option>Production · Vision</option>
+              <option>Sandbox · Fine tuning</option>
+            </select>
+          </label>
+          <button class="hamburger" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-drawer">
+            <span class="hamburger-lines" aria-hidden="true">
+              <i></i>
+              <i></i>
+              <i></i>
+            </span>
+          </button>
+        </div>
+      </nav>
+    </header>
+    <div class="drawer-backdrop" data-drawer-close></div>
+    <aside class="drawer" id="mobile-drawer" aria-label="Mobile navigation" aria-hidden="true">
+      <div class="drawer-head">
+        <a class="brand" href="#top">
+          <span class="brand-mark" aria-hidden="true">A</span>
+          <span>Aurora AI</span>
+        </a>
+        <button class="drawer-close" type="button" aria-label="Close navigation menu" data-drawer-close>×</button>
+      </div>
+      <div class="drawer-links">
+        <a href="#models">Model health</a>
+        <a href="#prompts">Prompt management</a>
+        <a href="#analytics">Inference analytics</a>
+        <a href="#costs">Cost breakdown</a>
+        <a href="#activity">Recent activity</a>
+      </div>
+      <label class="search-wrap">
+        <span aria-hidden="true">⌕</span>
+        <input type="search" aria-label="Search mobile operations" value="deployment notes">
+      </label>
+    </aside>
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <div class="eyebrow">
+            <span class="live-dot" aria-hidden="true"></span>
+            Live inference operations
+          </div>
+          <h1 id="hero-title">AI operations command center for production model fleets</h1>
+          <p>
+            Monitor model reliability, govern prompt versions, and understand inference volume, latency, cost, and risk from one calm operational cockpit.
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="#models">Review live health</a>
+            <a class="btn" href="#prompts">Audit prompt registry</a>
+          </div>
+        </div>
+        <div class="hero-panel" aria-label="Live operations summary">
+          <div class="ops-window">
+            <div class="ops-top">
+              <div class="window-dots" aria-hidden="true">
+                <i></i>
+                <i></i>
+                <i></i>
+              </div>
+              <span class="ops-state"><span class="live-dot" aria-hidden="true"></span> Global routing healthy</span>
+            </div>
+            <div class="ops-grid">
+              <div class="ops-tile">
+                <small>Primary route</small>
+                <strong>GPT-4 Turbo</strong>
+              </div>
+              <div class="ops-tile">
+                <small>Fallback route</small>
+                <strong>Claude Sonnet</strong>
+              </div>
+              <div class="ops-tile">
+                <small>Prompt guardrails</small>
+                <strong>99.1%</strong>
+              </div>
+              <div class="ops-tile">
+                <small>Spend pacing</small>
+                <strong>$18.6K</strong>
+              </div>
+            </div>
+            <div class="signal-chart" aria-label="Request volume spark chart">
+              <i style="height: 42%"></i>
+              <i style="height: 58%"></i>
+              <i style="height: 50%"></i>
+              <i style="height: 76%"></i>
+              <i style="height: 64%"></i>
+              <i style="height: 88%"></i>
+              <i style="height: 70%"></i>
+              <i style="height: 96%"></i>
+              <i style="height: 82%"></i>
+              <i style="height: 92%"></i>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="kpi-strip" aria-label="AI operations KPIs">
+        <article class="kpi">
+          <span>Active models</span>
+          <strong>18</strong>
+          <em>4 regions online</em>
+        </article>
+        <article class="kpi">
+          <span>Avg inference latency</span>
+          <strong>184ms</strong>
+          <em>22ms faster today</em>
+        </article>
+        <article class="kpi">
+          <span>Requests/min</span>
+          <strong>42.8K</strong>
+          <em>Live routing balanced</em>
+        </article>
+        <article class="kpi">
+          <span>Error rate</span>
+          <strong>0.18%</strong>
+          <em>Below policy limit</em>
+        </article>
+      </section>
+      <section class="section" id="models">
+        <div class="section-head">
+          <div>
+            <h2>Model Health Grid</h2>
+            <p>Production models ranked by service health, latency, throughput, and hourly cost allocation.</p>
+          </div>
+          <a class="btn" href="#activity">Open incident trail</a>
+        </div>
+      </section>
+      <div class="dashboard-grid">
+        <section class="panel" aria-labelledby="model-grid-title">
+          <div class="panel-head">
+            <h3 id="model-grid-title">Live model endpoints</h3>
+            <span>Updated 12 seconds ago</span>
+          </div>
+          <div class="model-grid">
+            <article class="model-card">
+              <div class="model-top">
+                <div class="model-name">
+                  <strong>GPT-4 Turbo</strong>
+                  <span>Primary reasoning route</span>
+                </div>
+                <span class="status-pill"><i></i>Healthy</span>
+              </div>
+              <div class="model-metrics">
+                <div class="metric"><span>Latency</span><strong>188ms</strong></div>
+                <div class="metric"><span>Throughput</span><strong>15.4K rpm</strong></div>
+                <div class="metric"><span>Cost/hour</span><strong>$812</strong></div>
+                <div class="metric"><span>Quality</span><strong>98.4%</strong></div>
+              </div>
+            </article>
+            <article class="model-card">
+              <div class="model-top">
+                <div class="model-name">
+                  <strong>Claude Sonnet</strong>
+                  <span>Fallback analysis route</span>
+                </div>
+                <span class="status-pill"><i></i>Healthy</span>
+              </div>
+              <div class="model-metrics">
+                <div class="metric"><span>Latency</span><strong>214ms</strong></div>
+                <div class="metric"><span>Throughput</span><strong>8.9K rpm</strong></div>
+                <div class="metric"><span>Cost/hour</span><strong>$476</strong></div>
+                <div class="metric"><span>Quality</span><strong>97.9%</strong></div>
+              </div>
+            </article>
+            <article class="model-card">
+              <div class="model-top">
+                <div class="model-name">
+                  <strong>Llama 3.1 70B</strong>
+                  <span>Private workload cluster</span>
+                </div>
+                <span class="status-pill warn"><i></i>Watch</span>
+              </div>
+              <div class="model-metrics">
+                <div class="metric"><span>Latency</span><strong>342ms</strong></div>
+                <div class="metric"><span>Throughput</span><strong>6.2K rpm</strong></div>
+                <div class="metric"><span>Cost/hour</span><strong>$244</strong></div>
+                <div class="metric"><span>Quality</span><strong>94.8%</strong></div>
+              </div>
+            </article>
+            <article class="model-card">
+              <div class="model-top">
+                <div class="model-name">
+                  <strong>Mistral Large</strong>
+                  <span>EU data residency route</span>
+                </div>
+                <span class="status-pill"><i></i>Healthy</span>
+              </div>
+              <div class="model-metrics">
+                <div class="metric"><span>Latency</span><strong>171ms</strong></div>
+                <div class="metric"><span>Throughput</span><strong>5.7K rpm</strong></div>
+                <div class="metric"><span>Cost/hour</span><strong>$196</strong></div>
+                <div class="metric"><span>Quality</span><strong>96.6%</strong></div>
+              </div>
+            </article>
+          </div>
+        </section>
+        <aside class="side-stack">
+          <section class="panel" id="costs" aria-labelledby="cost-title">
+            <div class="panel-head">
+              <h3 id="cost-title">Cost breakdown</h3>
+              <span>Current hour</span>
+            </div>
+            <div class="cost-list">
+              <div class="cost-row">
+                <div class="cost-label"><strong>GPT-4 Turbo</strong><span>$812 · 43%</span></div>
+                <div class="cost-track"><div class="cost-fill" style="width: 86%"></div></div>
+              </div>
+              <div class="cost-row">
+                <div class="cost-label"><strong>Claude Sonnet</strong><span>$476 · 25%</span></div>
+                <div class="cost-track"><div class="cost-fill" style="width: 62%"></div></div>
+              </div>
+              <div class="cost-row">
+                <div class="cost-label"><strong>Llama 3.1 70B</strong><span>$244 · 13%</span></div>
+                <div class="cost-track"><div class="cost-fill" style="width: 38%"></div></div>
+              </div>
+              <div class="cost-row">
+                <div class="cost-label"><strong>Mistral Large</strong><span>$196 · 10%</span></div>
+                <div class="cost-track"><div class="cost-fill" style="width: 28%"></div></div>
+              </div>
+              <div class="cost-row">
+                <div class="cost-label"><strong>Embeddings</strong><span>$169 · 9%</span></div>
+                <div class="cost-track"><div class="cost-fill" style="width: 23%"></div></div>
+              </div>
+            </div>
+          </section>
+          <section class="panel" id="activity" aria-labelledby="activity-title">
+            <div class="panel-head">
+              <h3 id="activity-title">Recent activity</h3>
+              <span>Streaming</span>
+            </div>
+            <div class="activity-feed">
+              <article class="activity-item">
+                <span class="activity-dot ok" aria-hidden="true"></span>
+                <div class="activity-copy">
+                  <time datetime="2026-05-27T12:18:00">12:18</time>
+                  <strong>Prompt v42 promoted to production</strong>
+                  <span>Support summarizer passed evaluation gate.</span>
+                </div>
+              </article>
+              <article class="activity-item">
+                <span class="activity-dot" aria-hidden="true"></span>
+                <div class="activity-copy">
+                  <time datetime="2026-05-27T12:11:00">12:11</time>
+                  <strong>Claude Sonnet handled fallback burst</strong>
+                  <span>2,418 calls routed during GPT-4 queue pressure.</span>
+                </div>
+              </article>
+              <article class="activity-item">
+                <span class="activity-dot alert" aria-hidden="true"></span>
+                <div class="activity-copy">
+                  <time datetime="2026-05-27T12:04:00">12:04</time>
+                  <strong>Llama latency threshold crossed</strong>
+                  <span>Private cluster exceeded 300ms for seven minutes.</span>
+                </div>
+              </article>
+              <article class="activity-item">
+                <span class="activity-dot ok" aria-hidden="true"></span>
+                <div class="activity-copy">
+                  <time datetime="2026-05-27T11:56:00">11:56</time>
+                  <strong>Embedding index refreshed</strong>
+                  <span>Knowledge base route returned to normal recall.</span>
+                </div>
+              </article>
+            </div>
+          </section>
+        </aside>
+      </div>
+      <section class="section" id="prompts">
+        <div class="section-head">
+          <div>
+            <h2>Prompt Management</h2>
+            <p>Versioned prompt assets with token budgets, success rates, and last-used timestamps for audit-ready operations.</p>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="prompt-list">
+            <article class="prompt-row">
+              <div class="prompt-main">
+                <strong>Support escalation classifier</strong>
+                <span>Routes urgent enterprise tickets to the incident desk.</span>
+              </div>
+              <span class="prompt-chip">v42</span>
+              <span class="prompt-chip">1,280 tokens</span>
+              <span class="prompt-chip">97.6% success</span>
+              <span class="prompt-chip">9 min ago</span>
+            </article>
+            <article class="prompt-row">
+              <div class="prompt-main">
+                <strong>Revenue analyst copilot</strong>
+                <span>Summarizes account risk and expansion signals.</span>
+              </div>
+              <span class="prompt-chip">v18</span>
+              <span class="prompt-chip">2,340 tokens</span>
+              <span class="prompt-chip">95.8% success</span>
+              <span class="prompt-chip">17 min ago</span>
+            </article>
+            <article class="prompt-row">
+              <div class="prompt-main">
+                <strong>Document extraction workflow</strong>
+                <span>Normalizes contracts into policy-safe structured data.</span>
+              </div>
+              <span class="prompt-chip">v31</span>
+              <span class="prompt-chip">3,910 tokens</span>
+              <span class="prompt-chip">93.4% success</span>
+              <span class="prompt-chip">33 min ago</span>
+            </article>
+            <article class="prompt-row">
+              <div class="prompt-main">
+                <strong>Product research synthesizer</strong>
+                <span>Finds themes from interviews and support transcripts.</span>
+              </div>
+              <span class="prompt-chip">v09</span>
+              <span class="prompt-chip">2,760 tokens</span>
+              <span class="prompt-chip">96.2% success</span>
+              <span class="prompt-chip">48 min ago</span>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="analytics">
+        <div class="section-head">
+          <div>
+            <h2>Inference Analytics</h2>
+            <p>CSS-rendered request volume trend with live confidence nodes for peak routing windows.</p>
+          </div>
+          <a class="btn" href="#costs">Compare spend</a>
+        </div>
+        <div class="panel">
+          <div class="analytics">
+            <div class="chart-frame" role="img" aria-label="Request volume from 04:00 to 18:00 rising from 22 thousand to 48 thousand requests">
+              <div class="volume-bars">
+                <span class="bar" style="height: 42%"></span>
+                <span class="bar" style="height: 58%"></span>
+                <span class="bar" style="height: 49%"></span>
+                <span class="bar" style="height: 72%"></span>
+                <span class="bar" style="height: 81%"></span>
+                <span class="bar" style="height: 68%"></span>
+                <span class="bar" style="height: 92%"></span>
+                <span class="bar" style="height: 86%"></span>
+              </div>
+              <div class="chart-labels" aria-hidden="true">
+                <span>04:00</span>
+                <span>06:00</span>
+                <span>08:00</span>
+                <span>10:00</span>
+                <span>12:00</span>
+                <span>14:00</span>
+                <span>16:00</span>
+                <span>18:00</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      <div class="footer-inner">
+        <p>Aurora AI Command Center — designed by Northstar Systems Studio.</p>
+        <div class="footer-links" aria-label="Footer links">
+          <a href="#models">Health</a>
+          <a href="#prompts">Prompts</a>
+          <a href="#analytics">Analytics</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <script>
+    const body = document.body;
+    const hamburger = document.querySelector(".hamburger");
+    const drawer = document.querySelector(".drawer");
+    const closeControls = document.querySelectorAll("[data-drawer-close]");
+    const drawerLinks = document.querySelectorAll(".drawer a");
+    let lastFocus = null;
+    function openDrawer() {
+      lastFocus = document.activeElement;
+      body.classList.add("drawer-open");
+      hamburger.setAttribute("aria-expanded", "true");
+      drawer.setAttribute("aria-hidden", "false");
+      const closeButton = drawer.querySelector(".drawer-close");
+      closeButton.focus();
+    }
+    function closeDrawer() {
+      body.classList.remove("drawer-open");
+      hamburger.setAttribute("aria-expanded", "false");
+      drawer.setAttribute("aria-hidden", "true");
+      if (lastFocus) {
+        lastFocus.focus();
+      }
+    }
+    hamburger.addEventListener("click", openDrawer);
+    closeControls.forEach((control) => {
+      control.addEventListener("click", closeDrawer);
+    });
+    drawerLinks.forEach((link) => {
+      link.addEventListener("click", closeDrawer);
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && body.classList.contains("drawer-open")) {
+        closeDrawer();
+      }
+    });
+  </script>
+</body>
+</html>
