@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Signal Team Analytics is a team operating health dashboard skeleton for capacity, delivery risk, blockers, meetings, and initiative scorecards.">
+  <title>Signal Team Analytics</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --fog:#F4F7FB;
+      --fog-2:#FBFCFF;
+      --ink:#17202A;
+      --ink-soft:#637083;
+      --blue:#2563EB;
+      --blue-2:#E8F0FF;
+      --teal:#14B8A6;
+      --teal-2:#E2F8F5;
+      --amber:#F59E0B;
+      --amber-2:#FFF2D7;
+      --rose:#F43F5E;
+      --rose-2:#FFE7EC;
+      --white:#FFFFFF;
+      --line:rgba(23,32,42,0.12);
+      --line-strong:rgba(23,32,42,0.22);
+      --shadow-soft:0 22px 70px rgba(23,32,42,0.12);
+      --shadow-card:0 12px 34px rgba(23,32,42,0.08);
+      --font-heading:"Sora",system-ui,sans-serif;
+      --font-ui:"Inter",system-ui,sans-serif;
+      --radius-xs:6px;
+      --radius-sm:8px;
+      --radius-md:12px;
+      --content-max:1480px;
+      --motion-fast:160ms ease;
+      --motion-med:260ms ease;
+    }
+    *{
+      box-sizing:border-box
+    }
+    html{
+      color-scheme:light;
+      scroll-behavior:smooth
+    }
+    body{
+      margin:0;
+      min-height:100vh;
+      background:linear-gradient(135deg,rgba(37,99,235,0.12),transparent 32rem),linear-gradient(225deg,rgba(20,184,166,0.16),transparent 34rem),var(--fog);
+      color:var(--ink);
+      font-family:var(--font-ui);
+      line-height:1.5;
+      overflow-x:hidden
+    }
+    body.nav-open,body.drawer-open{
+      overflow:hidden
+    }
+    a{
+      color:inherit;
+      text-decoration:none
+    }
+    button,input,select{
+      font:inherit
+    }
+    button{
+      border:0;
+      cursor:pointer
+    }
+    [hidden]{
+      display:none !important
+    }
+    :focus-visible{
+      outline:3px solid var(--amber);
+      outline-offset:3px;
+      border-radius:var(--radius-xs)
+    }
+    .skip-link{
+      position:fixed;
+      top:16px;
+      left:16px;
+      z-index:100;
+      transform:translateY(-160%);
+      padding:10px 14px;
+      border-radius:var(--radius-sm);
+      background:var(--ink);
+      color:var(--fog);
+      font-weight:800;
+      transition:transform var(--motion-fast)
+    }
+    .skip-link:focus{
+      transform:translateY(0)
+    }
+    .shell{
+      width:min(100%,var(--content-max));
+      margin:0 auto;
+      padding:20px
+    }
+    .topbar{
+      position:sticky;
+      top:14px;
+      z-index:50;
+      display:grid;
+      grid-template-columns:auto minmax(0,1fr) auto;
+      align-items:center;
+      gap:18px;
+      padding:12px;
+      border:1px solid var(--line);
+      border-radius:var(--radius-md);
+      background:rgba(251,252,255,0.92);
+      box-shadow:var(--shadow-card);
+      backdrop-filter:blur(18px)
+    }
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      min-width:230px
+    }
+    .brand-mark{
+      width:44px;
+      height:44px;
+      display:grid;
+      place-items:center;
+      border-radius:var(--radius-sm);
+      background:var(--ink);
+      color:var(--teal);
+      font-family:var(--font-heading);
+      font-size:1.15rem;
+      font-weight:800
+    }
+    .brand-title{
+      display:block;
+      font-family:var(--font-heading);
+      font-weight:800;
+      letter-spacing:0
+    }
+    .brand-meta{
+      display:block;
+      color:var(--ink-soft);
+      font-size:0.78rem;
+      font-weight:600
+    }
+    .nav{
+      justify-self:center
+    }
+    .nav-list{
+      display:flex;
+      align-items:center;
+      gap:6px;
+      margin:0;
+      padding:0;
+      list-style:none
+    }
+    .nav-link{
+      min-height:40px;
+      display:inline-flex;
+      align-items:center;
+      padding:0 14px;
+      border-radius:var(--radius-sm);
+      color:var(--ink-soft);
+      font-size:0.92rem;
+      font-weight:800;
+      transition:background var(--motion-fast),color var(--motion-fast)
+    }
+    .nav-link:hover,.nav-link.active{
+      background:var(--blue-2);
+      color:var(--blue)
+    }
+    .top-actions{
+      display:flex;
+      align-items:center;
+      gap:8px
+    }
+    .icon-button,.hamburger{
+      width:42px;
+      height:42px;
+      display:grid;
+      place-items:center;
+      border:1px solid var(--line);
+      border-radius:var(--radius-sm);
+      background:var(--white);
+      color:var(--ink);
+      font-weight:900
+    }
+    .hamburger{
+      display:none;
+      position:relative
+    }
+    .hamburger span,.hamburger::before,.hamburger::after{
+      content:"";
+      width:18px;
+      height:2px;
+      border-radius:999px;
+      background:currentColor;
+      transition:transform var(--motion-fast),opacity var(--motion-fast)
+    }
+    .hamburger::before{
+      position:absolute;
+      transform:translateY(-7px)
+    }
+    .hamburger::after{
+      position:absolute;
+      transform:translateY(7px)
+    }
+    .nav-open .hamburger span{
+      opacity:0
+    }
+    .nav-open .hamburger::before{
+      transform:rotate(45deg)
+    }
+    .nav-open .hamburger::after{
+      transform:rotate(-45deg)
+    }
+    .primary-button,.secondary-button,.ghost-button{
+      min-height:42px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:8px;
+      padding:0 14px;
+      border-radius:var(--radius-sm);
+      font-weight:800;
+      white-space:nowrap
+    }
+    .primary-button{
+      background:var(--ink);
+      color:var(--fog);
+      box-shadow:0 12px 28px rgba(23,32,42,0.20)
+    }
+    .secondary-button{
+      border:1px solid rgba(37,99,235,0.16);
+      background:var(--blue-2);
+      color:var(--blue)
+    }
+    .ghost-button{
+      border:1px solid var(--line);
+      background:var(--white);
+      color:var(--ink)
+    }
+    .page{
+      display:grid;
+      gap:18px;
+      padding-top:18px
+    }
+    .hero-grid{
+      display:grid;
+      grid-template-columns:minmax(0,1.18fr) repeat(3,minmax(176px,0.46fr));
+      gap:14px;
+      align-items:stretch
+    }
+    .panel{
+      border:1px solid var(--line);
+      border-radius:var(--radius-md);
+      background:rgba(251,252,255,0.92);
+      box-shadow:var(--shadow-card);
+      overflow:hidden
+    }
+    .panel-pad{
+      padding:20px
+    }
+    .command-panel{
+      min-height:286px;
+      display:grid;
+      align-content:space-between;
+      gap:22px;
+      background:linear-gradient(135deg,rgba(23,32,42,0.98),rgba(37,99,235,0.86)),var(--ink);
+      color:var(--fog)
+    }
+    .eyebrow{
+      margin:0 0 8px;
+      color:var(--blue);
+      font-size:0.75rem;
+      font-weight:900;
+      letter-spacing:0.08em;
+      text-transform:uppercase
+    }
+    .command-panel .eyebrow{
+      color:var(--teal)
+    }
+    h1,h2,h3{
+      margin:0;
+      font-family:var(--font-heading);
+      line-height:1.05;
+      letter-spacing:0
+    }
+    h1{
+      max-width:780px;
+      font-size:clamp(2.25rem,4.5vw,5.05rem);
+      font-weight:800
+    }
+    h2{
+      font-size:clamp(1.42rem,2.2vw,2.35rem);
+      font-weight:800
+    }
+    h3{
+      font-size:1.05rem;
+      font-weight:800
+    }
+    p{
+      margin:0
+    }
+    .hero-copy{
+      max-width:720px;
+      color:rgba(244,247,251,0.82);
+      font-size:1rem
+    }
+    .hero-actions,.inline-actions{
+      display:flex;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:10px
+    }
+    .metric-card{
+      min-height:170px;
+      display:grid;
+      gap:12px
+    }
+    .metric-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px
+    }
+    .metric-icon{
+      width:38px;
+      height:38px;
+      display:grid;
+      place-items:center;
+      border-radius:var(--radius-sm);
+      background:var(--blue-2);
+      color:var(--blue);
+      font-weight:900
+    }
+    .metric-label{
+      color:var(--ink-soft);
+      font-size:0.78rem;
+      font-weight:800;
+      text-transform:uppercase;
+      letter-spacing:0.06em
+    }
+    .metric-value{
+      font-family:var(--font-heading);
+      font-size:2.25rem;
+      font-weight:800;
+      line-height:1
+    }
+    .metric-note{
+      color:var(--ink-soft);
+      font-size:0.9rem
+    }
+    .trend{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      width:fit-content;
+      padding:6px 9px;
+      border-radius:999px;
+      background:var(--teal-2);
+      color:#0F766E;
+      font-size:0.78rem;
+      font-weight:900
+    }
+    .workspace{
+      display:grid;
+      grid-template-columns:minmax(0,1fr) 370px;
+      gap:18px;
+      align-items:start
+    }
+    .main-stack,.side-stack{
+      display:grid;
+      gap:18px
+    }
+    .section-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      padding:18px 20px 0
+    }
+    .section-title{
+      display:grid;
+      gap:6px
+    }
+    .section-title p{
+      color:var(--ink-soft);
+      font-size:0.92rem
+    }
+    .filter-row{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+      padding:14px 20px 0
+    }
+    .filter-chip{
+      min-height:34px;
+      padding:0 11px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:var(--white);
+      color:var(--ink-soft);
+      font-size:0.82rem;
+      font-weight:800
+    }
+    .filter-chip.active{
+      border-color:transparent;
+      background:var(--ink);
+      color:var(--fog)
+    }
+    .team-grid{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(220px,1fr));
+      gap:12px;
+      padding:16px 20px 20px
+    }
+    .team-card{
+      display:grid;
+      gap:12px;
+      width:100%;
+      padding:14px;
+      border:1px solid var(--line);
+      border-radius:var(--radius-sm);
+      background:var(--white);
+      color:var(--ink);
+      text-align:left;
+      box-shadow:0 8px 22px rgba(23,32,42,0.06);
+      transition:transform var(--motion-fast),box-shadow var(--motion-fast),border-color var(--motion-fast)
+    }
+    .team-card:hover{
+      transform:translateY(-2px);
+      border-color:var(--line-strong);
+      box-shadow:var(--shadow-card)
+    }
+    .team-card[data-health="risk"]{
+      border-left:4px solid var(--rose)
+    }
+    .team-card[data-health="watch"]{
+      border-left:4px solid var(--amber)
+    }
+    .team-card[data-health="good"]{
+      border-left:4px solid var(--teal)
+    }
+    .team-top{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px
+    }
+    .team-score{
+      font-family:var(--font-heading);
+      font-size:1.8rem;
+      font-weight:800;
+      line-height:1
+    }
+    .team-name{
+      font-weight:900;
+      line-height:1.25
+    }
+    .team-meta{
+      display:flex;
+      align-items:center;
+      flex-wrap:wrap;
+      gap:6px
+    }
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      min-height:24px;
+      padding:0 8px;
+      border-radius:999px;
+      background:var(--fog);
+      color:var(--ink-soft);
+      font-size:0.74rem;
+      font-weight:900
+    }
+    .pill.risk{
+      background:var(--rose-2);
+      color:#BE123C
+    }
+    .pill.watch{
+      background:var(--amber-2);
+      color:#92400E
+    }
+    .pill.good{
+      background:var(--teal-2);
+      color:#0F766E
+    }
+    .team-next{
+      color:var(--ink-soft);
+      font-size:0.86rem
+    }
+    .forecast-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:10px;
+      padding:16px 20px 20px
+    }
+    .forecast-item,.blocker-item,.meeting-item,.initiative-item,.feed-item{
+      display:grid;
+      gap:8px;
+      padding:13px;
+      border:1px solid var(--line);
+      border-radius:var(--radius-sm);
+      background:var(--white)
+    }
+    .forecast-value{
+      font-family:var(--font-heading);
+      font-size:1.7rem;
+      font-weight:800
+    }
+    .blocker-list,.meeting-list,.initiative-list,.feed-list{
+      display:grid;
+      gap:10px;
+      padding:16px 20px 20px
+    }
+    .blocker-item{
+      grid-template-columns:minmax(0,1fr) auto;
+      align-items:start
+    }
+    .muted{
+      color:var(--ink-soft);
+      font-size:0.88rem
+    }
+    .progress-track{
+      height:9px;
+      overflow:hidden;
+      border-radius:999px;
+      background:var(--fog)
+    }
+    .progress-fill{
+      height:100%;
+      border-radius:inherit;
+      background:linear-gradient(90deg,var(--teal),var(--blue))
+    }
+    .risk-map{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:8px;
+      padding:0 20px 20px
+    }
+    .risk-cell{
+      min-height:76px;
+      display:grid;
+      place-items:center;
+      border-radius:var(--radius-sm);
+      background:var(--fog);
+      color:var(--ink-soft);
+      font-size:0.78rem;
+      font-weight:900;
+      text-align:center
+    }
+    .risk-cell.hot{
+      background:var(--rose-2);
+      color:#BE123C
+    }
+    .risk-cell.watch{
+      background:var(--amber-2);
+      color:#92400E
+    }
+    .risk-cell.good{
+      background:var(--teal-2);
+      color:#0F766E
+    }
+    .chart-panel{
+      display:grid;
+      gap:18px;
+      padding:20px;
+      background:linear-gradient(135deg,var(--blue),#1E40AF);
+      color:var(--white)
+    }
+    .bars{
+      height:168px;
+      display:flex;
+      align-items:end;
+      gap:8px
+    }
+    .bars i{
+      flex:1;
+      border-radius:6px 6px 0 0;
+      background:linear-gradient(180deg,var(--teal),rgba(255,255,255,0.72))
+    }
+    .chart-panel .ghost-button{
+      background:rgba(255,255,255,0.14);
+      color:var(--white);
+      border-color:rgba(255,255,255,0.28)
+    }
+    .item-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px
+    }
+    .drawer-backdrop{
+      position:fixed;
+      inset:0;
+      z-index:80;
+      background:rgba(23,32,42,0.36);
+      opacity:0;
+      pointer-events:none;
+      transition:opacity var(--motion-med)
+    }
+    .drawer{
+      position:fixed;
+      top:0;
+      right:0;
+      z-index:90;
+      width:min(100%,440px);
+      height:100vh;
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr);
+      background:var(--fog-2);
+      box-shadow:-22px 0 60px rgba(23,32,42,0.18);
+      transform:translateX(104%);
+      transition:transform var(--motion-med)
+    }
+    .drawer-open .drawer-backdrop{
+      opacity:1;
+      pointer-events:auto
+    }
+    .drawer-open .drawer{
+      transform:translateX(0)
+    }
+    .drawer-head{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:14px;
+      padding:22px;
+      border-bottom:1px solid var(--line)
+    }
+    .drawer-body{
+      display:grid;
+      align-content:start;
+      gap:14px;
+      overflow:auto;
+      padding:22px
+    }
+    .detail-card{
+      display:grid;
+      gap:8px;
+      padding:14px;
+      border:1px solid var(--line);
+      border-radius:var(--radius-sm);
+      background:var(--white)
+    }
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:22px;
+      z-index:120;
+      min-width:min(92vw,360px);
+      transform:translate(-50%,120%);
+      padding:13px 16px;
+      border-radius:var(--radius-sm);
+      background:var(--ink);
+      color:var(--fog);
+      box-shadow:var(--shadow-soft);
+      font-weight:800;
+      text-align:center;
+      transition:transform var(--motion-med)
+    }
+    .toast.visible{
+      transform:translate(-50%,0)
+    }
+    .site-footer{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:16px;
+      margin-top:18px;
+      padding:22px 2px 4px;
+      color:var(--ink-soft);
+      font-size:0.88rem
+    }
+    @media (max-width:1120px){.hero-grid{grid-template-columns:1fr 1fr}.command-panel{grid-column:1 / -1}.workspace{grid-template-columns:1fr}.side-stack{grid-template-columns:repeat(2,minmax(0,1fr))}.chart-panel{grid-column:1 / -1}.team-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media (max-width:820px){.shell{padding:14px}.topbar{top:8px;grid-template-columns:auto auto;justify-content:space-between}.brand{min-width:0}.nav{position:fixed;inset:82px 14px auto 14px;display:none;justify-self:stretch;border:1px solid var(--line);border-radius:var(--radius-md);background:var(--fog-2);box-shadow:var(--shadow-soft)}.nav-open .nav{display:block}.nav-list{display:grid;gap:0;padding:8px}.nav-link{min-height:46px}.top-actions .primary-button,.top-actions .secondary-button{display:none}.hamburger{display:grid}.hero-grid,.side-stack,.team-grid{grid-template-columns:1fr}.forecast-grid{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:560px){.section-head,.site-footer{flex-direction:column;align-items:flex-start}.panel-pad,.chart-panel{padding:16px}.forecast-grid,.risk-map{grid-template-columns:1fr}.blocker-item{grid-template-columns:1fr}h1{font-size:clamp(2.15rem,13vw,3.35rem)}}
+    @media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto !important;transition:none !important;animation:none !important}}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to analytics</a>
+  <div class="shell">
+    <header class="topbar" aria-label="Primary navigation">
+      <a class="brand" href="#overview" aria-label="Signal home">
+        <span class="brand-mark">S</span>
+        <span>
+          <span class="brand-title">Signal Team Analytics</span>
+          <span class="brand-meta">Operating health, not vanity metrics</span>
+        </span>
+      </a>
+      <nav class="nav" aria-label="Dashboard sections">
+        <ul class="nav-list">
+          <li><a class="nav-link active" href="#overview">Overview</a></li>
+          <li><a class="nav-link" href="#teams">Teams</a></li>
+          <li><a class="nav-link" href="#delivery">Delivery</a></li>
+          <li><a class="nav-link" href="#blockers">Blockers</a></li>
+        </ul>
+      </nav>
+      <div class="top-actions">
+        <button class="secondary-button" type="button" data-action="digest">Send digest</button>
+        <button class="primary-button" type="button" data-action="review">Open review</button>
+        <button class="icon-button" type="button" aria-label="Open command menu" data-action="command">⌘</button>
+        <button class="hamburger" type="button" aria-label="Toggle navigation" aria-expanded="false"><span></span></button>
+      </div>
+    </header>
+    <main id="main" class="page">
+      <section id="overview" class="hero-grid" aria-labelledby="hero-title">
+        <div class="panel command-panel panel-pad">
+          <div>
+            <p class="eyebrow">Executive signal</p>
+            <h1 id="hero-title">Spot delivery risk before the status meeting.</h1>
+            <p class="hero-copy">Signal turns team health, blockers, meeting drag, and initiative progress into an operating readout with recommended actions attached to every metric.</p>
+          </div>
+          <div class="hero-actions">
+            <button class="primary-button" type="button" data-action="review">Run weekly review</button>
+            <button class="ghost-button" type="button" data-action="export">Export risk memo</button>
+          </div>
+        </div>
+        <article class="panel metric-card panel-pad" aria-label="Delivery confidence">
+          <div class="metric-top"><span class="metric-label">Delivery confidence</span><span class="metric-icon">D</span></div>
+          <strong class="metric-value">82%</strong>
+          <p class="metric-note">Forecast holds if two partner approvals land by Thursday.</p>
+          <span class="trend">+6 pts this week</span>
+        </article>
+        <article class="panel metric-card panel-pad" aria-label="Active blockers">
+          <div class="metric-top"><span class="metric-label">Active blockers</span><span class="metric-icon">B</span></div>
+          <strong class="metric-value">7</strong>
+          <p class="metric-note">Three are external and need executive escalation.</p>
+          <span class="trend">2 cleared today</span>
+        </article>
+        <article class="panel metric-card panel-pad" aria-label="Meeting drag">
+          <div class="metric-top"><span class="metric-label">Meeting drag</span><span class="metric-icon">M</span></div>
+          <strong class="metric-value">18h</strong>
+          <p class="metric-note">Design and data teams have the most fragmented calendars.</p>
+          <span class="trend">Move 4 async</span>
+        </article>
+      </section>
+      <div class="workspace">
+        <div class="main-stack">
+          <section id="teams" class="panel" aria-labelledby="teams-title">
+            <div class="section-head">
+              <div class="section-title">
+                <p class="eyebrow">Team health</p>
+                <h2 id="teams-title">Health cards with interpretation, not surveillance.</h2>
+                <p>Each team card states capacity, delivery pressure, blocker state, and the next useful action.</p>
+              </div>
+              <button class="ghost-button" type="button" data-action="rebalance">Suggest rebalance</button>
+            </div>
+            <div class="filter-row" aria-label="Team filters">
+              <button class="filter-chip active" type="button" data-filter="all">All</button>
+              <button class="filter-chip" type="button" data-filter="risk">Risk</button>
+              <button class="filter-chip" type="button" data-filter="watch">Watch</button>
+              <button class="filter-chip" type="button" data-filter="good">Good</button>
+            </div>
+            <div class="team-grid">
+              <button class="team-card" type="button" data-health="risk" data-team="platform">
+                <div class="team-top"><span class="team-name">Platform Engineering</span><span class="team-score">64</span></div>
+                <div class="team-meta"><span class="pill risk">Capacity risk</span><span class="pill">2 blockers</span></div>
+                <p class="team-next">Next: shift observability work away from the release owner.</p>
+              </button>
+              <button class="team-card" type="button" data-health="watch" data-team="design">
+                <div class="team-top"><span class="team-name">Product Design</span><span class="team-score">73</span></div>
+                <div class="team-meta"><span class="pill watch">Fragmented</span><span class="pill">12 meetings</span></div>
+                <p class="team-next">Next: convert critique round two into async review.</p>
+              </button>
+              <button class="team-card" type="button" data-health="good" data-team="support">
+                <div class="team-top"><span class="team-name">Customer Support</span><span class="team-score">91</span></div>
+                <div class="team-meta"><span class="pill good">Stable</span><span class="pill">Queue clear</span></div>
+                <p class="team-next">Next: keep escalation owner on launch watch.</p>
+              </button>
+              <button class="team-card" type="button" data-health="watch" data-team="data">
+                <div class="team-top"><span class="team-name">Data Platform</span><span class="team-score">76</span></div>
+                <div class="team-meta"><span class="pill watch">Dependency risk</span><span class="pill">Vendor wait</span></div>
+                <p class="team-next">Next: get legal answer on export retention terms.</p>
+              </button>
+              <button class="team-card" type="button" data-health="risk" data-team="growth">
+                <div class="team-top"><span class="team-name">Growth Systems</span><span class="team-score">58</span></div>
+                <div class="team-meta"><span class="pill risk">Overloaded</span><span class="pill">3 launches</span></div>
+                <p class="team-next">Next: delay the experiment dashboard by one sprint.</p>
+              </button>
+              <button class="team-card" type="button" data-health="good" data-team="ops">
+                <div class="team-top"><span class="team-name">Operations</span><span class="team-score">88</span></div>
+                <div class="team-meta"><span class="pill good">Healthy</span><span class="pill">Low drag</span></div>
+                <p class="team-next">Next: publish procurement SLA changes after review.</p>
+              </button>
+            </div>
+          </section>
+          <section id="delivery" class="panel" aria-labelledby="delivery-title">
+            <div class="section-head">
+              <div class="section-title">
+                <p class="eyebrow">Delivery forecast</p>
+                <h2 id="delivery-title">Initiatives ranked by recoverability.</h2>
+                <p>The forecast separates hard blockers from work that simply needs sequencing.</p>
+              </div>
+            </div>
+            <div class="forecast-grid">
+              <article class="forecast-item"><span class="muted">On track</span><strong class="forecast-value">11</strong><span class="pill good">ship-safe</span></article>
+              <article class="forecast-item"><span class="muted">Needs help</span><strong class="forecast-value">5</strong><span class="pill watch">watch</span></article>
+              <article class="forecast-item"><span class="muted">At risk</span><strong class="forecast-value">3</strong><span class="pill risk">escalate</span></article>
+              <article class="forecast-item"><span class="muted">Async saves</span><strong class="forecast-value">9h</strong><span class="pill good">available</span></article>
+            </div>
+          </section>
+          <section id="blockers" class="panel" aria-labelledby="blockers-title">
+            <div class="section-head">
+              <div class="section-title">
+                <p class="eyebrow">Blocker map</p>
+                <h2 id="blockers-title">Named owners for stuck work.</h2>
+              </div>
+            </div>
+            <div class="blocker-list">
+              <article class="blocker-item"><div><h3>Partner API contract unsigned</h3><p class="muted">Blocks billing export launch and customer-facing reconciliation.</p></div><span class="pill risk">Legal</span></article>
+              <article class="blocker-item"><div><h3>Analytics schema split</h3><p class="muted">Two naming conventions are still competing in production tracking.</p></div><span class="pill watch">Data</span></article>
+              <article class="blocker-item"><div><h3>Design QA bandwidth</h3><p class="muted">Launch QA depends on one reviewer with a packed calendar.</p></div><span class="pill risk">Design</span></article>
+            </div>
+          </section>
+        </div>
+        <aside class="side-stack" aria-label="Operating side panels">
+          <section class="panel chart-panel" aria-labelledby="load-title">
+            <div>
+              <p class="eyebrow">Meeting load</p>
+              <h2 id="load-title">Calendar pressure by team</h2>
+            </div>
+            <div class="bars" aria-hidden="true">
+              <i style="height:72%"></i><i style="height:92%"></i><i style="height:48%"></i><i style="height:66%"></i><i style="height:88%"></i><i style="height:42%"></i>
+            </div>
+            <button class="ghost-button" type="button" data-action="meetings">Find async candidates</button>
+          </section>
+          <section class="panel" aria-labelledby="risk-title">
+            <div class="section-head"><div class="section-title"><p class="eyebrow">Risk heat</p><h2 id="risk-title">This week</h2></div></div>
+            <div class="risk-map">
+              <div class="risk-cell hot">Growth<br>Launches</div>
+              <div class="risk-cell watch">Design<br>Review</div>
+              <div class="risk-cell good">Support<br>Queue</div>
+              <div class="risk-cell watch">Data<br>Vendor</div>
+              <div class="risk-cell hot">Platform<br>Release</div>
+              <div class="risk-cell good">Ops<br>SLA</div>
+            </div>
+          </section>
+          <section class="panel" aria-labelledby="initiatives-title">
+            <div class="section-head"><div class="section-title"><p class="eyebrow">Initiatives</p><h2 id="initiatives-title">Scorecards</h2></div></div>
+            <div class="initiative-list">
+              <article class="initiative-item"><div class="item-top"><h3>Billing export</h3><span class="pill risk">62%</span></div><div class="progress-track"><div class="progress-fill" style="width:62%"></div></div></article>
+              <article class="initiative-item"><div class="item-top"><h3>Launch analytics</h3><span class="pill watch">71%</span></div><div class="progress-track"><div class="progress-fill" style="width:71%"></div></div></article>
+              <article class="initiative-item"><div class="item-top"><h3>Support routing</h3><span class="pill good">94%</span></div><div class="progress-track"><div class="progress-fill" style="width:94%"></div></div></article>
+            </div>
+          </section>
+          <section class="panel" aria-labelledby="feed-title">
+            <div class="section-head"><div class="section-title"><p class="eyebrow">Insight feed</p><h2 id="feed-title">Recommended actions</h2></div></div>
+            <div class="feed-list">
+              <article class="feed-item"><h3>Escalate partner contract today</h3><p class="muted">Waiting another day drops delivery confidence below 75%.</p></article>
+              <article class="feed-item"><h3>Move design critique async</h3><p class="muted">This recovers a two-hour maker block for launch QA.</p></article>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+    <footer class="site-footer">
+      <span>Signal Team Analytics</span>
+      <span>Built with Frontend Skeletons</span>
+    </footer>
+  </div>
+  <div class="drawer-backdrop" aria-hidden="true"></div>
+  <aside class="drawer" aria-hidden="true" aria-labelledby="drawerTitle">
+    <div class="drawer-head">
+      <div>
+        <p class="eyebrow">Team detail</p>
+        <h2 id="drawerTitle">Platform Engineering</h2>
+      </div>
+      <button class="icon-button" type="button" aria-label="Close team detail" data-close-drawer>×</button>
+    </div>
+    <div class="drawer-body" id="drawerBody"></div>
+  </aside>
+  <div class="toast" role="status" aria-live="polite"></div>
+  <script>
+    const body=document.body;
+    const hamburger=document.querySelector(".hamburger");
+    const navLinks=[...document.querySelectorAll(".nav-link")];
+    const teamCards=[...document.querySelectorAll(".team-card")];
+    const filterChips=[...document.querySelectorAll(".filter-chip")];
+    const toast=document.querySelector(".toast");
+    const drawer=document.querySelector(".drawer");
+    const drawerTitle=document.querySelector("#drawerTitle");
+    const drawerBody=document.querySelector("#drawerBody");
+    const details={
+      platform:["Health: capacity risk","Interpretation: release owner is carrying observability and incident review","Next action: move observability follow-up to operations"],
+      design:["Health: watch","Interpretation: meeting fragmentation is hurting launch QA depth","Next action: convert critique round two into async markup"],
+      support:["Health: good","Interpretation: queue is stable and escalation rota is staffed","Next action: keep launch watch owner in place"],
+      data:["Health: watch","Interpretation: vendor export terms block schema freeze","Next action: get retention answer from legal"],
+      growth:["Health: risk","Interpretation: three launches compete for the same engineering reviewer","Next action: delay experiment dashboard by one sprint"],
+      ops:["Health: good","Interpretation: procurement workload and SLA updates are balanced","Next action: publish changes after final review"]
+    };
+    function showToast(message){
+      toast.textContent=message;
+      toast.classList.add("visible");
+      window.clearTimeout(showToast.timer);
+      showToast.timer=window.setTimeout(()=>toast.classList.remove("visible"),2600);
+    }
+    function closeNav(){
+      body.classList.remove("nav-open");
+      hamburger.setAttribute("aria-expanded","false");
+    }
+    hamburger.addEventListener("click",()=>{
+      const open=body.classList.toggle("nav-open");
+      hamburger.setAttribute("aria-expanded",String(open));
+    });
+    navLinks.forEach(link=>{
+      link.addEventListener("click",()=>{
+        navLinks.forEach(item=>item.classList.remove("active"));
+        link.classList.add("active");
+        closeNav();
+      });
+    });
+    function openDrawer(card){
+      const key=card.dataset.team;
+      drawerTitle.textContent=card.querySelector(".team-name").textContent;
+      drawerBody.innerHTML=details[key].map(item=>`<div class="detail-card"><strong>${item.split(":")[0]}</strong><span class="muted">${item.split(":").slice(1).join(":").trim()}</span></div>`).join("");
+      body.classList.add("drawer-open");
+      drawer.setAttribute("aria-hidden","false");
+      document.querySelector("[data-close-drawer]").focus();
+    }
+    function closeDrawer(){
+      body.classList.remove("drawer-open");
+      drawer.setAttribute("aria-hidden","true");
+    }
+    teamCards.forEach((card,index)=>{
+      card.addEventListener("click",()=>openDrawer(card));
+      card.addEventListener("keydown",event=>{
+        if(event.key==="ArrowRight"){
+          event.preventDefault();
+          teamCards[Math.min(index+1,teamCards.length-1)].focus();
+        }
+        if(event.key==="ArrowLeft"){
+          event.preventDefault();
+          teamCards[Math.max(index-1,0)].focus();
+        }
+      });
+    });
+    document.querySelector("[data-close-drawer]").addEventListener("click",closeDrawer);
+    document.querySelector(".drawer-backdrop").addEventListener("click",closeDrawer);
+    filterChips.forEach(chip=>{
+      chip.addEventListener("click",()=>{
+        filterChips.forEach(item=>item.classList.remove("active"));
+        chip.classList.add("active");
+        const filter=chip.dataset.filter;
+        teamCards.forEach(card=>card.hidden=!(filter==="all"||card.dataset.health===filter));
+        showToast(filter==="all"?"All teams visible":`${chip.textContent} teams visible`);
+      });
+    });
+    document.querySelectorAll("[data-action]").forEach(button=>{
+      button.addEventListener("click",()=>{
+        const messages={
+          digest:"Digest queued for team leads.",
+          review:"Weekly review workspace opened.",
+          command:"Command menu would open here.",
+          export:"Risk memo exported.",
+          rebalance:"Rebalance suggestions refreshed.",
+          meetings:"Async meeting candidates highlighted."
+        };
+        showToast(messages[button.dataset.action]||"Action queued.");
+      });
+    });
+    document.addEventListener("keydown",event=>{
+      if(event.key==="Escape"){
+        closeDrawer();
+        closeNav();
+      }
+    });
+  </script>
+</body>
+</html>
