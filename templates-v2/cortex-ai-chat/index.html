@@ -1,0 +1,1123 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cortex AI Chat</title>
+  <meta name="description" content="Premium AI chat interface skeleton with conversation history, model selection, templates, and settings.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --indigo: #4F46E5;
+      --cyan: #06B6D4;
+      --lime: #A3E635;
+      --coral: #FB7185;
+      --cloud-strong: rgba(246, 248, 252, 0.92);
+      --ink-soft: rgba(25, 33, 43, 0.72);
+      --ink-faint: rgba(25, 33, 43, 0.08);
+      --indigo-soft: rgba(79, 70, 229, 0.12);
+      --cyan-soft: rgba(6, 182, 212, 0.14);
+      --lime-soft: rgba(163, 230, 53, 0.18);
+      --coral-soft: rgba(251, 113, 133, 0.16);
+      --surface: rgba(246, 248, 252, 0.74);
+      --surface-solid: rgba(246, 248, 252, 1);
+      --shadow: 0 24px 70px rgba(25, 33, 43, 0.14);
+      --radius: 8px;
+      --radius-large: 14px;
+      --font-heading: 'Manrope', sans-serif;
+      --font-ui: 'Inter', sans-serif;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #F6F8FC;
+      color: #19212B;
+      font-family: var(--font-ui);
+      line-height: 1.5;
+    }
+    body.drawer-open {
+      overflow: hidden;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    button,
+    textarea,
+    input,
+    select {
+      font: inherit;
+    }
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+    button:focus-visible,
+    a:focus-visible,
+    textarea:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 3px solid rgba(6, 182, 212, 0.45);
+      outline-offset: 3px;
+    }
+    .skip-link {
+      position: absolute;
+      left: 16px;
+      top: -100px;
+      z-index: 100;
+      padding: 10px 14px;
+      border-radius: 8px;
+      background: #19212B;
+      color: #F6F8FC;
+      transition: top 0.2s ease;
+    }
+    .skip-link:focus {
+      top: 16px;
+    }
+    .app-shell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .top-nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: grid;
+      grid-template-columns: auto 1fr auto auto;
+      align-items: center;
+      gap: 18px;
+      padding: 14px 22px;
+      background: rgba(246, 248, 252, 0.86);
+      border-bottom: 1px solid rgba(25, 33, 43, 0.08);
+      backdrop-filter: blur(18px);
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-heading);
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: #F6F8FC;
+      background: linear-gradient(135deg, #4F46E5, #06B6D4);
+      box-shadow: 0 12px 28px rgba(79, 70, 229, 0.26);
+    }
+    .brand-text {
+      display: grid;
+      gap: 0;
+    }
+    .brand-name {
+      font-size: 1rem;
+    }
+    .brand-status {
+      color: rgba(25, 33, 43, 0.62);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .nav-links a {
+      padding: 9px 12px;
+      border-radius: 8px;
+      color: rgba(25, 33, 43, 0.72);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    .nav-links a:hover,
+    .nav-links a[aria-current='page'] {
+      background: rgba(79, 70, 229, 0.12);
+      color: #4F46E5;
+    }
+    .nav-select {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border: 1px solid rgba(25, 33, 43, 0.12);
+      border-radius: 8px;
+      background: rgba(246, 248, 252, 0.92);
+    }
+    .nav-select label {
+      font-size: 0.75rem;
+      color: rgba(25, 33, 43, 0.6);
+      font-weight: 800;
+    }
+    .nav-select select {
+      border: 0;
+      background: transparent;
+      color: #19212B;
+      font-weight: 800;
+    }
+    .hamburger {
+      display: none;
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      background: #19212B;
+      color: #F6F8FC;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .hamburger span {
+      width: 18px;
+      height: 2px;
+      background: currentColor;
+      border-radius: 99px;
+    }
+    .workspace {
+      width: min(1500px, calc(100% - 28px));
+      margin: 18px auto 0;
+      display: grid;
+      grid-template-columns: 302px minmax(0, 1fr);
+      gap: 18px;
+      flex: 1;
+    }
+    .history-shell {
+      position: sticky;
+      top: 88px;
+      align-self: start;
+      height: calc(100vh - 126px);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 16px;
+      border: 1px solid rgba(25, 33, 43, 0.08);
+      border-radius: 14px;
+      background: rgba(246, 248, 252, 0.74);
+      box-shadow: 0 18px 48px rgba(25, 33, 43, 0.08);
+    }
+    .panel-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .panel-heading h2,
+    .section-title h2 {
+      margin: 0;
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      letter-spacing: 0;
+    }
+    .new-chat {
+      padding: 8px 10px;
+      border-radius: 8px;
+      background: #4F46E5;
+      color: #F6F8FC;
+      font-weight: 800;
+    }
+    .history-list {
+      display: grid;
+      gap: 10px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+    .history-item {
+      text-align: left;
+      display: grid;
+      gap: 5px;
+      width: 100%;
+      padding: 12px;
+      border: 1px solid rgba(25, 33, 43, 0.08);
+      border-radius: 8px;
+      background: rgba(246, 248, 252, 0.78);
+      color: #19212B;
+    }
+    .history-item.is-active {
+      border-color: rgba(79, 70, 229, 0.5);
+      background: rgba(79, 70, 229, 0.12);
+    }
+    .history-title {
+      font-weight: 850;
+      font-size: 0.9rem;
+    }
+    .history-date {
+      color: rgba(25, 33, 43, 0.52);
+      font-size: 0.74rem;
+      font-weight: 800;
+    }
+    .history-preview {
+      margin: 0;
+      color: rgba(25, 33, 43, 0.68);
+      font-size: 0.8rem;
+    }
+    .main-grid {
+      display: grid;
+      gap: 18px;
+    }
+    .chat-panel {
+      min-height: 720px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      border: 1px solid rgba(25, 33, 43, 0.08);
+      border-radius: 14px;
+      overflow: hidden;
+      background: rgba(246, 248, 252, 0.74);
+      box-shadow: 0 22px 70px rgba(25, 33, 43, 0.11);
+    }
+    .chat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px;
+      border-bottom: 1px solid rgba(25, 33, 43, 0.08);
+      background: rgba(246, 248, 252, 0.74);
+    }
+    .chat-title {
+      display: grid;
+      gap: 4px;
+    }
+    .chat-title h1 {
+      margin: 0;
+      font-family: var(--font-heading);
+      font-size: clamp(1.35rem, 2vw, 2.1rem);
+      letter-spacing: 0;
+    }
+    .chat-title p {
+      margin: 0;
+      color: rgba(25, 33, 43, 0.62);
+      font-size: 0.9rem;
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(163, 230, 53, 0.18);
+      color: #19212B;
+      font-size: 0.78rem;
+      font-weight: 850;
+    }
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #A3E635;
+      box-shadow: 0 0 0 6px rgba(163, 230, 53, 0.18);
+    }
+    .messages {
+      padding: 22px;
+      display: grid;
+      gap: 18px;
+      align-content: start;
+      background: linear-gradient(180deg, rgba(246, 248, 252, 0.45), rgba(246, 248, 252, 0.8));
+    }
+    .message {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 680px);
+      gap: 12px;
+      align-items: start;
+    }
+    .message.user {
+      grid-template-columns: minmax(0, 680px) 42px;
+      justify-content: end;
+    }
+    .message.user .avatar {
+      grid-column: 2;
+      background: #19212B;
+    }
+    .message.user .bubble-wrap {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: #4F46E5;
+      color: #F6F8FC;
+      font-weight: 900;
+    }
+    .bubble-wrap {
+      display: grid;
+      gap: 6px;
+    }
+    .bubble-meta {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: rgba(25, 33, 43, 0.55);
+      font-size: 0.76rem;
+      font-weight: 800;
+    }
+    .message.user .bubble-meta {
+      justify-content: flex-end;
+    }
+    .bubble {
+      padding: 15px 16px;
+      border-radius: 14px;
+      border-top-left-radius: 4px;
+      background: #F6F8FC;
+      border: 1px solid rgba(25, 33, 43, 0.08);
+      color: #19212B;
+    }
+    .message.user .bubble {
+      border-top-left-radius: 14px;
+      border-top-right-radius: 4px;
+      background: #19212B;
+      color: #F6F8FC;
+    }
+    .bubble p {
+      margin: 0;
+    }
+    .copy-button {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: inline-grid;
+      place-items: center;
+      background: rgba(6, 182, 212, 0.14);
+      color: #19212B;
+    }
+    .copy-button svg,
+    .icon-button svg,
+    .send-button svg,
+    .template-button svg {
+      width: 18px;
+      height: 18px;
+    }
+    .composer {
+      padding: 16px;
+      border-top: 1px solid rgba(25, 33, 43, 0.08);
+      background: rgba(246, 248, 252, 0.8);
+    }
+    .composer-inner {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: end;
+      padding: 12px;
+      border: 1px solid rgba(25, 33, 43, 0.1);
+      border-radius: 14px;
+      background: rgba(246, 248, 252, 0.96);
+    }
+    .icon-button {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: rgba(79, 70, 229, 0.12);
+      color: #4F46E5;
+    }
+    .input-stack {
+      display: grid;
+      gap: 7px;
+    }
+    .prompt-input {
+      width: 100%;
+      min-height: 72px;
+      resize: vertical;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: #19212B;
+    }
+    .input-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: rgba(25, 33, 43, 0.55);
+      font-size: 0.76rem;
+      font-weight: 750;
+    }
+    .send-button {
+      min-width: 112px;
+      height: 44px;
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: #4F46E5;
+      color: #F6F8FC;
+      font-weight: 900;
+    }
+    .section {
+      padding: 22px;
+      border: 1px solid rgba(25, 33, 43, 0.08);
+      border-radius: 14px;
+      background: rgba(246, 248, 252, 0.74);
+    }
+    .section-title {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .section-title p {
+      margin: 4px 0 0;
+      color: rgba(25, 33, 43, 0.62);
+      font-size: 0.88rem;
+    }
+    .model-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .model-card,
+    .template-card {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+      border: 1px solid rgba(25, 33, 43, 0.08);
+      border-radius: 8px;
+      background: rgba(246, 248, 252, 0.72);
+    }
+    .model-card.is-selected {
+      border-color: rgba(79, 70, 229, 0.54);
+      box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.34);
+    }
+    .card-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+    }
+    .model-name,
+    .template-title {
+      margin: 0;
+      font-family: var(--font-heading);
+      font-size: 1rem;
+      letter-spacing: 0;
+    }
+    .provider,
+    .cost,
+    .template-copy {
+      margin: 0;
+      color: rgba(25, 33, 43, 0.65);
+      font-size: 0.84rem;
+    }
+    .speed {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.75rem;
+      font-weight: 850;
+    }
+    .speed::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #06B6D4;
+    }
+    .tag {
+      justify-self: start;
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: rgba(6, 182, 212, 0.14);
+      color: #19212B;
+      font-size: 0.72rem;
+      font-weight: 900;
+    }
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .template-button {
+      justify-self: start;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 11px;
+      border-radius: 8px;
+      background: #19212B;
+      color: #F6F8FC;
+      font-weight: 850;
+    }
+    .settings-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .setting-card {
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+      border: 1px solid rgba(25, 33, 43, 0.08);
+      border-radius: 8px;
+      background: rgba(246, 248, 252, 0.72);
+    }
+    .setting-card.full {
+      grid-column: 1 / -1;
+    }
+    .field-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: #19212B;
+      font-weight: 850;
+    }
+    .range {
+      accent-color: #4F46E5;
+      width: 100%;
+    }
+    .number-input,
+    .system-input {
+      width: 100%;
+      border: 1px solid rgba(25, 33, 43, 0.12);
+      border-radius: 8px;
+      background: rgba(246, 248, 252, 0.96);
+      color: #19212B;
+      padding: 12px;
+    }
+    .system-input {
+      min-height: 106px;
+      resize: vertical;
+    }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+    .switch {
+      position: relative;
+      width: 50px;
+      height: 28px;
+      flex: 0 0 auto;
+    }
+    .switch input {
+      opacity: 0;
+      width: 1px;
+      height: 1px;
+    }
+    .slider {
+      position: absolute;
+      inset: 0;
+      border-radius: 999px;
+      background: rgba(25, 33, 43, 0.16);
+      transition: background 0.2s ease;
+    }
+    .slider::after {
+      content: '';
+      position: absolute;
+      width: 22px;
+      height: 22px;
+      left: 3px;
+      top: 3px;
+      border-radius: 50%;
+      background: #F6F8FC;
+      box-shadow: 0 3px 10px rgba(25, 33, 43, 0.2);
+      transition: transform 0.2s ease;
+    }
+    .switch input:checked + .slider {
+      background: #06B6D4;
+    }
+    .switch input:checked + .slider::after {
+      transform: translateX(22px);
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .footer {
+      width: min(1500px, calc(100% - 28px));
+      margin: 18px auto 24px;
+      padding: 16px 4px 0;
+      color: rgba(25, 33, 43, 0.62);
+      font-size: 0.86rem;
+      text-align: center;
+    }
+    .drawer-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 60;
+      background: rgba(25, 33, 43, 0.38);
+    }
+    .drawer-close {
+      display: none;
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: rgba(251, 113, 133, 0.16);
+      color: #19212B;
+      font-weight: 900;
+    }
+    @media (max-width: 1180px) {
+      .workspace {
+        grid-template-columns: 270px minmax(0, 1fr);
+      }
+      .template-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .model-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 880px) {
+      .top-nav {
+        grid-template-columns: auto 1fr auto;
+      }
+      .hamburger {
+        display: inline-flex;
+      }
+      .nav-links,
+      .nav-select {
+        display: none;
+      }
+      .workspace {
+        grid-template-columns: 1fr;
+        width: min(100% - 20px, 760px);
+      }
+      .history-shell {
+        position: fixed;
+        z-index: 70;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: min(86vw, 330px);
+        border-radius: 0;
+        transform: translateX(-105%);
+        transition: transform 0.25s ease;
+      }
+      body.drawer-open .history-shell {
+        transform: translateX(0);
+      }
+      body.drawer-open .drawer-backdrop {
+        display: block;
+      }
+      .drawer-close {
+        display: inline-grid;
+        place-items: center;
+      }
+      .chat-panel {
+        min-height: 650px;
+      }
+      .chat-header {
+        align-items: start;
+        flex-direction: column;
+      }
+      .message,
+      .message.user {
+        grid-template-columns: 38px minmax(0, 1fr);
+      }
+      .message.user .avatar {
+        grid-column: 1;
+      }
+      .message.user .bubble-wrap {
+        grid-column: 2;
+      }
+      .message.user .bubble-meta {
+        justify-content: flex-start;
+      }
+      .composer-inner {
+        grid-template-columns: 1fr;
+      }
+      .icon-button,
+      .send-button {
+        width: 100%;
+      }
+      .settings-grid,
+      .model-grid,
+      .template-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#chat">Skip to chat</a>
+  <div class="app-shell">
+    <header class="top-nav" aria-label="Primary navigation">
+      <a class="brand" href="#chat" aria-label="Cortex AI Chat home">
+        <span class="brand-mark">CX</span>
+        <span class="brand-text">
+          <span class="brand-name">Cortex AI Chat</span>
+          <span class="brand-status">Live workspace</span>
+        </span>
+      </a>
+      <nav class="nav-links" aria-label="Workspace sections">
+        <a href="#chat" aria-current="page">Chat</a>
+        <a href="#history">History</a>
+        <a href="#templates">Templates</a>
+        <a href="#models">Models</a>
+        <a href="#settings">Settings</a>
+      </nav>
+      <div class="nav-select">
+        <label for="nav-model">Model</label>
+        <select id="nav-model" aria-label="Select active model">
+          <option>Cortex Pro</option>
+          <option>Nova Reason</option>
+          <option>Helix Lite</option>
+        </select>
+      </div>
+      <button class="hamburger" type="button" aria-label="Open conversation drawer" aria-controls="history" aria-expanded="false">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </header>
+    <div class="drawer-backdrop" data-close-drawer></div>
+    <div class="workspace">
+      <aside class="history-shell" id="history" aria-label="Conversation history">
+        <div class="panel-heading">
+          <h2>Conversations</h2>
+          <button class="drawer-close" type="button" aria-label="Close conversation drawer" data-close-drawer>×</button>
+        </div>
+        <button class="new-chat" type="button">New chat</button>
+        <div class="history-list" aria-label="Past conversations">
+          <button class="history-item is-active" type="button" aria-current="true">
+            <span class="history-title">Launch plan critique</span>
+            <span class="history-date">Today</span>
+            <span class="history-preview">Reviewed onboarding flow, pricing risks, and early customer interview questions.</span>
+          </button>
+          <button class="history-item" type="button">
+            <span class="history-title">Support macro polish</span>
+            <span class="history-date">Tue</span>
+            <span class="history-preview">Tightened responses for billing, workspace invites, and account recovery.</span>
+          </button>
+          <button class="history-item" type="button">
+            <span class="history-title">Agent benchmark notes</span>
+            <span class="history-date">Mon</span>
+            <span class="history-preview">Compared reasoning latency, retrieval recall, and confidence calibration.</span>
+          </button>
+          <button class="history-item" type="button">
+            <span class="history-title">Roadmap narrative</span>
+            <span class="history-date">May 24</span>
+            <span class="history-preview">Drafted a concise story for Q3 product themes and release pacing.</span>
+          </button>
+          <button class="history-item" type="button">
+            <span class="history-title">Security questionnaire</span>
+            <span class="history-date">May 22</span>
+            <span class="history-preview">Mapped vendor answers for encryption, retention, logging, and access review.</span>
+          </button>
+          <button class="history-item" type="button">
+            <span class="history-title">Content repurpose</span>
+            <span class="history-date">May 19</span>
+            <span class="history-preview">Turned a webinar transcript into an article outline and social snippets.</span>
+          </button>
+          <button class="history-item" type="button">
+            <span class="history-title">Experiment review</span>
+            <span class="history-date">May 15</span>
+            <span class="history-preview">Summarized activation test results with next steps for the growth team.</span>
+          </button>
+        </div>
+      </aside>
+      <main class="main-grid" id="main">
+        <section class="chat-panel" id="chat" aria-labelledby="chat-title">
+          <div class="chat-header">
+            <div class="chat-title">
+              <h1 id="chat-title">Launch plan critique</h1>
+              <p>Fast assistant workspace for strategy, research, writing, and operational follow-through.</p>
+            </div>
+            <div class="status-pill" role="status">
+              <span class="status-dot"></span>
+              Cortex Pro connected
+            </div>
+          </div>
+          <div class="messages" aria-live="polite">
+            <article class="message ai">
+              <div class="avatar" aria-hidden="true">AI</div>
+              <div class="bubble-wrap">
+                <div class="bubble-meta">
+                  <span>Cortex</span>
+                  <time datetime="2026-05-27T17:28:00">17:28</time>
+                  <button class="copy-button" type="button" aria-label="Copy assistant response"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button>
+                </div>
+                <div class="bubble">
+                  <p>I can review the launch plan through positioning, activation, risk, and measurement. Share the audience, promise, and constraints, then I will return a decision-ready critique.</p>
+                </div>
+              </div>
+            </article>
+            <article class="message user">
+              <div class="avatar" aria-hidden="true">ME</div>
+              <div class="bubble-wrap">
+                <div class="bubble-meta">
+                  <span>You</span>
+                  <time datetime="2026-05-27T17:31:00">17:31</time>
+                </div>
+                <div class="bubble">
+                  <p>Evaluate our beta announcement for team leads at mid-market SaaS companies. Focus on clarity, differentiation, and what might block signups.</p>
+                </div>
+              </div>
+            </article>
+            <article class="message ai">
+              <div class="avatar" aria-hidden="true">AI</div>
+              <div class="bubble-wrap">
+                <div class="bubble-meta">
+                  <span>Cortex</span>
+                  <time datetime="2026-05-27T17:32:00">17:32</time>
+                  <button class="copy-button" type="button" aria-label="Copy assistant response"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="14" x="8" y="8" rx="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg></button>
+                </div>
+                <div class="bubble">
+                  <p>The strongest angle is operational relief: fewer scattered decisions and faster follow-up. The weak point is proof. Add one concrete workflow example, a measurable before-and-after claim, and a low-friction beta path that explains who reviews access.</p>
+                </div>
+              </div>
+            </article>
+          </div>
+          <form class="composer" aria-label="Prompt composer">
+            <div class="composer-inner">
+              <button class="icon-button" type="button" aria-label="Attach file"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 1 1-2.83-2.83l8.49-8.48"/></svg></button>
+              <div class="input-stack">
+                <label class="sr-only" for="prompt-input">Message Cortex</label>
+                <textarea class="prompt-input" id="prompt-input" maxlength="2000" aria-describedby="composer-meta">Draft a sharper announcement with a stronger proof section and a clear beta call to action.</textarea>
+                <div class="input-meta" id="composer-meta">
+                  <span><span id="char-count">103</span> / 2000 characters</span>
+                  <span>Press Ctrl Enter to send</span>
+                </div>
+              </div>
+              <button class="send-button" type="submit"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg><span>Send</span></button>
+            </div>
+          </form>
+        </section>
+        <section class="section" id="models" aria-labelledby="models-title">
+          <div class="section-title">
+            <div>
+              <h2 id="models-title">Model Selector</h2>
+              <p>Choose a model profile for the next assistant turn.</p>
+            </div>
+          </div>
+          <div class="model-grid">
+            <article class="model-card is-selected">
+              <div class="card-row">
+                <div>
+                  <h3 class="model-name">Cortex Pro</h3>
+                  <p class="provider">Cortex Labs</p>
+                </div>
+                <span class="speed">Fast</span>
+              </div>
+              <p class="cost">$0.004 / 1K tokens</p>
+            </article>
+            <article class="model-card">
+              <div class="card-row">
+                <div>
+                  <h3 class="model-name">Nova Reason</h3>
+                  <p class="provider">Northstar AI</p>
+                </div>
+                <span class="speed">Measured</span>
+              </div>
+              <p class="cost">$0.009 / 1K tokens</p>
+            </article>
+            <article class="model-card">
+              <div class="card-row">
+                <div>
+                  <h3 class="model-name">Helix Lite</h3>
+                  <p class="provider">Helix Systems</p>
+                </div>
+                <span class="speed">Instant</span>
+              </div>
+              <p class="cost">$0.001 / 1K tokens</p>
+            </article>
+          </div>
+        </section>
+        <section class="section" id="templates" aria-labelledby="templates-title">
+          <div class="section-title">
+            <div>
+              <h2 id="templates-title">Prompt Templates</h2>
+              <p>Reusable starts for common knowledge work.</p>
+            </div>
+          </div>
+          <div class="template-grid">
+            <article class="template-card">
+              <span class="tag">Strategy</span>
+              <h3 class="template-title">Product Brief</h3>
+              <p class="template-copy">Shape a crisp product brief with audience, promise, constraints, and launch risks.</p>
+              <button class="template-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h8l-1 8 11-14h-8Z"/></svg><span>Use Template</span></button>
+            </article>
+            <article class="template-card">
+              <span class="tag">Research</span>
+              <h3 class="template-title">Interview Guide</h3>
+              <p class="template-copy">Generate neutral discovery questions grouped by behavior, pain, and buying signals.</p>
+              <button class="template-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h8l-1 8 11-14h-8Z"/></svg><span>Use Template</span></button>
+            </article>
+            <article class="template-card">
+              <span class="tag">Support</span>
+              <h3 class="template-title">Resolution Reply</h3>
+              <p class="template-copy">Turn messy ticket notes into a warm answer with clear next actions.</p>
+              <button class="template-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h8l-1 8 11-14h-8Z"/></svg><span>Use Template</span></button>
+            </article>
+            <article class="template-card">
+              <span class="tag">Engineering</span>
+              <h3 class="template-title">Incident Review</h3>
+              <p class="template-copy">Create a blameless incident summary with timeline, impact, causes, and follow-up owners.</p>
+              <button class="template-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h8l-1 8 11-14h-8Z"/></svg><span>Use Template</span></button>
+            </article>
+            <article class="template-card">
+              <span class="tag">Marketing</span>
+              <h3 class="template-title">Campaign Angles</h3>
+              <p class="template-copy">Develop distinctive hooks, proof points, and channels for a focused campaign.</p>
+              <button class="template-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h8l-1 8 11-14h-8Z"/></svg><span>Use Template</span></button>
+            </article>
+            <article class="template-card">
+              <span class="tag">Operations</span>
+              <h3 class="template-title">Decision Memo</h3>
+              <p class="template-copy">Compare options with tradeoffs, confidence level, and recommended next step.</p>
+              <button class="template-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h8l-1 8 11-14h-8Z"/></svg><span>Use Template</span></button>
+            </article>
+            <article class="template-card">
+              <span class="tag">Data</span>
+              <h3 class="template-title">Metric Readout</h3>
+              <p class="template-copy">Explain metric movement with hypotheses, checks, and executive summary.</p>
+              <button class="template-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h8l-1 8 11-14h-8Z"/></svg><span>Use Template</span></button>
+            </article>
+            <article class="template-card">
+              <span class="tag">Writing</span>
+              <h3 class="template-title">Tone Rewrite</h3>
+              <p class="template-copy">Adapt a draft for a specific audience while preserving the core meaning.</p>
+              <button class="template-button" type="button"><svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2 3 14h8l-1 8 11-14h-8Z"/></svg><span>Use Template</span></button>
+            </article>
+          </div>
+        </section>
+        <section class="section" id="settings" aria-labelledby="settings-title">
+          <div class="section-title">
+            <div>
+              <h2 id="settings-title">Settings</h2>
+              <p>Tune response behavior for this workspace.</p>
+            </div>
+          </div>
+          <div class="settings-grid">
+            <div class="setting-card">
+              <label class="field-label" for="temperature"><span>Temperature</span><span id="temperature-value">0.6</span></label>
+              <input class="range" id="temperature" type="range" min="0" max="1" step="0.1" value="0.6">
+            </div>
+            <div class="setting-card">
+              <label class="field-label" for="max-tokens"><span>Max tokens</span></label>
+              <input class="number-input" id="max-tokens" type="number" min="256" max="12000" step="128" value="4096">
+            </div>
+            <div class="setting-card full">
+              <label class="field-label" for="system-prompt"><span>System prompt</span></label>
+              <textarea class="system-input" id="system-prompt">You are a concise product strategy partner. Ask only when missing context would materially change the answer, otherwise produce a practical recommendation.</textarea>
+            </div>
+            <div class="setting-card">
+              <div class="toggle-row">
+                <div><strong>Stream responses</strong><p class="provider">Show tokens as the model writes.</p></div>
+                <label class="switch"><input type="checkbox" checked aria-label="Stream responses"><span class="slider"></span></label>
+              </div>
+            </div>
+            <div class="setting-card">
+              <div class="toggle-row">
+                <div><strong>Conversation memory</strong><p class="provider">Use prior turns from this workspace.</p></div>
+                <label class="switch"><input type="checkbox" checked aria-label="Conversation memory"><span class="slider"></span></label>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <footer class="footer">Cortex AI Chat — designed by Northline Studio.</footer>
+  </div>
+  <script>
+    const body = document.body;
+    const hamburger = document.querySelector('.hamburger');
+    const drawerCloseTargets = document.querySelectorAll('[data-close-drawer]');
+    const promptInput = document.querySelector('#prompt-input');
+    const charCount = document.querySelector('#char-count');
+    const temperature = document.querySelector('#temperature');
+    const temperatureValue = document.querySelector('#temperature-value');
+    const templateButtons = document.querySelectorAll('.template-button');
+
+    function setDrawer(open) {
+      body.classList.toggle('drawer-open', open);
+      hamburger.setAttribute('aria-expanded', String(open));
+      if (open) {
+        const firstItem = document.querySelector('.history-item');
+        setTimeout(() => firstItem && firstItem.focus(), 40);
+      } else {
+        hamburger.focus();
+      }
+    }
+
+    hamburger.addEventListener('click', () => {
+      setDrawer(!body.classList.contains('drawer-open'));
+    });
+
+    drawerCloseTargets.forEach((target) => {
+      target.addEventListener('click', () => setDrawer(false));
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && body.classList.contains('drawer-open')) {
+        setDrawer(false);
+      }
+      if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+        document.querySelector('.send-button').focus();
+      }
+    });
+
+    function updateCount() {
+      charCount.textContent = promptInput.value.length;
+    }
+
+    promptInput.addEventListener('input', updateCount);
+    updateCount();
+
+    temperature.addEventListener('input', () => {
+      temperatureValue.textContent = temperature.value;
+    });
+
+    templateButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        const card = button.closest('.template-card');
+        const title = card.querySelector('.template-title').textContent;
+        const copy = card.querySelector('.template-copy').textContent;
+        promptInput.value = title + ': ' + copy;
+        updateCount();
+        promptInput.focus();
+      });
+    });
+
+    document.querySelectorAll('.copy-button').forEach((button) => {
+      button.addEventListener('click', async () => {
+        const text = button.closest('.bubble-wrap').querySelector('.bubble').textContent.trim();
+        try {
+          await navigator.clipboard.writeText(text);
+          button.setAttribute('aria-label', 'Copied assistant response');
+          setTimeout(() => button.setAttribute('aria-label', 'Copy assistant response'), 1200);
+        } catch (error) {
+          button.setAttribute('aria-label', 'Copy unavailable');
+        }
+      });
+    });
+  </script>
+</body>
+</html>
