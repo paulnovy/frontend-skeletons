@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantum Code Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --cloud: #F6F8FC;
+    --ink: #19212B;
+    --indigo: #4F46E5;
+    --cyan: #06B6D4;
+    --lime: #A3E635;
+    --coral: #FB7185;
+    --dark: #0D1117;
+    --editor-bg: #161B22;
+    --sidebar-bg: #010409;
+    --panel-bg: #0D1117;
+    --border: #21262D;
+    --text-primary: #E6EDF3;
+    --text-secondary: #8B949E;
+    --text-muted: #484F58;
+    --green: #3FB950;
+    --yellow: #D29922;
+    --purple: #BC8CFF;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--dark);
+    color: var(--text-primary);
+    line-height: 1.5;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+  }
+
+  a {
+    color: var(--cyan);
+    text-decoration: none;
+  }
+
+  button {
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--indigo);
+    color: #fff;
+    padding: 8px 16px;
+    z-index: 100;
+  }
+
+  .skip-link:focus {
+    top: 0;
+  }
+
+  .app {
+    display: grid;
+    grid-template-columns: 48px 220px 1fr;
+    grid-template-rows: 48px 1fr 180px 28px;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ── Activity Bar ── */
+  .activity-bar {
+    grid-column: 1;
+    grid-row: 1 / -1;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 0;
+    gap: 4px;
+    z-index: 10;
+  }
+
+  .activity-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.15s;
+  }
+
+  .activity-btn:hover,
+  .activity-btn.active {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .activity-btn.active {
+    border-left: 2px solid var(--indigo);
+    border-radius: 0;
+  }
+
+  .activity-btn svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .activity-spacer {
+    flex: 1;
+  }
+
+  /* ── Sidebar ── */
+  .sidebar {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    background: var(--editor-bg);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 5;
+  }
+
+  .sidebar-header {
+    padding: 12px 16px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .sidebar-header button {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .sidebar-header button:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .file-tree {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 0 8px;
+  }
+
+  .tree-section {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    padding: 8px 16px 4px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .tree-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 16px;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background 0.1s;
+  }
+
+  .tree-item:hover {
+    background: rgba(255, 255, 255, 0.03);
+    color: var(--text-primary);
+  }
+
+  .tree-item.active {
+    background: rgba(79, 70, 229, 0.15);
+    color: var(--text-primary);
+  }
+
+  .tree-item.folder {
+    color: var(--text-primary);
+    font-weight: 500;
+  }
+
+  .tree-item .indent-1 {
+    padding-left: 32px;
+  }
+
+  .tree-item .indent-2 {
+    padding-left: 48px;
+  }
+
+  .tree-icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    opacity: 0.7;
+  }
+
+  .tree-icon.ts {
+    color: #3178C6;
+  }
+
+  .tree-icon.json {
+    color: var(--yellow);
+  }
+
+  .tree-icon.md {
+    color: #58A6FF;
+  }
+
+  .tree-icon.folder-icon {
+    color: var(--text-muted);
+  }
+
+  /* ── Title Bar ── */
+  .title-bar {
+    grid-column: 3;
+    grid-row: 1;
+    background: var(--editor-bg);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    z-index: 5;
+  }
+
+  .tab {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 16px;
+    height: 100%;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    border-right: 1px solid var(--border);
+    cursor: pointer;
+    white-space: nowrap;
+    position: relative;
+  }
+
+  .tab:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.02);
+  }
+
+  .tab.active {
+    color: var(--text-primary);
+    background: var(--dark);
+  }
+
+  .tab.active::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--indigo);
+  }
+
+  .tab .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .tab .dot.ts {
+    background: #3178C6;
+  }
+
+  .tab .dot.json {
+    background: var(--yellow);
+  }
+
+  .tab .dot.md {
+    background: #58A6FF;
+  }
+
+  .tab-close {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    padding: 2px 4px;
+    border-radius: 4px;
+    margin-left: 4px;
+    opacity: 0;
+    transition: opacity 0.1s;
+  }
+
+  .tab:hover .tab-close {
+    opacity: 1;
+  }
+
+  .tab-close:hover {
+    color: var(--coral);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  /* ── Editor ── */
+  .editor {
+    grid-column: 3;
+    grid-row: 2;
+    display: flex;
+    overflow: hidden;
+    background: var(--dark);
+  }
+
+  .gutter {
+    width: 58px;
+    background: var(--dark);
+    padding: 16px 0;
+    text-align: right;
+    font-family: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+    user-select: none;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .gutter-line {
+    padding-right: 16px;
+    height: 20.8px;
+  }
+
+  .gutter-line.active {
+    color: var(--text-primary);
+  }
+
+  .code-area {
+    flex: 1;
+    padding: 16px 0 16px 16px;
+    font-family: 'JetBrains Mono', 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    overflow: auto;
+    tab-size: 2;
+    white-space: pre;
+  }
+
+  .code-line {
+    height: 20.8px;
+    padding-right: 32px;
+  }
+
+  .code-line.active {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .code-line:hover {
+    background: rgba(255, 255, 255, 0.015);
+  }
+
+  /* Syntax tokens */
+  .kw {
+    color: #FF7B72;
+  }
+
+  .str {
+    color: #A5D6FF;
+  }
+
+  .cmt {
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .fn {
+    color: #D2A8FF;
+  }
+
+  .num {
+    color: #79C0FF;
+  }
+
+  .type {
+    color: #FFA657;
+  }
+
+  .op {
+    color: var(--text-secondary);
+  }
+
+  .var-name {
+    color: var(--text-primary);
+  }
+
+  .param {
+    color: #FFA657;
+  }
+
+  .decorator {
+    color: var(--yellow);
+  }
+
+  .regex {
+    color: #7EE787;
+  }
+
+  /* ── Minimap ── */
+  .minimap {
+    width: 60px;
+    background: var(--dark);
+    border-left: 1px solid var(--border);
+    overflow: hidden;
+    flex-shrink: 0;
+    padding: 8px 0;
+  }
+
+  .minimap-content {
+    transform: scaleX(0.4) scaleY(0.35);
+    transform-origin: top left;
+    pointer-events: none;
+    width: 150px;
+  }
+
+  .minimap-line {
+    height: 3px;
+    margin-bottom: 1px;
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 1px;
+  }
+
+  .minimap-line.has-code {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  .minimap-line.highlight {
+    background: rgba(79, 70, 229, 0.4);
+  }
+
+  /* ── Panel ── */
+  .panel {
+    grid-column: 3;
+    grid-row: 3;
+    background: var(--panel-bg);
+    border-top: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .panel-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+    padding: 0 8px;
+  }
+
+  .panel-tab {
+    padding: 8px 14px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .panel-tab:hover {
+    color: var(--text-secondary);
+  }
+
+  .panel-tab.active {
+    color: var(--text-primary);
+    border-bottom-color: var(--indigo);
+  }
+
+  .panel-tab .count {
+    display: inline-block;
+    padding: 0 6px;
+    border-radius: 10px;
+    font-size: 0.6875rem;
+    margin-left: 4px;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .panel-tab .count.error {
+    background: rgba(251, 113, 133, 0.2);
+    color: var(--coral);
+  }
+
+  .panel-tab .count.warn {
+    background: rgba(210, 153, 34, 0.2);
+    color: var(--yellow);
+  }
+
+  .panel-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 16px;
+    font-family: 'JetBrains Mono', 'Cascadia Code', monospace;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  .terminal-line {
+    color: var(--text-secondary);
+  }
+
+  .terminal-line .prompt {
+    color: var(--green);
+    font-weight: 600;
+  }
+
+  .terminal-line .cmd {
+    color: var(--text-primary);
+  }
+
+  .terminal-line .success {
+    color: var(--green);
+  }
+
+  .terminal-line .error {
+    color: var(--coral);
+  }
+
+  .terminal-line .info {
+    color: var(--cyan);
+  }
+
+  .terminal-line .warn-text {
+    color: var(--yellow);
+  }
+
+  .terminal-line .path {
+    color: var(--purple);
+  }
+
+  /* ── Status Bar ── */
+  .status-bar {
+    grid-column: 1 / -1;
+    grid-row: 4;
+    background: var(--indigo);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.85);
+    gap: 16px;
+    z-index: 10;
+  }
+
+  .status-bar .item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 4px;
+    height: 100%;
+  }
+
+  .status-bar .item:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .status-right {
+    margin-left: auto;
+    display: flex;
+    gap: 0;
+  }
+
+  .status-bar .branch {
+    font-weight: 600;
+  }
+
+  /* ── Breadcrumb ── */
+  .breadcrumb {
+    grid-column: 3;
+    grid-row: 1;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 16px;
+    height: 24px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    background: var(--dark);
+    border-bottom: 1px solid var(--border);
+    z-index: 6;
+  }
+
+  .breadcrumb span {
+    color: var(--text-secondary);
+  }
+
+  .breadcrumb .sep {
+    color: var(--text-muted);
+  }
+
+  /* ── Find Widget ── */
+  .find-widget {
+    display: none;
+    position: absolute;
+    top: 8px;
+    right: 24px;
+    background: var(--editor-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    z-index: 20;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  }
+
+  .find-widget.visible {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .find-widget input {
+    width: 200px;
+    padding: 4px 8px;
+    background: var(--dark);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-primary);
+    font-family: inherit;
+    font-size: 0.8125rem;
+    outline: none;
+  }
+
+  .find-widget input:focus {
+    border-color: var(--indigo);
+  }
+
+  .find-widget .count {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .find-widget button {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+
+  .find-widget button:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 900px) {
+    .app {
+      grid-template-columns: 48px 1fr;
+    }
+
+    .sidebar {
+      display: none;
+    }
+
+    .minimap {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body>
+<a href="#editor" class="skip-link">Skip to editor</a>
+
+<div class="app">
+  <!-- Activity Bar -->
+  <div class="activity-bar" role="toolbar" aria-label="Activity bar">
+    <button class="activity-btn active" aria-label="Explorer" title="Explorer">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><polyline points="13 2 13 9 20 9"/></svg>
+    </button>
+    <button class="activity-btn" aria-label="Search" title="Search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    </button>
+    <button class="activity-btn" aria-label="Source Control" title="Source Control">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/></svg>
+    </button>
+    <button class="activity-btn" aria-label="Debug" title="Debug">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+    </button>
+    <button class="activity-btn" aria-label="Extensions" title="Extensions">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M12 8v8M8 12h8"/></svg>
+    </button>
+    <div class="activity-spacer"></div>
+    <button class="activity-btn" aria-label="Accounts" title="Accounts">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </button>
+    <button class="activity-btn" aria-label="Settings" title="Settings">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+    </button>
+  </div>
+
+  <!-- Sidebar -->
+  <div class="sidebar" role="navigation" aria-label="File explorer">
+    <div class="sidebar-header">
+      <span>Explorer</span>
+      <button aria-label="New file" title="New file">+</button>
+    </div>
+    <div class="file-tree" role="tree">
+      <div class="tree-section">Open Editors</div>
+      <div class="tree-item active" role="treeitem" aria-selected="true">
+        <span class="dot ts" style="width:8px;height:8px;border-radius:50%;flex-shrink:0"></span>
+        editor.ts
+      </div>
+      <div class="tree-item" role="treeitem">
+        <span class="dot ts" style="width:8px;height:8px;border-radius:50%;flex-shrink:0"></span>
+        syntax.ts
+      </div>
+      <div class="tree-item" role="treeitem">
+        <span class="dot json" style="width:8px;height:8px;border-radius:50%;flex-shrink:0"></span>
+        package.json
+      </div>
+
+      <div class="tree-section">quantum-editor</div>
+      <div class="tree-item folder" role="treeitem" aria-expanded="true">
+        <span class="tree-icon folder-icon">▾</span> src
+      </div>
+      <div class="tree-item active" role="treeitem" style="padding-left:32px">
+        <span class="dot ts" style="width:8px;height:8px;border-radius:50%;flex-shrink:0"></span>
+        editor.ts
+      </div>
+      <div class="tree-item" role="treeitem" style="padding-left:32px">
+        <span class="dot ts" style="width:8px;height:8px;border-radius:50%;flex-shrink:0"></span>
+        syntax.ts
+      </div>
+      <div class="tree-item" role="treeitem" style="padding-left:32px">
+        <span class="dot ts" style="width:8px;height:8px;border-radius:50%;flex-shrink:0"></span>
+        themes.ts
+      </div>
+      <div class="tree-item" role="treeitem" style="padding-left:32px">
+        <span class="dot ts" style="width:8px;height:8px;border-radius:50%;flex-shrink:0"></span>
+        keybindings.ts
+      </div>
+      <div class="tree-item" role="treeitem" style="padding-left:32px">
+        <span class="dot ts" style="width:8px;height:8px;border-radius:50%;flex-shrink:0"></span>
+        terminal.ts
+      </div>
+      <div class="tree-item" role="treeitem" style="padding-left:32px">
+        <span class="dot ts" style="width:8px;height:8px;border-radius:50%;flex-shrink:0"></span>
+        git.ts
+      </div>
+      <div class="tree-item" role="treeitem" style="padding-left:32px">
+        <span class="dot ts" style="width:8px;height:8px;border-radius:50%;flex-shrink:0"></span>
+        search.ts
+      </div>
+      <div class="tree-item" role="treeitem" style="padding-left:32px">
+        <span class="dot ts" style="width:8px;height:8px;border-radius:50%;flex-shrink:0"></span>
+        autocomplete.ts
+      </div>
+      <div class="tree-item" role="treeitem" style="padding-left:32px">
+        <span class="dot ts" style="width:8px;height:8px;border-radius:50%;flex-shrink:0"></span>
+        snippets.ts
+      </div>
+      <div class="tree-item" role="treeitem" style="padding-left:32px">
+        <span class="dot ts" style="width:8px;height:8px;border-radius:50%;flex-shrink:0"></span>
+        minimap.ts
+      </div>
+      <div class="tree-item folder" role="treeitem" style="padding-left:32px" aria-expanded="true">
+        <span class="tree-icon folder-icon">▾</span> extensions
+      </div>
+      <div class="tree-item" role="treeitem" style="padding-left:48px">
+        <span class="dot ts" style="width:8px;height:8px;border-radius:50%;flex-shrink:0"></span>
+        prettier.ts
+      </div>
+      <div class="tree-item" role="treeitem" style="padding-left:48px">
+        <span class="dot ts" style="width:8px;height:8px;border-radius:50%;flex-shrink:0"></span>
+        eslint.ts
+      </div>
+      <div class="tree-item" role="treeitem" style="padding-left:48px">
+        <span class="dot ts" style="width:8px;height:8px;border-radius:50%;flex-shrink:0"></span>
+        gitlens.ts
+      </div>
+      <div class="tree-item folder" role="treeitem" aria-expanded="false">
+        <span class="tree-icon folder-icon">▸</span> themes
+      </div>
+      <div class="tree-item folder" role="treeitem" aria-expanded="false">
+        <span class="tree-icon folder-icon">▸</span> test
+      </div>
+      <div class="tree-item" role="treeitem">
+        <span class="dot json" style="width:8px;height:8px;border-radius:50%;flex-shrink:0"></span>
+        package.json
+      </div>
+      <div class="tree-item" role="treeitem">
+        <span class="dot json" style="width:8px;height:8px;border-radius:50%;flex-shrink:0"></span>
+        tsconfig.json
+      </div>
+      <div class="tree-item" role="treeitem">
+        <span class="dot md" style="width:8px;height:8px;border-radius:50%;flex-shrink:0"></span>
+        README.md
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Bar -->
+  <div class="title-bar" role="tablist" aria-label="Open files">
+    <div class="tab" role="tab">
+      <span class="dot ts"></span> main.ts
+      <span class="tab-close">×</span>
+    </div>
+    <div class="tab active" role="tab" aria-selected="true">
+      <span class="dot ts"></span> editor.ts
+      <span class="tab-close">×</span>
+    </div>
+    <div class="tab" role="tab">
+      <span class="dot ts"></span> syntax.ts
+      <span class="tab-close">×</span>
+    </div>
+    <div class="tab" role="tab">
+      <span class="dot json"></span> package.json
+      <span class="tab-close">×</span>
+    </div>
+  </div>
+
+  <!-- Editor -->
+  <div class="editor" id="editor" role="textbox" aria-multiline="true" aria-label="Code editor" tabindex="0">
+    <div class="gutter" aria-hidden="true">
+      <div class="gutter-line">1</div>
+      <div class="gutter-line">2</div>
+      <div class="gutter-line">3</div>
+      <div class="gutter-line">4</div>
+      <div class="gutter-line">5</div>
+      <div class="gutter-line">6</div>
+      <div class="gutter-line">7</div>
+      <div class="gutter-line">8</div>
+      <div class="gutter-line">9</div>
+      <div class="gutter-line">10</div>
+      <div class="gutter-line">11</div>
+      <div class="gutter-line">12</div>
+      <div class="gutter-line">13</div>
+      <div class="gutter-line">14</div>
+      <div class="gutter-line">15</div>
+      <div class="gutter-line">16</div>
+      <div class="gutter-line">17</div>
+      <div class="gutter-line">18</div>
+      <div class="gutter-line">19</div>
+      <div class="gutter-line">20</div>
+      <div class="gutter-line">21</div>
+      <div class="gutter-line">22</div>
+      <div class="gutter-line">23</div>
+      <div class="gutter-line">24</div>
+      <div class="gutter-line">25</div>
+      <div class="gutter-line">26</div>
+      <div class="gutter-line">27</div>
+      <div class="gutter-line">28</div>
+      <div class="gutter-line">29</div>
+      <div class="gutter-line">30</div>
+      <div class="gutter-line">31</div>
+      <div class="gutter-line">32</div>
+      <div class="gutter-line active">33</div>
+      <div class="gutter-line">34</div>
+      <div class="gutter-line">35</div>
+      <div class="gutter-line">36</div>
+      <div class="gutter-line">37</div>
+      <div class="gutter-line">38</div>
+      <div class="gutter-line">39</div>
+      <div class="gutter-line">40</div>
+      <div class="gutter-line">41</div>
+      <div class="gutter-line">42</div>
+      <div class="gutter-line">43</div>
+      <div class="gutter-line">44</div>
+      <div class="gutter-line">45</div>
+      <div class="gutter-line">46</div>
+      <div class="gutter-line">47</div>
+      <div class="gutter-line">48</div>
+      <div class="gutter-line">49</div>
+      <div class="gutter-line">50</div>
+      <div class="gutter-line">51</div>
+      <div class="gutter-line">52</div>
+      <div class="gutter-line">53</div>
+      <div class="gutter-line">54</div>
+      <div class="gutter-line">55</div>
+      <div class="gutter-line">56</div>
+      <div class="gutter-line">57</div>
+      <div class="gutter-line">58</div>
+      <div class="gutter-line">59</div>
+      <div class="gutter-line">60</div>
+      <div class="gutter-line">61</div>
+      <div class="gutter-line">62</div>
+      <div class="gutter-line">63</div>
+      <div class="gutter-line">64</div>
+      <div class="gutter-line">65</div>
+      <div class="gutter-line">66</div>
+      <div class="gutter-line">67</div>
+      <div class="gutter-line">68</div>
+      <div class="gutter-line">69</div>
+      <div class="gutter-line">70</div>
+      <div class="gutter-line">71</div>
+      <div class="gutter-line">72</div>
+      <div class="gutter-line">73</div>
+      <div class="gutter-line">74</div>
+      <div class="gutter-line">75</div>
+      <div class="gutter-line">76</div>
+      <div class="gutter-line">77</div>
+      <div class="gutter-line">78</div>
+      <div class="gutter-line">79</div>
+      <div class="gutter-line">80</div>
+      <div class="gutter-line">81</div>
+      <div class="gutter-line">82</div>
+      <div class="gutter-line">83</div>
+      <div class="gutter-line">84</div>
+      <div class="gutter-line">85</div>
+      <div class="gutter-line">86</div>
+      <div class="gutter-line">87</div>
+      <div class="gutter-line">88</div>
+      <div class="gutter-line">89</div>
+      <div class="gutter-line">90</div>
+      <div class="gutter-line">91</div>
+      <div class="gutter-line">92</div>
+      <div class="gutter-line">93</div>
+      <div class="gutter-line">94</div>
+      <div class="gutter-line">95</div>
+      <div class="gutter-line">96</div>
+      <div class="gutter-line">97</div>
+      <div class="gutter-line">98</div>
+      <div class="gutter-line">99</div>
+      <div class="gutter-line">100</div>
+    </div>
+    <div class="code-area">
+      <div class="code-line"><span class="cmt">/**</span></div>
+      <div class="code-line"><span class="cmt"> * Quantum Code Editor — Core Editor Module</span></div>
+      <div class="code-line"><span class="cmt"> * Handles text editing, syntax highlighting, and collaboration.</span></div>
+      <div class="code-line"><span class="cmt"> */</span></div>
+      <div class="code-line"></div>
+      <div class="code-line"><span class="kw">import</span> { <span class="type">SyntaxHighlighter</span> } <span class="kw">from</span> <span class="str">'./syntax'</span>;</div>
+      <div class="code-line"><span class="kw">import</span> { <span class="type">ThemeManager</span> } <span class="kw">from</span> <span class="str">'./themes'</span>;</div>
+      <div class="code-line"><span class="kw">import</span> { <span class="type">KeyBindingEngine</span> } <span class="kw">from</span> <span class="str">'./keybindings'</span>;</div>
+      <div class="code-line"><span class="kw">import</span> { <span class="type">Terminal</span> } <span class="kw">from</span> <span class="str">'./terminal'</span>;</div>
+      <div class="code-line"><span class="kw">import</span> { <span class="type">GitIntegration</span> } <span class="kw">from</span> <span class="str">'./git'</span>;</div>
+      <div class="code-line"><span class="kw">import</span> { <span class="type">AutoComplete</span> } <span class="kw">from</span> <span class="str">'./autocomplete'</span>;</div>
+      <div class="code-line"><span class="kw">import</span> { <span class="type">SearchEngine</span> } <span class="kw">from</span> <span class="str">'./search'</span>;</div>
+      <div class="code-line"><span class="kw">import</span> { <span class="type">SnippetManager</span> } <span class="kw">from</span> <span class="str">'./snippets'</span>;</div>
+      <div class="code-line"></div>
+      <div class="code-line"><span class="kw">interface</span> <span class="type">EditorConfig</span> {</div>
+      <div class="code-line">  <span class="var-name">theme</span>: <span class="type">string</span>;</div>
+      <div class="code-line">  <span class="var-name">fontSize</span>: <span class="type">number</span>;</div>
+      <div class="code-line">  <span class="var-name">tabSize</span>: <span class="type">number</span>;</div>
+      <div class="code-line">  <span class="var-name">wordWrap</span>: <span class="type">boolean</span>;</div>
+      <div class="code-line">  <span class="var-name">minimap</span>: <span class="type">boolean</span>;</div>
+      <div class="code-line">  <span class="var-name">lineNumbers</span>: <span class="type">boolean</span>;</div>
+      <div class="code-line">  <span class="var-name">bracketMatching</span>: <span class="type">boolean</span>;</div>
+      <div class="code-line">  <span class="var-name">autoSave</span>: <span class="type">boolean</span>;</div>
+      <div class="code-line">  <span class="var-name">collaboration</span>: <span class="type">CollabConfig</span>;</div>
+      <div class="code-line">}</div>
+      <div class="code-line"></div>
+      <div class="code-line"><span class="kw">interface</span> <span class="type">CollabConfig</span> {</div>
+      <div class="code-line">  <span class="var-name">enabled</span>: <span class="type">boolean</span>;</div>
+      <div class="code-line">  <span class="var-name">serverUrl</span>: <span class="type">string</span>;</div>
+      <div class="code-line">  <span class="var-name">roomId</span>: <span class="type">string</span>;</div>
+      <div class="code-line">  <span class="var-name">userName</span>: <span class="type">string</span>;</div>
+      <div class="code-line">  <span class="var-name">userColor</span>: <span class="type">string</span>;</div>
+      <div class="code-line">}</div>
+      <div class="code-line"></div>
+      <div class="code-line"><span class="kw">export class</span> <span class="type">Editor</span> <span class="kw">implements</span> <span class="type">Disposable</span> {</div>
+      <div class="code-line">  <span class="kw">private</span> <span class="var-name">highlighter</span>: <span class="type">SyntaxHighlighter</span>;</div>
+      <div class="code-line">  <span class="kw">private</span> <span class="var-name">themeManager</span>: <span class="type">ThemeManager</span>;</div>
+      <div class="code-line">  <span class="kw">private</span> <span class="var-name">keybindings</span>: <span class="type">KeyBindingEngine</span>;</div>
+      <div class="code-line">  <span class="kw">private</span> <span class="var-name">terminal</span>: <span class="type">Terminal</span>;</div>
+      <div class="code-line">  <span class="kw">private</span> <span class="var-name">git</span>: <span class="type">GitIntegration</span>;</div>
+      <div class="code-line">  <span class="kw">private</span> <span class="var-name">autocomplete</span>: <span class="type">AutoComplete</span>;</div>
+      <div class="code-line">  <span class="kw">private</span> <span class="var-name">search</span>: <span class="type">SearchEngine</span>;</div>
+      <div class="code-line">  <span class="kw">private</span> <span class="var-name">snippets</span>: <span class="type">SnippetManager</span>;</div>
+      <div class="code-line">  <span class="kw">private</span> <span class="var-name">buffer</span>: <span class="type">TextBuffer</span>;</div>
+      <div class="code-line">  <span class="kw">private</span> <span class="var-name">cursor</span>: <span class="type">CursorPosition</span>;</div>
+      <div class="code-line">  <span class="kw">private</span> <span class="var-name">selection</span>: <span class="type">Selection</span> | <span class="type">null</span>;</div>
+      <div class="code-line">  <span class="kw">private</span> <span class="var-name">history</span>: <span class="type">UndoStack</span>;</div>
+      <div class="code-line">  <span class="kw">private</span> <span class="var-name">collab</span>: <span class="type">CollabSession</span> | <span class="type">null</span>;</div>
+      <div class="code-line"></div>
+      <div class="code-line">  <span class="fn">constructor</span>(<span class="param">config</span>: <span class="type">EditorConfig</span>) {</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="var-name">highlighter</span> = <span class="kw">new</span> <span class="type">SyntaxHighlighter</span>();</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="var-name">themeManager</span> = <span class="kw">new</span> <span class="type">ThemeManager</span>(<span class="param">config</span>.<span class="var-name">theme</span>);</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="var-name">keybindings</span> = <span class="kw">new</span> <span class="type">KeyBindingEngine</span>();</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="var-name">terminal</span> = <span class="kw">new</span> <span class="type">Terminal</span>({ <span class="var-name">shell</span>: <span class="str">'/bin/zsh'</span> });</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="var-name">git</span> = <span class="kw">new</span> <span class="type">GitIntegration</span>();</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="var-name">autocomplete</span> = <span class="kw">new</span> <span class="type">AutoComplete</span>();</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="var-name">search</span> = <span class="kw">new</span> <span class="type">SearchEngine</span>();</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="var-name">snippets</span> = <span class="kw">new</span> <span class="type">SnippetManager</span>();</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="var-name">buffer</span> = <span class="kw">new</span> <span class="type">TextBuffer</span>();</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="var-name">cursor</span> = { <span class="var-name">line</span>: <span class="num">0</span>, <span class="var-name">col</span>: <span class="num">0</span> };</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="var-name">selection</span> = <span class="type">null</span>;</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="var-name">history</span> = <span class="kw">new</span> <span class="type">UndoStack</span>(<span class="num">500</span>);</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="var-name">collab</span> = <span class="type">null</span>;</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="fn">init</span>();</div>
+      <div class="code-line">  }</div>
+      <div class="code-line"></div>
+      <div class="code-line">  <span class="kw">private async</span> <span class="fn">init</span>(): <span class="type">Promise</span>&lt;<span class="type">void</span>&gt; {</div>
+      <div class="code-line">    <span class="kw">await</span> <span class="kw">this</span>.<span class="var-name">themeManager</span>.<span class="fn">load</span>();</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="var-name">keybindings</span>.<span class="fn">register</span>(<span class="kw">this</span>);</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="var-name">snippets</span>.<span class="fn">loadBuiltins</span>();</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="fn">render</span>();</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="fn">emit</span>(<span class="str">'ready'</span>);</div>
+      <div class="code-line">  }</div>
+      <div class="code-line"></div>
+      <div class="code-line">  <span class="kw">public</span> <span class="fn">openFile</span>(<span class="param">path</span>: <span class="type">string</span>): <span class="type">void</span> {</div>
+      <div class="code-line">    <span class="kw">const</span> <span class="var-name">content</span> = <span class="fn">readFileSync</span>(<span class="param">path</span>, <span class="str">'utf-8'</span>);</div>
+      <div class="code-line">    <span class="kw">const</span> <span class="var-name">lang</span> = <span class="kw">this</span>.<span class="fn">detectLanguage</span>(<span class="param">path</span>);</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="var-name">buffer</span> = <span class="kw">new</span> <span class="type">TextBuffer</span>(<span class="var-name">content</span>);</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="var-name">highlighter</span>.<span class="fn">setLanguage</span>(<span class="var-name">lang</span>);</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="var-name">history</span>.<span class="fn">clear</span>();</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="fn">render</span>();</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="fn">emit</span>(<span class="str">'fileOpened'</span>, { <span class="var-name">path</span>, <span class="var-name">lang</span> });</div>
+      <div class="code-line">  }</div>
+      <div class="code-line"></div>
+      <div class="code-line">  <span class="kw">public</span> <span class="fn">save</span>(): <span class="type">void</span> {</div>
+      <div class="code-line">    <span class="kw">const</span> <span class="var-name">content</span> = <span class="kw">this</span>.<span class="var-name">buffer</span>.<span class="fn">toString</span>();</div>
+      <div class="code-line">    <span class="fn">writeFileSync</span>(<span class="kw">this</span>.<span class="var-name">currentPath</span>, <span class="var-name">content</span>);</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="var-name">git</span>.<span class="fn">stageFile</span>(<span class="kw">this</span>.<span class="var-name">currentPath</span>);</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="fn">emit</span>(<span class="str">'saved'</span>, { <span class="var-name">path</span>: <span class="kw">this</span>.<span class="var-name">currentPath</span> });</div>
+      <div class="code-line">  }</div>
+      <div class="code-line"></div>
+      <div class="code-line">  <span class="kw">public</span> <span class="fn">dispose</span>(): <span class="type">void</span> {</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="var-name">terminal</span>.<span class="fn">kill</span>();</div>
+      <div class="code-line">    <span class="kw">if</span> (<span class="kw">this</span>.<span class="var-name">collab</span>) <span class="kw">this</span>.<span class="var-name">collab</span>.<span class="fn">disconnect</span>();</div>
+      <div class="code-line">    <span class="kw">this</span>.<span class="fn">removeAllListeners</span>();</div>
+      <div class="code-line">  }</div>
+      <div class="code-line">}</div>
+    </div>
+    <div class="minimap" aria-hidden="true">
+      <div class="minimap-content">
+        <div class="minimap-line"></div>
+        <div class="minimap-line"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line highlight"></div>
+        <div class="minimap-line highlight"></div>
+        <div class="minimap-line highlight"></div>
+        <div class="minimap-line highlight"></div>
+        <div class="minimap-line highlight"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line has-code"></div>
+        <div class="minimap-line"></div>
+        <div class="minimap-line"></div>
+        <div class="minimap-line"></div>
+      </div>
+    </div>
+  </div>
+  <!-- Panel -->
+  <div class="panel" role="region" aria-label="Bottom panel">
+    <div class="panel-tabs" role="tablist">
+      <div class="panel-tab" role="tab">Problems <span class="count error">3</span></div>
+      <div class="panel-tab active" role="tab" aria-selected="true">Terminal</div>
+      <div class="panel-tab" role="tab">Output</div>
+      <div class="panel-tab" role="tab">Debug Console</div>
+      <div class="panel-tab" role="tab">Ports</div>
+    </div>
+    <div class="panel-body" role="tabpanel">
+      <div class="terminal-line"><span class="prompt">❯</span> <span class="cmd">npm run build</span></div>
+      <div class="terminal-line"><span class="info">▸</span> Compiling TypeScript (47 files)...</div>
+      <div class="terminal-line"><span class="success">✓</span> Build successful <span style="color:var(--text-muted)">(2.4s)</span></div>
+      <div class="terminal-line"></div>
+      <div class="terminal-line"><span class="prompt">❯</span> <span class="cmd">npm test</span></div>
+      <div class="terminal-line"><span class="info">▸</span> Running test suite...</div>
+      <div class="terminal-line"><span class="success">✓</span> <span class="var-name">Editor.openFile</span> <span style="color:var(--text-muted)">(12ms)</span></div>
+      <div class="terminal-line"><span class="success">✓</span> <span class="var-name">Editor.save</span> <span style="color:var(--text-muted)">(8ms)</span></div>
+      <div class="terminal-line"><span class="success">✓</span> <span class="var-name">SyntaxHighlighter.tokenize</span> <span style="color:var(--text-muted)">(3ms)</span></div>
+      <div class="terminal-line"><span class="success">✓</span> <span class="var-name">ThemeManager.load</span> <span style="color:var(--text-muted)">(15ms)</span></div>
+      <div class="terminal-line"><span class="error">✗</span> <span class="var-name">AutoComplete.suggest</span> <span style="color:var(--text-muted)">(23ms)</span></div>
+      <div class="terminal-line">  <span class="error">→</span> <span class="path">src/autocomplete.test.ts</span>:<span class="num">142</span> Expected 5 suggestions, got 3</div>
+      <div class="terminal-line"><span class="error">✗</span> <span class="var-name">GitIntegration.diff</span> <span style="color:var(--text-muted)">(45ms)</span></div>
+      <div class="terminal-line">  <span class="error">→</span> <span class="path">src/git.test.ts</span>:<span class="num">89</span> Diff output missing hunks</div>
+      <div class="terminal-line"><span class="error">✗</span> <span class="var-name">UndoStack.redo</span> <span style="color:var(--text-muted)">(5ms)</span></div>
+      <div class="terminal-line">  <span class="error">→</span> <span class="path">src/editor.test.ts</span>:<span class="num">201</span> Cursor position mismatch after redo</div>
+      <div class="terminal-line"></div>
+      <div class="terminal-line"><span style="color:var(--text-muted)">Tests: <span class="error">3 failed</span>, <span class="success">44 passed</span>, 47 total</span></div>
+      <div class="terminal-line"></div>
+      <div class="terminal-line"><span class="prompt">❯</span> █</div>
+    </div>
+  </div>
+
+  <!-- Find Widget -->
+  <div class="find-widget" id="findWidget" role="dialog" aria-label="Find and Replace">
+    <input type="text" placeholder="Find" aria-label="Find" value="render">
+    <span class="count">3 of 12</span>
+    <button title="Previous match">↑</button>
+    <button title="Next match">↓</button>
+    <input type="text" placeholder="Replace" aria-label="Replace">
+    <button title="Replace">Replace</button>
+    <button title="Replace All">All</button>
+    <button title="Close" onclick="document.getElementById('findWidget').classList.remove('visible')">×</button>
+  </div>
+
+  <!-- Status Bar -->
+  <div class="status-bar" role="contentinfo">
+    <div class="item branch">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/></svg>
+      main
+    </div>
+    <div class="item">
+      <span style="color:var(--green)">✓</span> 0
+      <span style="color:var(--coral)">✗</span> 3
+      <span style="color:var(--yellow)">⚠</span> 2
+    </div>
+    <div class="status-right">
+      <div class="item">Ln 33, Col 45</div>
+      <div class="item">Spaces: 2</div>
+      <div class="item">UTF-8</div>
+      <div class="item">LF</div>
+      <div class="item">TypeScript</div>
+      <div class="item">Prettier</div>
+      <div class="item">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        Connected
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Command Palette (hidden) -->
+<div class="find-widget" id="cmdPalette" role="dialog" aria-label="Command palette" style="top:15%;left:50%;transform:translateX(-50%);width:480px;flex-direction:column;align-items:stretch;padding:0">
+  <input type="text" placeholder="Type a command..." aria-label="Command input" style="width:100%;border:none;border-bottom:1px solid var(--border);border-radius:6px 6px 0 0;padding:12px 16px;font-size:0.9375rem">
+  <div style="max-height:280px;overflow-y:auto;padding:8px">
+    <div style="padding:8px 12px;border-radius:6px;font-size:0.875rem;color:var(--text-secondary);cursor:pointer;display:flex"><span>Go to File</span><span style="margin-left:auto;font-size:0.75rem;color:var(--text-muted);background:var(--dark);padding:2px 8px;border-radius:4px">Ctrl+P</span></div>
+    <div style="padding:8px 12px;border-radius:6px;font-size:0.875rem;color:var(--text-secondary);cursor:pointer;display:flex"><span>Go to Symbol</span><span style="margin-left:auto;font-size:0.75rem;color:var(--text-muted);background:var(--dark);padding:2px 8px;border-radius:4px">Ctrl+Shift+O</span></div>
+    <div style="padding:8px 12px;border-radius:6px;font-size:0.875rem;color:var(--text-secondary);cursor:pointer;display:flex"><span>Toggle Terminal</span><span style="margin-left:auto;font-size:0.75rem;color:var(--text-muted);background:var(--dark);padding:2px 8px;border-radius:4px">Ctrl+`</span></div>
+    <div style="padding:8px 12px;border-radius:6px;font-size:0.875rem;color:var(--text-secondary);cursor:pointer;display:flex;background:rgba(79,70,229,0.15)"><span>Format Document</span><span style="margin-left:auto;font-size:0.75rem;color:var(--text-muted);background:var(--dark);padding:2px 8px;border-radius:4px">Shift+Alt+F</span></div>
+    <div style="padding:8px 12px;border-radius:6px;font-size:0.875rem;color:var(--text-secondary);cursor:pointer;display:flex"><span>Change Theme</span><span style="margin-left:auto;font-size:0.75rem;color:var(--text-muted);background:var(--dark);padding:2px 8px;border-radius:4px">Ctrl+K Ctrl+T</span></div>
+    <div style="padding:8px 12px;border-radius:6px;font-size:0.875rem;color:var(--text-secondary);cursor:pointer;display:flex"><span>Toggle Word Wrap</span><span style="margin-left:auto;font-size:0.75rem;color:var(--text-muted);background:var(--dark);padding:2px 8px;border-radius:4px">Alt+Z</span></div>
+    <div style="padding:8px 12px;border-radius:6px;font-size:0.875rem;color:var(--text-secondary);cursor:pointer;display:flex"><span>Run Task</span><span style="margin-left:auto;font-size:0.75rem;color:var(--text-muted);background:var(--dark);padding:2px 8px;border-radius:4px">Ctrl+Shift+B</span></div>
+    <div style="padding:8px 12px;border-radius:6px;font-size:0.875rem;color:var(--text-secondary);cursor:pointer;display:flex"><span>Zen Mode</span><span style="margin-left:auto;font-size:0.75rem;color:var(--text-muted);background:var(--dark);padding:2px 8px;border-radius:4px">Ctrl+K Z</span></div>
+  </div>
+</div>
+
+</body>
+</html>
