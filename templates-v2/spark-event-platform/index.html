@@ -1,0 +1,1381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spark Event Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --indigo: #4F46E5;
+      --cyan: #06B6D4;
+      --lime: #A3E635;
+      --coral: #FB7185;
+      --white: rgba(246, 248, 252, 0.94);
+      --ink-soft: rgba(25, 33, 43, 0.72);
+      --ink-faint: rgba(25, 33, 43, 0.1);
+      --ink-line: rgba(25, 33, 43, 0.16);
+      --indigo-soft: rgba(79, 70, 229, 0.12);
+      --cyan-soft: rgba(6, 182, 212, 0.14);
+      --lime-soft: rgba(163, 230, 53, 0.2);
+      --coral-soft: rgba(251, 113, 133, 0.18);
+      --shadow: 0 24px 60px rgba(25, 33, 43, 0.12);
+      --radius: 8px;
+      --font-heading: "Manrope", sans-serif;
+      --font-ui: "Inter", sans-serif;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--cloud);
+      color: var(--ink);
+      font-family: var(--font-ui);
+      line-height: 1.5;
+    }
+    body.drawer-open {
+      overflow: hidden;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    button,
+    input {
+      font: inherit;
+    }
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+    img {
+      max-width: 100%;
+    }
+    .page-shell {
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .container {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto;
+    }
+    .skip-link {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 100;
+      padding: 10px 14px;
+      background: var(--ink);
+      color: var(--cloud);
+      border-radius: var(--radius);
+      transform: translateY(-140%);
+      transition: transform 180ms ease;
+    }
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+    :focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 3px;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(246, 248, 252, 0.88);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--ink-faint);
+    }
+    .nav {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-heading);
+      font-weight: 800;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius);
+      background:
+        linear-gradient(135deg, var(--indigo), var(--cyan));
+      position: relative;
+      box-shadow: 0 12px 28px rgba(79, 70, 229, 0.28);
+    }
+    .brand-mark::after {
+      content: "";
+      position: absolute;
+      inset: 9px;
+      border-radius: 50%;
+      background: var(--lime);
+      box-shadow: 0 0 0 5px rgba(163, 230, 53, 0.18);
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: auto;
+    }
+    .nav-link {
+      padding: 10px 12px;
+      color: var(--ink-soft);
+      border-radius: var(--radius);
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .nav-link:hover {
+      color: var(--ink);
+      background: var(--ink-faint);
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .search-wrap {
+      position: relative;
+      width: 210px;
+    }
+    .search-wrap svg {
+      position: absolute;
+      top: 50%;
+      left: 12px;
+      width: 17px;
+      height: 17px;
+      transform: translateY(-50%);
+      color: var(--ink-soft);
+    }
+    .search-input {
+      width: 100%;
+      height: 42px;
+      padding: 0 12px 0 38px;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      color: var(--ink);
+      background: rgba(246, 248, 252, 0.84);
+    }
+    .search-input::selection {
+      background: var(--cyan-soft);
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 42px;
+      padding: 0 16px;
+      border-radius: var(--radius);
+      font-weight: 800;
+      transition:
+        transform 160ms ease,
+        box-shadow 160ms ease,
+        background 160ms ease;
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+    .btn-primary {
+      background: var(--indigo);
+      color: var(--cloud);
+      box-shadow: 0 16px 30px rgba(79, 70, 229, 0.24);
+    }
+    .btn-ink {
+      background: var(--ink);
+      color: var(--cloud);
+    }
+    .btn-soft {
+      background: var(--indigo-soft);
+      color: var(--indigo);
+    }
+    .icon-btn {
+      width: 44px;
+      height: 44px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--cloud);
+    }
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 80;
+      width: min(86vw, 360px);
+      height: 100vh;
+      padding: 24px;
+      background: var(--ink);
+      color: var(--cloud);
+      transform: translateX(100%);
+      transition: transform 220ms ease;
+      box-shadow: -30px 0 70px rgba(25, 33, 43, 0.28);
+    }
+    .drawer.is-open {
+      transform: translateX(0);
+    }
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .drawer-close {
+      width: 42px;
+      height: 42px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius);
+      color: var(--cloud);
+      background: rgba(246, 248, 252, 0.12);
+    }
+    .drawer-links {
+      display: grid;
+      gap: 8px;
+      margin: 28px 0;
+    }
+    .drawer-links a {
+      padding: 14px 12px;
+      border-radius: var(--radius);
+      color: rgba(246, 248, 252, 0.84);
+      font-weight: 800;
+      background: rgba(246, 248, 252, 0.07);
+    }
+    .drawer .search-input {
+      background: rgba(246, 248, 252, 0.12);
+      color: var(--cloud);
+      border-color: rgba(246, 248, 252, 0.2);
+    }
+    .scrim {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      background: rgba(25, 33, 43, 0.45);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms ease;
+    }
+    .scrim.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .hero {
+      padding: 46px 0 34px;
+    }
+    .hero-banner {
+      min-height: 520px;
+      display: grid;
+      align-items: end;
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: relative;
+      background:
+        radial-gradient(circle at 78% 18%, rgba(6, 182, 212, 0.52), transparent 28%),
+        radial-gradient(circle at 24% 28%, rgba(163, 230, 53, 0.34), transparent 26%),
+        linear-gradient(135deg, var(--ink) 0%, var(--indigo) 58%, var(--cyan) 100%);
+      box-shadow: var(--shadow);
+    }
+    .hero-banner::before {
+      content: "";
+      position: absolute;
+      inset: 28px;
+      border: 1px solid rgba(246, 248, 252, 0.2);
+      border-radius: var(--radius);
+      pointer-events: none;
+    }
+    .hero-grid {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 28px;
+      padding: 56px;
+      color: var(--cloud);
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      padding: 8px 10px;
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.14);
+      color: rgba(246, 248, 252, 0.9);
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .live-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 0 7px rgba(6, 182, 212, 0.2);
+    }
+    .hero h1 {
+      max-width: 760px;
+      margin: 18px 0 16px;
+      font-family: var(--font-heading);
+      font-size: clamp(42px, 7vw, 86px);
+      line-height: 0.95;
+      letter-spacing: 0;
+    }
+    .hero-copy {
+      max-width: 650px;
+      margin: 0 0 26px;
+      color: rgba(246, 248, 252, 0.82);
+      font-size: 18px;
+    }
+    .hero-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 26px;
+    }
+    .meta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 38px;
+      padding: 0 12px;
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.16);
+      color: var(--cloud);
+      font-weight: 800;
+    }
+    .hero-panel {
+      align-self: end;
+      padding: 22px;
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.13);
+      border: 1px solid rgba(246, 248, 252, 0.22);
+      backdrop-filter: blur(18px);
+    }
+    .hero-panel h2 {
+      margin: 0 0 14px;
+      font-family: var(--font-heading);
+      font-size: 22px;
+    }
+    .pulse-list {
+      display: grid;
+      gap: 12px;
+    }
+    .pulse-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px;
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.11);
+    }
+    .pulse-item span {
+      color: rgba(246, 248, 252, 0.74);
+      font-size: 13px;
+    }
+    .pulse-item strong {
+      font-family: var(--font-heading);
+      font-size: 20px;
+    }
+    .section {
+      padding: 44px 0;
+    }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 22px;
+    }
+    .section-kicker {
+      margin: 0 0 6px;
+      color: var(--indigo);
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .section h2 {
+      margin: 0;
+      font-family: var(--font-heading);
+      font-size: clamp(28px, 4vw, 44px);
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+    .section-copy {
+      max-width: 520px;
+      margin: 8px 0 0;
+      color: var(--ink-soft);
+    }
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .filter-btn,
+    .tab-btn {
+      min-height: 38px;
+      padding: 0 13px;
+      border-radius: var(--radius);
+      color: var(--ink-soft);
+      background: rgba(25, 33, 43, 0.06);
+      font-weight: 800;
+    }
+    .filter-btn.is-active,
+    .tab-btn.is-active {
+      color: var(--cloud);
+      background: var(--ink);
+    }
+    .events-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .event-card,
+    .speaker-card,
+    .ticket-card {
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.76);
+      box-shadow: 0 18px 38px rgba(25, 33, 43, 0.07);
+    }
+    .event-card {
+      display: grid;
+      grid-template-columns: 76px 1fr;
+      gap: 16px;
+      padding: 18px;
+    }
+    .date-badge {
+      height: 76px;
+      display: grid;
+      place-items: center;
+      border-radius: var(--radius);
+      color: var(--cloud);
+      background: var(--ink);
+      text-align: center;
+      font-weight: 800;
+    }
+    .date-badge span {
+      display: block;
+      color: rgba(246, 248, 252, 0.72);
+      font-size: 12px;
+      text-transform: uppercase;
+    }
+    .event-card h3 {
+      margin: 0 0 8px;
+      font-family: var(--font-heading);
+      font-size: 20px;
+      line-height: 1.15;
+    }
+    .event-meta {
+      display: grid;
+      gap: 5px;
+      color: var(--ink-soft);
+      font-size: 14px;
+    }
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 0 9px;
+      border-radius: var(--radius);
+      background: var(--indigo-soft);
+      color: var(--indigo);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .tag.cyan {
+      background: var(--cyan-soft);
+      color: var(--ink);
+    }
+    .tag.lime {
+      background: var(--lime-soft);
+      color: var(--ink);
+    }
+    .tag.coral {
+      background: var(--coral-soft);
+      color: var(--ink);
+    }
+    .speaker-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .speaker-card {
+      padding: 18px;
+    }
+    .avatar {
+      width: 76px;
+      height: 76px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 16px;
+      border-radius: 50%;
+      color: var(--cloud);
+      background:
+        linear-gradient(135deg, var(--indigo), var(--cyan));
+      font-family: var(--font-heading);
+      font-size: 24px;
+      font-weight: 800;
+    }
+    .avatar.alt {
+      background:
+        linear-gradient(135deg, var(--ink), var(--indigo));
+    }
+    .avatar.warm {
+      background:
+        linear-gradient(135deg, var(--coral), var(--indigo));
+    }
+    .speaker-card h3 {
+      margin: 0;
+      font-family: var(--font-heading);
+      font-size: 20px;
+    }
+    .speaker-title {
+      margin: 4px 0 12px;
+      color: var(--ink-soft);
+      font-size: 14px;
+    }
+    .talk-topic {
+      margin: 0 0 16px;
+      color: var(--ink);
+      font-weight: 700;
+    }
+    .socials {
+      display: flex;
+      gap: 8px;
+    }
+    .socials a {
+      width: 34px;
+      height: 34px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius);
+      background: var(--ink-faint);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .schedule-shell {
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      gap: 18px;
+      align-items: start;
+    }
+    .day-tabs {
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.78);
+    }
+    .tab-btn {
+      justify-content: flex-start;
+      width: 100%;
+      text-align: left;
+    }
+    .session-list {
+      display: grid;
+      gap: 12px;
+    }
+    .session-card {
+      display: grid;
+      grid-template-columns: 120px 1fr auto;
+      gap: 18px;
+      align-items: center;
+      padding: 18px;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.84);
+    }
+    .session-time {
+      color: var(--indigo);
+      font-family: var(--font-heading);
+      font-weight: 800;
+    }
+    .session-card h3 {
+      margin: 0 0 4px;
+      font-family: var(--font-heading);
+      font-size: 18px;
+    }
+    .session-card p {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 14px;
+    }
+    .tickets-band {
+      background: var(--ink);
+      color: var(--cloud);
+      padding: 54px 0;
+    }
+    .tickets-band .section-kicker {
+      color: var(--cyan);
+    }
+    .tickets-band .section-copy {
+      color: rgba(246, 248, 252, 0.74);
+    }
+    .ticket-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .ticket-card {
+      padding: 22px;
+      background: rgba(246, 248, 252, 0.08);
+      border-color: rgba(246, 248, 252, 0.16);
+      color: var(--cloud);
+    }
+    .ticket-card.featured {
+      background:
+        linear-gradient(135deg, rgba(79, 70, 229, 0.42), rgba(6, 182, 212, 0.18));
+      border-color: rgba(6, 182, 212, 0.42);
+    }
+    .ticket-card h3 {
+      margin: 0 0 8px;
+      font-family: var(--font-heading);
+      font-size: 24px;
+    }
+    .price {
+      margin: 0 0 16px;
+      font-family: var(--font-heading);
+      font-size: 44px;
+      font-weight: 800;
+    }
+    .price span {
+      color: rgba(246, 248, 252, 0.62);
+      font-size: 15px;
+      font-family: var(--font-ui);
+    }
+    .includes {
+      display: grid;
+      gap: 10px;
+      margin: 18px 0 22px;
+      padding: 0;
+      list-style: none;
+    }
+    .includes li {
+      display: flex;
+      gap: 10px;
+      color: rgba(246, 248, 252, 0.82);
+    }
+    .includes li::before {
+      content: "";
+      width: 10px;
+      height: 10px;
+      flex: 0 0 auto;
+      margin-top: 7px;
+      border-radius: 50%;
+      background: var(--lime);
+    }
+    .venue-layout {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 18px;
+      align-items: start;
+    }
+    .floor-plan {
+      min-height: 430px;
+      display: grid;
+      grid-template-columns: 1fr 0.72fr 0.9fr;
+      grid-template-rows: 1fr 1fr 0.78fr;
+      gap: 10px;
+      padding: 16px;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(90deg, rgba(25, 33, 43, 0.05) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(25, 33, 43, 0.05) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+    .room {
+      position: relative;
+      display: flex;
+      align-items: end;
+      padding: 14px;
+      border: 2px solid rgba(25, 33, 43, 0.22);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.72);
+      font-weight: 800;
+    }
+    .room.main {
+      grid-row: span 2;
+      background: var(--indigo-soft);
+      border-color: rgba(79, 70, 229, 0.42);
+    }
+    .room.stage {
+      background: var(--cyan-soft);
+      border-color: rgba(6, 182, 212, 0.42);
+    }
+    .room.lounge {
+      background: var(--lime-soft);
+      border-color: rgba(163, 230, 53, 0.5);
+    }
+    .room.alert {
+      background: var(--coral-soft);
+      border-color: rgba(251, 113, 133, 0.5);
+    }
+    .marker {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 0 7px rgba(6, 182, 212, 0.18);
+    }
+    .marker.lime {
+      background: var(--lime);
+      box-shadow: 0 0 0 7px rgba(163, 230, 53, 0.2);
+    }
+    .marker.coral {
+      background: var(--coral);
+      box-shadow: 0 0 0 7px rgba(251, 113, 133, 0.18);
+    }
+    .venue-side {
+      display: grid;
+      gap: 12px;
+    }
+    .venue-note {
+      padding: 16px;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.8);
+    }
+    .venue-note h3 {
+      margin: 0 0 8px;
+      font-family: var(--font-heading);
+    }
+    .venue-note p {
+      margin: 0;
+      color: var(--ink-soft);
+    }
+    .site-footer {
+      padding: 32px 0 42px;
+      border-top: 1px solid var(--ink-line);
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      color: var(--ink-soft);
+      font-weight: 700;
+    }
+    .footer-links {
+      display: flex;
+      gap: 14px;
+    }
+    [hidden] {
+      display: none !important;
+    }
+    @media (max-width: 1040px) {
+      .nav-links,
+      .nav-actions {
+        display: none;
+      }
+      .icon-btn {
+        display: inline-flex;
+        margin-left: auto;
+      }
+      .hero-grid,
+      .venue-layout {
+        grid-template-columns: 1fr;
+      }
+      .events-grid,
+      .ticket-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .speaker-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 760px) {
+      .container {
+        width: min(100% - 28px, 1180px);
+      }
+      .nav {
+        height: 66px;
+      }
+      .hero {
+        padding-top: 24px;
+      }
+      .hero-banner {
+        min-height: auto;
+      }
+      .hero-grid {
+        padding: 28px;
+      }
+      .hero h1 {
+        font-size: 44px;
+      }
+      .section-head {
+        display: grid;
+      }
+      .events-grid,
+      .speaker-grid,
+      .ticket-grid {
+        grid-template-columns: 1fr;
+      }
+      .schedule-shell {
+        grid-template-columns: 1fr;
+      }
+      .day-tabs {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+      .session-card {
+        grid-template-columns: 1fr;
+      }
+      .floor-plan {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: repeat(4, 120px);
+      }
+      .room.main {
+        grid-row: span 1;
+      }
+      .footer-inner {
+        display: grid;
+      }
+    }
+    @media (max-width: 460px) {
+      .hero-grid {
+        padding: 22px;
+      }
+      .hero h1 {
+        font-size: 38px;
+      }
+      .event-card {
+        grid-template-columns: 1fr;
+      }
+      .day-tabs {
+        grid-template-columns: 1fr;
+      }
+      .floor-plan {
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(6, 108px);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <div class="page-shell">
+    <header class="topbar">
+      <nav class="nav container" aria-label="Primary navigation">
+        <a class="brand" href="#top" aria-label="Spark Event Platform home">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>Spark Event Platform</span>
+        </a>
+        <div class="nav-links" aria-label="Event sections">
+          <a class="nav-link" href="#events">Events</a>
+          <a class="nav-link" href="#speakers">Speakers</a>
+          <a class="nav-link" href="#schedule">Schedule</a>
+          <a class="nav-link" href="#tickets">Tickets</a>
+          <a class="nav-link" href="#venues">Venues</a>
+        </div>
+        <div class="nav-actions">
+          <label class="search-wrap" aria-label="Search events">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path fill="currentColor" d="M9.8 4a5.8 5.8 0 0 1 4.58 9.36l4.13 4.13-1.42 1.42-4.13-4.13A5.8 5.8 0 1 1 9.8 4Zm0 2a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6Z"/>
+            </svg>
+            <input class="search-input" type="search" aria-label="Search by event, speaker, or city">
+          </label>
+          <a class="btn btn-primary" href="#tickets">Create Event</a>
+        </div>
+        <button class="icon-btn" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-drawer" data-open-drawer>
+          <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="M4 6h16v2H4V6Zm0 5h16v2H4v-2Zm0 5h16v2H4v-2Z"/>
+          </svg>
+        </button>
+      </nav>
+    </header>
+    <div class="scrim" data-scrim></div>
+    <aside class="drawer" id="mobile-drawer" aria-label="Mobile navigation" aria-hidden="true">
+      <div class="drawer-head">
+        <a class="brand" href="#top">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span>Spark</span>
+        </a>
+        <button class="drawer-close" type="button" aria-label="Close menu" data-close-drawer>
+          <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+            <path fill="currentColor" d="m6.4 5 5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6L6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5Z"/>
+          </svg>
+        </button>
+      </div>
+      <div class="drawer-links">
+        <a href="#events">Events</a>
+        <a href="#speakers">Speakers</a>
+        <a href="#schedule">Schedule</a>
+        <a href="#tickets">Tickets</a>
+        <a href="#venues">Venues</a>
+      </div>
+      <label class="search-wrap" aria-label="Search from mobile menu">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path fill="currentColor" d="M9.8 4a5.8 5.8 0 0 1 4.58 9.36l4.13 4.13-1.42 1.42-4.13-4.13A5.8 5.8 0 1 1 9.8 4Zm0 2a3.8 3.8 0 1 0 0 7.6 3.8 3.8 0 0 0 0-7.6Z"/>
+        </svg>
+        <input class="search-input" type="search" aria-label="Search mobile events">
+      </label>
+      <a class="btn btn-primary" href="#tickets">Create Event</a>
+    </aside>
+    <main id="main" tabindex="-1">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="container">
+          <div class="hero-banner">
+            <div class="hero-grid">
+              <div>
+                <span class="eyebrow"><span class="live-dot" aria-hidden="true"></span>Featured flagship</span>
+                <h1 id="hero-title">Northstar Summit 2026</h1>
+                <p class="hero-copy">Three days of product strategy, AI operations, and community-led sessions for teams building the next generation of event experiences.</p>
+                <div class="hero-meta" aria-label="Featured event details">
+                  <span class="meta-pill">June 18-20, 2026</span>
+                  <span class="meta-pill">Pier 48, San Francisco</span>
+                  <span class="meta-pill">Hybrid broadcast</span>
+                </div>
+                <a class="btn btn-primary" href="#tickets">Get Tickets</a>
+              </div>
+              <aside class="hero-panel" aria-label="Event operations pulse">
+                <h2>Sales pulse</h2>
+                <div class="pulse-list">
+                  <div class="pulse-item">
+                    <span>Tickets sold</span>
+                    <strong>4,812</strong>
+                  </div>
+                  <div class="pulse-item">
+                    <span>Check-in capacity</span>
+                    <strong>92%</strong>
+                  </div>
+                  <div class="pulse-item">
+                    <span>Rooms on track</span>
+                    <strong>18</strong>
+                  </div>
+                </div>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="events" aria-labelledby="events-title">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <p class="section-kicker">Event listings</p>
+              <h2 id="events-title">Curated programs ready for launch</h2>
+              <p class="section-copy">Filter high-performing event formats by audience, venue, ticket stage, and operational needs.</p>
+            </div>
+            <div class="filter-row" aria-label="Filter events by type">
+              <button class="filter-btn is-active" type="button" data-filter="all">All</button>
+              <button class="filter-btn" type="button" data-filter="conference">Conference</button>
+              <button class="filter-btn" type="button" data-filter="workshop">Workshop</button>
+              <button class="filter-btn" type="button" data-filter="festival">Festival</button>
+            </div>
+          </div>
+          <div class="events-grid" data-events-grid>
+            <article class="event-card" data-type="conference">
+              <div class="date-badge"><div><span>Jun</span>18</div></div>
+              <div>
+                <h3>Northstar Summit</h3>
+                <div class="event-meta">
+                  <span>Pier 48 Main Hall</span>
+                  <span>Product leaders and AI operators</span>
+                </div>
+                <div class="tag-row">
+                  <span class="tag">Conference</span>
+                  <span class="tag lime">Selling fast</span>
+                </div>
+              </div>
+            </article>
+            <article class="event-card" data-type="workshop">
+              <div class="date-badge"><div><span>Jul</span>07</div></div>
+              <div>
+                <h3>Registration Lab</h3>
+                <div class="event-meta">
+                  <span>Canal Workshop Studio</span>
+                  <span>Hands-on ticketing workflow clinic</span>
+                </div>
+                <div class="tag-row">
+                  <span class="tag cyan">Workshop</span>
+                  <span class="tag">Open seats</span>
+                </div>
+              </div>
+            </article>
+            <article class="event-card" data-type="festival">
+              <div class="date-badge"><div><span>Aug</span>12</div></div>
+              <div>
+                <h3>City Lights Weekender</h3>
+                <div class="event-meta">
+                  <span>Riverside Grounds</span>
+                  <span>Music, food, creators, and maker booths</span>
+                </div>
+                <div class="tag-row">
+                  <span class="tag coral">Festival</span>
+                  <span class="tag lime">On sale</span>
+                </div>
+              </div>
+            </article>
+            <article class="event-card" data-type="conference">
+              <div class="date-badge"><div><span>Sep</span>04</div></div>
+              <div>
+                <h3>VenueOps Exchange</h3>
+                <div class="event-meta">
+                  <span>Monarch Convention Center</span>
+                  <span>Facilities, staffing, maps, and safety teams</span>
+                </div>
+                <div class="tag-row">
+                  <span class="tag">Conference</span>
+                  <span class="tag cyan">Live build</span>
+                </div>
+              </div>
+            </article>
+            <article class="event-card" data-type="workshop">
+              <div class="date-badge"><div><span>Oct</span>16</div></div>
+              <div>
+                <h3>Sponsor Studio</h3>
+                <div class="event-meta">
+                  <span>Foundry Room B</span>
+                  <span>Partner inventory and activation design</span>
+                </div>
+                <div class="tag-row">
+                  <span class="tag cyan">Workshop</span>
+                  <span class="tag coral">Few left</span>
+                </div>
+              </div>
+            </article>
+            <article class="event-card" data-type="festival">
+              <div class="date-badge"><div><span>Nov</span>03</div></div>
+              <div>
+                <h3>Maker Market Live</h3>
+                <div class="event-meta">
+                  <span>Station District</span>
+                  <span>Retail pop-ups with staged demos</span>
+                </div>
+                <div class="tag-row">
+                  <span class="tag coral">Festival</span>
+                  <span class="tag">Draft pricing</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="speakers" aria-labelledby="speakers-title">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <p class="section-kicker">Speaker lineup</p>
+              <h2 id="speakers-title">Expert voices across every stage</h2>
+              <p class="section-copy">Showcase keynote talent, workshop hosts, and operators with clear session ownership.</p>
+            </div>
+          </div>
+          <div class="speaker-grid">
+            <article class="speaker-card">
+              <div class="avatar" aria-hidden="true">AM</div>
+              <h3>Avery Monroe</h3>
+              <p class="speaker-title">Chief Experience Officer, Lumina</p>
+              <p class="talk-topic">Designing event journeys that convert intent into attendance</p>
+              <div class="socials" aria-label="Avery Monroe social links">
+                <a href="#" aria-label="Avery Monroe profile">In</a>
+                <a href="#" aria-label="Avery Monroe posts">X</a>
+              </div>
+            </article>
+            <article class="speaker-card">
+              <div class="avatar alt" aria-hidden="true">RK</div>
+              <h3>Rohan Kade</h3>
+              <p class="speaker-title">Venue Systems Lead, Atlas Hall</p>
+              <p class="talk-topic">Mapping crowd movement from check-in to closing keynote</p>
+              <div class="socials" aria-label="Rohan Kade social links">
+                <a href="#" aria-label="Rohan Kade profile">In</a>
+                <a href="#" aria-label="Rohan Kade posts">X</a>
+              </div>
+            </article>
+            <article class="speaker-card">
+              <div class="avatar warm" aria-hidden="true">SN</div>
+              <h3>Sofia Neri</h3>
+              <p class="speaker-title">Founder, Signal Queue</p>
+              <p class="talk-topic">Live indicators for sales risk, room health, and sponsor success</p>
+              <div class="socials" aria-label="Sofia Neri social links">
+                <a href="#" aria-label="Sofia Neri profile">In</a>
+                <a href="#" aria-label="Sofia Neri posts">X</a>
+              </div>
+            </article>
+            <article class="speaker-card">
+              <div class="avatar" aria-hidden="true">JT</div>
+              <h3>Jules Tan</h3>
+              <p class="speaker-title">Community Director, Fieldday</p>
+              <p class="talk-topic">Programming sponsor moments without breaking the audience flow</p>
+              <div class="socials" aria-label="Jules Tan social links">
+                <a href="#" aria-label="Jules Tan profile">In</a>
+                <a href="#" aria-label="Jules Tan posts">X</a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="schedule" aria-labelledby="schedule-title">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <p class="section-kicker">Schedule builder</p>
+              <h2 id="schedule-title">Plan each track with room-aware sessions</h2>
+              <p class="section-copy">Switch between days and keep key timing, speaker, room, and track details visible.</p>
+            </div>
+          </div>
+          <div class="schedule-shell">
+            <div class="day-tabs" role="tablist" aria-label="Schedule days">
+              <button class="tab-btn is-active" type="button" role="tab" aria-selected="true" aria-controls="day-one" id="tab-one" data-day="day-one">Day 1</button>
+              <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="day-two" id="tab-two" data-day="day-two">Day 2</button>
+              <button class="tab-btn" type="button" role="tab" aria-selected="false" aria-controls="day-three" id="tab-three" data-day="day-three">Day 3</button>
+            </div>
+            <div>
+              <div class="session-list" id="day-one" role="tabpanel" aria-labelledby="tab-one">
+                <article class="session-card">
+                  <div class="session-time">09:00</div>
+                  <div>
+                    <h3>Opening keynote: The ticketing flywheel</h3>
+                    <p>Avery Monroe · Main Stage</p>
+                  </div>
+                  <span class="tag lime">Strategy</span>
+                </article>
+                <article class="session-card">
+                  <div class="session-time">11:15</div>
+                  <div>
+                    <h3>Capacity modeling for flexible venues</h3>
+                    <p>Rohan Kade · Room Delta</p>
+                  </div>
+                  <span class="tag cyan">Venue</span>
+                </article>
+                <article class="session-card">
+                  <div class="session-time">14:30</div>
+                  <div>
+                    <h3>Sponsor moments that feel native</h3>
+                    <p>Jules Tan · Partner Lab</p>
+                  </div>
+                  <span class="tag">Revenue</span>
+                </article>
+              </div>
+              <div class="session-list" id="day-two" role="tabpanel" aria-labelledby="tab-two" hidden>
+                <article class="session-card">
+                  <div class="session-time">10:00</div>
+                  <div>
+                    <h3>Live control rooms for event teams</h3>
+                    <p>Sofia Neri · Main Stage</p>
+                  </div>
+                  <span class="tag coral">Ops</span>
+                </article>
+                <article class="session-card">
+                  <div class="session-time">13:15</div>
+                  <div>
+                    <h3>Registration desk recovery patterns</h3>
+                    <p>Avery Monroe · Check-in Studio</p>
+                  </div>
+                  <span class="tag cyan">Service</span>
+                </article>
+              </div>
+              <div class="session-list" id="day-three" role="tabpanel" aria-labelledby="tab-three" hidden>
+                <article class="session-card">
+                  <div class="session-time">09:45</div>
+                  <div>
+                    <h3>Community-led closing sessions</h3>
+                    <p>Jules Tan · Forum Hall</p>
+                  </div>
+                  <span class="tag lime">Community</span>
+                </article>
+                <article class="session-card">
+                  <div class="session-time">12:30</div>
+                  <div>
+                    <h3>Post-event revenue reporting</h3>
+                    <p>Sofia Neri · Room Delta</p>
+                  </div>
+                  <span class="tag">Analytics</span>
+                </article>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="tickets-band" id="tickets" aria-labelledby="tickets-title">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <p class="section-kicker">Ticket sales</p>
+              <h2 id="tickets-title">Pricing tiers for every attendee path</h2>
+              <p class="section-copy">Promote scarcity, VIP value, and team access with direct purchase actions.</p>
+            </div>
+          </div>
+          <div class="ticket-grid">
+            <article class="ticket-card">
+              <h3>Early Bird</h3>
+              <p class="price">$249 <span>until June 1</span></p>
+              <ul class="includes">
+                <li>All keynote sessions</li>
+                <li>Expo floor access</li>
+                <li>Digital session archive</li>
+              </ul>
+              <a class="btn btn-soft" href="#tickets">Buy Early Bird</a>
+            </article>
+            <article class="ticket-card featured">
+              <h3>Regular</h3>
+              <p class="price">$399 <span>standard pass</span></p>
+              <ul class="includes">
+                <li>All stages and workshops</li>
+                <li>Community breakfast</li>
+                <li>Reserved keynote seating</li>
+              </ul>
+              <a class="btn btn-primary" href="#tickets">Buy Regular</a>
+            </article>
+            <article class="ticket-card">
+              <h3>VIP</h3>
+              <p class="price">$899 <span>limited access</span></p>
+              <ul class="includes">
+                <li>Speaker lounge entry</li>
+                <li>Private venue tour</li>
+                <li>Priority support desk</li>
+              </ul>
+              <a class="btn btn-soft" href="#tickets">Buy VIP</a>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="venues" aria-labelledby="venues-title">
+        <div class="container">
+          <div class="section-head">
+            <div>
+              <p class="section-kicker">Venue map</p>
+              <h2 id="venues-title">Floor plan with live session markers</h2>
+              <p class="section-copy">Keep rooms, lounges, partner areas, and check-in zones visible for planners and attendees.</p>
+            </div>
+          </div>
+          <div class="venue-layout">
+            <div class="floor-plan" aria-label="Simplified venue floor plan">
+              <div class="room main">Main Stage<span class="marker" aria-hidden="true"></span></div>
+              <div class="room stage">Room Delta<span class="marker lime" aria-hidden="true"></span></div>
+              <div class="room lounge">Speaker Lounge</div>
+              <div class="room">Expo Hall<span class="marker" aria-hidden="true"></span></div>
+              <div class="room alert">Check-in Desk<span class="marker coral" aria-hidden="true"></span></div>
+              <div class="room">Partner Lab</div>
+              <div class="room lounge">Cafe Terrace</div>
+            </div>
+            <aside class="venue-side" aria-label="Venue notes">
+              <div class="venue-note">
+                <h3>Session markers</h3>
+                <p>Cyan markers show active talks, lime marks ready rooms, and coral flags high-attention arrival zones.</p>
+              </div>
+              <div class="venue-note">
+                <h3>Flow status</h3>
+                <p>Main Stage doors open at 08:30 with a separate VIP lane beside the Speaker Lounge.</p>
+              </div>
+              <div class="venue-note">
+                <h3>Staffing cue</h3>
+                <p>Check-in Desk needs two additional scanners during the first keynote rush.</p>
+              </div>
+            </aside>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>Spark Event Platform — designed by North Pier Studio.</p>
+        <div class="footer-links" aria-label="Footer links">
+          <a href="#events">Events</a>
+          <a href="#schedule">Schedule</a>
+          <a href="#tickets">Tickets</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <script>
+    const body = document.body;
+    const drawer = document.querySelector("[data-open-drawer]");
+    const closeDrawer = document.querySelector("[data-close-drawer]");
+    const mobilePanel = document.querySelector("#mobile-drawer");
+    const scrim = document.querySelector("[data-scrim]");
+    const drawerLinks = mobilePanel.querySelectorAll("a");
+    function setDrawer(open) {
+      body.classList.toggle("drawer-open", open);
+      mobilePanel.classList.toggle("is-open", open);
+      scrim.classList.toggle("is-open", open);
+      mobilePanel.setAttribute("aria-hidden", String(!open));
+      drawer.setAttribute("aria-expanded", String(open));
+      if (open) {
+        closeDrawer.focus();
+      } else {
+        drawer.focus();
+      }
+    }
+    drawer.addEventListener("click", () => setDrawer(true));
+    closeDrawer.addEventListener("click", () => setDrawer(false));
+    scrim.addEventListener("click", () => setDrawer(false));
+    drawerLinks.forEach((link) => {
+      link.addEventListener("click", () => setDrawer(false));
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && mobilePanel.classList.contains("is-open")) {
+        setDrawer(false);
+      }
+    });
+    const filters = document.querySelectorAll("[data-filter]");
+    const cards = document.querySelectorAll("[data-type]");
+    filters.forEach((filter) => {
+      filter.addEventListener("click", () => {
+        const type = filter.dataset.filter;
+        filters.forEach((item) => item.classList.remove("is-active"));
+        filter.classList.add("is-active");
+        cards.forEach((card) => {
+          const visible = type === "all" || card.dataset.type === type;
+          card.hidden = !visible;
+        });
+      });
+    });
+    const tabs = document.querySelectorAll("[data-day]");
+    const panels = document.querySelectorAll("[role='tabpanel']");
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        tabs.forEach((item) => {
+          item.classList.remove("is-active");
+          item.setAttribute("aria-selected", "false");
+        });
+        panels.forEach((panel) => {
+          panel.hidden = panel.id !== tab.dataset.day;
+        });
+        tab.classList.add("is-active");
+        tab.setAttribute("aria-selected", "true");
+      });
+    });
+  </script>
+</body>
+</html>
