@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cortex Knowledge Base</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--cloud:#F6F8FC;--cloud-96:rgba(246,248,252,0.96);--cloud-84:rgba(246,248,252,0.84);--cloud-64:rgba(246,248,252,0.64);--cloud-34:rgba(246,248,252,0.34);--ink:#19212B;--ink-92:rgba(25,33,43,0.92);--ink-76:rgba(25,33,43,0.76);--ink-62:rgba(25,33,43,0.62);--ink-46:rgba(25,33,43,0.46);--ink-22:rgba(25,33,43,0.22);--ink-12:rgba(25,33,43,0.12);--ink-08:rgba(25,33,43,0.08);--ink-05:rgba(25,33,43,0.05);--indigo:#4F46E5;--indigo-88:rgba(79,70,229,0.88);--indigo-34:rgba(79,70,229,0.34);--indigo-18:rgba(79,70,229,0.18);--indigo-10:rgba(79,70,229,0.10);--cyan:#06B6D4;--cyan-84:rgba(6,182,212,0.84);--cyan-28:rgba(6,182,212,0.28);--cyan-16:rgba(6,182,212,0.16);--lime:#A3E635;--lime-84:rgba(163,230,53,0.84);--lime-34:rgba(163,230,53,0.34);--lime-18:rgba(163,230,53,0.18);--coral:#FB7185;--coral-84:rgba(251,113,133,0.84);--coral-30:rgba(251,113,133,0.30);--coral-16:rgba(251,113,133,0.16);--shadow:0 24px 70px rgba(25,33,43,0.13);--radius:8px;--max:1240px}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;color:var(--ink);background:radial-gradient(circle at 12% 4%,var(--cyan-16),transparent 29rem),radial-gradient(circle at 84% 0,var(--indigo-18),transparent 31rem),linear-gradient(180deg,var(--cloud),var(--cloud));font-family:"Inter",system-ui,sans-serif;line-height:1.5}
+    body.drawer-open{overflow:hidden}
+    a{color:inherit;text-decoration:none}
+    button,input{font:inherit}
+    button{cursor:pointer}
+    :focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+    .page{min-height:100vh;overflow:hidden}
+    .topbar{position:sticky;top:0;z-index:60;border-bottom:1px solid var(--ink-08);background:var(--cloud-96);backdrop-filter:blur(18px)}
+    .nav-inner{width:min(100% - 32px,var(--max));min-height:76px;margin:0 auto;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px}
+    .brand{display:inline-flex;align-items:center;gap:10px;font-family:"Manrope",sans-serif;font-weight:800;letter-spacing:0;white-space:nowrap}
+    .brand-mark{width:38px;height:38px;display:grid;place-items:center;border-radius:var(--radius);color:var(--cloud);background:linear-gradient(135deg,var(--indigo),var(--cyan));box-shadow:0 14px 34px var(--indigo-34)}
+    .brand-mark span{width:17px;height:17px;border:3px solid var(--cloud);border-radius:6px;box-shadow:inset 0 0 0 3px var(--cloud-34)}
+    .nav-links{display:flex;align-items:center;justify-content:center;gap:6px}
+    .nav-links a{padding:9px 12px;border-radius:var(--radius);color:var(--ink-76);font-size:14px;font-weight:700}
+    .nav-links a:hover{color:var(--ink);background:var(--ink-05)}
+    .nav-actions{display:flex;align-items:center;justify-content:flex-end;gap:12px}
+    .nav-search{width:min(30vw,300px);min-width:210px;display:flex;align-items:center;gap:8px;padding:10px 12px;border:1px solid var(--ink-12);border-radius:var(--radius);background:var(--cloud)}
+    .nav-search input{width:100%;border:0;outline:0;background:transparent;color:var(--ink);font-size:14px}
+    .nav-search svg{flex:0 0 auto;color:var(--indigo)}
+    .avatar{width:40px;height:40px;display:grid;place-items:center;border:1px solid var(--ink-12);border-radius:50%;color:var(--cloud);background:var(--ink);font-weight:800}
+    .hamburger{display:none;width:42px;height:42px;border:1px solid var(--ink-12);border-radius:var(--radius);background:var(--cloud);color:var(--ink)}
+    .hamburger span{display:block;width:18px;height:2px;margin:4px auto;border-radius:2px;background:currentColor}
+    .mobile-panel{position:fixed;inset:0;z-index:80;pointer-events:none}
+    .mobile-scrim{position:absolute;inset:0;border:0;opacity:0;background:var(--ink-46);transition:opacity 180ms ease}
+    .mobile-drawer{position:absolute;top:0;right:0;width:min(88vw,360px);height:100%;padding:24px;transform:translateX(100%);background:var(--cloud);box-shadow:var(--shadow);transition:transform 220ms ease;display:flex;flex-direction:column;gap:18px}
+    .mobile-panel.is-open{pointer-events:auto}
+    .mobile-panel.is-open .mobile-scrim{opacity:1}
+    .mobile-panel.is-open .mobile-drawer{transform:translateX(0)}
+    .drawer-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .drawer-close{width:40px;height:40px;border:1px solid var(--ink-12);border-radius:var(--radius);background:var(--cloud);color:var(--ink);font-size:24px;line-height:1}
+    .drawer-links{display:grid;gap:8px}
+    .drawer-links a{padding:12px;border-radius:var(--radius);background:var(--ink-05);font-weight:800}
+    main{width:min(100% - 32px,var(--max));margin:0 auto}
+    section{scroll-margin-top:96px}
+    .hero{padding:42px 0 28px;display:grid;grid-template-columns:minmax(0,1fr) 370px;gap:28px;align-items:stretch}
+    .search-hero{min-height:390px;padding:34px;border-radius:var(--radius);color:var(--cloud);background:linear-gradient(135deg,var(--ink),rgba(25,33,43,0.92)),var(--ink);box-shadow:var(--shadow);display:flex;flex-direction:column;justify-content:center;gap:24px;position:relative;overflow:hidden}
+    .search-hero:after{content:"";position:absolute;right:-76px;bottom:-110px;width:270px;height:270px;border-radius:50%;border:42px solid var(--cyan-28)}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;width:max-content;padding:7px 10px;border:1px solid var(--cloud-34);border-radius:999px;color:var(--cloud-84);font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.04em}
+    .live-dot{width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 7px var(--cyan-16)}
+    h1,h2,h3{margin:0;font-family:"Manrope",sans-serif;line-height:1.04;letter-spacing:0}
+    h1{max-width:780px;font-size:clamp(40px,5vw,72px)}
+    h2{font-size:clamp(28px,3vw,44px)}
+    h3{font-size:20px}
+    p{margin:0;color:var(--ink-62)}
+    .search-hero p{max-width:720px;color:var(--cloud-84);font-size:17px}
+    .hero-search-box{position:relative;z-index:1;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:12px 12px 12px 16px;border:1px solid var(--cloud-34);border-radius:var(--radius);background:var(--cloud);color:var(--ink);box-shadow:0 18px 44px rgba(25,33,43,0.24)}
+    .hero-search-box input{min-width:0;border:0;outline:0;background:transparent;color:var(--ink);font-size:17px;font-weight:700}
+    .primary-button{border:0;border-radius:var(--radius);padding:12px 16px;color:var(--cloud);background:var(--indigo);font-weight:800;box-shadow:0 16px 34px var(--indigo-34)}
+    .primary-button:hover{background:var(--indigo-88)}
+    .query-row,.tag-row{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+    .query-row span,.tag-row span{color:var(--cloud-64);font-size:13px;font-weight:800}
+    .query-row button,.tag-row a{border:1px solid var(--cloud-34);border-radius:999px;padding:8px 11px;background:var(--cloud-34);color:var(--cloud);font-size:13px;font-weight:800}
+    .tag-row a{background:var(--indigo-34)}
+    .kpi-card{padding:24px;border:1px solid var(--ink-08);border-radius:var(--radius);background:var(--cloud-84);box-shadow:0 18px 50px rgba(25,33,43,0.08);display:grid;gap:18px}
+    .kpi-title{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .health-pill{display:inline-flex;align-items:center;gap:7px;padding:7px 9px;border-radius:999px;background:var(--lime-18);color:var(--ink);font-size:12px;font-weight:800}
+    .kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .kpi{padding:16px;border:1px solid var(--ink-08);border-radius:var(--radius);background:var(--cloud)}
+    .kpi strong{display:block;font-family:"Manrope",sans-serif;font-size:28px;line-height:1}
+    .kpi span{display:block;margin-top:7px;color:var(--ink-62);font-size:13px;font-weight:700}
+    .activity-stack{display:grid;gap:10px}
+    .activity{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;padding:12px;border-radius:var(--radius);background:var(--ink-05)}
+    .activity-icon{width:28px;height:28px;display:grid;place-items:center;border-radius:50%;color:var(--ink);background:var(--cyan-16);font-weight:900}
+    .activity strong{display:block;font-size:13px}
+    .activity span{color:var(--ink-62);font-size:12px;font-weight:700}
+    .section-head{margin:38px 0 18px;display:flex;align-items:end;justify-content:space-between;gap:18px}
+    .section-head p{max-width:620px}
+    .workspace-layout{display:grid;grid-template-columns:300px minmax(0,1fr);gap:22px;align-items:start}
+    .wiki-panel{position:sticky;top:96px;padding:18px;border:1px solid var(--ink-08);border-radius:var(--radius);background:var(--cloud-84);box-shadow:0 18px 46px rgba(25,33,43,0.08)}
+    .wiki-panel h2{font-size:22px}
+    .tree{margin-top:14px;display:grid;gap:8px}
+    .tree-group{border:1px solid var(--ink-08);border-radius:var(--radius);background:var(--cloud);overflow:hidden}
+    .tree-toggle{width:100%;border:0;padding:12px;background:transparent;color:var(--ink);display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:800;text-align:left}
+    .tree-toggle span:first-child{min-width:0}
+    .tree-toggle .chevron{width:22px;height:22px;display:grid;place-items:center;border-radius:50%;background:var(--indigo-10);color:var(--indigo);transition:transform 180ms ease}
+    .tree-group.is-open .chevron{transform:rotate(90deg)}
+    .tree-list{display:none;padding:0 12px 12px;margin:0;list-style:none;gap:6px}
+    .tree-group.is-open .tree-list{display:grid}
+    .tree-list a{display:flex;justify-content:space-between;gap:10px;padding:8px 10px;border-radius:var(--radius);color:var(--ink-76);font-size:13px;font-weight:700}
+    .tree-list a:hover{background:var(--ink-05);color:var(--ink)}
+    .tree-list small{color:var(--ink-46);font-weight:800}
+    .article-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+    .article-card{min-height:230px;padding:18px;border:1px solid var(--ink-08);border-radius:var(--radius);background:var(--cloud-84);box-shadow:0 18px 48px rgba(25,33,43,0.07);display:flex;flex-direction:column;gap:14px;transition:transform 180ms ease,box-shadow 180ms ease}
+    .article-card:hover{transform:translateY(-3px);box-shadow:0 24px 60px rgba(25,33,43,0.11)}
+    .card-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .tag{display:inline-flex;align-items:center;width:max-content;padding:6px 9px;border-radius:999px;background:var(--indigo-10);color:var(--indigo);font-size:12px;font-weight:900}
+    .tag.cyan{background:var(--cyan-16);color:var(--ink)}
+    .tag.lime{background:var(--lime-18);color:var(--ink)}
+    .tag.coral{background:var(--coral-16);color:var(--ink)}
+    .read-time{color:var(--ink-46);font-size:12px;font-weight:800}
+    .article-card h3{font-size:21px}
+    .article-card p{flex:1;font-size:14px}
+    .author-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-top:12px;border-top:1px solid var(--ink-08)}
+    .person{display:flex;align-items:center;gap:9px;min-width:0}
+    .mini-avatar{width:32px;height:32px;display:grid;place-items:center;border-radius:50%;color:var(--cloud);background:var(--ink);font-size:12px;font-weight:900}
+    .mini-avatar.indigo{background:var(--indigo)}
+    .mini-avatar.cyan{background:var(--cyan)}
+    .mini-avatar.coral{background:var(--coral)}
+    .person strong{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:13px}
+    .person span{color:var(--ink-46);font-size:12px;font-weight:700}
+    .split-layout{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:22px;align-items:start;margin-bottom:48px}
+    .team-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+    .team-card,.bookmark-panel{padding:18px;border:1px solid var(--ink-08);border-radius:var(--radius);background:var(--cloud-84);box-shadow:0 18px 46px rgba(25,33,43,0.07)}
+    .team-card{display:grid;gap:16px}
+    .team-card header{display:flex;align-items:start;justify-content:space-between;gap:12px}
+    .team-card h3{font-size:22px}
+    .team-meta{display:flex;gap:10px;flex-wrap:wrap;color:var(--ink-62);font-size:13px;font-weight:800}
+    .avatar-stack{display:flex;align-items:center;min-height:34px}
+    .avatar-stack .mini-avatar{margin-right:-8px;border:2px solid var(--cloud)}
+    .activity-bar{height:9px;border-radius:999px;background:var(--ink-08);overflow:hidden}
+    .activity-bar span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--indigo),var(--cyan),var(--lime))}
+    .bookmark-panel{position:sticky;top:96px;display:grid;gap:14px}
+    .bookmark-list{display:grid;gap:10px}
+    .bookmark-item{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:start;padding:12px;border:1px solid var(--ink-08);border-radius:var(--radius);background:var(--cloud)}
+    .bookmark-item strong{display:block;font-size:14px}
+    .bookmark-item span{display:block;margin-top:4px;color:var(--ink-62);font-size:12px;font-weight:700}
+    .remove-bookmark{width:32px;height:32px;border:1px solid var(--ink-12);border-radius:var(--radius);background:var(--cloud);color:var(--coral);font-size:18px;line-height:1}
+    .empty-state{display:none;padding:14px;border:1px dashed var(--ink-22);border-radius:var(--radius);color:var(--ink-62);font-size:13px;font-weight:700}
+    .bookmark-panel.is-empty .empty-state{display:block}
+    .footer{border-top:1px solid var(--ink-08);background:var(--ink);color:var(--cloud)}
+    .footer-inner{width:min(100% - 32px,var(--max));margin:0 auto;padding:30px 0;display:flex;align-items:center;justify-content:space-between;gap:18px;color:var(--cloud-84);font-size:14px;font-weight:700}
+    .footer-links{display:flex;gap:14px;flex-wrap:wrap}
+    .footer-links a{color:var(--cloud-84)}
+    @media (max-width:1080px){.hero,.split-layout{grid-template-columns:1fr}
+    .kpi-grid,.team-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+    .bookmark-panel{position:static}
+    .article-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media (max-width:860px){.nav-links,.nav-search,.nav-actions .avatar{display:none}
+    .mobile-drawer .nav-search{display:flex;width:100%;min-width:0}
+    .hamburger{display:block}
+    .nav-inner{grid-template-columns:auto 1fr auto}
+    .workspace-layout{grid-template-columns:1fr}
+    .wiki-panel{position:static}
+    .kpi-grid,.team-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
+    @media (max-width:620px){main{width:min(100% - 24px,var(--max))}
+    .nav-inner{width:min(100% - 24px,var(--max));min-height:68px}
+    .brand{font-size:15px}
+    .search-hero{min-height:auto;padding:24px}
+    .hero{padding-top:24px;gap:18px}
+    h1{font-size:38px}
+    .hero-search-box{grid-template-columns:auto 1fr}
+    .hero-search-box .primary-button{grid-column:1 / -1;width:100%}
+    .section-head{align-items:start;flex-direction:column}
+    .kpi-grid,.article-grid,.team-grid{grid-template-columns:1fr}
+    .footer-inner{align-items:flex-start;flex-direction:column}
+    }
+    @media (prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto !important;transition:none !important;animation:none !important}
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <div class="nav-inner">
+        <a class="brand" href="#home" aria-label="Cortex Knowledge Base home">
+          <span class="brand-mark" aria-hidden="true"><span></span></span>
+          <span>Cortex Knowledge Base</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="#home">Home</a>
+          <a href="#articles">Articles</a>
+          <a href="#wikis">Wikis</a>
+          <a href="#teams">Teams</a>
+          <a href="#bookmarks">Bookmarks</a>
+        </nav>
+        <div class="nav-actions">
+          <form class="nav-search" aria-label="Header knowledge search">
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10.8 18.2a7.4 7.4 0 1 1 0-14.8 7.4 7.4 0 0 1 0 14.8Zm6.1-1.3 3.7 3.7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+            <label class="sr-only" for="nav-query">Search docs</label>
+            <input id="nav-query" name="nav-query" value="Onboarding checklist">
+          </form>
+          <div class="avatar" aria-label="Signed in as Mira Lee">ML</div>
+          <button class="hamburger" type="button" aria-label="Open navigation menu" aria-controls="mobile-panel" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+    <div class="mobile-panel" id="mobile-panel" aria-hidden="true">
+      <button class="mobile-scrim" type="button" aria-label="Close navigation menu"></button>
+      <aside class="mobile-drawer" aria-label="Mobile navigation">
+        <div class="drawer-head">
+          <a class="brand" href="#home">
+            <span class="brand-mark" aria-hidden="true"><span></span></span>
+            <span>Cortex</span>
+          </a>
+          <button class="drawer-close" type="button" aria-label="Close navigation menu">&times;</button>
+        </div>
+        <form class="nav-search" aria-label="Mobile knowledge search">
+          <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M10.8 18.2a7.4 7.4 0 1 1 0-14.8 7.4 7.4 0 0 1 0 14.8Zm6.1-1.3 3.7 3.7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+          <label class="sr-only" for="drawer-query">Search knowledge base</label>
+          <input id="drawer-query" name="drawer-query" value="Incident review">
+        </form>
+        <nav class="drawer-links" aria-label="Mobile primary navigation">
+          <a href="#home">Home</a>
+          <a href="#articles">Articles</a>
+          <a href="#wikis">Wikis</a>
+          <a href="#teams">Teams</a>
+          <a href="#bookmarks">Bookmarks</a>
+        </nav>
+      </aside>
+    </div>
+    <main id="home">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="search-hero">
+          <span class="eyebrow"><span class="live-dot"></span>Enterprise knowledge graph live</span>
+          <h1 id="hero-title">Find the right internal answer before the meeting starts.</h1>
+          <p>Cortex brings policies, runbooks, launch plans, customer insights, and team wikis into one governed search workspace for fast-moving teams.</p>
+          <form class="hero-search-box" aria-label="Search all company knowledge">
+            <svg width="23" height="23" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M10.8 18.2a7.4 7.4 0 1 1 0-14.8 7.4 7.4 0 0 1 0 14.8Zm6.1-1.3 3.7 3.7" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/>
+            </svg>
+            <label class="sr-only" for="hero-query">Search documents, wikis, and teams</label>
+            <input id="hero-query" name="hero-query" value="How do we request production access?">
+            <button class="primary-button" type="submit">Search</button>
+          </form>
+          <div class="query-row" aria-label="Recent searches">
+            <span>Recent</span>
+            <button type="button">Q2 release checklist</button>
+            <button type="button">SOC2 evidence owner</button>
+            <button type="button">Salesforce field map</button>
+          </div>
+          <div class="tag-row" aria-label="Popular tags">
+            <span>Popular tags</span>
+            <a href="#articles">Security</a>
+            <a href="#articles">Revenue Ops</a>
+            <a href="#articles">Product Launch</a>
+            <a href="#articles">People Policy</a>
+          </div>
+        </div>
+        <aside class="kpi-card" aria-label="Knowledge base performance">
+          <div class="kpi-title">
+            <h2>Today in Cortex</h2>
+            <span class="health-pill"><span class="live-dot"></span>Healthy</span>
+          </div>
+          <div class="kpi-grid">
+            <div class="kpi">
+              <strong>8,420</strong>
+              <span>Total articles</span>
+            </div>
+            <div class="kpi">
+              <strong>312</strong>
+              <span>Active contributors</span>
+            </div>
+            <div class="kpi">
+              <strong>14.8k</strong>
+              <span>Searches today</span>
+            </div>
+            <div class="kpi">
+              <strong>4m</strong>
+              <span>Average read time</span>
+            </div>
+          </div>
+          <div class="activity-stack" aria-label="Live knowledge activity">
+            <div class="activity">
+              <span class="activity-icon">+</span>
+              <div>
+                <strong>Design Systems added a Figma token migration note</strong>
+                <span>Updated 8 minutes ago</span>
+              </div>
+            </div>
+            <div class="activity">
+              <span class="activity-icon">!</span>
+              <div>
+                <strong>Security flagged 3 aging runbooks for review</strong>
+                <span>Critical owners notified</span>
+              </div>
+            </div>
+            <div class="activity">
+              <span class="activity-icon">#</span>
+              <div>
+                <strong>People Ops wiki crossed 96% answer coverage</strong>
+                <span>Healthy knowledge signal</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </section>
+      <section id="articles" aria-labelledby="articles-title">
+        <div class="section-head">
+          <div>
+            <h2 id="articles-title">Recommended articles</h2>
+            <p>Ranked by freshness, trust signals, ownership, and how often similar teams used them this week.</p>
+          </div>
+          <span class="tag cyan">12 reviewed today</span>
+        </div>
+        <div class="workspace-layout">
+          <aside class="wiki-panel" id="wikis" aria-labelledby="wiki-title">
+            <h2 id="wiki-title">Wiki tree</h2>
+            <p>Browse curated spaces and expand active folders.</p>
+            <div class="tree">
+              <div class="tree-group is-open">
+                <button class="tree-toggle" type="button" aria-expanded="true">
+                  <span>Company Handbook</span>
+                  <span class="chevron" aria-hidden="true">&rsaquo;</span>
+                </button>
+                <ul class="tree-list">
+                  <li><a href="#articles">Operating principles <small>18</small></a></li>
+                  <li><a href="#articles">Remote work policy <small>9</small></a></li>
+                  <li><a href="#articles">Expense approvals <small>7</small></a></li>
+                </ul>
+              </div>
+              <div class="tree-group is-open">
+                <button class="tree-toggle" type="button" aria-expanded="true">
+                  <span>Engineering</span>
+                  <span class="chevron" aria-hidden="true">&rsaquo;</span>
+                </button>
+                <ul class="tree-list">
+                  <li><a href="#articles">Production access <small>24</small></a></li>
+                  <li><a href="#articles">Incident response <small>31</small></a></li>
+                  <li><a href="#articles">API standards <small>16</small></a></li>
+                </ul>
+              </div>
+              <div class="tree-group">
+                <button class="tree-toggle" type="button" aria-expanded="false">
+                  <span>Go To Market</span>
+                  <span class="chevron" aria-hidden="true">&rsaquo;</span>
+                </button>
+                <ul class="tree-list">
+                  <li><a href="#articles">Launch rooms <small>12</small></a></li>
+                  <li><a href="#articles">Competitive notes <small>20</small></a></li>
+                  <li><a href="#articles">Field enablement <small>27</small></a></li>
+                </ul>
+              </div>
+              <div class="tree-group">
+                <button class="tree-toggle" type="button" aria-expanded="false">
+                  <span>Customer Success</span>
+                  <span class="chevron" aria-hidden="true">&rsaquo;</span>
+                </button>
+                <ul class="tree-list">
+                  <li><a href="#articles">Renewal playbooks <small>15</small></a></li>
+                  <li><a href="#articles">Executive briefings <small>8</small></a></li>
+                  <li><a href="#articles">Escalation paths <small>19</small></a></li>
+                </ul>
+              </div>
+            </div>
+          </aside>
+          <div class="article-grid">
+            <article class="article-card">
+              <div class="card-top">
+                <span class="tag">Security</span>
+                <span class="read-time">6 min read</span>
+              </div>
+              <h3>Production access request path</h3>
+              <p>Step-by-step approval flow for engineers, temporary access windows, reviewer expectations, and audit evidence capture.</p>
+              <div class="author-row">
+                <div class="person">
+                  <span class="mini-avatar indigo">AK</span>
+                  <div><strong>Ari Kim</strong><span>Updated today</span></div>
+                </div>
+                <span class="tag lime">Trusted</span>
+              </div>
+            </article>
+            <article class="article-card">
+              <div class="card-top">
+                <span class="tag cyan">Product</span>
+                <span class="read-time">8 min read</span>
+              </div>
+              <h3>Launch readiness review</h3>
+              <p>A shared review model for release scope, risk owners, training materials, announcement timing, and field handoff.</p>
+              <div class="author-row">
+                <div class="person">
+                  <span class="mini-avatar cyan">NO</span>
+                  <div><strong>Nina Okafor</strong><span>Updated 2 hours ago</span></div>
+                </div>
+                <span class="tag">Popular</span>
+              </div>
+            </article>
+            <article class="article-card">
+              <div class="card-top">
+                <span class="tag coral">Incident</span>
+                <span class="read-time">5 min read</span>
+              </div>
+              <h3>Customer-impact incident brief</h3>
+              <p>Incident summary format for support, leadership, and customer-facing teams after service degradation or data risk.</p>
+              <div class="author-row">
+                <div class="person">
+                  <span class="mini-avatar coral">RV</span>
+                  <div><strong>Rafael Vega</strong><span>Updated yesterday</span></div>
+                </div>
+                <span class="tag coral">Review</span>
+              </div>
+            </article>
+            <article class="article-card">
+              <div class="card-top">
+                <span class="tag lime">People</span>
+                <span class="read-time">4 min read</span>
+              </div>
+              <h3>Manager onboarding map</h3>
+              <p>First thirty days for new people managers, including cohort rituals, required learning, and partner team contacts.</p>
+              <div class="author-row">
+                <div class="person">
+                  <span class="mini-avatar">MJ</span>
+                  <div><strong>Mira Jones</strong><span>Updated Monday</span></div>
+                </div>
+                <span class="tag lime">Healthy</span>
+              </div>
+            </article>
+            <article class="article-card">
+              <div class="card-top">
+                <span class="tag">Revenue Ops</span>
+                <span class="read-time">7 min read</span>
+              </div>
+              <h3>Enterprise renewal forecast</h3>
+              <p>How account teams update renewal risk, expansion signals, executive sponsor notes, and finance-visible deal timing.</p>
+              <div class="author-row">
+                <div class="person">
+                  <span class="mini-avatar indigo">SC</span>
+                  <div><strong>Sofia Chen</strong><span>Updated 3 days ago</span></div>
+                </div>
+                <span class="tag cyan">Used often</span>
+              </div>
+            </article>
+            <article class="article-card">
+              <div class="card-top">
+                <span class="tag cyan">Design</span>
+                <span class="read-time">9 min read</span>
+              </div>
+              <h3>Accessible form patterns</h3>
+              <p>Field grouping, error states, keyboard flows, and visual language for reusable forms across product surfaces.</p>
+              <div class="author-row">
+                <div class="person">
+                  <span class="mini-avatar cyan">TP</span>
+                  <div><strong>Tessa Park</strong><span>Updated Friday</span></div>
+                </div>
+                <span class="tag">Pinned</span>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section id="teams" aria-labelledby="teams-title">
+        <div class="section-head">
+          <div>
+            <h2 id="teams-title">Team workspaces</h2>
+            <p>Each workspace shows ownership, article volume, and recent collaboration so stale knowledge is easy to spot.</p>
+          </div>
+          <span class="tag lime">96% owner coverage</span>
+        </div>
+        <div class="split-layout">
+          <div class="team-grid">
+            <article class="team-card">
+              <header>
+                <div>
+                  <h3>Platform Engineering</h3>
+                  <p>Runbooks, standards, reliability notes, and deploy governance.</p>
+                </div>
+                <span class="tag">412 docs</span>
+              </header>
+              <div class="avatar-stack" aria-label="Platform Engineering members">
+                <span class="mini-avatar indigo">AK</span>
+                <span class="mini-avatar cyan">RV</span>
+                <span class="mini-avatar coral">JL</span>
+                <span class="mini-avatar">+9</span>
+              </div>
+              <div class="activity-bar" aria-label="Recent activity 86 percent"><span style="width:86%"></span></div>
+              <div class="team-meta"><span>42 edits this week</span><span>2 reviews due</span></div>
+            </article>
+            <article class="team-card">
+              <header>
+                <div>
+                  <h3>Customer Success</h3>
+                  <p>Renewal motions, QBR templates, escalation guides, and account plays.</p>
+                </div>
+                <span class="tag cyan">286 docs</span>
+              </header>
+              <div class="avatar-stack" aria-label="Customer Success members">
+                <span class="mini-avatar cyan">NO</span>
+                <span class="mini-avatar indigo">SC</span>
+                <span class="mini-avatar coral">DM</span>
+                <span class="mini-avatar">+6</span>
+              </div>
+              <div class="activity-bar" aria-label="Recent activity 74 percent"><span style="width:74%"></span></div>
+              <div class="team-meta"><span>28 edits this week</span><span>1 critical gap</span></div>
+            </article>
+            <article class="team-card">
+              <header>
+                <div>
+                  <h3>People Operations</h3>
+                  <p>Policy pages, onboarding journeys, benefits guidance, and manager tools.</p>
+                </div>
+                <span class="tag lime">198 docs</span>
+              </header>
+              <div class="avatar-stack" aria-label="People Operations members">
+                <span class="mini-avatar">MJ</span>
+                <span class="mini-avatar coral">IR</span>
+                <span class="mini-avatar cyan">KB</span>
+                <span class="mini-avatar">+4</span>
+              </div>
+              <div class="activity-bar" aria-label="Recent activity 92 percent"><span style="width:92%"></span></div>
+              <div class="team-meta"><span>19 edits this week</span><span>No blocked reviews</span></div>
+            </article>
+            <article class="team-card">
+              <header>
+                <div>
+                  <h3>Product Strategy</h3>
+                  <p>Roadmaps, research summaries, launch rooms, and decision records.</p>
+                </div>
+                <span class="tag coral">244 docs</span>
+              </header>
+              <div class="avatar-stack" aria-label="Product Strategy members">
+                <span class="mini-avatar cyan">TP</span>
+                <span class="mini-avatar indigo">LV</span>
+                <span class="mini-avatar">QA</span>
+                <span class="mini-avatar">+7</span>
+              </div>
+              <div class="activity-bar" aria-label="Recent activity 69 percent"><span style="width:69%"></span></div>
+              <div class="team-meta"><span>34 edits this week</span><span>5 pages aging</span></div>
+            </article>
+          </div>
+          <aside class="bookmark-panel" id="bookmarks" aria-labelledby="bookmarks-title">
+            <div>
+              <h2 id="bookmarks-title">Bookmarks</h2>
+              <p>Quick access for articles Mira uses every week.</p>
+            </div>
+            <div class="bookmark-list">
+              <div class="bookmark-item">
+                <div><strong>Production access request path</strong><span>Security - reviewed today</span></div>
+                <button class="remove-bookmark" type="button" aria-label="Remove Production access request path">&times;</button>
+              </div>
+              <div class="bookmark-item">
+                <div><strong>Launch readiness review</strong><span>Product - 8 min read</span></div>
+                <button class="remove-bookmark" type="button" aria-label="Remove Launch readiness review">&times;</button>
+              </div>
+              <div class="bookmark-item">
+                <div><strong>Manager onboarding map</strong><span>People - healthy signal</span></div>
+                <button class="remove-bookmark" type="button" aria-label="Remove Manager onboarding map">&times;</button>
+              </div>
+              <div class="bookmark-item">
+                <div><strong>Accessible form patterns</strong><span>Design - pinned by team</span></div>
+                <button class="remove-bookmark" type="button" aria-label="Remove Accessible form patterns">&times;</button>
+              </div>
+            </div>
+            <p class="empty-state">All visible bookmarks have been removed for this session.</p>
+          </aside>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      <div class="footer-inner">
+        <span>Cortex Knowledge Base &mdash; designed by Meridian Systems</span>
+        <nav class="footer-links" aria-label="Footer navigation">
+          <a href="#articles">Reviewed docs</a>
+          <a href="#wikis">Wiki map</a>
+          <a href="#teams">Team owners</a>
+        </nav>
+      </div>
+    </footer>
+  </div>
+  <script>
+    const body = document.body;
+    const menuButton = document.querySelector(".hamburger");
+    const mobilePanel = document.querySelector(".mobile-panel");
+    const drawerClose = document.querySelector(".drawer-close");
+    const scrim = document.querySelector(".mobile-scrim");
+    const drawerLinks = document.querySelectorAll(".drawer-links a");
+    const treeButtons = document.querySelectorAll(".tree-toggle");
+    const bookmarkPanel = document.querySelector(".bookmark-panel");
+    const bookmarkList = document.querySelector(".bookmark-list");
+    const recentButtons = document.querySelectorAll(".query-row button");
+    const heroQuery = document.querySelector("#hero-query");
+
+    function openDrawer(){
+      mobilePanel.classList.add("is-open");
+      mobilePanel.setAttribute("aria-hidden","false");
+      menuButton.setAttribute("aria-expanded","true");
+      body.classList.add("drawer-open");
+      drawerClose.focus();
+    }
+
+    function closeDrawer(){
+      mobilePanel.classList.remove("is-open");
+      mobilePanel.setAttribute("aria-hidden","true");
+      menuButton.setAttribute("aria-expanded","false");
+      body.classList.remove("drawer-open");
+      menuButton.focus();
+    }
+
+    menuButton.addEventListener("click",openDrawer);
+    drawerClose.addEventListener("click",closeDrawer);
+    scrim.addEventListener("click",closeDrawer);
+    drawerLinks.forEach((link) => link.addEventListener("click",closeDrawer));
+
+    document.addEventListener("keydown",(event) => {
+      if(event.key === "Escape" && mobilePanel.classList.contains("is-open")){
+        closeDrawer();
+      }
+    });
+
+    treeButtons.forEach((button) => {
+      button.addEventListener("click",() => {
+        const group = button.closest(".tree-group");
+        const isOpen = group.classList.toggle("is-open");
+        button.setAttribute("aria-expanded",String(isOpen));
+      });
+    });
+
+    document.querySelectorAll(".remove-bookmark").forEach((button) => {
+      button.addEventListener("click",() => {
+        button.closest(".bookmark-item").remove();
+        if(bookmarkList.children.length === 0){
+          bookmarkPanel.classList.add("is-empty");
+        }
+      });
+    });
+
+    recentButtons.forEach((button) => {
+      button.addEventListener("click",() => {
+        heroQuery.value = button.textContent.trim();
+        heroQuery.focus();
+      });
+    });
+  </script>
+</body>
+</html>
