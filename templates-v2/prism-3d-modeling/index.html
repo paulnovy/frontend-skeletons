@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prism 3D Modeling</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --cloud: #F6F8FC;
+    --ink: #19212B;
+    --indigo: #4F46E5;
+    --cyan: #06B6D4;
+    --lime: #A3E635;
+    --coral: #FB7185;
+    --dark: #1A1A2E;
+    --viewport: #16213E;
+    --panel-bg: #1A1A2E;
+    --border: #2A2A4A;
+    --text-primary: #E0E0E0;
+    --text-secondary: #8B8BA7;
+    --text-muted: #5A5A7A;
+    --accent: #7C3AED;
+    --orange: #F59E0B;
+    --green: #10B981;
+    --pink: #EC4899;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--dark);
+    color: var(--text-primary);
+    line-height: 1.5;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+  }
+
+  a {
+    color: var(--cyan);
+    text-decoration: none;
+  }
+
+  button {
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--indigo);
+    color: #fff;
+    padding: 8px 16px;
+    z-index: 100;
+  }
+
+  .skip-link:focus {
+    top: 0;
+  }
+
+  .app {
+    display: grid;
+    grid-template-columns: 52px 240px 1fr 280px;
+    grid-template-rows: 44px 1fr 32px;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ── Top Bar ── */
+  .top-bar {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    background: var(--panel-bg);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 8px;
+    z-index: 10;
+  }
+
+  .menu-btn {
+    padding: 6px 12px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.8125rem;
+    border-radius: 6px;
+  }
+
+  .menu-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+  }
+
+  .app-title {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1rem;
+    color: var(--accent);
+    margin-right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .app-title svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .toolbar-group {
+    display: flex;
+    gap: 2px;
+    padding: 0 8px;
+    border-right: 1px solid var(--border);
+  }
+
+  .toolbar-group:last-child {
+    border-right: none;
+  }
+
+  .tool-btn {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+  }
+
+  .tool-btn:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+  }
+
+  .tool-btn.active {
+    background: var(--accent);
+    color: #fff;
+  }
+
+  .tool-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .top-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .render-btn {
+    padding: 6px 16px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .render-btn:hover {
+    background: #6D28D9;
+  }
+
+  .render-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  /* ── Toolbar Strip ── */
+  .toolbar-strip {
+    grid-column: 1;
+    grid-row: 2 / 4;
+    background: var(--panel-bg);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 0;
+    gap: 4px;
+    z-index: 5;
+  }
+
+  .strip-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .strip-btn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  .strip-btn.active {
+    color: var(--accent);
+    background: rgba(124, 58, 237, 0.15);
+  }
+
+  .strip-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .strip-divider {
+    width: 24px;
+    height: 1px;
+    background: var(--border);
+    margin: 4px 0;
+  }
+
+  /* ── Scene Panel (Left) ── */
+  .scene-panel {
+    grid-column: 2;
+    grid-row: 2 / 4;
+    background: var(--panel-bg);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 5;
+  }
+
+  .panel-header {
+    padding: 10px 14px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    flex-shrink: 0;
+  }
+
+  .panel-header button {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .panel-header button:hover {
+    color: var(--text-primary);
+  }
+
+  .scene-tree {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 0;
+  }
+
+  .tree-node {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+  }
+
+  .tree-node:hover {
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .tree-node.selected {
+    background: rgba(124, 58, 237, 0.15);
+    color: var(--text-primary);
+  }
+
+  .tree-node .icon {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    opacity: 0.6;
+  }
+
+  .tree-node .icon.mesh {
+    color: var(--cyan);
+  }
+
+  .tree-node .icon.light {
+    color: var(--orange);
+  }
+
+  .tree-node .icon.camera {
+    color: var(--pink);
+  }
+
+  .tree-node .icon.group {
+    color: var(--text-muted);
+  }
+
+  .tree-node .icon.material {
+    color: var(--green);
+  }
+
+  .tree-node .indent-1 {
+    padding-left: 30px;
+  }
+
+  .tree-node .indent-2 {
+    padding-left: 46px;
+  }
+
+  .tree-node .vis {
+    margin-left: auto;
+    width: 14px;
+    height: 14px;
+    color: var(--text-muted);
+    opacity: 0;
+    transition: opacity 0.1s;
+  }
+
+  .tree-node:hover .vis {
+    opacity: 1;
+  }
+
+  .tree-node .vis.hidden {
+    opacity: 1;
+    color: var(--coral);
+  }
+
+  /* ── Viewport ── */
+  .viewport {
+    grid-column: 3;
+    grid-row: 2;
+    background: var(--viewport);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .viewport-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+
+  .viewport-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  .axis-line {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    height: 2px;
+    transform-origin: left center;
+  }
+
+  .axis-x {
+    width: 80px;
+    background: var(--coral);
+    transform: rotate(0deg);
+  }
+
+  .axis-y {
+    width: 80px;
+    background: var(--green);
+    transform: rotate(-90deg);
+  }
+
+  .axis-z {
+    width: 60px;
+    background: var(--cyan);
+    transform: rotate(-45deg);
+  }
+
+  .axis-label {
+    position: absolute;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    font-family: 'Manrope', sans-serif;
+  }
+
+  .axis-label.x {
+    color: var(--coral);
+    left: 85px;
+    top: -8px;
+  }
+
+  .axis-label.y {
+    color: var(--green);
+    left: -8px;
+    top: -85px;
+  }
+
+  .axis-label.z {
+    color: var(--cyan);
+    left: 50px;
+    top: -50px;
+  }
+
+  .viewport-info {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .viewport-info .cam {
+    color: var(--text-secondary);
+    font-weight: 500;
+  }
+
+  .viewport-gizmo {
+    position: absolute;
+    bottom: 16px;
+    left: 16px;
+    width: 80px;
+    height: 80px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(26, 26, 46, 0.8);
+  }
+
+  .gizmo-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    position: absolute;
+  }
+
+  .gizmo-dot.x {
+    background: var(--coral);
+    left: 58px;
+    top: 36px;
+  }
+
+  .gizmo-dot.y {
+    background: var(--green);
+    left: 36px;
+    top: 14px;
+  }
+
+  .gizmo-dot.z {
+    background: var(--cyan);
+    left: 14px;
+    top: 36px;
+  }
+
+  .gizmo-dot.center {
+    background: var(--text-muted);
+    left: 36px;
+    top: 36px;
+    width: 6px;
+    height: 6px;
+  }
+
+  /* ── Properties Panel (Right) ── */
+  .props-panel {
+    grid-column: 4;
+    grid-row: 2 / 4;
+    background: var(--panel-bg);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    z-index: 5;
+  }
+
+  .prop-section {
+    border-bottom: 1px solid var(--border);
+    padding: 12px 14px;
+  }
+
+  .prop-section-title {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .prop-section-title button {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+  }
+
+  .prop-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+  }
+
+  .prop-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    width: 28px;
+    flex-shrink: 0;
+    font-weight: 600;
+  }
+
+  .prop-input {
+    flex: 1;
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    outline: none;
+  }
+
+  .prop-input:focus {
+    border-color: var(--accent);
+  }
+
+  .prop-input[type="color"] {
+    width: 28px;
+    height: 28px;
+    padding: 2px;
+    cursor: pointer;
+  }
+
+  .prop-input[type="range"] {
+    background: transparent;
+    border: none;
+    accent-color: var(--accent);
+  }
+
+  .prop-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+  }
+
+  .prop-checkbox input {
+    accent-color: var(--accent);
+  }
+
+  .material-preview {
+    width: 100%;
+    height: 80px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #2D2D4A 0%, #1A1A2E 100%);
+    margin-bottom: 10px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .material-swatch {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    border: 2px solid var(--border);
+  }
+
+  .material-swatch.base {
+    background: #7C3AED;
+    top: 12px;
+    left: 12px;
+  }
+
+  .material-swatch.specular {
+    background: #E0E0E0;
+    top: 12px;
+    left: 52px;
+  }
+
+  .material-swatch.normal {
+    background: #8080FF;
+    top: 12px;
+    left: 92px;
+  }
+
+  .material-swatch.roughness {
+    background: #808080;
+    top: 12px;
+    left: 132px;
+  }
+
+  .prop-select {
+    width: 100%;
+    padding: 4px 8px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.75rem;
+    outline: none;
+  }
+
+  .prop-select:focus {
+    border-color: var(--accent);
+  }
+
+  .prop-select option {
+    background: var(--panel-bg);
+    color: var(--text-primary);
+  }
+
+  /* ── Viewport Panel ── */
+  .viewport-panel {
+    grid-column: 3;
+    grid-row: 3;
+    background: var(--panel-bg);
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    gap: 16px;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    z-index: 5;
+  }
+
+  .viewport-panel .item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .viewport-panel .item .val {
+    color: var(--text-secondary);
+  }
+
+  .viewport-panel .right {
+    margin-left: auto;
+    display: flex;
+    gap: 16px;
+  }
+
+  /* ── Status Bar ── */
+  .status-bar {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.85);
+    gap: 16px;
+    z-index: 10;
+  }
+
+  .status-bar .item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .status-right {
+    margin-left: auto;
+    display: flex;
+    gap: 12px;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 1000px) {
+    .app {
+      grid-template-columns: 52px 1fr;
+    }
+
+    .scene-panel,
+    .props-panel {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body>
+<a href="#viewport" class="skip-link">Skip to viewport</a>
+
+<div class="app">
+  <!-- Top Bar -->
+  <div class="top-bar" role="toolbar" aria-label="Main toolbar">
+    <div class="app-title">
+      <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5z" stroke="#7C3AED" stroke-width="2"/><path d="M2 17l10 5 10-5" stroke="#06B6D4" stroke-width="1.5"/><path d="M2 12l10 5 10-5" stroke="#A3E635" stroke-width="1.5"/></svg>
+      Prism 3D
+    </div>
+    <button class="menu-btn">File</button>
+    <button class="menu-btn">Edit</button>
+    <button class="menu-btn">Object</button>
+    <button class="menu-btn">Mesh</button>
+    <button class="menu-btn">Modifiers</button>
+    <button class="menu-btn">Render</button>
+    <div class="toolbar-group">
+      <button class="tool-btn active" title="Select" aria-label="Select"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/></svg></button>
+      <button class="tool-btn" title="Move" aria-label="Move"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 9l-3 3 3 3M9 5l3-3 3 3M15 19l-3 3-3-3M19 9l3 3-3 3M2 12h20M12 2v20"/></svg></button>
+      <button class="tool-btn" title="Rotate" aria-label="Rotate"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2"/></svg></button>
+      <button class="tool-btn" title="Scale" aria-label="Scale"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 21H3V3M21 7l-4-4M21 3h-4M21 3v4M7 21l-4-4M3 21h4M3 21v-4"/></svg></button>
+    </div>
+    <div class="toolbar-group">
+      <button class="tool-btn" title="Extrude" aria-label="Extrude">E</button>
+      <button class="tool-btn" title="Bevel" aria-label="Bevel">B</button>
+      <button class="tool-btn" title="Loop Cut" aria-label="Loop Cut">L</button>
+      <button class="tool-btn" title="Knife" aria-label="Knife">K</button>
+    </div>
+    <div class="toolbar-group">
+      <button class="tool-btn" title="Vertex" aria-label="Vertex mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/></svg></button>
+      <button class="tool-btn" title="Edge" aria-label="Edge mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 5l14 14"/></svg></button>
+      <button class="tool-btn" title="Face" aria-label="Face mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="5" width="14" height="14"/></svg></button>
+    </div>
+    <div class="top-right">
+      <button class="render-btn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg> Render</button>
+    </div>
+  </div>
+
+  <!-- Toolbar Strip -->
+  <div class="toolbar-strip" role="toolbar" aria-label="Tool strip">
+    <button class="strip-btn active" title="Cursor" aria-label="Cursor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z"/></svg></button>
+    <button class="strip-btn" title="Add Cube" aria-label="Add Cube"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg></button>
+    <button class="strip-btn" title="Add Sphere" aria-label="Add Sphere"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><ellipse cx="12" cy="12" rx="10" ry="4"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10"/></svg></button>
+    <button class="strip-btn" title="Add Cylinder" aria-label="Add Cylinder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.66 3.58 3 8 3s8-1.34 8-3V5"/></svg></button>
+    <div class="strip-divider"></div>
+    <button class="strip-btn" title="Extrude" aria-label="Extrude"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+    <button class="strip-btn" title="Bevel" aria-label="Bevel"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 3L3 21M21 3v7M21 3h-7"/></svg></button>
+    <button class="strip-btn" title="Subdivide" aria-label="Subdivide"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18"/><path d="M12 3v18M3 12h18"/></svg></button>
+    <div class="strip-divider"></div>
+    <button class="strip-btn" title="Snap" aria-label="Snap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/></svg></button>
+    <button class="strip-btn" title="Pivot" aria-label="Pivot point"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M2 12h20"/><circle cx="12" cy="12" r="4"/></svg></button>
+    <button class="strip-btn" title="Proportional Editing" aria-label="Proportional editing"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg></button>
+    <div class="strip-divider"></div>
+    <button class="strip-btn" title="Shading" aria-label="Shading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M3 12h18M5.64 5.64l12.73 12.73M18.36 5.64L5.64 18.36"/></svg></button>
+    <button class="strip-btn" title="Wireframe" aria-label="Wireframe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></button>
+  </div>
+
+  <!-- Scene Panel -->
+  <div class="scene-panel" role="navigation" aria-label="Scene hierarchy">
+    <div class="panel-header">
+      <span>Scene</span>
+      <button aria-label="Add object" title="Add object">+</button>
+    </div>
+    <div class="scene-tree" role="tree">
+      <div class="tree-node" role="treeitem" aria-expanded="true">
+        <span class="icon group">▾</span> Scene Collection
+      </div>
+      <div class="tree-node selected" role="treeitem" style="padding-left:30px" aria-selected="true">
+        <span class="icon mesh">◆</span> Cube
+        <span class="vis">👁</span>
+      </div>
+      <div class="tree-node" role="treeitem" style="padding-left:30px">
+        <span class="icon mesh">◆</span> Suzanne
+        <span class="vis">👁</span>
+      </div>
+      <div class="tree-node" role="treeitem" style="padding-left:30px">
+        <span class="icon mesh">◆</span> Plane
+        <span class="vis">👁</span>
+      </div>
+      <div class="tree-node" role="treeitem" style="padding-left:30px">
+        <span class="icon mesh">◆</span> Torus
+        <span class="vis">👁</span>
+      </div>
+      <div class="tree-node" role="treeitem" style="padding-left:30px">
+        <span class="icon mesh">◆</span> Cylinder
+        <span class="vis hidden">🚫</span>
+      </div>
+      <div class="tree-node" role="treeitem" style="padding-left:30px">
+        <span class="icon light">☀</span> Sun
+        <span class="vis">👁</span>
+      </div>
+      <div class="tree-node" role="treeitem" style="padding-left:30px">
+        <span class="icon light">💡</span> Point Light
+        <span class="vis">👁</span>
+      </div>
+      <div class="tree-node" role="treeitem" style="padding-left:30px">
+        <span class="icon camera">📷</span> Camera
+        <span class="vis">👁</span>
+      </div>
+      <div class="tree-node" role="treeitem" aria-expanded="false">
+        <span class="icon group">▸</span> Environment
+      </div>
+      <div class="tree-node" role="treeitem" aria-expanded="false">
+        <span class="icon group">▸</span> Particles
+      </div>
+    </div>
+    <div class="panel-header" style="border-top:1px solid var(--border)">
+      <span>Materials</span>
+      <button aria-label="Add material">+</button>
+    </div>
+    <div style="padding:8px 14px">
+      <div class="tree-node" role="treeitem" style="padding:4px 0">
+        <span class="icon material">●</span> Purple Metal
+      </div>
+      <div class="tree-node" role="treeitem" style="padding:4px 0">
+        <span class="icon material" style="color:#E0E0E0">●</span> White Plastic
+      </div>
+      <div class="tree-node" role="treeitem" style="padding:4px 0">
+        <span class="icon material" style="color:#10B981">●</span> Green Glass
+      </div>
+    </div>
+  </div>
+
+  <!-- Viewport -->
+  <div class="viewport" id="viewport" role="img" aria-label="3D viewport">
+    <div class="viewport-grid"></div>
+    <div class="viewport-center">
+      <div class="axis-line axis-x"></div>
+      <span class="axis-label x">X</span>
+      <div class="axis-line axis-y"></div>
+      <span class="axis-label y">Y</span>
+      <div class="axis-line axis-z"></div>
+      <span class="axis-label z">Z</span>
+    </div>
+    <div class="viewport-info">
+      <span class="cam">Perspective</span>
+      <span>Objects: 8</span>
+      <span>Faces: 24,576</span>
+      <span>Verts: 12,892</span>
+    </div>
+    <div class="viewport-gizmo" aria-hidden="true">
+      <div class="gizmo-dot x"></div>
+      <div class="gizmo-dot y"></div>
+      <div class="gizmo-dot z"></div>
+      <div class="gizmo-dot center"></div>
+    </div>
+  </div>
+
+  <!-- Properties Panel -->
+  <div class="props-panel" role="complementary" aria-label="Properties">
+    <div class="panel-header">
+      <span>Properties — Cube</span>
+    </div>
+
+    <div class="prop-section">
+      <div class="prop-section-title">Transform</div>
+      <div class="prop-row">
+        <span class="prop-label">Pos</span>
+        <input class="prop-input" type="number" value="0" step="0.1" aria-label="Position X">
+        <input class="prop-input" type="number" value="0" step="0.1" aria-label="Position Y">
+        <input class="prop-input" type="number" value="0" step="0.1" aria-label="Position Z">
+      </div>
+      <div class="prop-row">
+        <span class="prop-label">Rot</span>
+        <input class="prop-input" type="number" value="0" step="1" aria-label="Rotation X">
+        <input class="prop-input" type="number" value="0" step="1" aria-label="Rotation Y">
+        <input class="prop-input" type="number" value="45" step="1" aria-label="Rotation Z">
+      </div>
+      <div class="prop-row">
+        <span class="prop-label">Scl</span>
+        <input class="prop-input" type="number" value="1" step="0.1" aria-label="Scale X">
+        <input class="prop-input" type="number" value="1" step="0.1" aria-label="Scale Y">
+        <input class="prop-input" type="number" value="1" step="0.1" aria-label="Scale Z">
+      </div>
+    </div>
+
+    <div class="prop-section">
+      <div class="prop-section-title">Dimensions</div>
+      <div class="prop-row">
+        <span class="prop-label">X</span>
+        <input class="prop-input" type="number" value="2" step="0.1" aria-label="Dimension X">
+        <span class="prop-label">Y</span>
+        <input class="prop-input" type="number" value="2" step="0.1" aria-label="Dimension Y">
+        <span class="prop-label">Z</span>
+        <input class="prop-input" type="number" value="2" step="0.1" aria-label="Dimension Z">
+      </div>
+    </div>
+
+    <div class="prop-section">
+      <div class="prop-section-title">
+        Mesh Data
+        <button title="More options">⋯</button>
+      </div>
+      <div class="prop-row">
+        <span style="font-size:0.75rem;color:var(--text-muted);width:60px">Vertices</span>
+        <input class="prop-input" type="number" value="8" readonly>
+      </div>
+      <div class="prop-row">
+        <span style="font-size:0.75rem;color:var(--text-muted);width:60px">Faces</span>
+        <input class="prop-input" type="number" value="6" readonly>
+      </div>
+      <div class="prop-row">
+        <span style="font-size:0.75rem;color:var(--text-muted);width:60px">Tris</span>
+        <input class="prop-input" type="number" value="12" readonly>
+      </div>
+    </div>
+
+    <div class="prop-section">
+      <div class="prop-section-title">
+        Material
+        <button title="New material">+</button>
+      </div>
+      <div class="material-preview">
+        <div class="material-swatch base"></div>
+        <div class="material-swatch specular"></div>
+        <div class="material-swatch normal"></div>
+        <div class="material-swatch roughness"></div>
+      </div>
+      <div class="prop-row">
+        <span style="font-size:0.75rem;color:var(--text-muted);width:60px">Shader</span>
+        <select class="prop-select" aria-label="Shader type">
+          <option>Principled BSDF</option>
+          <option>Diffuse BSDF</option>
+          <option>Glass BSDF</option>
+          <option>Emission</option>
+          <option>Toon</option>
+        </select>
+      </div>
+      <div class="prop-row">
+        <span style="font-size:0.75rem;color:var(--text-muted);width:60px">Base Color</span>
+        <input class="prop-input" type="color" value="#7C3AED" aria-label="Base color">
+        <span style="font-size:0.75rem;color:var(--text-secondary)">#7C3AED</span>
+      </div>
+      <div class="prop-row">
+        <span style="font-size:0.75rem;color:var(--text-muted);width:60px">Metallic</span>
+        <input class="prop-input" type="range" min="0" max="1" step="0.01" value="0.8" aria-label="Metallic">
+        <span style="font-size:0.75rem;color:var(--text-secondary);width:30px">0.80</span>
+      </div>
+      <div class="prop-row">
+        <span style="font-size:0.75rem;color:var(--text-muted);width:60px">Roughness</span>
+        <input class="prop-input" type="range" min="0" max="1" step="0.01" value="0.3" aria-label="Roughness">
+        <span style="font-size:0.75rem;color:var(--text-secondary);width:30px">0.30</span>
+      </div>
+      <div class="prop-row">
+        <span style="font-size:0.75rem;color:var(--text-muted);width:60px">IOR</span>
+        <input class="prop-input" type="number" value="1.45" step="0.01" aria-label="Index of refraction">
+      </div>
+      <div class="prop-row">
+        <span style="font-size:0.75rem;color:var(--text-muted);width:60px">Emission</span>
+        <input class="prop-input" type="color" value="#000000" aria-label="Emission color">
+        <span style="font-size:0.75rem;color:var(--text-secondary)">Off</span>
+      </div>
+    </div>
+
+    <div class="prop-section">
+      <div class="prop-section-title">
+        Modifiers
+        <button title="Add modifier">+</button>
+      </div>
+      <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:6px;padding:8px 10px;margin-bottom:6px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+          <span style="font-size:0.8125rem;font-weight:500">Subdivision Surface</span>
+          <span style="font-size:0.6875rem;color:var(--text-muted)">▾</span>
+        </div>
+        <div class="prop-row">
+          <span style="font-size:0.75rem;color:var(--text-muted);width:60px">Levels</span>
+          <input class="prop-input" type="number" value="2" min="0" max="6" aria-label="Subdivision level viewport">
+          <span style="font-size:0.6875rem;color:var(--text-muted)">/</span>
+          <input class="prop-input" type="number" value="3" min="0" max="6" aria-label="Subdivision level render">
+        </div>
+      </div>
+      <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:6px;padding:8px 10px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span style="font-size:0.8125rem;font-weight:500">Bevel</span>
+          <span style="font-size:0.6875rem;color:var(--text-muted)">▾</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="prop-section">
+      <div class="prop-section-title">Constraints</div>
+      <div class="prop-checkbox">
+        <input type="checkbox" id="lockLoc" aria-label="Lock location">
+        <label for="lockLoc">Lock Location</label>
+      </div>
+      <div class="prop-checkbox">
+        <input type="checkbox" id="lockRot" aria-label="Lock rotation">
+        <label for="lockRot">Lock Rotation</label>
+      </div>
+      <div class="prop-checkbox">
+        <input type="checkbox" id="lockScale" checked aria-label="Lock scale">
+        <label for="lockScale">Lock Scale</label>
+      </div>
+    </div>
+
+    <div class="prop-section">
+      <div class="prop-section-title">Visibility</div>
+      <div class="prop-checkbox">
+        <input type="checkbox" id="showRender" checked aria-label="Show in render">
+        <label for="showRender">Show in Render</label>
+      </div>
+      <div class="prop-checkbox">
+        <input type="checkbox" id="showViewport" checked aria-label="Show in viewport">
+        <label for="showViewport">Show in Viewport</label>
+      </div>
+      <div class="prop-checkbox">
+        <input type="checkbox" id="shadow" checked aria-label="Cast shadow">
+        <label for="shadow">Cast Shadow</label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Viewport Panel -->
+  <div class="viewport-panel">
+    <div class="item">Snap: <span class="val">Grid</span></div>
+    <div class="item">Pivot: <span class="val">Median</span></div>
+    <div class="item">Orientation: <span class="val">Global</span></div>
+    <div class="right">
+      <div class="item">Faces: <span class="val">24,576</span></div>
+      <div class="item">Verts: <span class="val">12,892</span></div>
+      <div class="item">Tris: <span class="val">48,128</span></div>
+      <div class="item">Mem: <span class="val">247 MB</span></div>
+    </div>
+  </div>
+
+  <!-- Status Bar -->
+  <div class="status-bar" role="contentinfo">
+    <div class="item">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      Object Mode
+    </div>
+    <div class="item">Selected: <strong>Cube</strong></div>
+    <div class="item">Collection: Scene Collection</div>
+    <div class="status-right">
+      <div class="item">Render Engine: Cycles</div>
+      <div class="item">Samples: 128</div>
+      <div class="item">GPU</div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
