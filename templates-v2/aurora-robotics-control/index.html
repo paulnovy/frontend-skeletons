@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aurora Robotics Control</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --cloud: #F6F8FC;
+  --ink: #19212B;
+  --indigo: #4F46E5;
+  --cyan: #06B6D4;
+  --lime: #A3E635;
+  --coral: #FB7185;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--cloud);
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 700;
+}
+
+a {
+  color: var(--indigo);
+  text-decoration: none;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--indigo);
+  color: #fff;
+  padding: 8px 16px;
+  z-index: 100;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Top Navigation */
+.top-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 0 24px;
+  height: 60px;
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.nav-brand {
+  font-family: 'Manrope', sans-serif;
+  font-weight: 800;
+  font-size: 1.25rem;
+  color: var(--indigo);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-brand svg {
+  width: 28px;
+  height: 28px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 4px;
+  margin-left: 24px;
+}
+
+.nav-links a {
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--ink);
+  transition: background 0.15s;
+}
+
+.nav-links a:hover,
+.nav-links a[aria-current="page"] {
+  background: var(--cloud);
+  color: var(--indigo);
+}
+
+.nav-search {
+  margin-left: auto;
+  position: relative;
+}
+
+.nav-search input {
+  width: 220px;
+  padding: 8px 12px 8px 36px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  background: var(--cloud);
+}
+
+.nav-search svg {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  color: #9ca3af;
+}
+
+.nav-cta {
+  margin-left: 12px;
+  padding: 8px 18px;
+  background: var(--indigo);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.hamburger {
+  display: none;
+  background: none;
+  border: none;
+  padding: 8px;
+}
+
+.hamburger svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Mobile Drawer */
+.drawer-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 60;
+}
+
+.drawer-overlay.open {
+  display: block;
+}
+
+.drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 100%;
+  background: #fff;
+  z-index: 70;
+  transform: translateX(-100%);
+  transition: transform 0.25s;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.drawer.open {
+  transform: translateX(0);
+}
+
+.drawer-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+.drawer nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 24px;
+}
+
+.drawer nav a {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+}
+
+@media (max-width: 768px) {
+  .nav-links,
+  .nav-search,
+  .nav-cta {
+    display: none;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .top-nav {
+    padding: 0 16px;
+  }
+}
+
+/* KPI Strip */
+.kpi-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  padding: 24px;
+}
+
+.kpi-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+}
+
+.kpi-label {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.kpi-value {
+  font-family: 'Manrope', sans-serif;
+  font-size: 1.75rem;
+  font-weight: 800;
+}
+
+.kpi-trend {
+  font-size: 0.8125rem;
+  margin-top: 4px;
+}
+
+.kpi-trend.up {
+  color: #059669;
+}
+
+.kpi-trend.down {
+  color: var(--coral);
+}
+
+.kpi-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 4px;
+}
+
+.dot-online {
+  background: var(--lime);
+}
+
+.dot-alert {
+  background: var(--coral);
+}
+
+/* Main Content */
+.main {
+  padding: 0 24px 48px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.section-header h2 {
+  font-size: 1.25rem;
+}
+
+.badge {
+  background: var(--cloud);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+/* Alert Strip */
+.alert-strip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 24px 24px 0;
+  font-size: 0.875rem;
+}
+
+.alert-strip svg {
+  width: 20px;
+  height: 20px;
+  color: var(--coral);
+  flex-shrink: 0;
+}
+
+/* Fleet Grid */
+.fleet-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.robot-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+}
+
+.robot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.robot-card h4 {
+  font-size: 1rem;
+}
+
+.robot-id {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  margin-bottom: 12px;
+}
+
+.robot-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  font-size: 0.8125rem;
+  margin-bottom: 8px;
+}
+
+.robot-stat-label {
+  color: #6b7280;
+}
+
+.robot-stat-val {
+  font-weight: 600;
+}
+
+.badge-type {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.type-industrial {
+  background: #ede9fe;
+  color: #5b21b6;
+}
+
+.type-mobile {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.type-drone {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge-status {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.status-online {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-offline {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.status-maintenance {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.battery-bar {
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 3px;
+  margin-top: 6px;
+}
+
+.battery-fill {
+  height: 100%;
+  border-radius: 3px;
+}
+
+/* Task Board */
+.task-board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+  overflow-x: auto;
+}
+
+.task-col h3 {
+  font-size: 0.9375rem;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.task-col h3 .count {
+  background: var(--cloud);
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+}
+
+.task-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 12px;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 8px;
+}
+
+.task-card h5 {
+  font-size: 0.8125rem;
+  margin-bottom: 4px;
+}
+
+.task-card p {
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.task-priority {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 12px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.priority-high {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.priority-medium {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.priority-low {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+/* Maintenance Table */
+.maint-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  margin-bottom: 32px;
+}
+
+.maint-table th {
+  text-align: left;
+  padding: 12px 16px;
+  font-size: 0.8125rem;
+  color: #6b7280;
+  font-weight: 600;
+  border-bottom: 1px solid #e5e7eb;
+  background: var(--cloud);
+}
+
+.maint-table td {
+  padding: 12px 16px;
+  font-size: 0.875rem;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.maint-table tr:last-child td {
+  border-bottom: none;
+}
+
+.badge-maint {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.maint-upcoming {
+  background: #dbeafe;
+  color: #1d4ed8;
+}
+
+.maint-inprogress {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.maint-overdue {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.maint-complete {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+/* Telemetry */
+.telemetry-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.telemetry-card {
+  background: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.telemetry-card h4 {
+  font-size: 0.8125rem;
+  color: #6b7280;
+  margin-bottom: 8px;
+}
+
+.telemetry-val {
+  font-family: 'Manrope', sans-serif;
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+.telemetry-bar {
+  height: 8px;
+  background: #e5e7eb;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.telemetry-fill {
+  height: 100%;
+  border-radius: 4px;
+}
+
+/* Footer */
+.site-footer {
+  padding: 32px 24px;
+  text-align: center;
+  font-size: 0.8125rem;
+  color: #9ca3af;
+  border-top: 1px solid #e5e7eb;
+  margin-top: 48px;
+}
+
+/* Accessibility */
+:focus-visible {
+  outline: 2px solid var(--indigo);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .kpi-strip {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .fleet-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .task-board {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .maint-table {
+    font-size: 0.8125rem;
+  }
+
+  .maint-table th,
+  .maint-table td {
+    padding: 8px 10px;
+  }
+
+  .telemetry-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header class="top-nav">
+  <button class="hamburger" aria-label="Open menu" aria-expanded="false" onclick="document.getElementById('drawer').classList.toggle('open');document.getElementById('overlay').classList.toggle('open');this.setAttribute('aria-expanded',document.getElementById('drawer').classList.contains('open'))">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+  </button>
+  <a href="#" class="nav-brand">
+    <svg viewBox="0 0 28 28" fill="none"><circle cx="14" cy="14" r="12" stroke="#4F46E5" stroke-width="2"/><circle cx="14" cy="14" r="5" fill="#06B6D4"/><path d="M14 4v4M14 20v4M4 14h4M20 14h4" stroke="#4F46E5" stroke-width="1.5"/></svg>
+    Aurora Robotics Control
+  </a>
+  <nav class="nav-links" aria-label="Main">
+    <a href="#" aria-current="page">Dashboard</a>
+    <a href="#fleet">Fleet</a>
+    <a href="#tasks">Tasks</a>
+    <a href="#maintenance">Maintenance</a>
+    <a href="#telemetry">Telemetry</a>
+  </nav>
+  <div class="nav-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="search" title="Search robots" aria-label="Search">
+  </div>
+  <button class="nav-cta">Add Robot</button>
+</header>
+
+<div class="drawer-overlay" id="overlay" onclick="document.getElementById('drawer').classList.remove('open');this.classList.remove('open')"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-label="Navigation">
+  <button class="drawer-close" aria-label="Close menu" onclick="document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open')">&times;</button>
+  <nav>
+    <a href="#">Dashboard</a>
+    <a href="#fleet">Fleet</a>
+    <a href="#tasks">Tasks</a>
+    <a href="#maintenance">Maintenance</a>
+    <a href="#telemetry">Telemetry</a>
+  </nav>
+</aside>
+
+<main id="main">
+  <div class="alert-strip" role="alert">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+    <span><strong>2 alerts:</strong> Unit RB-07 battery critical (12%) &middot; Unit DR-03 communication timeout</span>
+  </div>
+
+  <div class="kpi-strip" role="region" aria-label="Key metrics">
+    <div class="kpi-card">
+      <div class="kpi-label"><span class="kpi-dot dot-online"></span>Online Robots</div>
+      <div class="kpi-value">18</div>
+      <div class="kpi-trend up">of 22 total</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Tasks In Progress</div>
+      <div class="kpi-value">34</div>
+      <div class="kpi-trend up">↑ 6 from yesterday</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label"><span class="kpi-dot dot-alert"></span>Active Alerts</div>
+      <div class="kpi-value">2</div>
+      <div class="kpi-trend down">Needs attention</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Uptime (30d)</div>
+      <div class="kpi-value">97.3%</div>
+      <div class="kpi-trend up">↑ 0.8% vs last month</div>
+    </div>
+  </div>
+
+  <div class="main">
+    <section id="fleet" aria-labelledby="fleet-heading">
+      <div class="section-header">
+        <h2 id="fleet-heading">Fleet Status</h2>
+        <span class="badge">22 Units</span>
+      </div>
+      <div class="fleet-grid">
+        <div class="robot-card">
+          <div class="robot-header">
+            <h4>IR-01 Forge Master</h4>
+            <span class="badge-type type-industrial">Industrial</span>
+          </div>
+          <div class="robot-id">Unit IR-01 · Last ping 2s ago</div>
+          <div class="robot-stats">
+            <div><span class="robot-stat-label">Status</span><br><span class="badge-status status-online">Online</span></div>
+            <div><span class="robot-stat-label">Battery</span><br><span class="robot-stat-val">94%</span></div>
+            <div><span class="robot-stat-label">Task</span><br><span class="robot-stat-val">Welding Assembly L7</span></div>
+            <div><span class="robot-stat-label">Location</span><br><span class="robot-stat-val">Bay 3A</span></div>
+          </div>
+          <div class="battery-bar"><div class="battery-fill" style="width: 94%; background: var(--lime);"></div></div>
+        </div>
+        <div class="robot-card">
+          <div class="robot-header">
+            <h4>RB-07 Scout Alpha</h4>
+            <span class="badge-type type-mobile">Mobile</span>
+          </div>
+          <div class="robot-id">Unit RB-07 · Last ping 45s ago</div>
+          <div class="robot-stats">
+            <div><span class="robot-stat-label">Status</span><br><span class="badge-status status-online">Online</span></div>
+            <div><span class="robot-stat-label">Battery</span><br><span class="robot-stat-val" style="color: var(--coral);">12%</span></div>
+            <div><span class="robot-stat-label">Task</span><br><span class="robot-stat-val">Warehouse Scan Z12</span></div>
+            <div><span class="robot-stat-label">Location</span><br><span class="robot-stat-val">Zone 12</span></div>
+          </div>
+          <div class="battery-bar"><div class="battery-fill" style="width: 12%; background: var(--coral);"></div></div>
+        </div>
+        <div class="robot-card">
+          <div class="robot-header">
+            <h4>DR-03 Sky Eye</h4>
+            <span class="badge-type type-drone">Drone</span>
+          </div>
+          <div class="robot-id">Unit DR-03 · Last ping 120s ago</div>
+          <div class="robot-stats">
+            <div><span class="robot-stat-label">Status</span><br><span class="badge-status status-offline">Offline</span></div>
+            <div><span class="robot-stat-label">Battery</span><br><span class="robot-stat-val">67%</span></div>
+            <div><span class="robot-stat-label">Task</span><br><span class="robot-stat-val">—</span></div>
+            <div><span class="robot-stat-label">Location</span><br><span class="robot-stat-val">Charging Dock</span></div>
+          </div>
+          <div class="battery-bar"><div class="battery-fill" style="width: 67%; background: var(--cyan);"></div></div>
+        </div>
+        <div class="robot-card">
+          <div class="robot-header">
+            <h4>IR-02 Titan Press</h4>
+            <span class="badge-type type-industrial">Industrial</span>
+          </div>
+          <div class="robot-id">Unit IR-02 · Last ping 5s ago</div>
+          <div class="robot-stats">
+            <div><span class="robot-stat-label">Status</span><br><span class="badge-status status-maintenance">Maintenance</span></div>
+            <div><span class="robot-stat-label">Battery</span><br><span class="robot-stat-val">100%</span></div>
+            <div><span class="robot-stat-label">Task</span><br><span class="robot-stat-val">Servicing scheduled</span></div>
+            <div><span class="robot-stat-label">Location</span><br><span class="robot-stat-val">Service Bay 1</span></div>
+          </div>
+          <div class="battery-bar"><div class="battery-fill" style="width: 100%; background: var(--lime);"></div></div>
+        </div>
+        <div class="robot-card">
+          <div class="robot-header">
+            <h4>RB-12 Pathfinder</h4>
+            <span class="badge-type type-mobile">Mobile</span>
+          </div>
+          <div class="robot-id">Unit RB-12 · Last ping 8s ago</div>
+          <div class="robot-stats">
+            <div><span class="robot-stat-label">Status</span><br><span class="badge-status status-online">Online</span></div>
+            <div><span class="robot-stat-label">Battery</span><br><span class="robot-stat-val">78%</span></div>
+            <div><span class="robot-stat-label">Task</span><br><span class="robot-stat-val">Inventory Audit B3</span></div>
+            <div><span class="robot-stat-label">Location</span><br><span class="robot-stat-val">Zone 7</span></div>
+          </div>
+          <div class="battery-bar"><div class="battery-fill" style="width: 78%; background: var(--cyan);"></div></div>
+        </div>
+        <div class="robot-card">
+          <div class="robot-header">
+            <h4>DR-08 Hawk Eye</h4>
+            <span class="badge-type type-drone">Drone</span>
+          </div>
+          <div class="robot-id">Unit DR-08 · Last ping 3s ago</div>
+          <div class="robot-stats">
+            <div><span class="robot-stat-label">Status</span><br><span class="badge-status status-online">Online</span></div>
+            <div><span class="robot-stat-label">Battery</span><br><span class="robot-stat-val">55%</span></div>
+            <div><span class="robot-stat-label">Task</span><br><span class="robot-stat-val">Perimeter Patrol</span></div>
+            <div><span class="robot-stat-label">Location</span><br><span class="robot-stat-val">Sector NE</span></div>
+          </div>
+          <div class="battery-bar"><div class="battery-fill" style="width: 55%; background: var(--cyan);"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tasks" aria-labelledby="tasks-heading">
+      <div class="section-header">
+        <h2 id="tasks-heading">Task Board</h2>
+        <span class="badge">34 Active</span>
+      </div>
+      <div class="task-board">
+        <div class="task-col">
+          <h3>Queued <span class="count">8</span></h3>
+          <div class="task-card"><h5>Calibrate IR-02 arm joints</h5><p>Assigned: IR-02 · ETA: 45 min</p><span class="task-priority priority-high">High</span></div>
+          <div class="task-card"><h5>Scan Zone 14 inventory</h5><p>Assigned: RB-12 · ETA: 2h</p><span class="task-priority priority-medium">Medium</span></div>
+          <div class="task-card"><h5>Replace DR-03 comm module</h5><p>Assigned: Technician · ETA: 1h</p><span class="task-priority priority-high">High</span></div>
+          <div class="task-card"><h5>Charge RB-07 battery pack</h5><p>Assigned: RB-07 · ETA: 90 min</p><span class="task-priority priority-high">High</span></div>
+        </div>
+        <div class="task-col">
+          <h3>Running <span class="count">12</span></h3>
+          <div class="task-card"><h5>Welding Assembly L7</h5><p>Assigned: IR-01 · ETA: 35 min</p><span class="task-priority priority-high">High</span></div>
+          <div class="task-card"><h5>Warehouse Scan Z12</h5><p>Assigned: RB-07 · ETA: 20 min</p><span class="task-priority priority-medium">Medium</span></div>
+          <div class="task-card"><h5>Perimeter Patrol NE</h5><p>Assigned: DR-08 · ETA: 1h</p><span class="task-priority priority-low">Low</span></div>
+          <div class="task-card"><h5>Pick &amp; Sort Bin 14</h5><p>Assigned: RB-03 · ETA: 50 min</p><span class="task-priority priority-medium">Medium</span></div>
+        </div>
+        <div class="task-col">
+          <h3>Completed <span class="count">18</span></h3>
+          <div class="task-card"><h5>Quality Inspection Batch 47</h5><p>Completed by IR-04 · 2h ago</p><span class="task-priority priority-low">Done</span></div>
+          <div class="task-card"><h5>Pallet Transport Lane C</h5><p>Completed by RB-05 · 3h ago</p><span class="task-priority priority-low">Done</span></div>
+          <div class="task-card"><h5>Aerial Survey Sector SW</h5><p>Completed by DR-01 · 4h ago</p><span class="task-priority priority-low">Done</span></div>
+        </div>
+        <div class="task-col">
+          <h3>Failed <span class="count">2</span></h3>
+          <div class="task-card"><h5>Spray Coating Panel A7</h5><p>Failed: IR-06 · Error: Nozzle jam</p><span class="task-priority priority-high">Error</span></div>
+          <div class="task-card"><h5>Navigate Zone 9</h5><p>Failed: RB-11 · Error: Path blocked</p><span class="task-priority priority-high">Error</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="maintenance" aria-labelledby="maint-heading">
+      <div class="section-header">
+        <h2 id="maint-heading">Maintenance Schedule</h2>
+        <span class="badge">7 Scheduled</span>
+      </div>
+      <table class="maint-table">
+        <thead>
+          <tr><th>Robot ID</th><th>Maintenance Type</th><th>Scheduled</th><th>Technician</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>IR-02</td><td>Annual Service</td><td>2025-02-15</td><td>J. Martinez</td><td><span class="badge-maint maint-inprogress">In Progress</span></td></tr>
+          <tr><td>RB-07</td><td>Battery Replacement</td><td>2025-02-16</td><td>A. Kim</td><td><span class="badge-maint maint-upcoming">Upcoming</span></td></tr>
+          <tr><td>DR-03</td><td>Comm Module Fix</td><td>2025-02-16</td><td>R. Chen</td><td><span class="badge-maint maint-upcoming">Upcoming</span></td></tr>
+          <tr><td>IR-04</td><td>Calibration Check</td><td>2025-02-10</td><td>J. Martinez</td><td><span class="badge-maint maint-overdue">Overdue</span></td></tr>
+          <tr><td>RB-05</td><td>Tire Inspection</td><td>2025-02-12</td><td>A. Kim</td><td><span class="badge-maint maint-complete">Complete</span></td></tr>
+          <tr><td>DR-01</td><td>Propeller Balance</td><td>2025-02-18</td><td>R. Chen</td><td><span class="badge-maint maint-upcoming">Upcoming</span></td></tr>
+          <tr><td>IR-01</td><td>Wear Inspection</td><td>2025-02-20</td><td>J. Martinez</td><td><span class="badge-maint maint-upcoming">Upcoming</span></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="telemetry" aria-labelledby="tele-heading">
+      <div class="section-header">
+        <h2 id="tele-heading">Telemetry — IR-01 Forge Master</h2>
+        <span class="badge">Live</span>
+      </div>
+      <div class="telemetry-grid">
+        <div class="telemetry-card">
+          <h4>CPU Load</h4>
+          <div class="telemetry-val" style="color: var(--indigo);">67%</div>
+          <div class="telemetry-bar"><div class="telemetry-fill" style="width: 67%; background: var(--indigo);"></div></div>
+        </div>
+        <div class="telemetry-card">
+          <h4>Temperature</h4>
+          <div class="telemetry-val" style="color: var(--coral);">72°C</div>
+          <div class="telemetry-bar"><div class="telemetry-fill" style="width: 72%; background: var(--coral);"></div></div>
+        </div>
+        <div class="telemetry-card">
+          <h4>Battery Drain</h4>
+          <div class="telemetry-val" style="color: var(--cyan);">2.1%/h</div>
+          <div class="telemetry-bar"><div class="telemetry-fill" style="width: 21%; background: var(--cyan);"></div></div>
+        </div>
+        <div class="telemetry-card">
+          <h4>Network Latency</h4>
+          <div class="telemetry-val" style="color: var(--lime);">12ms</div>
+          <div class="telemetry-bar"><div class="telemetry-fill" style="width: 12%; background: var(--lime);"></div></div>
+        </div>
+        <div class="telemetry-card">
+          <h4>Motors Active</h4>
+          <div class="telemetry-val" style="color: var(--indigo);">6/8</div>
+          <div class="telemetry-bar"><div class="telemetry-fill" style="width: 75%; background: var(--indigo);"></div></div>
+        </div>
+        <div class="telemetry-card">
+          <h4>Arm Position Error</h4>
+          <div class="telemetry-val" style="color: var(--lime);">0.3mm</div>
+          <div class="telemetry-bar"><div class="telemetry-fill" style="width: 3%; background: var(--lime);"></div></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  Aurora Robotics Control — designed by Studio &middot; Standalone prototype &middot; Not affiliated with any robotics manufacturer
+</footer>
+</body>
+</html>
