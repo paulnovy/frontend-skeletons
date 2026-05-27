@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nova Pricing Page</title>
+  <meta name="description" content="A premium tiered SaaS pricing page with comparison details, add-ons, enterprise benefits, and pricing FAQ.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --indigo: #4F46E5;
+      --cyan: #06B6D4;
+      --lime: #A3E635;
+      --coral: #FB7185;
+      --cloud-soft: rgba(246, 248, 252, 0.72);
+      --cloud-strong: rgba(246, 248, 252, 0.94);
+      --ink-soft: rgba(25, 33, 43, 0.72);
+      --ink-muted: rgba(25, 33, 43, 0.58);
+      --ink-line: rgba(25, 33, 43, 0.12);
+      --ink-panel: rgba(25, 33, 43, 0.05);
+      --indigo-soft: rgba(79, 70, 229, 0.12);
+      --indigo-line: rgba(79, 70, 229, 0.24);
+      --cyan-soft: rgba(6, 182, 212, 0.13);
+      --cyan-line: rgba(6, 182, 212, 0.26);
+      --lime-soft: rgba(163, 230, 53, 0.18);
+      --lime-line: rgba(163, 230, 53, 0.34);
+      --coral-soft: rgba(251, 113, 133, 0.14);
+      --coral-line: rgba(251, 113, 133, 0.28);
+      --panel: rgba(255, 255, 255, 0.78);
+      --panel-solid: #ffffff;
+      --shadow-soft: 0 24px 70px rgba(25, 33, 43, 0.10);
+      --shadow-tight: 0 14px 34px rgba(25, 33, 43, 0.12);
+      --radius: 8px;
+      --radius-large: 18px;
+      --max: 1180px;
+      color-scheme: light;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at top left, rgba(6, 182, 212, 0.16), transparent 34rem),
+        radial-gradient(circle at top right, rgba(79, 70, 229, 0.16), transparent 32rem),
+        var(--cloud);
+      color: var(--ink);
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+      letter-spacing: 0;
+    }
+
+    body.drawer-open {
+      overflow: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    img,
+    svg {
+      display: block;
+      max-width: 100%;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 3px;
+    }
+
+    .page-shell {
+      min-height: 100vh;
+      overflow: hidden;
+    }
+
+    .skip-link {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 100;
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--cloud);
+      transform: translateY(-160%);
+      transition: transform 180ms ease;
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      border-bottom: 1px solid var(--ink-line);
+      background: rgba(246, 248, 252, 0.84);
+      backdrop-filter: blur(20px);
+    }
+
+    .nav-wrap {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+      min-height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Manrope", sans-serif;
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      color: var(--cloud);
+      background:
+        linear-gradient(135deg, var(--indigo), var(--cyan));
+      box-shadow: 0 12px 28px rgba(79, 70, 229, 0.28);
+    }
+
+    .brand-mark svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .desktop-nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .desktop-nav a {
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      color: var(--ink-soft);
+      font-size: 0.94rem;
+      font-weight: 700;
+    }
+
+    .desktop-nav a:hover {
+      background: var(--ink-panel);
+      color: var(--ink);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .login-link {
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      color: var(--ink-soft);
+      font-weight: 800;
+    }
+
+    .login-link:hover {
+      background: var(--ink-panel);
+      color: var(--ink);
+    }
+
+    .button {
+      min-height: 44px;
+      border: 0;
+      border-radius: var(--radius);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 0 18px;
+      font-weight: 800;
+      color: var(--ink);
+      background: var(--panel-solid);
+      box-shadow: inset 0 0 0 1px var(--ink-line);
+      transition:
+        transform 180ms ease,
+        box-shadow 180ms ease,
+        background 180ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      box-shadow:
+        inset 0 0 0 1px var(--ink-line),
+        var(--shadow-tight);
+    }
+
+    .button-primary {
+      color: var(--cloud);
+      background: var(--indigo);
+      box-shadow: 0 14px 32px rgba(79, 70, 229, 0.28);
+    }
+
+    .button-primary:hover {
+      box-shadow: 0 18px 40px rgba(79, 70, 229, 0.34);
+    }
+
+    .button-dark {
+      color: var(--cloud);
+      background: var(--ink);
+      box-shadow: 0 16px 38px rgba(25, 33, 43, 0.22);
+    }
+
+    .button-cyan {
+      color: var(--ink);
+      background: var(--cyan);
+      box-shadow: 0 16px 36px rgba(6, 182, 212, 0.25);
+    }
+
+    .menu-toggle {
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink);
+      background: var(--panel-solid);
+    }
+
+    .menu-toggle svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .drawer-scrim {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      visibility: hidden;
+      opacity: 0;
+      background: rgba(25, 33, 43, 0.38);
+      transition:
+        opacity 220ms ease,
+        visibility 220ms ease;
+    }
+
+    .drawer-scrim.is-open {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .mobile-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 80;
+      width: min(88vw, 360px);
+      min-height: 100vh;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      background: var(--cloud);
+      box-shadow: -28px 0 60px rgba(25, 33, 43, 0.18);
+      transform: translateX(105%);
+      transition: transform 260ms ease;
+    }
+
+    .mobile-drawer.is-open {
+      transform: translateX(0);
+    }
+
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .drawer-close {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      background: var(--panel-solid);
+      color: var(--ink);
+    }
+
+    .drawer-close svg {
+      width: 21px;
+      height: 21px;
+    }
+
+    .drawer-links {
+      display: grid;
+      gap: 8px;
+    }
+
+    .drawer-links a {
+      padding: 13px 12px;
+      border-radius: var(--radius);
+      color: var(--ink);
+      font-weight: 800;
+      background: rgba(255, 255, 255, 0.58);
+      box-shadow: inset 0 0 0 1px var(--ink-line);
+    }
+
+    main {
+      display: block;
+    }
+
+    .section {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+      padding: 92px 0;
+    }
+
+    .hero {
+      padding-top: 86px;
+      padding-bottom: 76px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.92fr);
+      align-items: center;
+      gap: 42px;
+    }
+
+    .eyebrow {
+      width: fit-content;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 18px;
+      padding: 7px 10px;
+      border: 1px solid var(--cyan-line);
+      border-radius: 999px;
+      color: var(--ink);
+      background: var(--cyan-soft);
+      font-size: 0.84rem;
+      font-weight: 800;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--lime);
+      box-shadow: 0 0 0 5px var(--lime-soft);
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Manrope", sans-serif;
+      letter-spacing: 0;
+      line-height: 1.04;
+    }
+
+    h1 {
+      max-width: 760px;
+      font-size: clamp(3rem, 7vw, 5.8rem);
+      font-weight: 800;
+    }
+
+    h2 {
+      font-size: clamp(2rem, 4vw, 3.3rem);
+      font-weight: 800;
+    }
+
+    h3 {
+      font-size: 1.35rem;
+      font-weight: 800;
+    }
+
+    .hero-copy {
+      margin: 22px 0 0;
+      max-width: 660px;
+      color: var(--ink-soft);
+      font-size: 1.16rem;
+    }
+
+    .billing-panel {
+      margin-top: 30px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .billing-toggle {
+      position: relative;
+      display: inline-grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+      padding: 5px;
+      border: 1px solid var(--ink-line);
+      border-radius: 999px;
+      background: var(--panel);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .billing-toggle button {
+      position: relative;
+      z-index: 1;
+      min-width: 118px;
+      min-height: 42px;
+      border: 0;
+      border-radius: 999px;
+      color: var(--ink-soft);
+      background: transparent;
+      font-weight: 800;
+    }
+
+    .billing-toggle button.is-active {
+      color: var(--cloud);
+      background: var(--ink);
+      box-shadow: 0 10px 24px rgba(25, 33, 43, 0.18);
+    }
+
+    .savings-badge {
+      padding: 10px 13px;
+      border: 1px solid var(--lime-line);
+      border-radius: 999px;
+      color: var(--ink);
+      background: var(--lime-soft);
+      font-weight: 800;
+    }
+
+    .hero-card {
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius-large);
+      padding: 22px;
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .hero-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .live-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border: 1px solid var(--cyan-line);
+      border-radius: 999px;
+      background: var(--cyan-soft);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .metric-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .metric {
+      min-height: 126px;
+      padding: 16px;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: var(--cloud-strong);
+    }
+
+    .metric span {
+      color: var(--ink-muted);
+      font-size: 0.84rem;
+      font-weight: 800;
+    }
+
+    .metric strong {
+      display: block;
+      margin-top: 8px;
+      font-family: "Manrope", sans-serif;
+      font-size: 2rem;
+      line-height: 1;
+    }
+
+    .metric small {
+      display: block;
+      margin-top: 9px;
+      color: var(--ink-muted);
+      font-weight: 700;
+    }
+
+    .insight-strip {
+      margin-top: 14px;
+      padding: 16px;
+      border: 1px solid var(--indigo-line);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      background: var(--indigo-soft);
+    }
+
+    .insight-strip strong {
+      font-family: "Manrope", sans-serif;
+      font-size: 1.05rem;
+    }
+
+    .section-head {
+      max-width: 740px;
+      margin-bottom: 34px;
+    }
+
+    .section-head p {
+      margin: 14px 0 0;
+      color: var(--ink-soft);
+      font-size: 1.04rem;
+    }
+
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .plan-card {
+      position: relative;
+      min-height: 100%;
+      padding: 24px;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius-large);
+      display: flex;
+      flex-direction: column;
+      background: rgba(255, 255, 255, 0.74);
+      box-shadow: 0 18px 48px rgba(25, 33, 43, 0.08);
+    }
+
+    .plan-card.is-featured {
+      border-color: var(--indigo-line);
+      background:
+        linear-gradient(180deg, rgba(79, 70, 229, 0.10), rgba(255, 255, 255, 0.82) 42%),
+        var(--panel-solid);
+      box-shadow: 0 26px 70px rgba(79, 70, 229, 0.17);
+    }
+
+    .plan-badge {
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      color: var(--cloud);
+      background: var(--indigo);
+      font-size: 0.75rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .plan-kicker {
+      margin: 8px 0 0;
+      color: var(--ink-muted);
+      font-weight: 700;
+    }
+
+    .price {
+      margin: 24px 0 8px;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-family: "Manrope", sans-serif;
+    }
+
+    .price strong {
+      font-size: 3.15rem;
+      line-height: 1;
+    }
+
+    .price span {
+      color: var(--ink-muted);
+      font-weight: 800;
+    }
+
+    .annual-note {
+      min-height: 24px;
+      color: var(--cyan);
+      font-size: 0.9rem;
+      font-weight: 900;
+    }
+
+    .feature-list {
+      margin: 22px 0 24px;
+      padding: 0;
+      display: grid;
+      gap: 12px;
+      list-style: none;
+    }
+
+    .feature-list li {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      gap: 10px;
+      align-items: start;
+      color: var(--ink-soft);
+      font-weight: 700;
+    }
+
+    .check {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: var(--ink);
+      background: var(--lime);
+      font-weight: 900;
+      line-height: 1;
+    }
+
+    .plan-card .button {
+      width: 100%;
+      margin-top: auto;
+    }
+
+    .comparison-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius-large);
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .comparison-table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    .comparison-table th,
+    .comparison-table td {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--ink-line);
+      vertical-align: middle;
+    }
+
+    .comparison-table thead th {
+      position: sticky;
+      top: 74px;
+      z-index: 2;
+      background: var(--cloud-strong);
+      color: var(--ink);
+      font-family: "Manrope", sans-serif;
+      font-size: 1rem;
+    }
+
+    .comparison-table tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .comparison-table td:not(:first-child),
+    .comparison-table th:not(:first-child) {
+      text-align: center;
+    }
+
+    .feature-name {
+      color: var(--ink);
+      font-weight: 900;
+    }
+
+    .feature-sub {
+      display: block;
+      margin-top: 4px;
+      color: var(--ink-muted);
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .mark {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      font-weight: 900;
+    }
+
+    .mark.yes {
+      background: var(--lime-soft);
+      color: var(--ink);
+      box-shadow: inset 0 0 0 1px var(--lime-line);
+    }
+
+    .mark.no {
+      background: var(--coral-soft);
+      color: var(--coral);
+      box-shadow: inset 0 0 0 1px var(--coral-line);
+    }
+
+    .text-value {
+      color: var(--ink-soft);
+      font-weight: 800;
+    }
+
+    .addons-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .addon-card {
+      padding: 22px;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius-large);
+      background: rgba(255, 255, 255, 0.74);
+      box-shadow: 0 16px 42px rgba(25, 33, 43, 0.07);
+    }
+
+    .addon-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      color: var(--ink);
+      background: var(--cyan-soft);
+      box-shadow: inset 0 0 0 1px var(--cyan-line);
+    }
+
+    .addon-card h3 {
+      margin-top: 18px;
+    }
+
+    .addon-card p {
+      margin: 10px 0 18px;
+      color: var(--ink-soft);
+      font-weight: 650;
+    }
+
+    .addon-price {
+      display: flex;
+      align-items: baseline;
+      gap: 7px;
+      font-family: "Manrope", sans-serif;
+    }
+
+    .addon-price strong {
+      font-size: 2rem;
+    }
+
+    .enterprise-band {
+      padding: 32px;
+      border: 1px solid rgba(246, 248, 252, 0.18);
+      border-radius: var(--radius-large);
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(300px, 1.05fr);
+      gap: 30px;
+      background:
+        radial-gradient(circle at top right, rgba(6, 182, 212, 0.18), transparent 28rem),
+        var(--ink);
+      color: var(--cloud);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .enterprise-band h2,
+    .enterprise-band h3 {
+      color: var(--cloud);
+    }
+
+    .enterprise-band p {
+      color: rgba(246, 248, 252, 0.76);
+    }
+
+    .enterprise-panel {
+      padding: 24px;
+      border: 1px solid rgba(246, 248, 252, 0.16);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.08);
+    }
+
+    .benefit-list {
+      margin: 20px 0 0;
+      padding: 0;
+      display: grid;
+      gap: 12px;
+      list-style: none;
+    }
+
+    .benefit-list li {
+      display: grid;
+      grid-template-columns: 22px 1fr;
+      gap: 10px;
+      color: rgba(246, 248, 252, 0.82);
+      font-weight: 700;
+    }
+
+    .enterprise-panel .button {
+      margin-top: 22px;
+      width: 100%;
+    }
+
+    .faq-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .faq-item {
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius-large);
+      background: rgba(255, 255, 255, 0.74);
+      box-shadow: 0 12px 32px rgba(25, 33, 43, 0.06);
+      overflow: hidden;
+    }
+
+    .faq-question {
+      width: 100%;
+      min-height: 70px;
+      padding: 20px 22px;
+      border: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      color: var(--ink);
+      background: transparent;
+      text-align: left;
+      font-family: "Manrope", sans-serif;
+      font-size: 1.04rem;
+      font-weight: 800;
+    }
+
+    .faq-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: grid;
+      flex: 0 0 auto;
+      place-items: center;
+      background: var(--indigo-soft);
+      color: var(--indigo);
+      transition: transform 180ms ease;
+    }
+
+    .faq-question[aria-expanded="true"] .faq-icon {
+      transform: rotate(45deg);
+    }
+
+    .faq-answer {
+      display: grid;
+      grid-template-rows: 0fr;
+      transition: grid-template-rows 220ms ease;
+    }
+
+    .faq-answer.is-open {
+      grid-template-rows: 1fr;
+    }
+
+    .faq-answer-inner {
+      overflow: hidden;
+    }
+
+    .faq-answer p {
+      margin: 0;
+      padding: 0 22px 22px;
+      color: var(--ink-soft);
+      font-weight: 650;
+    }
+
+    .site-footer {
+      border-top: 1px solid var(--ink-line);
+      background: rgba(255, 255, 255, 0.48);
+    }
+
+    .footer-wrap {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+      padding: 30px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      color: var(--ink-soft);
+      font-weight: 700;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+
+    .footer-links a {
+      color: var(--ink);
+      font-weight: 800;
+    }
+
+    @media (max-width: 960px) {
+      .desktop-nav,
+      .nav-actions {
+        display: none;
+      }
+
+      .menu-toggle {
+        display: inline-flex;
+      }
+
+      .hero,
+      .enterprise-band {
+        grid-template-columns: 1fr;
+      }
+
+      .pricing-grid,
+      .addons-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .plan-card.is-featured {
+        order: -1;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .section {
+        width: min(100% - 24px, var(--max));
+        padding: 62px 0;
+      }
+
+      .hero {
+        padding-top: 58px;
+      }
+
+      h1 {
+        font-size: 3rem;
+      }
+
+      .billing-toggle {
+        width: 100%;
+      }
+
+      .billing-toggle button {
+        min-width: 0;
+      }
+
+      .metric-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .enterprise-band {
+        padding: 24px;
+      }
+
+      .footer-wrap {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="page-shell">
+    <header class="site-header" aria-label="Site header">
+      <div class="nav-wrap">
+        <a class="brand" href="#" aria-label="Nova home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 3l2.2 6.1 6.3 2.1-6.3 2.1L12 19.4l-2.2-6.1-6.3-2.1 6.3-2.1L12 3z" fill="currentColor"/>
+            </svg>
+          </span>
+          Nova
+        </a>
+        <nav class="desktop-nav" aria-label="Primary navigation">
+          <a href="#features">Features</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#enterprise">Enterprise</a>
+          <a href="#faq">Blog</a>
+        </nav>
+        <div class="nav-actions">
+          <a class="login-link" href="#login">Login</a>
+          <a class="button button-primary" href="#pricing">Start Free Trial</a>
+        </div>
+        <button class="menu-toggle" type="button" aria-label="Open menu" aria-controls="mobile-drawer" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </header>
+    <div class="drawer-scrim" data-drawer-scrim></div>
+    <aside class="mobile-drawer" id="mobile-drawer" aria-label="Mobile navigation" aria-hidden="true">
+      <div class="drawer-head">
+        <a class="brand" href="#" aria-label="Nova home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 3l2.2 6.1 6.3 2.1-6.3 2.1L12 19.4l-2.2-6.1-6.3-2.1 6.3-2.1L12 3z" fill="currentColor"/>
+            </svg>
+          </span>
+          Nova
+        </a>
+        <button class="drawer-close" type="button" aria-label="Close menu">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <nav class="drawer-links" aria-label="Mobile primary navigation">
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#enterprise">Enterprise</a>
+        <a href="#faq">Blog</a>
+        <a href="#login">Login</a>
+        <a href="#pricing">Start Free Trial</a>
+      </nav>
+    </aside>
+    <main id="main">
+      <section class="section hero" aria-labelledby="hero-title">
+        <div>
+          <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Billing built for fast SaaS teams</p>
+          <h1 id="hero-title">Pricing that scales with every product motion.</h1>
+          <p class="hero-copy">Launch subscriptions, seat-based plans, add-ons, and enterprise contracts with one clean pricing system designed for conversion and clarity.</p>
+          <div class="billing-panel" aria-label="Billing cadence">
+            <div class="billing-toggle" role="group" aria-label="Choose billing cadence">
+              <button type="button" class="is-active" data-cycle="monthly" aria-pressed="true">Monthly</button>
+              <button type="button" data-cycle="annual" aria-pressed="false">Annual</button>
+            </div>
+            <span class="savings-badge">Save 20% with annual billing</span>
+          </div>
+        </div>
+        <aside class="hero-card" aria-label="Pricing performance summary">
+          <div class="hero-card-top">
+            <h2>Live plan health</h2>
+            <span class="live-pill"><span class="status-dot" aria-hidden="true"></span>Synced</span>
+          </div>
+          <div class="metric-grid">
+            <div class="metric">
+              <span>Conversion lift</span>
+              <strong>18%</strong>
+              <small>From clearer tiers</small>
+            </div>
+            <div class="metric">
+              <span>Billing errors</span>
+              <strong>0.04%</strong>
+              <small>Healthy operations</small>
+            </div>
+            <div class="metric">
+              <span>Plan changes</span>
+              <strong>4.8k</strong>
+              <small>This month</small>
+            </div>
+            <div class="metric">
+              <span>Revenue guard</span>
+              <strong>99.9%</strong>
+              <small>Policy coverage</small>
+            </div>
+          </div>
+          <div class="insight-strip">
+            <strong>Upgrade paths are active</strong>
+            <span class="mark yes" aria-label="Enabled">✓</span>
+          </div>
+        </aside>
+      </section>
+      <section class="section" id="pricing" aria-labelledby="pricing-title">
+        <div class="section-head">
+          <h2 id="pricing-title">Choose the plan that fits your next stage.</h2>
+          <p>All plans include secure billing, product analytics, and customer-ready account management from day one.</p>
+        </div>
+        <div class="pricing-grid">
+          <article class="plan-card">
+            <h3>Starter</h3>
+            <p class="plan-kicker">For founders validating a paid product.</p>
+            <div class="price"><strong data-monthly="19" data-annual="15">$19</strong><span>/seat</span></div>
+            <div class="annual-note" data-note>Monthly billing</div>
+            <ul class="feature-list">
+              <li><span class="check" aria-hidden="true">✓</span><span>Up to 5 team seats</span></li>
+              <li><span class="check" aria-hidden="true">✓</span><span>Three pricing experiments</span></li>
+              <li><span class="check" aria-hidden="true">✓</span><span>Hosted checkout pages</span></li>
+              <li><span class="check" aria-hidden="true">✓</span><span>Email support within two business days</span></li>
+            </ul>
+            <a class="button" href="#signup">Start Starter</a>
+          </article>
+          <article class="plan-card is-featured">
+            <span class="plan-badge">Most Popular</span>
+            <h3>Pro</h3>
+            <p class="plan-kicker">For teams optimizing growth and retention.</p>
+            <div class="price"><strong data-monthly="49" data-annual="39">$49</strong><span>/seat</span></div>
+            <div class="annual-note" data-note>Monthly billing</div>
+            <ul class="feature-list">
+              <li><span class="check" aria-hidden="true">✓</span><span>Unlimited pricing experiments</span></li>
+              <li><span class="check" aria-hidden="true">✓</span><span>Advanced entitlements</span></li>
+              <li><span class="check" aria-hidden="true">✓</span><span>Revenue recovery workflows</span></li>
+              <li><span class="check" aria-hidden="true">✓</span><span>Priority support within four hours</span></li>
+            </ul>
+            <a class="button button-primary" href="#signup">Start Pro Trial</a>
+          </article>
+          <article class="plan-card">
+            <h3>Enterprise</h3>
+            <p class="plan-kicker">For organizations with custom billing operations.</p>
+            <div class="price"><strong data-monthly="129" data-annual="103">$129</strong><span>/seat</span></div>
+            <div class="annual-note" data-note>Monthly billing</div>
+            <ul class="feature-list">
+              <li><span class="check" aria-hidden="true">✓</span><span>Dedicated billing architecture</span></li>
+              <li><span class="check" aria-hidden="true">✓</span><span>Custom contract rules</span></li>
+              <li><span class="check" aria-hidden="true">✓</span><span>Security and compliance review</span></li>
+              <li><span class="check" aria-hidden="true">✓</span><span>Named success manager</span></li>
+            </ul>
+            <a class="button button-dark" href="#enterprise">Contact Sales</a>
+          </article>
+        </div>
+      </section>
+      <section class="section" id="features" aria-labelledby="features-title">
+        <div class="section-head">
+          <h2 id="features-title">Compare every plan with confidence.</h2>
+          <p>Review the operational details that matter when pricing becomes part of your product strategy.</p>
+        </div>
+        <div class="comparison-wrap">
+          <table class="comparison-table">
+            <thead>
+              <tr>
+                <th scope="col">Feature</th>
+                <th scope="col">Starter</th>
+                <th scope="col">Pro</th>
+                <th scope="col">Enterprise</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="feature-name">Hosted checkout</span><span class="feature-sub">Branded purchase flows</span></td>
+                <td><span class="mark yes" aria-label="Included">✓</span></td>
+                <td><span class="mark yes" aria-label="Included">✓</span></td>
+                <td><span class="mark yes" aria-label="Included">✓</span></td>
+              </tr>
+              <tr>
+                <td><span class="feature-name">Pricing experiments</span><span class="feature-sub">Test tiers and bundles</span></td>
+                <td><span class="text-value">3 active</span></td>
+                <td><span class="text-value">Unlimited</span></td>
+                <td><span class="text-value">Unlimited</span></td>
+              </tr>
+              <tr>
+                <td><span class="feature-name">Entitlement rules</span><span class="feature-sub">Gate product access</span></td>
+                <td><span class="mark yes" aria-label="Included">✓</span></td>
+                <td><span class="mark yes" aria-label="Included">✓</span></td>
+                <td><span class="mark yes" aria-label="Included">✓</span></td>
+              </tr>
+              <tr>
+                <td><span class="feature-name">Usage-based billing</span><span class="feature-sub">Metered invoices and caps</span></td>
+                <td><span class="mark no" aria-label="Not included">×</span></td>
+                <td><span class="mark yes" aria-label="Included">✓</span></td>
+                <td><span class="mark yes" aria-label="Included">✓</span></td>
+              </tr>
+              <tr>
+                <td><span class="feature-name">Revenue recovery</span><span class="feature-sub">Failed payment rescue</span></td>
+                <td><span class="mark no" aria-label="Not included">×</span></td>
+                <td><span class="mark yes" aria-label="Included">✓</span></td>
+                <td><span class="mark yes" aria-label="Included">✓</span></td>
+              </tr>
+              <tr>
+                <td><span class="feature-name">Audit exports</span><span class="feature-sub">Finance-ready activity logs</span></td>
+                <td><span class="text-value">Monthly</span></td>
+                <td><span class="text-value">Weekly</span></td>
+                <td><span class="text-value">Real time</span></td>
+              </tr>
+              <tr>
+                <td><span class="feature-name">Support response</span><span class="feature-sub">Team assistance windows</span></td>
+                <td><span class="text-value">2 days</span></td>
+                <td><span class="text-value">4 hours</span></td>
+                <td><span class="text-value">1 hour</span></td>
+              </tr>
+              <tr>
+                <td><span class="feature-name">Security review</span><span class="feature-sub">Procurement documentation</span></td>
+                <td><span class="mark no" aria-label="Not included">×</span></td>
+                <td><span class="mark no" aria-label="Not included">×</span></td>
+                <td><span class="mark yes" aria-label="Included">✓</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section class="section" aria-labelledby="addons-title">
+        <div class="section-head">
+          <h2 id="addons-title">Add more power when you need it.</h2>
+          <p>Extend any plan with focused add-ons that support fast launches, deeper service, and branded delivery.</p>
+        </div>
+        <div class="addons-grid">
+          <article class="addon-card">
+            <div class="addon-icon" aria-hidden="true">GB</div>
+            <h3>Extra Storage</h3>
+            <p>Increase invoice archives, analytics history, and customer document retention for growing teams.</p>
+            <div class="addon-price"><strong>$12</strong><span>/100 GB</span></div>
+          </article>
+          <article class="addon-card">
+            <div class="addon-icon" aria-hidden="true">24</div>
+            <h3>Priority Support</h3>
+            <p>Reach senior support with faster escalation paths for launches, migrations, and billing incidents.</p>
+            <div class="addon-price"><strong>$199</strong><span>/month</span></div>
+          </article>
+          <article class="addon-card">
+            <div class="addon-icon" aria-hidden="true">DNS</div>
+            <h3>Custom Domain</h3>
+            <p>Serve checkout and account portals from your own domain with managed certificate renewal.</p>
+            <div class="addon-price"><strong>$29</strong><span>/domain</span></div>
+          </article>
+        </div>
+      </section>
+      <section class="section" id="enterprise" aria-labelledby="enterprise-title">
+        <div class="enterprise-band">
+          <div>
+            <p class="eyebrow"><span class="status-dot" aria-hidden="true"></span> Enterprise readiness</p>
+            <h2 id="enterprise-title">Custom pricing for complex revenue teams.</h2>
+            <p>Partner with Nova architects to model contract rules, approvals, regional requirements, and executive reporting across every product line.</p>
+          </div>
+          <div class="enterprise-panel">
+            <h3>Enterprise package</h3>
+            <p>Custom pricing based on seats, transaction volume, regions, service level, and security requirements.</p>
+            <ul class="benefit-list">
+              <li><span class="check" aria-hidden="true">✓</span><span>Dedicated solution design workshops</span></li>
+              <li><span class="check" aria-hidden="true">✓</span><span>Custom approval and contract workflows</span></li>
+              <li><span class="check" aria-hidden="true">✓</span><span>Private onboarding and migration support</span></li>
+              <li><span class="check" aria-hidden="true">✓</span><span>Executive dashboards and quarterly reviews</span></li>
+            </ul>
+            <a class="button button-cyan" href="mailto:sales@example.com">Contact Sales</a>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="faq" aria-labelledby="faq-title">
+        <div class="section-head">
+          <h2 id="faq-title">Pricing questions, answered.</h2>
+          <p>Clear answers for billing cadence, plan changes, trials, and enterprise buying cycles.</p>
+        </div>
+        <div class="faq-list">
+          <article class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-one">
+              Can I switch between monthly and annual billing?
+              <span class="faq-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-answer" id="faq-one">
+              <div class="faq-answer-inner">
+                <p>Yes. You can move between monthly and annual billing at the next renewal, and Nova calculates the change before confirmation.</p>
+              </div>
+            </div>
+          </article>
+          <article class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-two">
+              What happens when my team adds more seats?
+              <span class="faq-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-answer" id="faq-two">
+              <div class="faq-answer-inner">
+                <p>Seat changes are prorated for the current period, and administrators receive a clear summary before the invoice updates.</p>
+              </div>
+            </div>
+          </article>
+          <article class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-three">
+              Is there a free trial for paid plans?
+              <span class="faq-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-answer" id="faq-three">
+              <div class="faq-answer-inner">
+                <p>Starter and Pro include a 14-day trial with access to checkout, entitlements, analytics, and migration guidance.</p>
+              </div>
+            </div>
+          </article>
+          <article class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-four">
+              Can enterprise plans support procurement reviews?
+              <span class="faq-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-answer" id="faq-four">
+              <div class="faq-answer-inner">
+                <p>Enterprise teams receive security materials, compliance documentation, legal support, and a shared implementation plan.</p>
+              </div>
+            </div>
+          </article>
+          <article class="faq-item">
+            <button class="faq-question" type="button" aria-expanded="false" aria-controls="faq-five">
+              Are add-ons available on every tier?
+              <span class="faq-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-answer" id="faq-five">
+              <div class="faq-answer-inner">
+                <p>Most add-ons are available across all plans. Enterprise customers can also bundle add-ons into custom commercial terms.</p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-wrap">
+        <p>Nova Pricing Page — designed by Northstar Studio.</p>
+        <nav class="footer-links" aria-label="Footer navigation">
+          <a href="#features">Features</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#enterprise">Enterprise</a>
+          <a href="#faq">FAQ</a>
+        </nav>
+      </div>
+    </footer>
+  </div>
+  <script>
+    const body = document.body;
+    const menuToggle = document.querySelector(".menu-toggle");
+    const drawer = document.querySelector(".mobile-drawer");
+    const drawerClose = document.querySelector(".drawer-close");
+    const drawerScrim = document.querySelector("[data-drawer-scrim]");
+    const drawerLinks = document.querySelectorAll(".drawer-links a");
+    const billingButtons = document.querySelectorAll("[data-cycle]");
+    const prices = document.querySelectorAll("[data-monthly]");
+    const notes = document.querySelectorAll("[data-note]");
+    const faqButtons = document.querySelectorAll(".faq-question");
+
+    function openDrawer() {
+      body.classList.add("drawer-open");
+      drawer.classList.add("is-open");
+      drawerScrim.classList.add("is-open");
+      drawer.setAttribute("aria-hidden", "false");
+      menuToggle.setAttribute("aria-expanded", "true");
+      drawerClose.focus();
+    }
+
+    function closeDrawer() {
+      body.classList.remove("drawer-open");
+      drawer.classList.remove("is-open");
+      drawerScrim.classList.remove("is-open");
+      drawer.setAttribute("aria-hidden", "true");
+      menuToggle.setAttribute("aria-expanded", "false");
+      menuToggle.focus();
+    }
+
+    menuToggle.addEventListener("click", openDrawer);
+    drawerClose.addEventListener("click", closeDrawer);
+    drawerScrim.addEventListener("click", closeDrawer);
+    drawerLinks.forEach((link) => {
+      link.addEventListener("click", closeDrawer);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && drawer.classList.contains("is-open")) {
+        closeDrawer();
+      }
+    });
+
+    billingButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const cycle = button.dataset.cycle;
+        billingButtons.forEach((item) => {
+          const active = item === button;
+          item.classList.toggle("is-active", active);
+          item.setAttribute("aria-pressed", String(active));
+        });
+        prices.forEach((price) => {
+          const value = cycle === "annual" ? price.dataset.annual : price.dataset.monthly;
+          price.textContent = `$${value}`;
+        });
+        notes.forEach((note) => {
+          note.textContent = cycle === "annual" ? "Annual billing, paid yearly" : "Monthly billing";
+        });
+      });
+    });
+
+    faqButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const expanded = button.getAttribute("aria-expanded") === "true";
+        const panel = document.getElementById(button.getAttribute("aria-controls"));
+        button.setAttribute("aria-expanded", String(!expanded));
+        panel.classList.toggle("is-open", !expanded);
+      });
+    });
+  </script>
+</body>
+</html>
