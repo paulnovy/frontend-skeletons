@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Echo Audio Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --cloud: #F6F8FC;
+    --ink: #19212B;
+    --indigo: #4F46E5;
+    --cyan: #06B6D4;
+    --lime: #A3E635;
+    --coral: #FB7185;
+    --card: #FFFFFF;
+    --border: #E5E7EB;
+    --green: #10B981;
+    --orange: #F59E0B;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--ink);
+    color: #E5E7EB;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+  }
+
+  a { color: var(--cyan); text-decoration: none; }
+  button { cursor: pointer; font-family: inherit; }
+
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--indigo);
+    color: #fff;
+    padding: 8px 16px;
+    z-index: 100;
+    font-size: 0.875rem;
+  }
+  .skip-link:focus { top: 0; }
+
+  .top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 24px;
+    height: 60px;
+    background: #111827;
+    border-bottom: 1px solid #1F2937;
+  }
+  .nav-brand {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--cyan);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-links { display: flex; gap: 4px; margin-left: 24px; }
+  .nav-links a {
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.6);
+  }
+  .nav-links a:hover,
+  .nav-links a[aria-current="page"] {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+  }
+  .nav-search {
+    margin-left: auto;
+    position: relative;
+  }
+  .nav-search input {
+    width: 200px;
+    padding: 8px 12px 8px 36px;
+    border: 1px solid #374151;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    background: #1F2937;
+    color: #fff;
+  }
+  .nav-search svg {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: #6B7280;
+  }
+  .nav-cta {
+    margin-left: 12px;
+    padding: 8px 18px;
+    background: var(--indigo);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .hamburger { display: none; background: none; border: none; padding: 8px; color: #fff; }
+  .hamburger svg { width: 24px; height: 24px; }
+
+  .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 60; }
+  .drawer-overlay.open { display: block; }
+  .drawer {
+    position: fixed; top: 0; left: 0; width: 280px; height: 100%;
+    background: #1F2937; z-index: 70; transform: translateX(-100%);
+    transition: transform 0.25s ease; padding: 24px; overflow-y: auto;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-close { background: none; border: none; font-size: 1.5rem; position: absolute; top: 16px; right: 16px; color: #fff; }
+  .drawer nav { display: flex; flex-direction: column; gap: 4px; margin-top: 24px; }
+  .drawer nav a { padding: 10px 14px; border-radius: 8px; font-size: 0.9375rem; color: #E5E7EB; }
+  .drawer nav a:hover { background: rgba(255,255,255,0.08); }
+
+  @media (max-width: 768px) {
+    .nav-links, .nav-search, .nav-cta { display: none; }
+    .hamburger { display: block; }
+    .top-nav { padding: 0 16px; }
+  }
+
+  .main-content { padding: 24px; }
+
+  /* Now Playing Bar */
+  .now-playing {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 72px;
+    background: #111827;
+    border-top: 1px solid #1F2937;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 24px;
+    z-index: 40;
+  }
+  .np-art {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--indigo), var(--cyan));
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+  }
+  .np-info { min-width: 0; }
+  .np-title { font-size: 0.875rem; font-weight: 600; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .np-artist { font-size: 0.75rem; color: #9CA3AF; }
+  .np-controls { display: flex; align-items: center; gap: 12px; margin-left: auto; }
+  .np-btn {
+    background: none; border: none; color: #9CA3AF; padding: 8px;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  }
+  .np-btn:hover { color: #fff; }
+  .np-btn svg { width: 20px; height: 20px; }
+  .np-btn.play-btn {
+    background: #fff;
+    color: var(--ink);
+    width: 36px;
+    height: 36px;
+  }
+  .np-progress {
+    flex: 1;
+    max-width: 400px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.6875rem;
+    color: #6B7280;
+  }
+  .progress-track {
+    flex: 1;
+    height: 4px;
+    background: #374151;
+    border-radius: 2px;
+    position: relative;
+  }
+  .progress-fill {
+    width: 35%;
+    height: 100%;
+    background: var(--cyan);
+    border-radius: 2px;
+  }
+  .np-volume {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .vol-track {
+    width: 80px;
+    height: 4px;
+    background: #374151;
+    border-radius: 2px;
+  }
+  .vol-fill {
+    width: 65%;
+    height: 100%;
+    background: #fff;
+    border-radius: 2px;
+  }
+
+  @media (max-width: 768px) {
+    .np-progress, .np-volume { display: none; }
+    .now-playing { padding: 0 16px; }
+  }
+
+  body { padding-bottom: 72px; }
+
+  /* Section Headers */
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+  .section-header h2 { font-size: 1.25rem; color: #fff; }
+  .badge {
+    background: #1F2937;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #9CA3AF;
+  }
+
+  /* Track List */
+  .track-list { margin-bottom: 32px; }
+  .track-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    transition: background 0.15s;
+  }
+  .track-item:hover { background: rgba(255,255,255,0.05); }
+  .track-num { font-size: 0.8125rem; color: #6B7280; width: 24px; text-align: center; }
+  .track-art {
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+  }
+  .track-info { flex: 1; min-width: 0; }
+  .track-title { font-size: 0.9375rem; font-weight: 500; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .track-artist { font-size: 0.8125rem; color: #9CA3AF; }
+  .track-duration { font-size: 0.8125rem; color: #6B7280; }
+  .track-actions { display: flex; gap: 8px; }
+  .track-btn {
+    background: none; border: none; color: #6B7280; padding: 6px;
+    border-radius: 4px;
+  }
+  .track-btn:hover { color: #fff; }
+
+  /* Playlist Grid */
+  .playlist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .playlist-card {
+    background: #1F2937;
+    border-radius: 12px;
+    padding: 16px;
+    transition: background 0.15s;
+  }
+  .playlist-card:hover { background: #283548; }
+  .playlist-art {
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+  }
+  .playlist-card h4 { font-size: 0.9375rem; color: #fff; margin-bottom: 4px; }
+  .playlist-card .desc { font-size: 0.8125rem; color: #9CA3AF; }
+
+  /* Mixer / EQ */
+  .mixer-strip {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    margin-bottom: 32px;
+  }
+  .mixer-channel {
+    background: #1F2937;
+    border-radius: 12px;
+    padding: 16px;
+    min-width: 80px;
+    text-align: center;
+    flex-shrink: 0;
+  }
+  .mixer-channel .ch-label {
+    font-size: 0.75rem;
+    color: #9CA3AF;
+    margin-bottom: 12px;
+    font-weight: 600;
+  }
+  .fader-track {
+    width: 6px;
+    height: 120px;
+    background: #374151;
+    border-radius: 3px;
+    margin: 0 auto 8px;
+    position: relative;
+  }
+  .fader-fill {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    border-radius: 3px;
+  }
+  .ch-db {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    color: #fff;
+  }
+
+  /* Recent Projects */
+  .project-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+  .project-item {
+    background: #1F2937;
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .project-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .project-info { flex: 1; }
+  .project-info h4 { font-size: 0.9375rem; color: #fff; margin-bottom: 2px; }
+  .project-info .meta { font-size: 0.8125rem; color: #9CA3AF; }
+  .project-badge {
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  /* Waveform Viz */
+  .waveform-box {
+    background: #1F2937;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+  .waveform-title { font-size: 1rem; color: #fff; margin-bottom: 16px; }
+  .waveform-bars {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 80px;
+  }
+  .wf-bar {
+    flex: 1;
+    border-radius: 2px;
+    min-width: 3px;
+  }
+
+  .site-footer {
+    padding: 32px 24px;
+    text-align: center;
+    font-size: 0.8125rem;
+    color: #6B7280;
+    border-top: 1px solid #1F2937;
+    margin-top: 16px;
+  }
+
+  :focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  @media (max-width: 768px) {
+    .playlist-grid { grid-template-columns: repeat(2, 1fr); }
+    .mixer-strip { gap: 10px; }
+    .project-item { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header class="top-nav">
+  <button class="hamburger" aria-label="Open menu" aria-expanded="false"
+    onclick="document.getElementById('drawer').classList.toggle('open');document.getElementById('overlay').classList.toggle('open');this.setAttribute('aria-expanded',document.getElementById('drawer').classList.contains('open'))">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+  </button>
+  <a href="#" class="nav-brand">🎧 Echo Audio Studio</a>
+  <nav class="nav-links" aria-label="Main">
+    <a href="#" aria-current="page">Library</a>
+    <a href="#playlists">Playlists</a>
+    <a href="#mixer">Mixer</a>
+    <a href="#projects">Projects</a>
+    <a href="#waveform">Waveform</a>
+  </nav>
+  <div class="nav-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" aria-label="Search tracks">
+  </div>
+  <button class="nav-cta">+ New Track</button>
+</header>
+
+<div class="drawer-overlay" id="overlay" onclick="document.getElementById('drawer').classList.remove('open');this.classList.remove('open')"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-label="Navigation">
+  <button class="drawer-close" aria-label="Close menu"
+    onclick="document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open')">&times;</button>
+  <nav>
+    <a href="#">Library</a>
+    <a href="#playlists">Playlists</a>
+    <a href="#mixer">Mixer</a>
+    <a href="#projects">Projects</a>
+    <a href="#waveform">Waveform</a>
+  </nav>
+</aside>
+
+<main id="main" class="main-content">
+  <!-- Track List -->
+  <section>
+    <div class="section-header">
+      <h2>Recent Tracks</h2>
+      <span class="badge">12 tracks</span>
+    </div>
+    <div class="track-list" role="list">
+      <div class="track-item" role="listitem">
+        <span class="track-num">1</span>
+        <div class="track-art" style="background:linear-gradient(135deg,#4F46E5,#06B6D4)">🎵</div>
+        <div class="track-info">
+          <div class="track-title">Midnight Frequency</div>
+          <div class="track-artist">Echo Collective</div>
+        </div>
+        <span class="track-duration">4:32</span>
+        <div class="track-actions">
+          <button class="track-btn" aria-label="Play Midnight Frequency">▶</button>
+          <button class="track-btn" aria-label="More options">⋯</button>
+        </div>
+      </div>
+      <div class="track-item" role="listitem">
+        <span class="track-num">2</span>
+        <div class="track-art" style="background:linear-gradient(135deg,#A3E635,#06B6D4)">🎵</div>
+        <div class="track-info">
+          <div class="track-title">Solar Winds</div>
+          <div class="track-artist">Nova Pulse</div>
+        </div>
+        <span class="track-duration">3:58</span>
+        <div class="track-actions">
+          <button class="track-btn" aria-label="Play Solar Winds">▶</button>
+          <button class="track-btn" aria-label="More options">⋯</button>
+        </div>
+      </div>
+      <div class="track-item" role="listitem">
+        <span class="track-num">3</span>
+        <div class="track-art" style="background:linear-gradient(135deg,#FB7185,#4F46E5)">🎵</div>
+        <div class="track-info">
+          <div class="track-title">Crimson Echo</div>
+          <div class="track-artist">Synthwave Radio</div>
+        </div>
+        <span class="track-duration">5:14</span>
+        <div class="track-actions">
+          <button class="track-btn" aria-label="Play Crimson Echo">▶</button>
+          <button class="track-btn" aria-label="More options">⋯</button>
+        </div>
+      </div>
+      <div class="track-item" role="listitem">
+        <span class="track-num">4</span>
+        <div class="track-art" style="background:linear-gradient(135deg,#06B6D4,#4F46E5)">🎵</div>
+        <div class="track-info">
+          <div class="track-title">Deep Blue Protocol</div>
+          <div class="track-artist">Ambient Works</div>
+        </div>
+        <span class="track-duration">6:47</span>
+        <div class="track-actions">
+          <td><button class="track-btn" aria-label="Play Deep Blue Protocol">▶</button></td>
+          <button class="track-btn" aria-label="More options">⋯</button>
+        </div>
+      </div>
+      <div class="track-item" role="listitem">
+        <span class="track-num">5</span>
+        <div class="track-art" style="background:linear-gradient(135deg,#A3E635,#FB7185)">🎵</div>
+        <div class="track-info">
+          <div class="track-title">Neon Garden</div>
+          <div class="track-artist">Pixel Beats</div>
+        </div>
+        <span class="track-duration">3:21</span>
+        <div class="track-actions">
+          <button class="track-btn" aria-label="Play Neon Garden">▶</button>
+          <button class="track-btn" aria-label="More options">⋯</button>
+        </div>
+      </div>
+      <div class="track-item" role="listitem">
+        <span class="track-num">6</span>
+        <div class="track-art" style="background:linear-gradient(135deg,#4F46E5,#A3E635)">🎵</div>
+        <div class="track-info">
+          <div class="track-title">Quantum Drift</div>
+          <div class="track-artist">Echo Collective</div>
+        </div>
+        <span class="track-duration">4:05</span>
+        <div class="track-actions">
+          <button class="track-btn" aria-label="Play Quantum Drift">▶</button>
+          <button class="track-btn" aria-label="More options">⋯</button>
+        </div>
+      </div>
+      <div class="track-item" role="listitem">
+        <span class="track-num">7</span>
+        <div class="track-art" style="background:linear-gradient(135deg,#FB7185,#06B6D4)">🎵</div>
+        <div class="track-info">
+          <div class="track-title">Velvet Static</div>
+          <div class="track-artist">Lo-Fi Sessions</div>
+        </div>
+        <span class="track-duration">2:48</span>
+        <div class="track-actions">
+          <button class="track-btn" aria-label="Play Velvet Static">▶</button>
+          <button class="track-btn" aria-label="More options">⋯</button>
+        </div>
+      </div>
+      <div class="track-item" role="listitem">
+        <span class="track-num">8</span>
+        <div class="track-art" style="background:linear-gradient(135deg,#06B6D4,#A3E635)">🎵</div>
+        <div class="track-info">
+          <div class="track-title">Binary Sunset</div>
+          <div class="track-artist">Nova Pulse</div>
+        </div>
+        <span class="track-duration">5:33</span>
+        <div class="track-actions">
+          <button class="track-btn" aria-label="Play Binary Sunset">▶</button>
+          <button class="track-btn" aria-label="More options">⋯</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Playlists -->
+  <section id="playlists">
+    <div class="section-header">
+      <h2>Playlists</h2HTMLEOF
+      <span class="badge">6 curated</span>
+    </div>
+    <div class="playlist-grid">
+      <div class="playlist-card">
+        <div class="playlist-art" style="background:linear-gradient(135deg,#4F46E5,#06B6D4)">🎶</div>
+        <h4>Late Night Coding</h4>
+        <div class="desc">Ambient beats for focus</div>
+      </div>
+      <div class="playlist-card">
+        <div class="playlist-art" style="background:linear-gradient(135deg,#A3E635,#06B6D4)">🎶</div>
+        <h4>Morning Energy</h4>
+        <div class="desc">Upbeat tracks to start the day</div>
+      </div>
+      <div class="playlist-card">
+        <div class="playlist-art" style="background:linear-gradient(135deg,#FB7185,#4F46E5)">🎶</div>
+        <h4>Synthwave Drive</h4>
+        <div class="desc">Retro-futuristic vibes</div>
+      </div>
+      <div class="playlist-card">
+        <div class="playlist-art" style="background:linear-gradient(135deg,#06B6D4,#A3E635)">🎶</div>
+        <h4>Deep Focus</h4>
+        <div class="desc">Minimal distractions</div>
+      </div>
+      <div class="playlist-card">
+        <div class="playlist-art" style="background:linear-gradient(135deg,#4F46E5,#FB7185)">🎶</div>
+        <h4>Weekend Chill</h4>
+        <div class="desc">Relaxing downtempo</div>
+      </div>
+      <div class="playlist-card">
+        <div class="playlist-art" style="background:linear-gradient(135deg,#A3E635,#FB7185)">🎶</div>
+        <h4>Workout Beats</h4>
+        <div class="desc">High energy electronic</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Mixer -->
+  <section id="mixer">
+    <div class="section-header">
+      <h2>Mixer</h2>
+      <span class="badge">8 channels</span>
+    </div>
+    <div class="mixer-strip">
+      <div class="mixer-channel">
+        <div class="ch-label">DRUMS</div>
+        <div class="fader-track"><div class="fader-fill" style="height:75%;background:var(--coral)"></div></div>
+        <div class="ch-db">-3 dB</div>
+      </div>
+      <div class="mixer-channel">
+        <div class="ch-label">BASS</div>
+        <div class="fader-track"><div class="fader-fill" style="height:82%;background:var(--indigo)"></div></div>
+        <div class="ch-db">-1 dB</div>
+      </div>
+      <div class="mixer-channel">
+        <div class="ch-label">KEYS</div>
+        <div class="fader-track"><div class="fader-fill" style="height:60%;background:var(--cyan)"></div></div>
+        <div class="ch-db">-6 dB</div>
+      </div>
+      <div class="mixer-channel">
+        <div class="ch-label">VOCAL</div>
+        <div class="fader-track"><div class="fader-fill" style="height:88%;background:var(--lime)"></div></div>
+        <div class="ch-db">0 dB</div>
+      </div>
+      <div class="mixer-channel">
+        <div class="ch-label">SYNTH</div>
+        <div class="fader-track"><div class="fader-fill" style="height:55%;background:var(--coral)"></div></div>
+        <div class="ch-db">-8 dB</div>
+      </div>
+      <div class="mixer-channel">
+        <div class="ch-label">FX</div>
+        <div class="fader-track"><div class="fader-fill" style="height:40%;background:var(--indigo)"></div></div>
+        <div class="ch-db">-12 dB</div>
+      </div>
+      <div class="mixer-channel">
+        <div class="ch-label">AUX</div>
+        <div class="fader-track"><div class="fader-fill" style="height:30%;background:var(--cyan)"></div></div>
+        <div class="ch-db">-18 dB</div>
+      </div>
+      <div class="mixer-channel">
+        <div class="ch-label">MASTER</div>
+        <div class="fader-track"><div class="fader-fill" style="height:70%;background:var(--lime)"></div></div>
+        <div class="ch-db">-4 dB</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Recent Projects -->
+  <section id="projects">
+    <div class="section-header">
+      <h2>Recent Projects</h2>
+      <span class="badge">5 projects</span>
+    </div>
+    <div class="project-list" role="list">
+      <div class="project-item" role="listitem">
+        <div class="project-icon" style="background:#1F2937;border:1px solid var(--indigo)">🎹</div>
+        <div class="project-info">
+          <h4>Album: Neural Pathways</h4>
+          <div class="meta">12 tracks · Last edited 2 hours ago</div>
+        </div>
+        <span class="project-badge" style="background:#D1FAE5;color:#065F46">In Progress</span>
+      </div>
+      <div class="project-item" role="listitem">
+        <div class="project-icon" style="background:#1F2937;border:1px solid var(--cyan)">🎬</div>
+        <div class="project-info">
+          <h4>Soundtrack: Short Film</h4>
+          <div class="meta">8 tracks · Last edited yesterday</div>
+        </div>
+        <span class="project-badge" style="background:#DBEAFE;color:#1E40AF">Mixing</span>
+      </div>
+      <div class="project-item" role="listitem">
+        <div class="project-icon" style="background:#1F2937;border:1px solid var(--lime)">🎤</div>
+        <div class="project-info">
+          <h4>Podcast: Tech Talk EP 47</h4>
+          <div class="meta">1 track · Last edited 3 days ago</div>
+        </div>
+        <span class="project-badge" style="background:#FEF3C7;color:#92400E">Editing</span>
+      </div>
+      <div class="project-item" role="listitem">
+        <div class="project-icon" style="background:#1F2937;border:1px solid var(--coral)">🎸</div>
+        <div class="project-info">
+          <h4>EP: Crimson Waves</h4>
+          <div class="meta">5 tracks · Last edited 1 week ago</div>
+        </div>
+        <span class="project-badge" style="background:#D1FAE5;color:#065F46">Released</span>
+      </div>
+      <div class="project-item" role="listitem">
+        <div class="project-icon" style="background:#1F2937;border:1px solid var(--indigo)">🎵</div>
+        <div class="project-info">
+          <h4>Jingle: Brand Audio Logo</h4>
+          <div class="meta">1 track · Last edited 2 weeks ago</div>
+        </div>
+        <span class="project-badge" style="background:#D1FAE5;color:#065F46">Delivered</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Waveform Visualization -->
+  <section id="waveform">
+    <div class="section-header">
+      <h2>Waveform Visualization</h2>
+      <span class="badge">Live input</span>
+    </div>
+    <div class="waveform-box">
+      <div class="waveform-title">Audio Waveform — Real-time</div>
+      <div class="waveform-bars" id="waveformBars" aria-label="Audio waveform visualization"></div>
+    </div>
+  </section>
+</main>
+
+<div class="now-playing" role="region" aria-label="Now playing">
+  <div class="np-art">🎵</div>
+  <div class="np-info">
+    <div class="np-title">Midnight Frequency</div>
+    <div class="np-artist">Echo Collective</div>
+  </div>
+  <div class="np-controls">
+    <button class="np-btn" aria-label="Previous track">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6 8.5 6V6z"/></svg>
+    </button>
+    <button class="np-btn play-btn" aria-label="Play">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+    </button>
+    <button class="np-btn" aria-label="Next track">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 18h2V6h-2zM6 18l8.5-6L6 6z"/></svg>
+    </button>
+  </div>
+  <div class="np-progress">
+    <span>1:35</span>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+    <span>4:32</span>
+  </div>
+  <div class="np-volume">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="2" width="16" height="16">
+      <path d="M11 5L6 9H2v6h4l5 4V5z"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/>
+    </svg>
+    <div class="vol-track"><div class="vol-fill"></div></div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <p>Echo Audio Studio — designed by Studio · Standalone prototype · Not affiliated with any audio platform</p>
+</footer>
+
+<script>
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.getElementById('drawer').classList.remove('open');
+      document.getElementById('overlay').classList.remove('open');
+    }
+  });
+
+  // Waveform visualization
+  (function() {
+    var container = document.getElementById('waveformBars');
+    var barCount = 64;
+    var colors = ['#4F46E5', '#06B6D4', '#A3E635', '#FB7185'];
+    for (var i = 0; i < barCount; i++) {
+      var bar = document.createElement('div');
+      bar.className = 'wf-bar';
+      var h = 20 + Math.random() * 60;
+      bar.style.height = h + 'px';
+      bar.style.background = colors[i % colors.length];
+      container.appendChild(bar);
+    }
+    function animate() {
+      var bars = container.children;
+      for (var i = 0; i < bars.length; i++) {
+        var h = 15 + Math.random() * 65;
+        bars[i].style.height = h + 'px';
+      }
+      requestAnimationFrame(animate);
+    }
+    animate();
+  })();
+</script>
+</body>
+</html>
