@@ -1,0 +1,602 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Beacon Waitlist</title>
+  <meta name="description" content="A premium pre-launch waitlist page with referral rewards, live countdown, and early access signup.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {--cloud:#F6F8FC;--ink:#19212B;--indigo:#4F46E5;--cyan:#06B6D4;--lime:#A3E635;--coral:#FB7185;--white:rgba(246,248,252,0.96);--ink-soft:rgba(25,33,43,0.72);--ink-faint:rgba(25,33,43,0.12);--ink-line:rgba(25,33,43,0.18);--indigo-soft:rgba(79,70,229,0.12);--cyan-soft:rgba(6,182,212,0.14);--lime-soft:rgba(163,230,53,0.22);--coral-soft:rgba(251,113,133,0.14);--shadow:0 24px 70px rgba(25,33,43,0.14);--radius:8px;--max:1180px;}
+     * {box-sizing:border-box;}
+     html {scroll-behavior:smooth;}
+     body {margin:0;font-family:"Inter",system-ui,sans-serif;background:var(--cloud);color:var(--ink);line-height:1.5;overflow-x:hidden;}
+     body.drawer-open {overflow:hidden;}
+     a {color:inherit;text-decoration:none;}
+     button,input {font:inherit;}
+     button {cursor:pointer;}
+     img,svg {display:block;}
+     .skip-link {position:absolute;left:1rem;top:-4rem;z-index:100;background:var(--ink);color:var(--cloud);padding:0.75rem 1rem;border-radius:var(--radius);transition:top 0.2s ease;}
+     .skip-link:focus {top:1rem;}
+     :focus-visible {outline:3px solid var(--cyan);outline-offset:3px;}
+     .site-header {position:sticky;top:0;z-index:50;background:rgba(246,248,252,0.86);backdrop-filter:blur(18px);border-bottom:1px solid var(--ink-faint);}
+     .nav-shell {width:min(var(--max),calc(100% - 2rem));margin:0 auto;min-height:76px;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+     .brand {display:inline-flex;align-items:center;gap:0.7rem;font-family:"Manrope",system-ui,sans-serif;font-weight:800;letter-spacing:0;}
+     .brand-mark {width:38px;height:38px;border-radius:50%;background:var(--ink);color:var(--cloud);display:grid;place-items:center;position:relative;box-shadow:inset 0 0 0 7px var(--indigo-soft);}
+     .brand-mark::after {content:"";width:10px;height:10px;border-radius:50%;background:var(--cyan);position:absolute;right:7px;top:7px;box-shadow:0 0 0 5px var(--cyan-soft);}
+     .brand-text {font-size:1.06rem;}
+     .nav-links {display:flex;align-items:center;gap:1.5rem;color:var(--ink-soft);font-size:0.95rem;font-weight:700;}
+     .nav-links a:hover {color:var(--ink);}
+     .nav-actions {display:flex;align-items:center;gap:0.75rem;}
+     .button {border:0;border-radius:var(--radius);min-height:44px;padding:0.8rem 1rem;display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;font-weight:800;color:var(--cloud);background:var(--ink);box-shadow:0 12px 24px rgba(25,33,43,0.14);transition:transform 0.2s ease,box-shadow 0.2s ease;}
+     .button:hover {transform:translateY(-2px);box-shadow:0 18px 28px rgba(25,33,43,0.18);}
+     .button.primary {background:var(--indigo);}
+     .button.secondary {background:var(--cloud);color:var(--ink);border:1px solid var(--ink-line);box-shadow:none;}
+     .icon-button {width:44px;height:44px;border:1px solid var(--ink-line);border-radius:var(--radius);background:var(--cloud);color:var(--ink);display:none;align-items:center;justify-content:center;position:relative;}
+     .hamburger-lines,.hamburger-lines::before,.hamburger-lines::after {width:20px;height:2px;background:var(--ink);border-radius:999px;content:"";display:block;position:absolute;transition:transform 0.2s ease,opacity 0.2s ease;}
+     .hamburger-lines::before {transform:translateY(-7px);}
+     .hamburger-lines::after {transform:translateY(7px);}
+     .icon-button[aria-expanded="true"] .hamburger-lines {background:transparent;}
+     .icon-button[aria-expanded="true"] .hamburger-lines::before {transform:rotate(45deg);}
+     .icon-button[aria-expanded="true"] .hamburger-lines::after {transform:rotate(-45deg);}
+     .drawer-panel {position:fixed;inset:0 0 0 auto;width:min(88vw,360px);background:var(--ink);color:var(--cloud);z-index:70;padding:1.25rem;transform:translateX(100%);transition:transform 0.28s ease;display:flex;flex-direction:column;gap:1.25rem;box-shadow:-24px 0 70px rgba(25,33,43,0.28);}
+     .drawer-panel.open {transform:translateX(0);}
+     .drawer-backdrop {position:fixed;inset:0;z-index:60;background:rgba(25,33,43,0.42);opacity:0;pointer-events:none;transition:opacity 0.24s ease;}
+     .drawer-backdrop.open {opacity:1;pointer-events:auto;}
+     .drawer-head {display:flex;align-items:center;justify-content:space-between;}
+     .drawer-close {background:transparent;color:var(--cloud);border:1px solid rgba(246,248,252,0.28);border-radius:var(--radius);width:42px;height:42px;font-size:1.5rem;}
+     .drawer-links {display:grid;gap:0.25rem;}
+     .drawer-links a {padding:0.9rem 0;border-bottom:1px solid rgba(246,248,252,0.14);font-weight:800;}
+     .hero {position:relative;padding:6rem 0 3.5rem;overflow:hidden;}
+     .hero::before {content:"";position:absolute;inset:2rem 0 auto 50%;width:46rem;height:46rem;transform:translateX(-12%);background:radial-gradient(circle at 22% 20%,var(--cyan-soft),transparent 28%),radial-gradient(circle at 70% 24%,var(--indigo-soft),transparent 30%),radial-gradient(circle at 42% 72%,var(--lime-soft),transparent 28%);opacity:0.9;pointer-events:none;}
+     .hero-grid {width:min(var(--max),calc(100% - 2rem));margin:0 auto;display:grid;grid-template-columns:minmax(0,1.04fr) minmax(320px,0.96fr);gap:3rem;align-items:center;position:relative;}
+     .eyebrow {display:inline-flex;align-items:center;gap:0.55rem;padding:0.45rem 0.7rem;border:1px solid var(--ink-line);border-radius:999px;color:var(--ink-soft);font-size:0.84rem;font-weight:800;background:rgba(246,248,252,0.72);}
+     .live-dot {width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 6px var(--cyan-soft);}
+     h1,h2,h3 {font-family:"Manrope",system-ui,sans-serif;letter-spacing:0;line-height:1.04;margin:0;}
+     h1 {margin-top:1.25rem;font-size:clamp(3rem,8vw,6.7rem);max-width:8.8ch;}
+     .hero-copy {margin:1.25rem 0 0;color:var(--ink-soft);font-size:1.12rem;max-width:38rem;}
+     .signup-card {margin-top:2rem;background:rgba(246,248,252,0.86);border:1px solid var(--ink-line);border-radius:var(--radius);padding:0.55rem;display:grid;grid-template-columns:1fr auto;gap:0.5rem;max-width:620px;box-shadow:var(--shadow);}
+     .signup-card label {position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+     .signup-card input {min-height:52px;border:0;background:transparent;color:var(--ink);padding:0 1rem;min-width:0;}
+     .micro-row {margin-top:1rem;display:flex;flex-wrap:wrap;gap:0.75rem;align-items:center;color:var(--ink-soft);font-weight:700;font-size:0.92rem;}
+     .count-badge {display:inline-flex;align-items:center;gap:0.45rem;background:var(--ink);color:var(--cloud);border-radius:999px;padding:0.55rem 0.8rem;font-weight:900;}
+     .hero-visual {position:relative;min-height:560px;display:grid;align-items:center;}
+     .launch-panel {background:var(--ink);color:var(--cloud);border-radius:var(--radius);padding:1.35rem;box-shadow:var(--shadow);position:relative;overflow:hidden;}
+     .launch-panel::before {content:"";position:absolute;inset:0;background:linear-gradient(135deg,rgba(79,70,229,0.32),transparent 44%),radial-gradient(circle at 88% 18%,rgba(6,182,212,0.24),transparent 30%);pointer-events:none;}
+     .panel-content {position:relative;display:grid;gap:1rem;}
+     .status-row {display:flex;justify-content:space-between;align-items:center;gap:1rem;color:rgba(246,248,252,0.76);font-weight:800;font-size:0.88rem;}
+     .status-pill {display:inline-flex;align-items:center;gap:0.45rem;background:rgba(163,230,53,0.16);color:var(--lime);border-radius:999px;padding:0.45rem 0.65rem;}
+     .signal-chart {min-height:220px;border:1px solid rgba(246,248,252,0.14);border-radius:var(--radius);display:grid;grid-template-columns:repeat(14,1fr);align-items:end;gap:0.45rem;padding:1rem;background:rgba(246,248,252,0.04);}
+     .bar {border-radius:999px 999px 0 0;background:var(--indigo);min-height:26px;animation:rise 3.4s ease-in-out infinite alternate;}
+     .bar:nth-child(2n) {background:var(--cyan);animation-delay:0.25s;}
+     .bar:nth-child(3n) {background:var(--lime);animation-delay:0.5s;}
+     .bar:nth-child(5n) {background:var(--coral);animation-delay:0.75s;}
+     .insight-grid {display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;}
+     .insight {border:1px solid rgba(246,248,252,0.14);border-radius:var(--radius);padding:0.9rem;background:rgba(246,248,252,0.05);}
+     .insight strong {display:block;font-size:1.4rem;color:var(--cloud);}
+     .insight span {color:rgba(246,248,252,0.68);font-size:0.86rem;font-weight:700;}
+     .floating-note {position:absolute;left:-1rem;bottom:2rem;width:min(260px,52vw);background:var(--cloud);color:var(--ink);border:1px solid var(--ink-line);border-radius:var(--radius);padding:1rem;box-shadow:var(--shadow);}
+     .floating-note strong {display:block;font-family:"Manrope",system-ui,sans-serif;font-size:1.1rem;}
+     .floating-note span {color:var(--ink-soft);font-size:0.9rem;}
+     .section {padding:5rem 0;}
+     .section.alt {background:rgba(25,33,43,0.03);border-block:1px solid var(--ink-faint);}
+     .section-shell {width:min(var(--max),calc(100% - 2rem));margin:0 auto;}
+     .section-head {display:flex;justify-content:space-between;gap:1.5rem;align-items:end;margin-bottom:2rem;}
+     .section-head h2 {font-size:clamp(2rem,4vw,3.5rem);max-width:10ch;}
+     .section-head p {color:var(--ink-soft);max-width:34rem;margin:0;font-size:1rem;}
+     .countdown {display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;}
+     .time-card {background:var(--ink);color:var(--cloud);border-radius:var(--radius);padding:1.3rem;min-height:154px;display:grid;align-content:space-between;border:1px solid rgba(246,248,252,0.08);}
+     .time-card strong {font-family:"Manrope",system-ui,sans-serif;font-size:clamp(2.5rem,8vw,5rem);line-height:1;}
+     .time-card span {color:rgba(246,248,252,0.66);font-weight:800;}
+     .feature-grid {display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+     .feature-card,.quote-card {background:rgba(246,248,252,0.82);border:1px solid var(--ink-line);border-radius:var(--radius);padding:1.25rem;box-shadow:0 16px 36px rgba(25,33,43,0.06);}
+     .feature-icon {width:48px;height:48px;border-radius:var(--radius);display:grid;place-items:center;background:var(--indigo-soft);color:var(--indigo);margin-bottom:1rem;}
+     .feature-card:nth-child(2) .feature-icon {background:var(--cyan-soft);color:var(--cyan);}
+     .feature-card:nth-child(3) .feature-icon {background:var(--coral-soft);color:var(--coral);}
+     .feature-card h3,.quote-card h3 {font-size:1.2rem;margin-bottom:0.55rem;}
+     .feature-card p,.quote-card p {color:var(--ink-soft);margin:0;}
+     .referral-layout {display:grid;grid-template-columns:minmax(0,0.88fr) minmax(320px,1.12fr);gap:1rem;align-items:stretch;}
+     .referral-panel {background:var(--ink);color:var(--cloud);border-radius:var(--radius);padding:1.5rem;display:grid;gap:1.2rem;}
+     .referral-panel h2 {font-size:clamp(2rem,4vw,3.25rem);}
+     .referral-panel p {color:rgba(246,248,252,0.72);margin:0;}
+     .link-box {display:grid;grid-template-columns:1fr auto;gap:0.5rem;background:rgba(246,248,252,0.08);border:1px solid rgba(246,248,252,0.16);border-radius:var(--radius);padding:0.55rem;}
+     .link-box input {min-width:0;background:transparent;color:var(--cloud);border:0;padding:0 0.65rem;}
+     .share-row {display:flex;flex-wrap:wrap;gap:0.6rem;}
+     .share-row .button {background:rgba(246,248,252,0.1);border:1px solid rgba(246,248,252,0.18);box-shadow:none;}
+     .rewards {background:rgba(246,248,252,0.88);border:1px solid var(--ink-line);border-radius:var(--radius);padding:1.5rem;display:grid;align-content:center;gap:1.25rem;}
+     .progress-track {height:14px;background:var(--ink-faint);border-radius:999px;overflow:hidden;}
+     .progress-fill {width:62%;height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--indigo),var(--cyan),var(--lime));}
+     .tier-list {display:grid;gap:0.75rem;}
+     .tier {display:grid;grid-template-columns:auto 1fr auto;gap:0.75rem;align-items:center;padding:0.8rem;border:1px solid var(--ink-faint);border-radius:var(--radius);background:rgba(246,248,252,0.72);}
+     .tier-status {width:14px;height:14px;border-radius:50%;background:var(--ink-faint);}
+     .tier.done .tier-status {background:var(--lime);box-shadow:0 0 0 5px var(--lime-soft);}
+     .tier.active .tier-status {background:var(--cyan);box-shadow:0 0 0 5px var(--cyan-soft);}
+     .tier strong {font-size:0.98rem;}
+     .tier span {color:var(--ink-soft);font-size:0.9rem;}
+     .logo-strip {display:grid;grid-template-columns:repeat(5,1fr);gap:0.75rem;margin-bottom:1rem;}
+     .logo-pill {min-height:76px;border:1px solid var(--ink-line);border-radius:var(--radius);display:grid;place-items:center;font-family:"Manrope",system-ui,sans-serif;font-weight:800;color:var(--ink-soft);background:rgba(246,248,252,0.72);}
+     .quote-grid {display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+     .quote-card p {font-size:1rem;}
+     .quote-person {display:flex;gap:0.75rem;align-items:center;margin-top:1rem;}
+     .avatar {width:42px;height:42px;border-radius:50%;background:var(--indigo);color:var(--cloud);display:grid;place-items:center;font-weight:900;}
+     .quote-person span {display:block;color:var(--ink-soft);font-size:0.86rem;}
+     .faq-list {max-width:860px;margin:0 auto;display:grid;gap:0.75rem;}
+     .faq-item {border:1px solid var(--ink-line);border-radius:var(--radius);background:rgba(246,248,252,0.82);overflow:hidden;}
+     .faq-button {width:100%;border:0;background:transparent;color:var(--ink);display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1.05rem 1.1rem;text-align:left;font-weight:900;}
+     .faq-icon {width:28px;height:28px;border-radius:50%;background:var(--indigo-soft);color:var(--indigo);display:grid;place-items:center;flex:0 0 auto;transition:transform 0.2s ease;}
+     .faq-button[aria-expanded="true"] .faq-icon {transform:rotate(45deg);background:var(--cyan-soft);color:var(--cyan);}
+     .faq-panel {display:grid;grid-template-rows:0fr;transition:grid-template-rows 0.24s ease;}
+     .faq-panel.open {grid-template-rows:1fr;}
+     .faq-answer {overflow:hidden;}
+     .faq-answer p {margin:0;padding:0 1.1rem 1.1rem;color:var(--ink-soft);}
+     .site-footer {background:var(--ink);color:var(--cloud);padding:3rem 0;}
+     .footer-shell {width:min(var(--max),calc(100% - 2rem));margin:0 auto;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;}
+     .footer-credit {color:rgba(246,248,252,0.72);margin:0.4rem 0 0;}
+     .social-links {display:flex;gap:0.75rem;flex-wrap:wrap;}
+     .social-links a {color:rgba(246,248,252,0.74);font-weight:800;}
+     .social-links a:hover {color:var(--cloud);}
+     .toast {position:fixed;left:50%;bottom:1rem;transform:translate(-50%,130%);background:var(--ink);color:var(--cloud);border-radius:var(--radius);padding:0.75rem 1rem;z-index:90;box-shadow:var(--shadow);transition:transform 0.24s ease;font-weight:800;}
+     .toast.show {transform:translate(-50%,0);}
+     @keyframes rise {from {transform:scaleY(0.76);opacity:0.76;}
+     to {transform:scaleY(1);opacity:1;}
+    }
+    
+    @media (max-width:920px) {.nav-links,.nav-actions .button {display:none;}
+     .icon-button {display:inline-flex;}
+     .hero {padding-top:3.5rem;}
+     .hero-grid,.referral-layout {grid-template-columns:1fr;}
+     .hero-visual {min-height:460px;}
+     .section-head {align-items:start;flex-direction:column;}
+     .countdown,.feature-grid,.quote-grid {grid-template-columns:repeat(2,1fr);}
+     .logo-strip {grid-template-columns:repeat(3,1fr);}
+    }
+    
+    @media (max-width:640px) {.nav-shell {min-height:66px;}
+     h1 {font-size:3.1rem;}
+     .signup-card,.link-box {grid-template-columns:1fr;}
+     .signup-card .button,.link-box .button {width:100%;}
+     .countdown,.feature-grid,.quote-grid,.logo-strip,.insight-grid {grid-template-columns:1fr;}
+     .time-card {min-height:122px;}
+     .floating-note {position:static;width:100%;margin-top:1rem;}
+    }
+    
+    @media (prefers-reduced-motion:reduce) {*,*::before,*::after {animation-duration:0.01ms !important;animation-iteration-count:1 !important;scroll-behavior:auto !important;transition-duration:0.01ms !important;}
+     }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <nav class="nav-shell" aria-label="Primary navigation">
+      <a class="brand" href="#top" aria-label="Beacon Waitlist home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-text">Beacon</span>
+      </a>
+      <div class="nav-links" aria-label="Page sections">
+        <a href="#features">Features</a>
+        <a href="#about">About</a>
+        <a href="#faq">FAQ</a>
+      </div>
+      <div class="nav-actions">
+        <a class="button primary" href="#join">Join Waitlist</a>
+        <button class="icon-button" type="button" id="menuButton" aria-label="Open menu" aria-controls="mobileDrawer" aria-expanded="false">
+          <span class="hamburger-lines" aria-hidden="true"></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+  <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+  <aside class="drawer-panel" id="mobileDrawer" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="drawer-head">
+      <a class="brand" href="#top">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-text">Beacon</span>
+      </a>
+      <button class="drawer-close" type="button" id="drawerClose" aria-label="Close menu">×</button>
+    </div>
+    <div class="drawer-links">
+      <a href="#features">Features</a>
+      <a href="#about">About</a>
+      <a href="#faq">FAQ</a>
+      <a href="#join">Join Waitlist</a>
+    </div>
+  </aside>
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="heroTitle">
+      <div class="hero-grid">
+        <div>
+          <span class="eyebrow"><span class="live-dot" aria-hidden="true"></span> Private beta opens soon</span>
+          <h1 id="heroTitle">Launch before the market hears the echo.</h1>
+          <p class="hero-copy">Beacon gives pre-launch teams a clean waitlist engine, referral loop, and launch room that keeps early believers moving toward first access.</p>
+          <form class="signup-card" id="join" aria-label="Join the Beacon waitlist">
+            <label for="emailInput">Email address</label>
+            <input id="emailInput" name="email" type="email" autocomplete="email" required value="" aria-describedby="joinNote" aria-label="Email address" title="Email address">
+            <button class="button primary" type="submit">Join Waitlist</button>
+          </form>
+          <div class="micro-row" id="joinNote">
+            <span class="count-badge"><span aria-hidden="true">●</span> 18,426 founders waiting</span>
+            <span>Early access invites ship in weekly batches.</span>
+          </div>
+        </div>
+        <div class="hero-visual" aria-label="Waitlist growth dashboard preview">
+          <div class="launch-panel">
+            <div class="panel-content">
+              <div class="status-row">
+                <span>Launch room</span>
+                <span class="status-pill"><span class="live-dot" aria-hidden="true"></span> Healthy</span>
+              </div>
+              <div class="signal-chart" aria-hidden="true">
+                <span class="bar" style="height: 42%"></span>
+                <span class="bar" style="height: 58%"></span>
+                <span class="bar" style="height: 36%"></span>
+                <span class="bar" style="height: 74%"></span>
+                <span class="bar" style="height: 66%"></span>
+                <span class="bar" style="height: 88%"></span>
+                <span class="bar" style="height: 54%"></span>
+                <span class="bar" style="height: 92%"></span>
+                <span class="bar" style="height: 78%"></span>
+                <span class="bar" style="height: 64%"></span>
+                <span class="bar" style="height: 96%"></span>
+                <span class="bar" style="height: 70%"></span>
+                <span class="bar" style="height: 84%"></span>
+                <span class="bar" style="height: 98%"></span>
+              </div>
+              <div class="insight-grid">
+                <div class="insight">
+                  <strong>31%</strong>
+                  <span>Referral lift</span>
+                </div>
+                <div class="insight">
+                  <strong>4.8k</strong>
+                  <span>Priority invites</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="floating-note">
+            <strong>Next batch unlocked</strong>
+            <span>Top referrers receive founder calls and lifetime launch credits.</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section alt" aria-labelledby="countdownTitle">
+      <div class="section-shell">
+        <div class="section-head">
+          <h2 id="countdownTitle">Countdown to first access.</h2>
+          <p>The public launch window is locked. Join now to land in the first invitation cohort and move up with every qualified referral.</p>
+        </div>
+        <div class="countdown" role="timer" aria-live="polite">
+          <div class="time-card"><strong id="days">00</strong><span>Days</span></div>
+          <div class="time-card"><strong id="hours">00</strong><span>Hours</span></div>
+          <div class="time-card"><strong id="minutes">00</strong><span>Minutes</span></div>
+          <div class="time-card"><strong id="seconds">00</strong><span>Seconds</span></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="features" aria-labelledby="featuresTitle">
+      <div class="section-shell">
+        <div class="section-head">
+          <h2 id="featuresTitle">Built for launch momentum.</h2>
+          <p>Everything in the preview is designed to make waitlist growth measurable, shareable, and useful before your product is live.</p>
+        </div>
+        <div class="feature-grid">
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h3>Priority routing</h3>
+            <p>Score signups by source, persona, and referral activity so your earliest invites reach the right people first.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 17l5-5 4 4 7-9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M15 7h5v5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <h3>Live signal board</h3>
+            <p>See conversion, source quality, and cohort health in one launch room tuned for daily operator decisions.</p>
+          </article>
+          <article class="feature-card">
+            <div class="feature-icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 3l2.6 5.3 5.9.9-4.2 4.1 1 5.8L12 16.4 6.7 19.1l1-5.8-4.2-4.1 5.9-.9L12 3z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+            </div>
+            <h3>Reward tiers</h3>
+            <p>Create referral milestones that feel premium, track progress clearly, and reward real launch advocacy.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="section alt" id="about" aria-labelledby="referralTitle">
+      <div class="section-shell">
+        <div class="referral-layout">
+          <div class="referral-panel">
+            <span class="eyebrow"><span class="live-dot" aria-hidden="true"></span> Referral loop ready</span>
+            <h2 id="referralTitle">Move up the list with every trusted invite.</h2>
+            <p>Your personal link is ready as soon as you join. Share it with the teams that should see Beacon before launch day.</p>
+            <div class="link-box">
+              <input id="referralLink" value="https://beacon.launch/w/mira-247" readonly aria-label="Referral link">
+              <button class="button" type="button" id="copyLink">Copy</button>
+            </div>
+            <div class="share-row" aria-label="Share referral link">
+              <button class="button" type="button" id="shareTwitter">Twitter</button>
+              <button class="button" type="button" id="shareEmail">Email</button>
+            </div>
+          </div>
+          <div class="rewards">
+            <div>
+              <h3>Referral progress</h3>
+              <p>6 of 10 qualified invites completed.</p>
+            </div>
+            <div class="progress-track" aria-label="Referral reward progress">
+              <div class="progress-fill"></div>
+            </div>
+            <div class="tier-list">
+              <div class="tier done">
+                <span class="tier-status" aria-hidden="true"></span>
+                <strong>3 invites</strong>
+                <span>Beta badge</span>
+              </div>
+              <div class="tier active">
+                <span class="tier-status" aria-hidden="true"></span>
+                <strong>10 invites</strong>
+                <span>Priority access</span>
+              </div>
+              <div class="tier">
+                <span class="tier-status" aria-hidden="true"></span>
+                <strong>25 invites</strong>
+                <span>Founder briefing</span>
+              </div>
+              <div class="tier">
+                <span class="tier-status" aria-hidden="true"></span>
+                <strong>50 invites</strong>
+                <span>Lifetime launch credits</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" aria-labelledby="proofTitle">
+      <div class="section-shell">
+        <div class="section-head">
+          <h2 id="proofTitle">Trusted before the doors open.</h2>
+          <p>Beacon is backed by launch operators, product funds, and early teams that care about quality demand.</p>
+        </div>
+        <div class="logo-strip" aria-label="Featured in and backed by">
+          <div class="logo-pill">Northstar</div>
+          <div class="logo-pill">SignalLab</div>
+          <div class="logo-pill">VentureDesk</div>
+          <div class="logo-pill">LaunchOps</div>
+          <div class="logo-pill">Frontier</div>
+        </div>
+        <div class="quote-grid">
+          <article class="quote-card">
+            <p>“Beacon turns a waitlist from a vanity number into a launch instrument our growth team can actually tune.”</p>
+            <div class="quote-person">
+              <div class="avatar" aria-hidden="true">AR</div>
+              <div><strong>Ari Ramos</strong><span>Partner, Northstar</span></div>
+            </div>
+          </article>
+          <article class="quote-card">
+            <p>“The referral tiers feel polished without forcing our team into a heavy campaign build before product-market proof.”</p>
+            <div class="quote-person">
+              <div class="avatar" aria-hidden="true">KL</div>
+              <div><strong>Kira Lee</strong><span>Founder, Loomline</span></div>
+            </div>
+          </article>
+          <article class="quote-card">
+            <p>“It gives founders the launch clarity usually reserved for mature growth teams.”</p>
+            <div class="quote-person">
+              <div class="avatar" aria-hidden="true">MS</div>
+              <div><strong>Malik Stone</strong><span>Editor, SignalLab</span></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="section alt" id="faq" aria-labelledby="faqTitle">
+      <div class="section-shell">
+        <div class="section-head">
+          <h2 id="faqTitle">Questions before launch.</h2>
+          <p>Short answers for founders, early adopters, and teams deciding whether Beacon belongs in the next launch cycle.</p>
+        </div>
+        <div class="faq-list">
+          <article class="faq-item">
+            <button class="faq-button" type="button" aria-expanded="false" aria-controls="faqA1">
+              <span>When does Beacon open access?</span><span class="faq-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-panel" id="faqA1">
+              <div class="faq-answer"><p>Initial invites start when the countdown reaches zero, then continue in weekly cohorts based on fit and referral rank.</p></div>
+            </div>
+          </article>
+          <article class="faq-item">
+            <button class="faq-button" type="button" aria-expanded="false" aria-controls="faqA2">
+              <span>How is referral rank calculated?</span><span class="faq-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-panel" id="faqA2">
+              <div class="faq-answer"><p>Rank combines qualified signups, source quality, and reward tier progress so useful referrals matter more than raw clicks.</p></div>
+            </div>
+          </article>
+          <article class="faq-item">
+            <button class="faq-button" type="button" aria-expanded="false" aria-controls="faqA3">
+              <span>Can teams join together?</span><span class="faq-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-panel" id="faqA3">
+              <div class="faq-answer"><p>Yes. Add your work email now and invite teammates through your referral link once your waitlist profile is created.</p></div>
+            </div>
+          </article>
+          <article class="faq-item">
+            <button class="faq-button" type="button" aria-expanded="false" aria-controls="faqA4">
+              <span>What happens after I join?</span><span class="faq-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-panel" id="faqA4">
+              <div class="faq-answer"><p>You receive a confirmation, a personal referral link, and periodic updates when your position or reward tier changes.</p></div>
+            </div>
+          </article>
+          <article class="faq-item">
+            <button class="faq-button" type="button" aria-expanded="false" aria-controls="faqA5">
+              <span>Is Beacon only for software startups?</span><span class="faq-icon" aria-hidden="true">+</span>
+            </button>
+            <div class="faq-panel" id="faqA5">
+              <div class="faq-answer"><p>No. Beacon fits any team preparing a limited release, private beta, community drop, or high-demand product reveal.</p></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="footer-shell">
+      <div>
+        <a class="brand" href="#top">
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span class="brand-text">Beacon</span>
+        </a>
+        <p class="footer-credit">Beacon Waitlist — designed by Northstar Studio.</p>
+      </div>
+      <div class="social-links" aria-label="Social links">
+        <a href="https://twitter.com" rel="noreferrer">Twitter</a>
+        <a href="https://linkedin.com" rel="noreferrer">LinkedIn</a>
+        <a href="mailto:hello@beacon.launch">Email</a>
+      </div>
+    </div>
+  </footer>
+  <div class="toast" id="toast" role="status" aria-live="polite">Referral link copied</div>
+  <script>
+    const menuButton = document.querySelector("#menuButton");
+    const drawer = document.querySelector("#mobileDrawer");
+    const drawerClose = document.querySelector("#drawerClose");
+    const drawerBackdrop = document.querySelector("#drawerBackdrop");
+    const drawerLinks = drawer.querySelectorAll("a");
+    let lastFocus = null;
+
+    function openDrawer() {
+      lastFocus = document.activeElement;
+      drawer.hidden = false;
+      drawerBackdrop.hidden = false;
+      requestAnimationFrame(() => {
+        drawer.classList.add("open");
+        drawerBackdrop.classList.add("open");
+        document.body.classList.add("drawer-open");
+        menuButton.setAttribute("aria-expanded", "true");
+        drawer.setAttribute("aria-hidden", "false");
+        drawerClose.focus();
+      });
+    }
+
+    function closeDrawer() {
+      drawer.classList.remove("open");
+      drawerBackdrop.classList.remove("open");
+      document.body.classList.remove("drawer-open");
+      menuButton.setAttribute("aria-expanded", "false");
+      drawer.setAttribute("aria-hidden", "true");
+      window.setTimeout(() => {
+        drawerBackdrop.hidden = true;
+        if (lastFocus) lastFocus.focus();
+      }, 260);
+    }
+
+    menuButton.addEventListener("click", () => {
+      if (drawer.classList.contains("open")) {
+        closeDrawer();
+      } else {
+        openDrawer();
+      }
+    });
+
+    drawerClose.addEventListener("click", closeDrawer);
+    drawerBackdrop.addEventListener("click", closeDrawer);
+    drawerLinks.forEach((link) => link.addEventListener("click", closeDrawer));
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && drawer.classList.contains("open")) closeDrawer();
+      if (event.key !== "Tab" || !drawer.classList.contains("open")) return;
+      const focusable = drawer.querySelectorAll("a, button");
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+
+    const launchDate = new Date("2026-07-15T15:00:00-04:00").getTime();
+    const timeNodes = {
+      days: document.querySelector("#days"),
+      hours: document.querySelector("#hours"),
+      minutes: document.querySelector("#minutes"),
+      seconds: document.querySelector("#seconds")
+    };
+
+    function pad(value) {
+      return String(value).padStart(2, "0");
+    }
+
+    function updateCountdown() {
+      const distance = Math.max(0, launchDate - Date.now());
+      const days = Math.floor(distance / 86400000);
+      const hours = Math.floor((distance % 86400000) / 3600000);
+      const minutes = Math.floor((distance % 3600000) / 60000);
+      const seconds = Math.floor((distance % 60000) / 1000);
+      timeNodes.days.textContent = pad(days);
+      timeNodes.hours.textContent = pad(hours);
+      timeNodes.minutes.textContent = pad(minutes);
+      timeNodes.seconds.textContent = pad(seconds);
+    }
+
+    updateCountdown();
+    window.setInterval(updateCountdown, 1000);
+
+    const toast = document.querySelector("#toast");
+    const referralLink = document.querySelector("#referralLink");
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+      window.setTimeout(() => toast.classList.remove("show"), 2200);
+    }
+
+    document.querySelector("#copyLink").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(referralLink.value);
+        showToast("Referral link copied");
+      } catch {
+        referralLink.select();
+        document.execCommand("copy");
+        showToast("Referral link selected");
+      }
+    });
+
+    document.querySelector("#shareTwitter").addEventListener("click", () => {
+      const text = encodeURIComponent("I joined the Beacon early access waitlist. Move up with me:");
+      const url = encodeURIComponent(referralLink.value);
+      window.open(`https://twitter.com/intent/tweet?text=${text}&url=${url}`, "_blank", "noopener,noreferrer");
+    });
+
+    document.querySelector("#shareEmail").addEventListener("click", () => {
+      const subject = encodeURIComponent("Join me on the Beacon waitlist");
+      const body = encodeURIComponent(`I saved you a Beacon early access invite: ${referralLink.value}`);
+      window.location.href = `mailto:?subject=${subject}&body=${body}`;
+    });
+
+    document.querySelector("#join").addEventListener("submit", (event) => {
+      event.preventDefault();
+      showToast("You are on the early access list");
+      event.currentTarget.reset();
+    });
+
+    document.querySelectorAll(".faq-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        const expanded = button.getAttribute("aria-expanded") === "true";
+        const panel = document.getElementById(button.getAttribute("aria-controls"));
+        button.setAttribute("aria-expanded", String(!expanded));
+        panel.classList.toggle("open", !expanded);
+      });
+    });
+  </script>
+</body>
+</html>
