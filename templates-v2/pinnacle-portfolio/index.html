@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Pinnacle Portfolio is a premium creative portfolio showcase for project galleries, case studies, testimonials, skills, and client-ready contact flows.">
+  <title>Pinnacle Portfolio | Creative Direction Showcase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+:root{--cloud:#F6F8FC;--ink:#19212B;--indigo:#4F46E5;--cyan:#06B6D4;--lime:#A3E635;--coral:#FB7185;--cloud-soft:rgba(246,248,252,0.78);--cloud-strong:rgba(246,248,252,0.94);--ink-soft:rgba(25,33,43,0.72);--ink-muted:rgba(25,33,43,0.52);--ink-line:rgba(25,33,43,0.12);--indigo-soft:rgba(79,70,229,0.12);--cyan-soft:rgba(6,182,212,0.14);--lime-soft:rgba(163,230,53,0.22);--coral-soft:rgba(251,113,133,0.14);--shadow:0 28px 80px rgba(25,33,43,0.14);--tight-shadow:0 14px 36px rgba(25,33,43,0.11);--radius-sm:8px;--radius-md:18px;--radius-lg:28px;--site-width:1180px;--ease:cubic-bezier(0.2,0.8,0.2,1)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Inter",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:var(--ink);background:radial-gradient(circle at 18% 12%,rgba(79,70,229,0.09),transparent 28rem),radial-gradient(circle at 86% 18%,rgba(6,182,212,0.10),transparent 26rem),var(--cloud);line-height:1.6;min-height:100vh}
+body.drawer-open{overflow:hidden}
+a{color:inherit;text-decoration:none}
+img,svg{display:block;max-width:100%}
+button,input,textarea{font:inherit}
+button{cursor:pointer}
+.visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+:focus-visible{outline:3px solid var(--cyan);outline-offset:4px}
+.shell{width:min(var(--site-width),calc(100% - 32px));margin:0 auto}
+.site-header{position:sticky;top:0;z-index:40;background:rgba(246,248,252,0.86);backdrop-filter:blur(18px);border-bottom:1px solid var(--ink-line)}
+.nav{display:flex;align-items:center;justify-content:space-between;min-height:76px;gap:20px}
+.brand{display:inline-flex;align-items:center;gap:12px;font-family:"Manrope",sans-serif;font-weight:800;letter-spacing:0}
+.brand-mark{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,var(--indigo),var(--cyan)),var(--indigo);box-shadow:0 12px 26px rgba(79,70,229,0.28);position:relative;overflow:hidden}
+.brand-mark::after{content:"";position:absolute;width:18px;height:18px;right:6px;bottom:6px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 7px rgba(246,248,252,0.18)}
+.nav-links{display:flex;align-items:center;gap:8px;padding:6px;background:rgba(255,255,255,0.42);border:1px solid var(--ink-line);border-radius:999px}
+.nav-links a{padding:9px 14px;border-radius:999px;color:var(--ink-soft);font-weight:700;font-size:0.92rem;transition:color 180ms var(--ease),background 180ms var(--ease)}
+.nav-links a:hover,.nav-links a:focus-visible{color:var(--ink);background:var(--cloud)}
+.nav-actions{display:flex;align-items:center;gap:12px}
+.button{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:44px;padding:0 18px;border-radius:999px;border:1px solid transparent;font-weight:800;color:var(--cloud);background:var(--ink);box-shadow:var(--tight-shadow);transition:transform 180ms var(--ease),box-shadow 180ms var(--ease),background 180ms var(--ease)}
+.button:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
+.button.primary{background:linear-gradient(135deg,var(--indigo),var(--cyan))}
+.button.light{color:var(--ink);background:var(--cloud);border-color:var(--ink-line);box-shadow:none}
+.menu-button{display:none;width:46px;height:46px;border:1px solid var(--ink-line);border-radius:14px;background:var(--cloud);align-items:center;justify-content:center;flex-direction:column;gap:5px}
+.menu-button span{width:20px;height:2px;border-radius:10px;background:var(--ink);transition:transform 200ms var(--ease),opacity 200ms var(--ease)}
+.drawer-backdrop{position:fixed;inset:0;z-index:50;background:rgba(25,33,43,0.40);opacity:0;pointer-events:none;transition:opacity 200ms var(--ease)}
+.drawer-backdrop.active{opacity:1;pointer-events:auto}
+.mobile-drawer{position:fixed;top:0;right:0;z-index:60;width:min(86vw,380px);min-height:100vh;padding:24px;background:var(--cloud);border-left:1px solid var(--ink-line);box-shadow:-30px 0 80px rgba(25,33,43,0.22);transform:translateX(105%);transition:transform 240ms var(--ease)}
+.mobile-drawer.active{transform:translateX(0)}
+.drawer-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.drawer-close{width:44px;height:44px;border:1px solid var(--ink-line);border-radius:14px;background:transparent;color:var(--ink);font-size:1.4rem;line-height:1}
+.drawer-links{display:grid;gap:10px}
+.drawer-links a{padding:14px 12px;border-radius:12px;color:var(--ink-soft);font-weight:800;border:1px solid transparent}
+.drawer-links a:hover,.drawer-links a:focus-visible{color:var(--ink);border-color:var(--ink-line);background:rgba(79,70,229,0.07)}
+main{overflow:hidden}
+section{padding:90px 0}
+.section-head{display:flex;align-items:end;justify-content:space-between;gap:26px;margin-bottom:34px}
+.eyebrow{display:inline-flex;align-items:center;gap:9px;margin:0 0 14px;color:var(--indigo);font-weight:800;text-transform:uppercase;letter-spacing:0.08em;font-size:0.78rem}
+.eyebrow::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 7px var(--cyan-soft)}
+h1,h2,h3{font-family:"Manrope",sans-serif;line-height:1.05;letter-spacing:0;margin:0;color:var(--ink)}
+h1{font-size:clamp(3rem,8vw,7.5rem);max-width:920px}
+h2{font-size:clamp(2.2rem,5vw,4.6rem);max-width:780px}
+h3{font-size:1.34rem}
+p{margin:0;color:var(--ink-soft)}
+.hero{padding:78px 0 96px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.12fr)minmax(300px,0.88fr);align-items:center;gap:46px}
+.hero-copy{display:grid;gap:26px}
+.hero-summary{max-width:690px;font-size:1.16rem}
+.hero-actions{display:flex;flex-wrap:wrap;gap:12px}
+.hero-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;max-width:680px}
+.stat-tile{padding:18px;border-radius:var(--radius-md);border:1px solid var(--ink-line);background:rgba(255,255,255,0.48)}
+.stat-value{display:block;font-family:"Manrope",sans-serif;font-size:2rem;font-weight:800;color:var(--ink);line-height:1}
+.stat-label{display:block;margin-top:8px;color:var(--ink-muted);font-size:0.88rem;font-weight:700}
+.portrait-panel{position:relative;min-height:560px;border-radius:42px;overflow:hidden;background:linear-gradient(145deg,rgba(79,70,229,0.94),rgba(6,182,212,0.70)),var(--indigo);box-shadow:var(--shadow);isolation:isolate}
+.portrait-panel::before{content:"";position:absolute;inset:9%;border-radius:36px;border:1px solid rgba(246,248,252,0.42);background:radial-gradient(circle at 50% 18%,rgba(246,248,252,0.52),transparent 8rem),radial-gradient(circle at 50% 43%,rgba(246,248,252,0.36),transparent 10rem),linear-gradient(180deg,rgba(246,248,252,0.14),rgba(25,33,43,0.22));z-index:1}
+.portrait-panel::after{content:"";position:absolute;left:50%;bottom:9%;width:62%;height:56%;transform:translateX(-50%);border-radius:48% 48% 24% 24%;background:radial-gradient(circle at 50% 8%,var(--cloud)0 17%,transparent 18%),linear-gradient(180deg,rgba(25,33,43,0.28),rgba(25,33,43,0.52));z-index:2}
+.availability{position:absolute;left:24px;right:24px;bottom:24px;z-index:4;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px;border-radius:20px;color:var(--cloud);background:rgba(25,33,43,0.58);backdrop-filter:blur(18px);border:1px solid rgba(246,248,252,0.22)}
+.status-dot{width:12px;height:12px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 8px rgba(163,230,53,0.20);flex:0 0 auto}
+.availability strong{display:block;font-size:0.95rem}
+.availability span{display:block;color:rgba(246,248,252,0.74);font-size:0.82rem}
+.gallery{background:rgba(255,255,255,0.38);border-top:1px solid var(--ink-line);border-bottom:1px solid var(--ink-line)}
+.filter-group{display:flex;flex-wrap:wrap;gap:10px;justify-content:flex-end}
+.filter-button{min-height:40px;border:1px solid var(--ink-line);border-radius:999px;background:var(--cloud);color:var(--ink-soft);padding:0 14px;font-weight:800;transition:color 180ms var(--ease),background 180ms var(--ease),border-color 180ms var(--ease)}
+.filter-button.active{color:var(--cloud);background:var(--ink);border-color:var(--ink)}
+.project-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.project-card{position:relative;min-height:390px;border-radius:var(--radius-lg);overflow:hidden;border:1px solid var(--ink-line);background:var(--cloud);box-shadow:var(--tight-shadow);isolation:isolate;transition:transform 220ms var(--ease),opacity 220ms var(--ease)}
+.project-card.hide{display:none}
+.project-card:hover,.project-card:focus-within{transform:translateY(-6px)}
+.project-thumb{position:absolute;inset:0;background:linear-gradient(135deg,var(--indigo),var(--cyan))}
+.project-thumb.identity{background:linear-gradient(135deg,rgba(79,70,229,0.94),rgba(251,113,133,0.76)),var(--indigo)}
+.project-thumb.product{background:linear-gradient(135deg,rgba(6,182,212,0.92),rgba(163,230,53,0.70)),var(--cyan)}
+.project-thumb.editorial{background:linear-gradient(135deg,rgba(25,33,43,0.94),rgba(79,70,229,0.74)),var(--ink)}
+.project-thumb.motion{background:linear-gradient(135deg,rgba(251,113,133,0.92),rgba(6,182,212,0.76)),var(--coral)}
+.project-thumb::before{content:"";position:absolute;inset:22px;border-radius:22px;border:1px solid rgba(246,248,252,0.38);background:linear-gradient(90deg,transparent 0 30%,rgba(246,248,252,0.22)30% 31%,transparent 31% 100%),linear-gradient(180deg,transparent 0 48%,rgba(246,248,252,0.22)48% 49%,transparent 49% 100%)}
+.project-content{position:absolute;inset:auto 18px 18px 18px;z-index:3;padding:18px;border-radius:20px;color:var(--cloud);background:rgba(25,33,43,0.64);backdrop-filter:blur(18px);border:1px solid rgba(246,248,252,0.20)}
+.project-content h3{color:var(--cloud);margin-bottom:8px}
+.project-content p{color:rgba(246,248,252,0.74);margin-top:12px;max-height:0;overflow:hidden;transition:max-height 240ms var(--ease)}
+.project-card:hover .project-content p,.project-card:focus-within .project-content p{max-height:120px}
+.tag{display:inline-flex;align-items:center;min-height:26px;padding:0 10px;border-radius:999px;font-size:0.76rem;font-weight:800;color:var(--ink);background:var(--lime)}
+.case-layout{display:grid;grid-template-columns:0.82fr 1.18fr;gap:28px;align-items:start}
+.case-summary{position:sticky;top:104px;padding:28px;border-radius:var(--radius-lg);background:var(--ink);color:var(--cloud);box-shadow:var(--shadow)}
+.case-summary h2,.case-summary p{color:var(--cloud)}
+.case-summary p{color:rgba(246,248,252,0.72);margin-top:18px}
+.case-panels{display:grid;gap:14px}
+details.case-panel{border:1px solid var(--ink-line);border-radius:var(--radius-md);background:rgba(255,255,255,0.50);overflow:hidden}
+details.case-panel[open]{box-shadow:var(--tight-shadow)}
+.case-panel summary{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:22px 24px;font-weight:900;cursor:pointer;list-style:none}
+.case-panel summary::-webkit-details-marker{display:none}
+.case-panel summary::after{content:"+";width:34px;height:34px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:var(--cloud);background:var(--indigo);flex:0 0 auto}
+.case-panel[open] summary::after{content:"-";background:var(--cyan)}
+.case-body{padding:0 24px 24px}
+.metric-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:20px}
+.metric{padding:16px;border-radius:16px;background:var(--cloud);border:1px solid var(--ink-line)}
+.metric strong{display:block;font-family:"Manrope",sans-serif;font-size:1.8rem;line-height:1;color:var(--indigo)}
+.metric span{display:block;margin-top:7px;color:var(--ink-muted);font-weight:700;font-size:0.84rem}
+.services-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
+.service-card{padding:24px;min-height:260px;border-radius:var(--radius-md);border:1px solid var(--ink-line);background:rgba(255,255,255,0.54);transition:transform 200ms var(--ease),box-shadow 200ms var(--ease)}
+.service-card:hover{transform:translateY(-4px);box-shadow:var(--tight-shadow)}
+.service-icon{width:52px;height:52px;display:inline-flex;align-items:center;justify-content:center;border-radius:16px;margin-bottom:22px;background:var(--indigo-soft);color:var(--indigo);font-weight:900;font-size:1.28rem}
+.service-card:nth-child(2).service-icon{background:var(--cyan-soft);color:var(--cyan)}
+.service-card:nth-child(3).service-icon{background:var(--lime-soft);color:var(--ink)}
+.service-card:nth-child(4).service-icon{background:var(--coral-soft);color:var(--coral)}
+.service-card p{margin-top:12px;font-size:0.96rem}
+.testimonial-band{background:var(--ink);color:var(--cloud)}
+.testimonial-band h2,.testimonial-band .eyebrow{color:var(--cloud)}
+.testimonial-band .eyebrow::before{background:var(--lime);box-shadow:0 0 0 7px rgba(163,230,53,0.18)}
+.carousel{position:relative;border:1px solid rgba(246,248,252,0.16);border-radius:var(--radius-lg);background:rgba(246,248,252,0.06);overflow:hidden}
+.testimonial-track{display:flex;transition:transform 260ms var(--ease)}
+.testimonial{min-width:100%;padding:clamp(28px,6vw,64px)}
+.quote-mark{display:inline-flex;width:54px;height:54px;align-items:center;justify-content:center;border-radius:50%;background:var(--cyan);color:var(--ink);font-family:"Manrope",sans-serif;font-size:2.4rem;line-height:1;margin-bottom:26px}
+.testimonial blockquote{margin:0;max-width:920px;color:var(--cloud);font-family:"Manrope",sans-serif;font-size:clamp(1.7rem,4vw,3.8rem);line-height:1.1;font-weight:800}
+.testimonial cite{display:block;margin-top:28px;color:rgba(246,248,252,0.72);font-style:normal;font-weight:800}
+.carousel-controls{display:flex;align-items:center;gap:10px;padding:0 clamp(28px,6vw,64px)clamp(28px,6vw,44px)}
+.carousel-button{width:44px;height:44px;border-radius:50%;border:1px solid rgba(246,248,252,0.20);background:rgba(246,248,252,0.08);color:var(--cloud);font-size:1.2rem}
+.skills-layout{display:grid;grid-template-columns:0.9fr 1.1fr;gap:34px;align-items:start}
+.skills-note{padding:28px;border-radius:var(--radius-lg);background:linear-gradient(145deg,rgba(79,70,229,0.94),rgba(6,182,212,0.72)),var(--indigo);color:var(--cloud);box-shadow:var(--shadow)}
+.skills-note h2,.skills-note p{color:var(--cloud)}
+.skills-note p{margin-top:16px;color:rgba(246,248,252,0.78)}
+.skill-list{display:grid;gap:18px}
+.skill-item{padding:18px;border-radius:18px;background:rgba(255,255,255,0.58);border:1px solid var(--ink-line)}
+.skill-top{display:flex;justify-content:space-between;gap:16px;margin-bottom:12px;font-weight:900}
+.skill-top span:last-child{color:var(--indigo)}
+.skill-rail{height:12px;border-radius:999px;background:rgba(25,33,43,0.10);overflow:hidden}
+.skill-fill{height:100%;width:var(--level);border-radius:inherit;background:linear-gradient(90deg,var(--indigo),var(--cyan))}
+.contact{background:linear-gradient(180deg,rgba(255,255,255,0.28),rgba(255,255,255,0)),var(--cloud)}
+.contact-layout{display:grid;grid-template-columns:0.8fr 1.2fr;gap:28px;align-items:start}
+.contact-card{padding:28px;border-radius:var(--radius-lg);background:var(--ink);color:var(--cloud);min-height:100%}
+.contact-card h2,.contact-card p{color:var(--cloud)}
+.contact-card p{color:rgba(246,248,252,0.74);margin-top:16px}
+.contact-channels{display:grid;gap:14px;margin-top:28px}
+.contact-channel{display:flex;align-items:center;gap:12px;color:var(--cloud);font-weight:800}
+.channel-dot{width:12px;height:12px;border-radius:50%;background:var(--cyan)}
+.contact-channel:nth-child(2).channel-dot{background:var(--lime)}
+.contact-channel:nth-child(3).channel-dot{background:var(--coral)}
+.contact-form{display:grid;gap:16px;padding:28px;border-radius:var(--radius-lg);border:1px solid var(--ink-line);background:rgba(255,255,255,0.60);box-shadow:var(--tight-shadow)}
+.field{display:grid;gap:8px}
+.field label{font-weight:900;color:var(--ink)}
+.field input,.field textarea{width:100%;border:1px solid var(--ink-line);border-radius:16px;background:var(--cloud);color:var(--ink);padding:14px 16px}
+.field textarea{min-height:150px;resize:vertical}
+.form-status{min-height:24px;color:var(--indigo);font-weight:800}
+.site-footer{padding:34px 0;color:var(--cloud);background:var(--ink)}
+.footer-grid{display:flex;align-items:center;justify-content:space-between;gap:22px;flex-wrap:wrap}
+.footer-credit{font-weight:800}
+.social-links{display:flex;gap:10px;flex-wrap:wrap}
+.social-links a{display:inline-flex;min-height:40px;align-items:center;justify-content:center;padding:0 14px;border-radius:999px;color:var(--cloud);border:1px solid rgba(246,248,252,0.20);font-weight:800}
+@media(max-width:980px){.nav-links,.nav-actions .button{display:none}
+.menu-button{display:inline-flex}
+.hero-grid,.case-layout,.skills-layout,.contact-layout{grid-template-columns:1fr}
+.portrait-panel{min-height:480px}
+.project-grid,.services-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+.case-summary{position:static}
+}
+@media(max-width:720px){section{padding:68px 0}
+.hero{padding-top:48px}
+.section-head{align-items:stretch;flex-direction:column}
+.filter-group{justify-content:flex-start}
+.project-grid,.services-grid,.hero-stats,.metric-row{grid-template-columns:1fr}
+.project-card{min-height:340px}
+.portrait-panel{min-height:410px;border-radius:28px}
+.availability{align-items:flex-start;flex-direction:column}
+.contact-form,.contact-card,.case-summary{padding:22px}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto !important;transition-duration:0.01ms !important;animation-duration:0.01ms !important;animation-iteration-count:1 !important}
+}
+</style>
+</head>
+<body>
+  <header class="site-header">
+    <nav class="nav shell" aria-label="Primary navigation">
+      <a class="brand" href="#top" aria-label="Pinnacle Portfolio home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>Pinnacle Portfolio</span>
+      </a>
+      <div class="nav-links" aria-label="Section links">
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+        <a href="#services">Services</a>
+        <a href="#blog">Blog</a>
+        <a href="#contact">Contact</a>
+      </div>
+      <div class="nav-actions">
+        <a class="button primary" href="#contact">Book a review</a>
+        <button class="menu-button" type="button" aria-label="Open menu" aria-controls="mobile-drawer" aria-expanded="false">
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+          <span aria-hidden="true"></span>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <div class="drawer-backdrop" data-drawer-backdrop></div>
+  <aside class="mobile-drawer" id="mobile-drawer" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="drawer-top">
+      <a class="brand" href="#top">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span>Pinnacle</span>
+      </a>
+      <button class="drawer-close" type="button" aria-label="Close menu" data-drawer-close>×</button>
+    </div>
+    <div class="drawer-links">
+      <a href="#work">Work</a>
+      <a href="#about">About</a>
+      <a href="#services">Services</a>
+      <a href="#blog">Blog</a>
+      <a href="#contact">Contact</a>
+      <a class="button primary" href="#contact">Book a review</a>
+    </div>
+  </aside>
+
+  <main id="top">
+    <section class="hero shell" aria-labelledby="hero-title">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow">Independent creative director</p>
+          <h1 id="hero-title">Mara Quinn builds identities with momentum.</h1>
+          <p class="hero-summary">
+            A portfolio for sharp visual systems, immersive campaign worlds, and digital launches that help ambitious teams look unmistakably ready for their next chapter.
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#work">View selected work</a>
+            <a class="button light" href="#case-study">Read case study</a>
+          </div>
+          <div class="hero-stats" aria-label="Portfolio highlights">
+            <div class="stat-tile">
+              <span class="stat-value">48</span>
+              <span class="stat-label">Brand systems shipped</span>
+            </div>
+            <div class="stat-tile">
+              <span class="stat-value">12</span>
+              <span class="stat-label">Markets reached</span>
+            </div>
+            <div class="stat-tile">
+              <span class="stat-value">94%</span>
+              <span class="stat-label">Repeat client rate</span>
+            </div>
+          </div>
+        </div>
+        <div class="portrait-panel" role="img" aria-label="Stylized profile composition for Mara Quinn">
+          <div class="availability">
+            <span class="status-dot" aria-hidden="true"></span>
+            <div>
+              <strong>Available for two summer commissions</strong>
+              <span>Identity systems, launch campaigns, and executive brand studios</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="gallery" id="work" aria-labelledby="work-title">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Project gallery</p>
+            <h2 id="work-title">Selected work across identity, product, editorial, and motion.</h2>
+          </div>
+          <div class="filter-group" role="group" aria-label="Filter projects">
+            <button class="filter-button active" type="button" data-filter="all">All</button>
+            <button class="filter-button" type="button" data-filter="identity">Identity</button>
+            <button class="filter-button" type="button" data-filter="product">Product</button>
+            <button class="filter-button" type="button" data-filter="editorial">Editorial</button>
+            <button class="filter-button" type="button" data-filter="motion">Motion</button>
+          </div>
+        </div>
+        <div class="project-grid">
+          <article class="project-card" data-category="identity" tabindex="0">
+            <div class="project-thumb identity" aria-hidden="true"></div>
+            <div class="project-content">
+              <span class="tag">Identity</span>
+              <h3>Northline Foundry</h3>
+              <p>Positioning, visual language, and launch assets for a venture studio turning technical research into market-ready companies.</p>
+            </div>
+          </article>
+          <article class="project-card" data-category="product" tabindex="0">
+            <div class="project-thumb product" aria-hidden="true"></div>
+            <div class="project-content">
+              <span class="tag">Product</span>
+              <h3>Pulse Atlas</h3>
+              <p>A dashboard interface system that made operational risk feel calm, legible, and fast for enterprise teams.</p>
+            </div>
+          </article>
+          <article class="project-card" data-category="editorial" tabindex="0">
+            <div class="project-thumb editorial" aria-hidden="true"></div>
+            <div class="project-content">
+              <span class="tag">Editorial</span>
+              <h3>Field Notes Annual</h3>
+              <p>Art direction for a printed and digital report designed to make climate data feel immediate and boardroom-ready.</p>
+            </div>
+          </article>
+          <article class="project-card" data-category="motion" tabindex="0">
+            <div class="project-thumb motion" aria-hidden="true"></div>
+            <div class="project-content">
+              <span class="tag">Motion</span>
+              <h3>Orbit Keynote</h3>
+              <p>A kinetic event identity with stage graphics, transitions, social cutdowns, and launch film direction.</p>
+            </div>
+          </article>
+          <article class="project-card" data-category="identity" tabindex="0">
+            <div class="project-thumb identity" aria-hidden="true"></div>
+            <div class="project-content">
+              <span class="tag">Identity</span>
+              <h3>Bright Harbor</h3>
+              <p>A refined hospitality identity balancing investor confidence with a warm guest experience across every touchpoint.</p>
+            </div>
+          </article>
+          <article class="project-card" data-category="product" tabindex="0">
+            <div class="project-thumb product" aria-hidden="true"></div>
+            <div class="project-content">
+              <span class="tag">Product</span>
+              <h3>Signal Desk</h3>
+              <p>Product storytelling, interface polish, and sales enablement for a fast-growing analytics platform.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="case-study" class="shell" aria-labelledby="case-title">
+      <div class="case-layout">
+        <aside class="case-summary">
+          <p class="eyebrow">Case study</p>
+          <h2 id="case-title">How Northline Foundry became impossible to confuse.</h2>
+          <p>
+            The team needed a premium identity that could flex across investor decks, venture launches, research storytelling, and recruiting without fragmenting into separate sub-brands.
+          </p>
+        </aside>
+        <div class="case-panels">
+          <details class="case-panel" open>
+            <summary>Problem</summary>
+            <div class="case-body">
+              <p>
+                Northline had strong technical credibility but no clear market signal. Each new company launch felt visually unrelated, and the parent brand struggled to communicate velocity without looking generic.
+              </p>
+            </div>
+          </details>
+          <details class="case-panel">
+            <summary>Approach</summary>
+            <div class="case-body">
+              <p>
+                We built a modular identity platform: a precise wordmark, expandable grid language, venture color rules, a presentation system, and a gallery of launch-ready motion behaviors.
+              </p>
+            </div>
+          </details>
+          <details class="case-panel">
+            <summary>Result</summary>
+            <div class="case-body">
+              <p>
+                The new system gave every team a shared creative operating model. Launches became faster, recruiting felt more polished, and the parent brand finally carried a premium point of view.
+              </p>
+              <div class="metric-row" aria-label="Case study metrics">
+                <div class="metric">
+                  <strong>3.4x</strong>
+                  <span>Launch asset speed</span>
+                </div>
+                <div class="metric">
+                  <strong>41%</strong>
+                  <span>Higher deck completion</span>
+                </div>
+                <div class="metric">
+                  <strong>18</strong>
+                  <span>Reusable design modules</span>
+                </div>
+              </div>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section id="services" class="shell" aria-labelledby="services-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Services</p>
+          <h2 id="services-title">Strategic creative support from concept to launch.</h2>
+        </div>
+      </div>
+      <div class="services-grid">
+        <article class="service-card">
+          <span class="service-icon" aria-hidden="true">ID</span>
+          <h3>Brand Identity</h3>
+          <p>Positioning, naming direction, visual systems, and rollout kits for teams moving into a bigger market moment.</p>
+        </article>
+        <article class="service-card">
+          <span class="service-icon" aria-hidden="true">UX</span>
+          <h3>Product Story</h3>
+          <p>Interface art direction, product narratives, demo flows, and design systems that help buyers understand value faster.</p>
+        </article>
+        <article class="service-card">
+          <span class="service-icon" aria-hidden="true">ED</span>
+          <h3>Editorial Systems</h3>
+          <p>Reports, campaigns, publications, and content formats with a clear hierarchy and a distinctive visual voice.</p>
+        </article>
+        <article class="service-card">
+          <span class="service-icon" aria-hidden="true">MV</span>
+          <h3>Motion Direction</h3>
+          <p>Launch films, keynote graphics, social motion kits, and transitions that make brand behavior feel intentional.</p>
+        </article>
+      </div>
+    </section>
+
+    <section class="testimonial-band" aria-labelledby="testimonial-title">
+      <div class="shell">
+        <div class="section-head">
+          <div>
+            <p class="eyebrow">Client testimonials</p>
+            <h2 id="testimonial-title">Trusted by founders, editors, and product leaders.</h2>
+          </div>
+        </div>
+        <div class="carousel" aria-roledescription="carousel">
+          <div class="testimonial-track" data-testimonial-track>
+            <figure class="testimonial">
+              <span class="quote-mark" aria-hidden="true">“</span>
+              <blockquote>Mara gave us a visual system with the confidence of a category leader and the flexibility of a startup toolkit.</blockquote>
+              <cite>Elena Park, CEO at Northline Foundry</cite>
+            </figure>
+            <figure class="testimonial">
+              <span class="quote-mark" aria-hidden="true">“</span>
+              <blockquote>The work moved beyond polish. It changed how our sales team explained the product and how buyers remembered us.</blockquote>
+              <cite>Samir Vale, VP Product at Signal Desk</cite>
+            </figure>
+            <figure class="testimonial">
+              <span class="quote-mark" aria-hidden="true">“</span>
+              <blockquote>Every detail felt considered, from the keynote motion to the social templates our team still uses every week.</blockquote>
+              <cite>Iris Chen, Creative Producer at Orbit Labs</cite>
+            </figure>
+          </div>
+          <div class="carousel-controls" aria-label="Testimonial controls">
+            <button class="carousel-button" type="button" data-testimonial-prev aria-label="Previous testimonial">←</button>
+            <button class="carousel-button" type="button" data-testimonial-next aria-label="Next testimonial">→</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="shell" aria-labelledby="skills-title">
+      <div class="skills-layout">
+        <div class="skills-note">
+          <p class="eyebrow">Skills and tools</p>
+          <h2 id="skills-title">Built for strategic taste and hands-on delivery.</h2>
+          <p>
+            The practice blends creative direction, writing, systems thinking, and production craft so teams receive work that is both beautiful and immediately usable.
+          </p>
+        </div>
+        <div class="skill-list" aria-label="Skill proficiency levels">
+          <div class="skill-item">
+            <div class="skill-top">
+              <span>Brand Strategy</span>
+              <span>96%</span>
+            </div>
+            <div class="skill-rail"><div class="skill-fill" style="--level: 96%"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-top">
+              <span>Art Direction</span>
+              <span>94%</span>
+            </div>
+            <div class="skill-rail"><div class="skill-fill" style="--level: 94%"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-top">
+              <span>Interface Systems</span>
+              <span>88%</span>
+            </div>
+            <div class="skill-rail"><div class="skill-fill" style="--level: 88%"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-top">
+              <span>Motion Language</span>
+              <span>82%</span>
+            </div>
+            <div class="skill-rail"><div class="skill-fill" style="--level: 82%"></div></div>
+          </div>
+          <div class="skill-item">
+            <div class="skill-top">
+              <span>Launch Production</span>
+              <span>91%</span>
+            </div>
+            <div class="skill-rail"><div class="skill-fill" style="--level: 91%"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="blog" class="shell" aria-labelledby="blog-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Field notes</p>
+          <h2 id="blog-title">Recent writing on identity systems and launch craft.</h2>
+        </div>
+      </div>
+      <div class="services-grid">
+        <article class="service-card">
+          <span class="service-icon" aria-hidden="true">01</span>
+          <h3>Designing for remembered moments</h3>
+          <p>How to shape one strong visual idea into a full campaign without losing clarity across channels.</p>
+        </article>
+        <article class="service-card">
+          <span class="service-icon" aria-hidden="true">02</span>
+          <h3>Why systems beat style sheets</h3>
+          <p>A practical look at creative rules that help growing teams move faster while still making expressive work.</p>
+        </article>
+        <article class="service-card">
+          <span class="service-icon" aria-hidden="true">03</span>
+          <h3>Pitch decks with a point of view</h3>
+          <p>Guidance for turning dense strategy into a polished narrative investors can follow in minutes.</p>
+        </article>
+        <article class="service-card">
+          <span class="service-icon" aria-hidden="true">04</span>
+          <h3>Motion as a brand behavior</h3>
+          <p>Using movement to express pace, confidence, and focus instead of treating animation as decoration.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="contact" class="contact" aria-labelledby="contact-title">
+      <div class="shell contact-layout">
+        <div class="contact-card">
+          <p class="eyebrow">Contact</p>
+          <h2 id="contact-title">Bring a sharper portfolio story to your next launch.</h2>
+          <p>
+            Share the moment your team is preparing for, the audience that matters most, and the creative assets that need to move with conviction.
+          </p>
+          <div class="contact-channels">
+            <a class="contact-channel" href="mailto:hello@pinnacle.example">
+              <span class="channel-dot" aria-hidden="true"></span>
+              hello@pinnacle.example
+            </a>
+            <a class="contact-channel" href="tel:+15550143000">
+              <span class="channel-dot" aria-hidden="true"></span>
+              +1 555 014 3000
+            </a>
+            <a class="contact-channel" href="#work">
+              <span class="channel-dot" aria-hidden="true"></span>
+              View current availability
+            </a>
+          </div>
+        </div>
+        <form class="contact-form" data-contact-form>
+          <div class="field">
+            <label for="name">Name</label>
+            <input id="name" name="name" type="text" autocomplete="name" required>
+          </div>
+          <div class="field">
+            <label for="email">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" required>
+          </div>
+          <div class="field">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" required></textarea>
+          </div>
+          <button class="button primary" type="submit">Send inquiry</button>
+          <p class="form-status" data-form-status aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="shell footer-grid">
+      <p class="footer-credit">Pinnacle Portfolio — designed by Meridian Atelier.</p>
+      <div class="social-links" aria-label="Social links">
+        <a href="https://www.behance.net" rel="noreferrer">Behance</a>
+        <a href="https://www.dribbble.com" rel="noreferrer">Dribbble</a>
+        <a href="https://www.linkedin.com" rel="noreferrer">LinkedIn</a>
+        <a href="https://www.instagram.com" rel="noreferrer">Instagram</a>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const body = document.body;
+    const menuButton = document.querySelector(".menu-button");
+    const drawer = document.querySelector(".mobile-drawer");
+    const drawerBackdrop = document.querySelector("[data-drawer-backdrop]");
+    const drawerClose = document.querySelector("[data-drawer-close]");
+    const drawerLinks = document.querySelectorAll(".drawer-links a");
+    const filterButtons = document.querySelectorAll("[data-filter]");
+    const projectCards = document.querySelectorAll(".project-card");
+    const track = document.querySelector("[data-testimonial-track]");
+    const prevButton = document.querySelector("[data-testimonial-prev]");
+    const nextButton = document.querySelector("[data-testimonial-next]");
+    const form = document.querySelector("[data-contact-form]");
+    const formStatus = document.querySelector("[data-form-status]");
+    let testimonialIndex = 0;
+    let lastFocusedElement = null;
+
+    function openDrawer() {
+      lastFocusedElement = document.activeElement;
+      body.classList.add("drawer-open");
+      drawer.classList.add("active");
+      drawerBackdrop.classList.add("active");
+      drawer.setAttribute("aria-hidden", "false");
+      menuButton.setAttribute("aria-expanded", "true");
+      const firstLink = drawer.querySelector("a");
+      if (firstLink) firstLink.focus();
+    }
+
+    function closeDrawer() {
+      body.classList.remove("drawer-open");
+      drawer.classList.remove("active");
+      drawerBackdrop.classList.remove("active");
+      drawer.setAttribute("aria-hidden", "true");
+      menuButton.setAttribute("aria-expanded", "false");
+      if (lastFocusedElement) lastFocusedElement.focus();
+    }
+
+    menuButton.addEventListener("click", openDrawer);
+    drawerClose.addEventListener("click", closeDrawer);
+    drawerBackdrop.addEventListener("click", closeDrawer);
+    drawerLinks.forEach((link) => link.addEventListener("click", closeDrawer));
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && drawer.classList.contains("active")) {
+        closeDrawer();
+      }
+    });
+
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const filter = button.dataset.filter;
+        filterButtons.forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+        projectCards.forEach((card) => {
+          const isVisible = filter === "all" || card.dataset.category === filter;
+          card.classList.toggle("hide", !isVisible);
+        });
+      });
+    });
+
+    function updateTestimonials() {
+      track.style.transform = `translateX(-${testimonialIndex * 100}%)`;
+    }
+
+    prevButton.addEventListener("click", () => {
+      testimonialIndex = testimonialIndex === 0 ? 2 : testimonialIndex - 1;
+      updateTestimonials();
+    });
+
+    nextButton.addEventListener("click", () => {
+      testimonialIndex = testimonialIndex === 2 ? 0 : testimonialIndex + 1;
+      updateTestimonials();
+    });
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      formStatus.textContent = "Inquiry drafted. Connect this form to your preferred inbox or CRM.";
+      form.reset();
+    });
+  </script>
+</body>
+</html>
