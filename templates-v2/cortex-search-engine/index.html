@@ -1,0 +1,1404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cortex Search Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --cloud-strong: #FFFFFF;
+      --cloud-line: rgba(25, 33, 43, 0.10);
+      --cloud-panel: rgba(255, 255, 255, 0.82);
+      --cloud-muted: rgba(246, 248, 252, 0.72);
+      --ink: #19212B;
+      --ink-soft: rgba(25, 33, 43, 0.72);
+      --ink-muted: rgba(25, 33, 43, 0.54);
+      --ink-panel: rgba(25, 33, 43, 0.94);
+      --indigo: #4F46E5;
+      --indigo-soft: rgba(79, 70, 229, 0.12);
+      --indigo-line: rgba(79, 70, 229, 0.22);
+      --cyan: #06B6D4;
+      --cyan-soft: rgba(6, 182, 212, 0.13);
+      --lime: #A3E635;
+      --lime-soft: rgba(163, 230, 53, 0.18);
+      --coral: #FB7185;
+      --coral-soft: rgba(251, 113, 133, 0.16);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 22px;
+      --shadow-sm: 0 12px 28px rgba(25, 33, 43, 0.08);
+      --shadow-md: 0 18px 42px rgba(25, 33, 43, 0.13);
+      --nav-height: 76px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Inter", system-ui, sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(79, 70, 229, 0.10), transparent 34rem),
+        radial-gradient(circle at top right, rgba(6, 182, 212, 0.10), transparent 30rem),
+        var(--cloud);
+    }
+
+    body.drawer-open {
+      overflow: hidden;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      cursor: pointer;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    :focus-visible {
+      outline: 3px solid rgba(6, 182, 212, 0.55);
+      outline-offset: 3px;
+    }
+
+    .skip-link {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 100;
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      color: var(--cloud-strong);
+      background: var(--ink);
+      transform: translateY(-140%);
+      transition: transform 160ms ease;
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    .app-shell {
+      width: min(1440px, 100%);
+      margin: 0 auto;
+      padding: 0 18px 32px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      min-height: var(--nav-height);
+      margin: 0 -18px;
+      padding: 12px 18px;
+      display: grid;
+      grid-template-columns: auto minmax(240px, 1fr) auto;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid var(--cloud-line);
+      background: rgba(246, 248, 252, 0.92);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 216px;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      color: var(--cloud-strong);
+      background:
+        linear-gradient(135deg, var(--indigo), var(--cyan));
+      box-shadow: 0 12px 30px rgba(79, 70, 229, 0.26);
+    }
+
+    .brand-title {
+      margin: 0;
+      font-family: "Manrope", sans-serif;
+      font-size: 1.04rem;
+      font-weight: 800;
+      letter-spacing: 0;
+      line-height: 1.1;
+    }
+
+    .brand-subtitle {
+      display: block;
+      margin-top: 3px;
+      color: var(--ink-muted);
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .search-zone {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      padding: 8px;
+      border: 1px solid var(--cloud-line);
+      border-radius: 18px;
+      background: var(--cloud-strong);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .search-zone input {
+      min-width: 0;
+      width: 100%;
+      border: 0;
+      color: var(--ink);
+      background: transparent;
+      font-size: 0.98rem;
+      font-weight: 600;
+    }
+
+    .search-zone input:focus {
+      outline: 0;
+    }
+
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: inline-grid;
+      place-items: center;
+      color: var(--ink);
+      background: var(--cloud);
+      transition: transform 160ms ease, background 160ms ease, color 160ms ease;
+    }
+
+    .icon-button:hover {
+      transform: translateY(-1px);
+      background: var(--indigo-soft);
+      color: var(--indigo);
+    }
+
+    .voice-live {
+      position: relative;
+      color: var(--cyan);
+      background: var(--cyan-soft);
+    }
+
+    .voice-live::after {
+      content: "";
+      position: absolute;
+      right: 9px;
+      top: 9px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 0 5px rgba(6, 182, 212, 0.12);
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      min-width: 270px;
+    }
+
+    .control-button,
+    .sort-select,
+    .count-pill {
+      min-height: 40px;
+      border: 1px solid var(--cloud-line);
+      border-radius: 12px;
+      color: var(--ink);
+      background: var(--cloud-strong);
+      font-weight: 700;
+      box-shadow: 0 6px 16px rgba(25, 33, 43, 0.05);
+    }
+
+    .control-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 13px;
+    }
+
+    .sort-select {
+      padding: 0 12px;
+      appearance: none;
+    }
+
+    .count-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 0 12px;
+      color: var(--indigo);
+      background: var(--indigo-soft);
+      border-color: var(--indigo-line);
+    }
+
+    .hamburger {
+      display: none;
+    }
+
+    .autocomplete {
+      position: absolute;
+      top: calc(100% + 10px);
+      left: 8px;
+      right: 8px;
+      display: none;
+      padding: 8px;
+      border: 1px solid var(--cloud-line);
+      border-radius: 16px;
+      background: var(--cloud-strong);
+      box-shadow: var(--shadow-md);
+    }
+
+    .autocomplete.open {
+      display: block;
+    }
+
+    .autocomplete button {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--ink);
+      background: transparent;
+      text-align: left;
+      font-weight: 700;
+    }
+
+    .autocomplete button:hover {
+      background: var(--cloud);
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 284px minmax(0, 1fr) 340px;
+      gap: 18px;
+      padding-top: 18px;
+    }
+
+    .filter-sidebar,
+    .preview-panel,
+    .analytics-section,
+    .results-panel,
+    .suggestions-panel {
+      border: 1px solid var(--cloud-line);
+      border-radius: var(--radius-lg);
+      background: var(--cloud-panel);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .filter-sidebar {
+      position: sticky;
+      top: calc(var(--nav-height) + 18px);
+      align-self: start;
+      max-height: calc(100vh - var(--nav-height) - 36px);
+      overflow: auto;
+      padding: 16px;
+    }
+
+    .mobile-drawer-head,
+    .drawer-backdrop {
+      display: none;
+    }
+
+    .sidebar-title,
+    .section-title,
+    .preview-title {
+      margin: 0;
+      font-family: "Manrope", sans-serif;
+      letter-spacing: 0;
+    }
+
+    .sidebar-title {
+      font-size: 1rem;
+      font-weight: 800;
+    }
+
+    .filter-summary {
+      margin: 7px 0 14px;
+      color: var(--ink-muted);
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .filter-group {
+      border-top: 1px solid var(--cloud-line);
+    }
+
+    .filter-toggle {
+      width: 100%;
+      padding: 14px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--ink);
+      background: transparent;
+      font-weight: 800;
+    }
+
+    .filter-toggle svg {
+      transition: transform 160ms ease;
+    }
+
+    .filter-toggle[aria-expanded="true"] svg {
+      transform: rotate(180deg);
+    }
+
+    .filter-options {
+      display: grid;
+      gap: 9px;
+      padding: 0 0 14px;
+    }
+
+    .filter-group.collapsed .filter-options {
+      display: none;
+    }
+
+    .check-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink-soft);
+      font-size: 0.9rem;
+      font-weight: 650;
+    }
+
+    .check-row input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--indigo);
+    }
+
+    .count {
+      color: var(--ink-muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .content-stack {
+      display: grid;
+      gap: 18px;
+      min-width: 0;
+    }
+
+    .facets {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+    }
+
+    .facet-chip {
+      min-height: 38px;
+      padding: 0 14px;
+      border: 1px solid var(--cloud-line);
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--ink-soft);
+      background: var(--cloud-strong);
+      font-weight: 800;
+    }
+
+    .facet-chip.active {
+      color: var(--cloud-strong);
+      background: var(--ink);
+      border-color: var(--ink);
+    }
+
+    .facet-count {
+      color: var(--cyan);
+      font-size: 0.8rem;
+    }
+
+    .suggestions-panel {
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .suggestions-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 14px;
+    }
+
+    .suggestion-card {
+      padding: 14px;
+      border: 1px solid var(--cloud-line);
+      border-radius: var(--radius-md);
+      background: var(--cloud-strong);
+    }
+
+    .suggestion-label {
+      margin: 0 0 8px;
+      color: var(--ink-muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .suggestion-card strong {
+      display: block;
+      margin-bottom: 8px;
+      font-family: "Manrope", sans-serif;
+      font-size: 1.05rem;
+    }
+
+    .query-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .query-list button {
+      padding: 8px 10px;
+      border-radius: 999px;
+      color: var(--indigo);
+      background: var(--indigo-soft);
+      font-weight: 800;
+    }
+
+    .results-panel {
+      padding: 16px;
+    }
+
+    .results-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-size: 1.22rem;
+      font-weight: 800;
+    }
+
+    .section-kicker {
+      margin: 4px 0 0;
+      color: var(--ink-muted);
+      font-size: 0.86rem;
+      font-weight: 650;
+    }
+
+    .ranking-controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .ranking-controls button {
+      min-height: 34px;
+      padding: 0 10px;
+      border-radius: 10px;
+      color: var(--ink-soft);
+      background: var(--cloud);
+      font-weight: 800;
+    }
+
+    .ranking-controls button.active {
+      color: var(--indigo);
+      background: var(--indigo-soft);
+    }
+
+    .result-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .result-card {
+      padding: 16px;
+      border: 1px solid var(--cloud-line);
+      border-radius: var(--radius-md);
+      background: var(--cloud-strong);
+      transition: border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+    }
+
+    .result-card:hover,
+    .result-card.selected {
+      border-color: var(--indigo-line);
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(79, 70, 229, 0.10);
+    }
+
+    .result-card:focus-within {
+      border-color: var(--cyan);
+    }
+
+    .result-topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .source-badge {
+      padding: 5px 9px;
+      border-radius: 999px;
+      color: var(--indigo);
+      background: var(--indigo-soft);
+      font-size: 0.76rem;
+      font-weight: 850;
+    }
+
+    .score {
+      color: var(--ink);
+      font-size: 0.83rem;
+      font-weight: 850;
+    }
+
+    .score span {
+      color: var(--lime);
+      text-shadow: 0 1px 0 rgba(25, 33, 43, 0.16);
+    }
+
+    .result-title {
+      margin: 0;
+      font-family: "Manrope", sans-serif;
+      font-size: 1.08rem;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    .result-title button {
+      padding: 0;
+      color: var(--ink);
+      background: transparent;
+      text-align: left;
+      font-weight: 800;
+    }
+
+    .breadcrumb {
+      margin: 7px 0;
+      color: var(--cyan);
+      font-size: 0.83rem;
+      font-weight: 800;
+    }
+
+    .snippet {
+      margin: 0;
+      color: var(--ink-soft);
+      line-height: 1.55;
+      font-size: 0.94rem;
+    }
+
+    mark {
+      padding: 0 3px;
+      border-radius: 4px;
+      color: var(--ink);
+      background: var(--lime-soft);
+      font-weight: 800;
+    }
+
+    .result-meta {
+      margin-top: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      color: var(--ink-muted);
+      font-size: 0.8rem;
+      font-weight: 750;
+    }
+
+    .meta-dot {
+      width: 6px;
+      height: 6px;
+      margin: auto 0;
+      border-radius: 50%;
+      background: var(--cloud-line);
+    }
+
+    .right-rail {
+      display: grid;
+      gap: 18px;
+      align-self: start;
+      position: sticky;
+      top: calc(var(--nav-height) + 18px);
+      max-height: calc(100vh - var(--nav-height) - 36px);
+      overflow: auto;
+    }
+
+    .preview-panel {
+      padding: 18px;
+      background: var(--ink-panel);
+      color: var(--cloud-strong);
+    }
+
+    .preview-title {
+      font-size: 1.16rem;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .preview-url {
+      margin: 8px 0 14px;
+      color: rgba(246, 248, 252, 0.66);
+      font-size: 0.84rem;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .preview-actions {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .primary-action,
+    .secondary-action {
+      min-height: 38px;
+      padding: 0 12px;
+      border-radius: 11px;
+      font-weight: 850;
+    }
+
+    .primary-action {
+      color: var(--ink);
+      background: var(--lime);
+    }
+
+    .secondary-action {
+      color: var(--cloud-strong);
+      background: rgba(246, 248, 252, 0.12);
+    }
+
+    .metadata-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .metadata-item {
+      padding: 10px;
+      border-radius: 12px;
+      background: rgba(246, 248, 252, 0.10);
+    }
+
+    .metadata-item span {
+      display: block;
+      color: rgba(246, 248, 252, 0.58);
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .metadata-item strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 0.92rem;
+    }
+
+    .rail-block {
+      padding-top: 14px;
+      border-top: 1px solid rgba(246, 248, 252, 0.16);
+    }
+
+    .rail-heading {
+      margin: 0 0 10px;
+      color: rgba(246, 248, 252, 0.66);
+      font-size: 0.78rem;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .phrase-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .phrase-list li {
+      padding: 7px 9px;
+      border-radius: 999px;
+      color: var(--cloud-strong);
+      background: rgba(6, 182, 212, 0.18);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .outline-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 8px;
+    }
+
+    .outline-list li {
+      display: flex;
+      gap: 8px;
+      color: rgba(246, 248, 252, 0.78);
+      font-size: 0.86rem;
+      line-height: 1.4;
+    }
+
+    .outline-index {
+      color: var(--cyan);
+      font-weight: 900;
+    }
+
+    .analytics-section {
+      padding: 16px;
+    }
+
+    .analytics-cards {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 14px 0;
+    }
+
+    .metric-card {
+      min-height: 92px;
+      padding: 12px;
+      border: 1px solid var(--cloud-line);
+      border-radius: var(--radius-md);
+      background: var(--cloud-strong);
+    }
+
+    .metric-label {
+      margin: 0 0 8px;
+      color: var(--ink-muted);
+      font-size: 0.74rem;
+      font-weight: 850;
+      text-transform: uppercase;
+    }
+
+    .metric-value {
+      margin: 0;
+      font-family: "Manrope", sans-serif;
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .metric-trend {
+      margin-top: 5px;
+      color: var(--cyan);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .query-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.84rem;
+    }
+
+    .query-table caption {
+      padding-bottom: 8px;
+      color: var(--ink-muted);
+      text-align: left;
+      font-weight: 850;
+      text-transform: uppercase;
+      font-size: 0.74rem;
+    }
+
+    .query-table th,
+    .query-table td {
+      padding: 9px 0;
+      border-top: 1px solid var(--cloud-line);
+      text-align: left;
+    }
+
+    .query-table th {
+      color: var(--ink-muted);
+      font-size: 0.73rem;
+      text-transform: uppercase;
+    }
+
+    .query-table td:last-child,
+    .query-table th:last-child {
+      text-align: right;
+    }
+
+    .health {
+      color: var(--lime);
+      font-weight: 900;
+    }
+
+    .alert {
+      color: var(--coral);
+      font-weight: 900;
+    }
+
+    .site-footer {
+      margin-top: 20px;
+      padding: 22px 4px 0;
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      color: var(--ink-muted);
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    .site-footer strong {
+      color: var(--ink);
+    }
+
+    svg {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      stroke-width: 2;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex: 0 0 auto;
+    }
+
+    @media (max-width: 1180px) {
+      .layout {
+        grid-template-columns: 260px minmax(0, 1fr);
+      }
+
+      .right-rail {
+        grid-column: 1 / -1;
+        position: static;
+        max-height: none;
+        grid-template-columns: minmax(0, 1fr) minmax(320px, 0.7fr);
+      }
+    }
+
+    @media (max-width: 920px) {
+      .topbar {
+        grid-template-columns: auto 1fr auto;
+      }
+
+      .brand {
+        min-width: 0;
+      }
+
+      .brand-subtitle,
+      .count-pill,
+      .sort-select {
+        display: none;
+      }
+
+      .hamburger {
+        display: inline-grid;
+      }
+
+      .toolbar {
+        min-width: 0;
+      }
+
+      .layout {
+        grid-template-columns: minmax(0, 1fr);
+      }
+
+      .filter-sidebar {
+        position: fixed;
+        inset: 0 auto 0 0;
+        z-index: 70;
+        width: min(340px, 86vw);
+        max-height: none;
+        border-radius: 0 20px 20px 0;
+        transform: translateX(-105%);
+        transition: transform 220ms ease;
+      }
+
+      .filter-sidebar.open {
+        transform: translateX(0);
+      }
+
+      .mobile-drawer-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+
+      .drawer-backdrop {
+        position: fixed;
+        inset: 0;
+        z-index: 60;
+        display: block;
+        opacity: 0;
+        pointer-events: none;
+        background: rgba(25, 33, 43, 0.38);
+        transition: opacity 200ms ease;
+      }
+
+      .drawer-backdrop.open {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .right-rail {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+
+    @media (max-width: 680px) {
+      .app-shell {
+        padding-inline: 12px;
+      }
+
+      .topbar {
+        margin-inline: -12px;
+        padding-inline: 12px;
+        grid-template-columns: auto 1fr auto;
+        gap: 10px;
+      }
+
+      .brand-title {
+        font-size: 0.92rem;
+      }
+
+      .brand-mark {
+        width: 38px;
+        height: 38px;
+      }
+
+      .search-zone {
+        grid-column: 1 / -1;
+        grid-row: 2;
+      }
+
+      .control-button span {
+        display: none;
+      }
+
+      .suggestions-grid,
+      .analytics-cards,
+      .metadata-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .results-head {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .ranking-controls {
+        justify-content: flex-start;
+      }
+
+      .site-footer {
+        flex-direction: column;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#results">Skip to results</a>
+  <div class="drawer-backdrop" data-drawer-backdrop></div>
+  <div class="app-shell">
+    <header class="topbar" aria-label="Primary navigation">
+      <a class="brand" href="#" aria-label="Cortex Search Engine home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><path d="M5 12a7 7 0 0 1 14 0"/><path d="M8 12a4 4 0 0 1 8 0"/><path d="M12 12v7"/><path d="M8 19h8"/></svg>
+        </span>
+        <span>
+          <span class="brand-title">Cortex Search</span>
+          <span class="brand-subtitle">Enterprise discovery</span>
+        </span>
+      </a>
+      <form class="search-zone" role="search" aria-label="Enterprise search">
+        <input id="searchInput" type="search" value="policy intelligence pipeline" aria-label="Search enterprise content" autocomplete="off">
+        <button class="icon-button voice-live" type="button" aria-label="Voice search">
+          <svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></svg>
+        </button>
+        <button class="icon-button" type="button" id="autocompleteToggle" aria-label="Show search suggestions" aria-expanded="false">
+          <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+        </button>
+        <div class="autocomplete" id="autocomplete" role="listbox" aria-label="Autocomplete suggestions">
+          <button type="button" role="option"><span>policy intelligence pipeline owners</span><span>42</span></button>
+          <button type="button" role="option"><span>policy intelligence risk controls</span><span>36</span></button>
+          <button type="button" role="option"><span>pipeline governance exceptions</span><span>28</span></button>
+        </div>
+      </form>
+      <div class="toolbar" aria-label="Search controls">
+        <button class="icon-button hamburger" type="button" id="drawerOpen" aria-label="Open filters" aria-controls="filters" aria-expanded="false">
+          <svg viewBox="0 0 24 24"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
+        </button>
+        <button class="control-button" type="button" id="filterToggle">
+          <svg viewBox="0 0 24 24"><path d="M4 6h16"/><path d="M7 12h10"/><path d="M10 18h4"/></svg>
+          <span>Filters</span>
+        </button>
+        <select class="sort-select" aria-label="Sort results">
+          <option>Relevance</option>
+          <option>Newest</option>
+          <option>Most opened</option>
+        </select>
+        <span class="count-pill" aria-live="polite">18,420 results</span>
+      </div>
+    </header>
+    <div class="layout">
+      <aside class="filter-sidebar" id="filters" aria-label="Filter sidebar">
+        <div class="mobile-drawer-head">
+          <h2 class="sidebar-title">Filters</h2>
+          <button class="icon-button" type="button" id="drawerClose" aria-label="Close filters">
+            <svg viewBox="0 0 24 24"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+        <h2 class="sidebar-title">Refine discovery</h2>
+        <p class="filter-summary">Ranking tuned for verified sources, recent activity, and role access.</p>
+        <section class="filter-group">
+          <button class="filter-toggle" type="button" aria-expanded="true">
+            <span>Date Range</span>
+            <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="filter-options">
+            <label class="check-row"><input type="checkbox" checked><span>Past 24 hours</span><span class="count">128</span></label>
+            <label class="check-row"><input type="checkbox"><span>Past 7 days</span><span class="count">982</span></label>
+            <label class="check-row"><input type="checkbox" checked><span>Past 30 days</span><span class="count">4.1k</span></label>
+            <label class="check-row"><input type="checkbox"><span>This quarter</span><span class="count">8.7k</span></label>
+          </div>
+        </section>
+        <section class="filter-group">
+          <button class="filter-toggle" type="button" aria-expanded="true">
+            <span>Source</span>
+            <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="filter-options">
+            <label class="check-row"><input type="checkbox" checked><span>Knowledge Base</span><span class="count">5.8k</span></label>
+            <label class="check-row"><input type="checkbox"><span>Confluence</span><span class="count">3.4k</span></label>
+            <label class="check-row"><input type="checkbox" checked><span>Drive</span><span class="count">2.9k</span></label>
+            <label class="check-row"><input type="checkbox"><span>Slack Archives</span><span class="count">1.7k</span></label>
+          </div>
+        </section>
+        <section class="filter-group">
+          <button class="filter-toggle" type="button" aria-expanded="true">
+            <span>Type</span>
+            <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="filter-options">
+            <label class="check-row"><input type="checkbox" checked><span>Policy</span><span class="count">812</span></label>
+            <label class="check-row"><input type="checkbox"><span>Runbook</span><span class="count">609</span></label>
+            <label class="check-row"><input type="checkbox"><span>Decision Memo</span><span class="count">444</span></label>
+            <label class="check-row"><input type="checkbox"><span>Incident Review</span><span class="count">233</span></label>
+          </div>
+        </section>
+        <section class="filter-group">
+          <button class="filter-toggle" type="button" aria-expanded="true">
+            <span>Author</span>
+            <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="filter-options">
+            <label class="check-row"><input type="checkbox"><span>Avery Chen</span><span class="count">216</span></label>
+            <label class="check-row"><input type="checkbox" checked><span>Maya Ortiz</span><span class="count">184</span></label>
+            <label class="check-row"><input type="checkbox"><span>Noah Singh</span><span class="count">151</span></label>
+            <label class="check-row"><input type="checkbox"><span>Elena Park</span><span class="count">139</span></label>
+          </div>
+        </section>
+        <section class="filter-group">
+          <button class="filter-toggle" type="button" aria-expanded="true">
+            <span>Language</span>
+            <svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <div class="filter-options">
+            <label class="check-row"><input type="checkbox" checked><span>English</span><span class="count">14.8k</span></label>
+            <label class="check-row"><input type="checkbox"><span>German</span><span class="count">1.2k</span></label>
+            <label class="check-row"><input type="checkbox"><span>Spanish</span><span class="count">924</span></label>
+            <label class="check-row"><input type="checkbox"><span>Japanese</span><span class="count">428</span></label>
+          </div>
+        </section>
+      </aside>
+      <main class="content-stack" id="results">
+        <nav class="facets" aria-label="Faceted navigation">
+          <button class="facet-chip active" type="button">All <span class="facet-count">18.4k</span></button>
+          <button class="facet-chip" type="button">Policies <span class="facet-count">812</span></button>
+          <button class="facet-chip" type="button">Teams <span class="facet-count">96</span></button>
+          <button class="facet-chip" type="button">Systems <span class="facet-count">234</span></button>
+          <button class="facet-chip" type="button">Incidents <span class="facet-count">71</span></button>
+          <button class="facet-chip" type="button">People <span class="facet-count">48</span></button>
+        </nav>
+        <section class="suggestions-panel" aria-labelledby="suggestionTitle">
+          <div>
+            <h2 class="section-title" id="suggestionTitle">Intelligent suggestions</h2>
+            <p class="section-kicker">Query assistance is grounded in approved enterprise vocabulary.</p>
+          </div>
+          <div class="suggestions-grid">
+            <article class="suggestion-card">
+              <p class="suggestion-label">Did you mean</p>
+              <strong>policy intelligence pipelines</strong>
+              <div class="query-list">
+                <button type="button">Search corrected phrase</button>
+                <button type="button">Compare terms</button>
+              </div>
+            </article>
+            <article class="suggestion-card">
+              <p class="suggestion-label">Related queries</p>
+              <div class="query-list">
+                <button type="button">approval routing</button>
+                <button type="button">source freshness</button>
+                <button type="button">risk owners</button>
+                <button type="button">access controls</button>
+              </div>
+            </article>
+          </div>
+        </section>
+        <section class="results-panel" aria-labelledby="resultsTitle">
+          <div class="results-head">
+            <div>
+              <h1 class="section-title" id="resultsTitle">Search results</h1>
+              <p class="section-kicker">Best matches for policy intelligence pipeline across secure content.</p>
+            </div>
+            <div class="ranking-controls" aria-label="Intelligent ranking controls">
+              <button class="active" type="button">Semantic</button>
+              <button type="button">Freshness</button>
+              <button type="button">Authority</button>
+              <button type="button">Access</button>
+            </div>
+          </div>
+          <div class="result-list">
+            <article class="result-card selected" data-title="Policy Intelligence Pipeline Operating Model" data-url="knowledge.company.com / governance / search / operating-model" data-owner="Maya Ortiz" data-score="98%">
+              <div class="result-topline">
+                <span class="source-badge">Knowledge Base</span>
+                <span class="score"><span>98%</span> relevance</span>
+              </div>
+              <h2 class="result-title"><button type="button">Policy Intelligence Pipeline Operating Model</button></h2>
+              <p class="breadcrumb">knowledge.company.com / governance / search / operating-model</p>
+              <p class="snippet">Defines how the <mark>policy intelligence pipeline</mark> ranks trusted sources, refreshes facets, and resolves conflicting ownership signals across teams.</p>
+              <div class="result-meta"><span>Updated today</span><span class="meta-dot"></span><span>Maya Ortiz</span><span class="meta-dot"></span><span>Policy</span></div>
+            </article>
+            <article class="result-card" data-title="Quarterly Search Ranking Controls Review" data-url="drive.company.com / docs / search-ranking-q2" data-owner="Avery Chen" data-score="94%">
+              <div class="result-topline">
+                <span class="source-badge">Drive</span>
+                <span class="score"><span>94%</span> relevance</span>
+              </div>
+              <h2 class="result-title"><button type="button">Quarterly Search Ranking Controls Review</button></h2>
+              <p class="breadcrumb">drive.company.com / docs / search-ranking-q2</p>
+              <p class="snippet">Audits semantic boosts, freshness windows, and human review thresholds used by the <mark>intelligence pipeline</mark> for regulated documents.</p>
+              <div class="result-meta"><span>Updated 2 days ago</span><span class="meta-dot"></span><span>Avery Chen</span><span class="meta-dot"></span><span>Decision Memo</span></div>
+            </article>
+            <article class="result-card" data-title="Incident Review: Facet Drift in Legal Content" data-url="confluence.company.com / legal / facet-drift-review" data-owner="Noah Singh" data-score="91%">
+              <div class="result-topline">
+                <span class="source-badge">Confluence</span>
+                <span class="score"><span>91%</span> relevance</span>
+              </div>
+              <h2 class="result-title"><button type="button">Incident Review: Facet Drift in Legal Content</button></h2>
+              <p class="breadcrumb">confluence.company.com / legal / facet-drift-review</p>
+              <p class="snippet">Explains how stale source labels affected <mark>policy</mark> discovery and documents guardrails added to ranking calibration jobs.</p>
+              <div class="result-meta"><span>Updated May 24</span><span class="meta-dot"></span><span>Noah Singh</span><span class="meta-dot"></span><span>Incident Review</span></div>
+            </article>
+            <article class="result-card" data-title="Access-Aware Search Runbook" data-url="knowledge.company.com / platform / access-aware-search" data-owner="Elena Park" data-score="88%">
+              <div class="result-topline">
+                <span class="source-badge">Runbook</span>
+                <span class="score"><span>88%</span> relevance</span>
+              </div>
+              <h2 class="result-title"><button type="button">Access-Aware Search Runbook</button></h2>
+              <p class="breadcrumb">knowledge.company.com / platform / access-aware-search</p>
+              <p class="snippet">Provides escalation paths for access mismatches, ranking overrides, and live health checks in the enterprise <mark>search pipeline</mark>.</p>
+              <div class="result-meta"><span>Updated May 21</span><span class="meta-dot"></span><span>Elena Park</span><span class="meta-dot"></span><span>Runbook</span></div>
+            </article>
+          </div>
+        </section>
+      </main>
+      <aside class="right-rail" aria-label="Preview and analytics">
+        <section class="preview-panel" aria-labelledby="previewTitle">
+          <h2 class="preview-title" id="previewTitle">Policy Intelligence Pipeline Operating Model</h2>
+          <p class="preview-url" id="previewUrl">knowledge.company.com / governance / search / operating-model</p>
+          <div class="preview-actions">
+            <button class="primary-action" type="button">Open result</button>
+            <button class="secondary-action" type="button">Pin preview</button>
+          </div>
+          <div class="metadata-grid">
+            <div class="metadata-item"><span>Owner</span><strong id="previewOwner">Maya Ortiz</strong></div>
+            <div class="metadata-item"><span>Score</span><strong id="previewScore">98%</strong></div>
+            <div class="metadata-item"><span>Source</span><strong>Knowledge Base</strong></div>
+            <div class="metadata-item"><span>Status</span><strong class="health">Healthy</strong></div>
+          </div>
+          <div class="rail-block">
+            <h3 class="rail-heading">Key phrases</h3>
+            <ul class="phrase-list">
+              <li>semantic boost</li>
+              <li>source trust</li>
+              <li>facet refresh</li>
+              <li>owner signals</li>
+            </ul>
+          </div>
+          <div class="rail-block">
+            <h3 class="rail-heading">Document outline</h3>
+            <ol class="outline-list">
+              <li><span class="outline-index">01</span><span>Pipeline mission and governance boundaries</span></li>
+              <li><span class="outline-index">02</span><span>Ranking inputs, weighting, and freshness rules</span></li>
+              <li><span class="outline-index">03</span><span>Facet generation, quality checks, and alert routes</span></li>
+              <li><span class="outline-index">04</span><span>Review cadence and exception approval workflow</span></li>
+            </ol>
+          </div>
+        </section>
+        <section class="analytics-section" aria-labelledby="analyticsTitle">
+          <h2 class="section-title" id="analyticsTitle">Search analytics</h2>
+          <p class="section-kicker">Live usage quality for the current workspace.</p>
+          <div class="analytics-cards">
+            <article class="metric-card">
+              <p class="metric-label">Total searches</p>
+              <p class="metric-value">1.28M</p>
+              <div class="metric-trend">+12.4% month</div>
+            </article>
+            <article class="metric-card">
+              <p class="metric-label">Avg response</p>
+              <p class="metric-value">142ms</p>
+              <div class="metric-trend">18ms faster</div>
+            </article>
+            <article class="metric-card">
+              <p class="metric-label">Click-through</p>
+              <p class="metric-value">47.8%</p>
+              <div class="metric-trend">+3.1 points</div>
+            </article>
+            <article class="metric-card">
+              <p class="metric-label">Alerts</p>
+              <p class="metric-value alert">3</p>
+              <div class="metric-trend">2 source gaps</div>
+            </article>
+          </div>
+          <table class="query-table">
+            <caption>Top queries</caption>
+            <thead>
+              <tr><th>Query</th><th>Searches</th><th>CTR</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>access policy</td><td>18.2k</td><td>52%</td></tr>
+              <tr><td>pipeline owner</td><td>14.9k</td><td>48%</td></tr>
+              <tr><td>incident review</td><td>11.6k</td><td>43%</td></tr>
+              <tr><td>freshness rule</td><td>9.4k</td><td>39%</td></tr>
+            </tbody>
+          </table>
+        </section>
+      </aside>
+    </div>
+    <footer class="site-footer">
+      <span><strong>Cortex Search Engine</strong> — designed by Meridian Studio</span>
+      <span>Secure discovery for policy, people, and operational knowledge.</span>
+    </footer>
+  </div>
+  <script>
+    const sidebar = document.querySelector("#filters");
+    const drawerOpen = document.querySelector("#drawerOpen");
+    const drawerClose = document.querySelector("#drawerClose");
+    const drawerBackdrop = document.querySelector("[data-drawer-backdrop]");
+    const filterToggle = document.querySelector("#filterToggle");
+    const autocompleteToggle = document.querySelector("#autocompleteToggle");
+    const autocomplete = document.querySelector("#autocomplete");
+    const resultCards = document.querySelectorAll(".result-card");
+    const previewTitle = document.querySelector("#previewTitle");
+    const previewUrl = document.querySelector("#previewUrl");
+    const previewOwner = document.querySelector("#previewOwner");
+    const previewScore = document.querySelector("#previewScore");
+    const rankingButtons = document.querySelectorAll(".ranking-controls button");
+
+    function setDrawer(open) {
+      sidebar.classList.toggle("open", open);
+      drawerBackdrop.classList.toggle("open", open);
+      document.body.classList.toggle("drawer-open", open);
+      drawerOpen?.setAttribute("aria-expanded", String(open));
+      if (open) {
+        drawerClose?.focus();
+      } else {
+        drawerOpen?.focus();
+      }
+    }
+
+    drawerOpen?.addEventListener("click", () => setDrawer(true));
+    drawerClose?.addEventListener("click", () => setDrawer(false));
+    drawerBackdrop?.addEventListener("click", () => setDrawer(false));
+    filterToggle?.addEventListener("click", () => {
+      if (window.matchMedia("(max-width: 920px)").matches) {
+        setDrawer(true);
+      } else {
+        sidebar.toggleAttribute("hidden");
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        setDrawer(false);
+        autocomplete.classList.remove("open");
+        autocompleteToggle.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    document.querySelectorAll(".filter-toggle").forEach((button) => {
+      button.addEventListener("click", () => {
+        const group = button.closest(".filter-group");
+        const expanded = button.getAttribute("aria-expanded") === "true";
+        button.setAttribute("aria-expanded", String(!expanded));
+        group.classList.toggle("collapsed", expanded);
+      });
+    });
+
+    autocompleteToggle.addEventListener("click", () => {
+      const isOpen = autocomplete.classList.toggle("open");
+      autocompleteToggle.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    autocomplete.querySelectorAll("button").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelector("#searchInput").value = button.querySelector("span").textContent;
+        autocomplete.classList.remove("open");
+        autocompleteToggle.setAttribute("aria-expanded", "false");
+      });
+    });
+
+    resultCards.forEach((card) => {
+      card.querySelector("button").addEventListener("click", () => {
+        resultCards.forEach((item) => item.classList.remove("selected"));
+        card.classList.add("selected");
+        previewTitle.textContent = card.dataset.title;
+        previewUrl.textContent = card.dataset.url;
+        previewOwner.textContent = card.dataset.owner;
+        previewScore.textContent = card.dataset.score;
+      });
+    });
+
+    rankingButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        rankingButtons.forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+      });
+    });
+  </script>
+</body>
+</html>
