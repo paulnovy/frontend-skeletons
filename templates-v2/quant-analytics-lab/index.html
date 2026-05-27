@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Quant Analytics Lab is an advanced analytics workspace skeleton with query building, visualization, dashboards, reports, and connected data sources.">
+  <title>Quant Analytics Lab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--cloud:#F6F8FC;--ink:#19212B;--indigo:#4F46E5;--cyan:#06B6D4;--lime:#A3E635;--coral:#FB7185;--cloud-strong:rgba(246,248,252,1);--cloud-glass:rgba(246,248,252,0.82);--ink-muted:rgba(25,33,43,0.66);--ink-soft:rgba(25,33,43,0.12);--ink-faint:rgba(25,33,43,0.07);--ink-panel:rgba(25,33,43,0.96);--indigo-soft:rgba(79,70,229,0.12);--indigo-line:rgba(79,70,229,0.24);--cyan-soft:rgba(6,182,212,0.14);--cyan-line:rgba(6,182,212,0.34);--lime-soft:rgba(163,230,53,0.23);--lime-line:rgba(163,230,53,0.46);--coral-soft:rgba(251,113,133,0.15);--coral-line:rgba(251,113,133,0.36);--shadow:0 24px 70px rgba(25,33,43,0.12);--shadow-small:0 12px 30px rgba(25,33,43,0.08);--radius:8px;--max:1216px}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;min-height:100vh;color:var(--ink);background:linear-gradient(135deg,rgba(79,70,229,0.08),rgba(6,182,212,0.05) 42%,rgba(163,230,53,0.08)),var(--cloud);font-family:"Inter",system-ui,sans-serif;font-size:16px;line-height:1.5}
+    body.drawer-open{overflow:hidden}
+    a{color:inherit;text-decoration:none}
+    button,input,select,textarea{font:inherit}
+    button{cursor:pointer}
+    svg{display:block;max-width:100%}
+    :focus-visible{outline:3px solid var(--cyan);outline-offset:3px}
+    .page-shell{min-height:100vh;display:flex;flex-direction:column}
+    .topbar{position:sticky;top:0;z-index:40;border-bottom:1px solid var(--ink-faint);background:rgba(246,248,252,0.92);backdrop-filter:blur(18px)}
+    .nav-inner{width:min(var(--max),calc(100% - 32px));min-height:78px;margin:0 auto;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:22px}
+    .brand{display:inline-flex;align-items:center;gap:12px;font-family:"Manrope",system-ui,sans-serif;font-weight:800;letter-spacing:0}
+    .brand-mark{width:40px;height:40px;display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:8px;border-radius:var(--radius);background:var(--ink);box-shadow:inset 0 0 0 2px rgba(6,182,212,0.28)}
+    .brand-mark span{border-radius:2px;background:var(--cyan)}
+    .brand-mark span:nth-child(2),.brand-mark span:nth-child(5){background:var(--indigo)}
+    .brand-mark span:nth-child(7){background:var(--lime)}
+    .brand-copy{display:flex;flex-direction:column;line-height:1.05}
+    .brand-copy strong{font-size:1rem}
+    .brand-copy small{margin-top:4px;color:var(--ink-muted);font-family:"Inter",system-ui,sans-serif;font-size:0.72rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em}
+    .nav-links{display:flex;justify-content:center;align-items:center;gap:4px}
+    .nav-links a{padding:10px 12px;color:var(--ink-muted);border-radius:var(--radius);font-size:0.92rem;font-weight:700}
+    .nav-links a:hover{color:var(--ink);background:var(--indigo-soft)}
+    .nav-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px}
+    .search-wrap{width:240px;position:relative}
+    .search-wrap label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+    .search-wrap input{width:100%;min-height:42px;padding:0 14px 0 38px;color:var(--ink);border:1px solid var(--ink-faint);border-radius:var(--radius);background:var(--cloud-strong);box-shadow:0 8px 22px rgba(25,33,43,0.05)}
+    .search-icon{position:absolute;top:50%;left:13px;width:14px;height:14px;border:2px solid var(--indigo);border-radius:999px;transform:translateY(-50%)}
+    .search-icon::after{content:"";position:absolute;right:-6px;bottom:-5px;width:7px;height:2px;background:var(--indigo);transform:rotate(45deg);border-radius:999px}
+    .avatar{width:42px;height:42px;display:grid;place-items:center;border:0;border-radius:50%;color:var(--cloud);background:var(--ink);font-weight:800;box-shadow:inset 0 0 0 2px var(--cyan-line)}
+    .hamburger{display:none;width:42px;height:42px;border:1px solid var(--ink-faint);border-radius:var(--radius);background:var(--cloud-strong)}
+    .hamburger span{display:block;width:18px;height:2px;margin:4px auto;border-radius:999px;background:var(--ink)}
+    .drawer-backdrop{position:fixed;inset:0;z-index:50;background:rgba(25,33,43,0.38);opacity:0;pointer-events:none;transition:opacity 180ms ease}
+    .mobile-drawer{position:fixed;top:0;right:0;z-index:60;width:min(360px,88vw);height:100vh;padding:22px;background:var(--cloud);border-left:1px solid var(--ink-faint);box-shadow:-28px 0 70px rgba(25,33,43,0.18);transform:translateX(105%);transition:transform 220ms ease}
+    body.drawer-open .drawer-backdrop{opacity:1;pointer-events:auto}
+    body.drawer-open .mobile-drawer{transform:translateX(0)}
+    .drawer-head{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}
+    .drawer-close{width:40px;height:40px;border:1px solid var(--ink-faint);border-radius:var(--radius);color:var(--ink);background:var(--cloud-strong);font-size:1.35rem;line-height:1}
+    .drawer-links{display:grid;gap:8px}
+    .drawer-links a{padding:13px 14px;border-radius:var(--radius);background:rgba(25,33,43,0.04);font-weight:800}
+    .drawer-links a:hover{background:var(--indigo-soft)}
+    main{flex:1}
+    .workspace{width:min(var(--max),calc(100% - 32px));margin:0 auto;padding:34px 0 56px}
+    .hero-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(320px,0.95fr);align-items:stretch;gap:22px;margin-bottom:22px}
+    .hero-panel,.lab-panel{border:1px solid var(--ink-faint);border-radius:var(--radius);background:var(--cloud-glass);box-shadow:var(--shadow)}
+    .hero-panel{padding:30px;display:grid;align-content:center;min-height:324px}
+    .eyebrow{display:inline-flex;align-items:center;gap:8px;width:fit-content;margin-bottom:16px;padding:7px 10px;border:1px solid var(--cyan-line);border-radius:999px;color:var(--ink);background:var(--cyan-soft);font-size:0.78rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em}
+    .eyebrow::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 0 5px rgba(6,182,212,0.12)}
+    h1,h2,h3{margin:0;font-family:"Manrope",system-ui,sans-serif;letter-spacing:0;line-height:1.08}
+    h1{max-width:760px;font-size:clamp(2.4rem,6vw,5.35rem);font-weight:800}
+    h2{font-size:clamp(1.45rem,3vw,2.35rem);font-weight:800}
+    h3{font-size:1rem;font-weight:800}
+    .hero-panel p{max-width:650px;margin:18px 0 0;color:var(--ink-muted);font-size:1.05rem}
+    .command-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:24px}
+    .button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 16px;border:1px solid transparent;border-radius:var(--radius);font-weight:800}
+    .button.primary{color:var(--cloud);background:var(--indigo);box-shadow:0 16px 30px rgba(79,70,229,0.22)}
+    .button.secondary{color:var(--ink);border-color:var(--ink-faint);background:var(--cloud-strong)}
+    .lab-panel{padding:22px;overflow:hidden}
+    .lab-top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:18px}
+    .live-pill{display:inline-flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid var(--lime-line);border-radius:999px;background:var(--lime-soft);font-size:0.76rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em}
+    .live-pill::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--lime)}
+    .terminal{border-radius:var(--radius);background:var(--ink-panel);color:var(--cloud);overflow:hidden}
+    .terminal-bar{display:flex;align-items:center;gap:8px;padding:12px 14px;border-bottom:1px solid rgba(246,248,252,0.12)}
+    .dot{width:9px;height:9px;border-radius:50%;background:var(--coral)}
+    .dot:nth-child(2){background:var(--cyan)}
+    .dot:nth-child(3){background:var(--lime)}
+    .terminal-code{margin:0;padding:18px;overflow:auto;color:rgba(246,248,252,0.86);font-size:0.88rem;line-height:1.7}
+    .token-key{color:var(--cyan);font-weight:800}
+    .token-name{color:var(--lime);font-weight:800}
+    .token-alert{color:var(--coral);font-weight:800}
+    .kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+    .kpi{padding:18px;border:1px solid var(--ink-faint);border-radius:var(--radius);background:var(--cloud-strong);box-shadow:var(--shadow-small)}
+    .kpi span{display:block;color:var(--ink-muted);font-size:0.78rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em}
+    .kpi strong{display:block;margin-top:9px;font-family:"Manrope",system-ui,sans-serif;font-size:1.9rem;line-height:1}
+    .kpi small{display:block;margin-top:8px;color:var(--ink-muted);font-weight:700}
+    .section{margin-top:22px;padding:24px;border:1px solid var(--ink-faint);border-radius:var(--radius);background:var(--cloud-glass);box-shadow:var(--shadow-small)}
+    .section-heading{display:flex;align-items:end;justify-content:space-between;gap:18px;margin-bottom:20px}
+    .section-heading p{max-width:620px;margin:8px 0 0;color:var(--ink-muted)}
+    .query-layout{display:grid;grid-template-columns:minmax(0,0.95fr) minmax(320px,1.05fr);gap:18px}
+    .query-card{display:grid;gap:12px}
+    .query-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+    .syntax-chip{display:inline-flex;align-items:center;min-height:30px;padding:0 9px;border-radius:999px;background:var(--indigo-soft);color:var(--ink);font-size:0.76rem;font-weight:800}
+    .syntax-chip:nth-child(2){background:var(--cyan-soft)}
+    .syntax-chip:nth-child(3){background:var(--lime-soft)}
+    .syntax-chip:nth-child(4){background:var(--coral-soft)}
+    .query-editor{min-height:245px;width:100%;resize:vertical;padding:18px;border:1px solid rgba(246,248,252,0.12);border-radius:var(--radius);color:var(--cloud);background:linear-gradient(90deg,rgba(6,182,212,0.08),transparent 45%),var(--ink-panel);box-shadow:inset 0 1px 0 rgba(246,248,252,0.08);font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:0.92rem;line-height:1.65;caret-color:var(--cyan)}
+    .editor-actions{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+    .query-note{color:var(--ink-muted);font-size:0.86rem;font-weight:700}
+    .results-table{width:100%;border-collapse:collapse;overflow:hidden;border-radius:var(--radius);background:var(--cloud-strong)}
+    .results-table caption{padding:0 0 10px;text-align:left;color:var(--ink-muted);font-size:0.78rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em}
+    .results-table th,.results-table td{padding:13px 12px;border-bottom:1px solid var(--ink-faint);text-align:left;white-space:nowrap}
+    .results-table th{color:var(--ink-muted);font-size:0.78rem;text-transform:uppercase;letter-spacing:0.08em}
+    .results-table td{font-weight:700}
+    .status{display:inline-flex;align-items:center;gap:7px;min-height:28px;padding:0 9px;border-radius:999px;font-size:0.74rem;font-weight:800;text-transform:uppercase;letter-spacing:0.06em}
+    .status::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor}
+    .status.ok{color:var(--ink);background:var(--lime-soft);border:1px solid var(--lime-line)}
+    .status.live{color:var(--ink);background:var(--cyan-soft);border:1px solid var(--cyan-line)}
+    .status.warn{color:var(--ink);background:var(--coral-soft);border:1px solid var(--coral-line)}
+    .viz-grid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(280px,0.6fr);gap:18px}
+    .chart-panel{min-height:330px;padding:18px;border:1px solid var(--ink-faint);border-radius:var(--radius);background:var(--cloud-strong)}
+    .bar-chart{height:255px;display:grid;grid-template-columns:repeat(8,1fr);align-items:end;gap:12px;padding:16px 0 0;border-bottom:1px solid var(--ink-soft)}
+    .bar{position:relative;min-height:18px;border-radius:6px 6px 0 0;background:linear-gradient(180deg,var(--cyan),var(--indigo));box-shadow:0 12px 18px rgba(79,70,229,0.16)}
+    .bar.healthy{background:linear-gradient(180deg,var(--lime),var(--cyan))}
+    .bar.critical{background:linear-gradient(180deg,var(--coral),var(--indigo))}
+    .bar span{position:absolute;left:50%;bottom:calc(100% + 8px);transform:translateX(-50%);color:var(--ink-muted);font-size:0.72rem;font-weight:800}
+    .chart-labels{display:grid;grid-template-columns:repeat(8,1fr);gap:12px;padding-top:10px;color:var(--ink-muted);font-size:0.74rem;font-weight:800;text-align:center}
+    .insight-stack{display:grid;gap:12px}
+    .insight-card{padding:16px;border:1px solid var(--ink-faint);border-radius:var(--radius);background:var(--cloud-strong)}
+    .insight-card span{color:var(--ink-muted);font-size:0.75rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em}
+    .insight-card strong{display:block;margin-top:8px;font-family:"Manrope",system-ui,sans-serif;font-size:1.5rem}
+    .library-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .dashboard-card{padding:18px;border:1px solid var(--ink-faint);border-radius:var(--radius);background:var(--cloud-strong);box-shadow:var(--shadow-small)}
+    .card-chart{height:92px;display:flex;align-items:end;gap:7px;margin:15px 0;padding:12px;border-radius:var(--radius);background:rgba(25,33,43,0.04)}
+    .mini-bar{flex:1;border-radius:4px 4px 0 0;background:var(--indigo)}
+    .mini-bar:nth-child(2n){background:var(--cyan)}
+    .mini-bar:nth-child(3n){background:var(--lime)}
+    .meta-list{display:grid;gap:8px;margin:0;padding:0;list-style:none;color:var(--ink-muted);font-size:0.88rem;font-weight:700}
+    .meta-list li{display:flex;align-items:center;justify-content:space-between;gap:12px}
+    .meta-list b{color:var(--ink)}
+    .report-grid{display:grid;grid-template-columns:minmax(0,0.9fr) minmax(300px,1.1fr);gap:18px}
+    .report-form{display:grid;gap:14px;padding:18px;border:1px solid var(--ink-faint);border-radius:var(--radius);background:var(--cloud-strong)}
+    .field{display:grid;gap:7px}
+    .field label,.metric-group legend{color:var(--ink-muted);font-size:0.78rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em}
+    .field select,.field input{min-height:44px;width:100%;padding:0 12px;border:1px solid var(--ink-faint);border-radius:var(--radius);color:var(--ink);background:var(--cloud)}
+    .date-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    .metric-group{display:grid;gap:9px;margin:0;padding:0;border:0}
+    .check-row{display:flex;align-items:center;gap:10px;min-height:36px;font-weight:700}
+    .check-row input{width:18px;height:18px;accent-color:var(--indigo)}
+    .report-preview{display:grid;gap:12px;align-content:start;padding:18px;border-radius:var(--radius);color:var(--cloud);background:var(--ink-panel)}
+    .report-preview p{margin:0;color:rgba(246,248,252,0.72)}
+    .preview-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+    .preview-metric{padding:14px;border:1px solid rgba(246,248,252,0.12);border-radius:var(--radius);background:rgba(246,248,252,0.05)}
+    .preview-metric span{display:block;color:rgba(246,248,252,0.68);font-size:0.74rem;font-weight:800;text-transform:uppercase;letter-spacing:0.08em}
+    .preview-metric strong{display:block;margin-top:8px;color:var(--cloud);font-family:"Manrope",system-ui,sans-serif;font-size:1.35rem}
+    .source-list{display:grid;gap:12px}
+    .source-row{display:grid;grid-template-columns:auto minmax(0,1.3fr) auto auto auto;align-items:center;gap:14px;padding:14px;border:1px solid var(--ink-faint);border-radius:var(--radius);background:var(--cloud-strong)}
+    .source-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:var(--radius);color:var(--cloud);background:var(--ink);font-weight:900}
+    .source-title strong{display:block}
+    .source-title span,.source-time,.source-count{color:var(--ink-muted);font-size:0.88rem;font-weight:700}
+    .site-footer{margin-top:auto;border-top:1px solid var(--ink-faint);background:var(--ink);color:var(--cloud)}
+    .footer-inner{width:min(var(--max),calc(100% - 32px));margin:0 auto;padding:28px 0;display:flex;align-items:center;justify-content:space-between;gap:16px}
+    .footer-inner p{margin:0;color:rgba(246,248,252,0.72);font-weight:700}
+    .footer-inner strong{color:var(--cloud)}
+    @media (max-width:1040px){.nav-links,.search-wrap{display:none}
+    .hamburger{display:inline-block}
+    .nav-inner{grid-template-columns:auto 1fr auto}
+    .hero-grid,.query-layout,.viz-grid,.report-grid{grid-template-columns:1fr}
+    .library-grid{grid-template-columns:repeat(2,1fr)}
+    .kpi-strip{grid-template-columns:repeat(2,1fr)}
+    }
+    @media (max-width:680px){.workspace{width:min(100% - 24px,var(--max));padding-top:22px}
+    .brand-copy small{display:none}
+    .hero-panel,.section,.lab-panel{padding:18px}
+    h1{font-size:2.45rem}
+    .kpi-strip,.library-grid,.date-row,.preview-metrics{grid-template-columns:1fr}
+    .section-heading{display:grid;align-items:start}
+    .results-wrap{overflow-x:auto}
+    .source-row{grid-template-columns:auto 1fr}
+    .source-row .status,.source-time,.source-count{grid-column:2}
+    .footer-inner{display:grid}
+    }
+    @media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto !important;transition-duration:0.01ms !important;animation-duration:0.01ms !important;animation-iteration-count:1 !important}
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <div class="nav-inner">
+        <a class="brand" href="#top" aria-label="Quant Analytics Lab home">
+          <span class="brand-mark" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </span>
+          <span class="brand-copy">
+            <strong>Quant Analytics Lab</strong>
+            <small>Decision intelligence</small>
+          </span>
+        </a>
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="#explorer">Explorer</a>
+          <a href="#queries">Queries</a>
+          <a href="#dashboards">Dashboards</a>
+          <a href="#reports">Reports</a>
+          <a href="#sources">Data Sources</a>
+        </nav>
+        <div class="nav-actions">
+          <div class="search-wrap">
+            <label for="global-search">Search workspace</label>
+            <span class="search-icon" aria-hidden="true"></span>
+            <input id="global-search" type="search" value="Revenue anomalies">
+          </div>
+          <button class="avatar" type="button" aria-label="Open user menu">QL</button>
+          <button class="hamburger" type="button" aria-label="Open navigation menu" aria-controls="mobile-drawer" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+    <div class="drawer-backdrop" data-close-drawer></div>
+    <aside class="mobile-drawer" id="mobile-drawer" aria-hidden="true" aria-label="Mobile navigation">
+      <div class="drawer-head">
+        <span class="brand">
+          <span class="brand-mark" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+          </span>
+          <span class="brand-copy"><strong>Quant Lab</strong><small>Mobile console</small></span>
+        </span>
+        <button class="drawer-close" type="button" aria-label="Close navigation menu" data-close-drawer>&times;</button>
+      </div>
+      <nav class="drawer-links" aria-label="Mobile primary navigation">
+        <a href="#explorer" data-close-drawer>Explorer</a>
+        <a href="#queries" data-close-drawer>Queries</a>
+        <a href="#dashboards" data-close-drawer>Dashboards</a>
+        <a href="#reports" data-close-drawer>Reports</a>
+        <a href="#sources" data-close-drawer>Data Sources</a>
+      </nav>
+    </aside>
+    <main id="top">
+      <div class="workspace">
+        <section class="hero-grid" id="explorer" aria-labelledby="hero-title">
+          <div class="hero-panel">
+            <span class="eyebrow">Live analytics workspace</span>
+            <h1 id="hero-title">Interrogate data, ship reports, and monitor decisions in one lab.</h1>
+            <p>Quant Analytics Lab gives analysts a fast query builder, executive dashboard catalog, source health, and repeatable report generation for high-signal data work.</p>
+            <div class="command-row">
+              <a class="button primary" href="#queries">Open query builder</a>
+              <a class="button secondary" href="#reports">Prepare report</a>
+            </div>
+          </div>
+          <aside class="lab-panel" aria-label="Live workspace console">
+            <div class="lab-top">
+              <h2>Operations Pulse</h2>
+              <span class="live-pill">Streaming</span>
+            </div>
+            <div class="terminal">
+              <div class="terminal-bar" aria-hidden="true">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+              </div>
+              <pre class="terminal-code"><code><span class="token-key">select</span> region, revenue, churn_risk
+<span class="token-key">from</span> warehouse.revenue_signals
+<span class="token-key">where</span> sync_state = <span class="token-name">'fresh'</span>
+<span class="token-key">order by</span> anomaly_score desc
+<span class="token-key">limit</span> 6;
+
+run_id: QAL-9824
+latency: 430ms
+critical_segments: <span class="token-alert">2</span></code></pre>
+            </div>
+          </aside>
+        </section>
+        <section class="kpi-strip" aria-label="Key performance indicators">
+          <article class="kpi">
+            <span>Total queries today</span>
+            <strong>18,642</strong>
+            <small>+12.8% from yesterday</small>
+          </article>
+          <article class="kpi">
+            <span>Active dashboards</span>
+            <strong>74</strong>
+            <small>9 refreshed in the last hour</small>
+          </article>
+          <article class="kpi">
+            <span>Data sources connected</span>
+            <strong>28</strong>
+            <small>26 healthy, 2 under review</small>
+          </article>
+          <article class="kpi">
+            <span>Avg query time</span>
+            <strong>482ms</strong>
+            <small>p95 sits below 1.2s</small>
+          </article>
+        </section>
+        <section class="section" id="queries" aria-labelledby="query-title">
+          <div class="section-heading">
+            <div>
+              <h2 id="query-title">Query Builder</h2>
+              <p>Draft SQL-like analysis, run it against governed datasets, and inspect the first results before promoting output into a dashboard or report.</p>
+            </div>
+            <span class="status live">Warehouse online</span>
+          </div>
+          <div class="query-layout">
+            <div class="query-card">
+              <div class="query-toolbar" aria-label="Syntax hints">
+                <span class="syntax-chip">SELECT</span>
+                <span class="syntax-chip">JOIN</span>
+                <span class="syntax-chip">WINDOW</span>
+                <span class="syntax-chip">ALERT</span>
+              </div>
+              <label class="field" for="sql-editor">
+                <span>Analysis statement</span>
+                <textarea class="query-editor" id="sql-editor" spellcheck="false">select
+  date_trunc('day', created_at) as cohort_day,
+  region,
+  sum(revenue) as revenue,
+  avg(query_latency_ms) as avg_latency
+from mart.customer_activity
+where created_at between '2026-05-01' and '2026-05-27'
+group by 1, 2
+having sum(revenue) &gt; 250000
+order by cohort_day desc, revenue desc;</textarea>
+              </label>
+              <div class="editor-actions">
+                <button class="button primary" type="button" id="run-query">Run query</button>
+                <span class="query-note" id="query-note">Ready to run against mart.customer_activity</span>
+              </div>
+            </div>
+            <div class="results-wrap">
+              <table class="results-table">
+                <caption>Results preview</caption>
+                <thead>
+                  <tr>
+                    <th scope="col">Cohort</th>
+                    <th scope="col">Region</th>
+                    <th scope="col">Revenue</th>
+                    <th scope="col">Latency</th>
+                    <th scope="col">Signal</th>
+                  </tr>
+                </thead>
+                <tbody id="result-body">
+                  <tr>
+                    <td>May 27</td>
+                    <td>North America</td>
+                    <td>$842K</td>
+                    <td>421ms</td>
+                    <td><span class="status ok">Healthy</span></td>
+                  </tr>
+                  <tr>
+                    <td>May 27</td>
+                    <td>Europe</td>
+                    <td>$604K</td>
+                    <td>512ms</td>
+                    <td><span class="status live">Watch</span></td>
+                  </tr>
+                  <tr>
+                    <td>May 26</td>
+                    <td>APAC</td>
+                    <td>$318K</td>
+                    <td>677ms</td>
+                    <td><span class="status warn">Critical</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+        <section class="section" aria-labelledby="visual-title">
+          <div class="section-heading">
+            <div>
+              <h2 id="visual-title">Data Visualization</h2>
+              <p>Sample CSS-only charting for a weekly analytics series, paired with compact operational notes for analysts reviewing movement.</p>
+            </div>
+            <span class="status ok">Fresh data</span>
+          </div>
+          <div class="viz-grid">
+            <div class="chart-panel" role="img" aria-label="Bar chart showing sample analytics data for eight days">
+              <div class="bar-chart">
+                <div class="bar" style="height: 42%;"><span>42</span></div>
+                <div class="bar healthy" style="height: 58%;"><span>58</span></div>
+                <div class="bar" style="height: 72%;"><span>72</span></div>
+                <div class="bar critical" style="height: 49%;"><span>49</span></div>
+                <div class="bar" style="height: 84%;"><span>84</span></div>
+                <div class="bar healthy" style="height: 91%;"><span>91</span></div>
+                <div class="bar" style="height: 77%;"><span>77</span></div>
+                <div class="bar critical" style="height: 64%;"><span>64</span></div>
+              </div>
+              <div class="chart-labels" aria-hidden="true">
+                <span>Mon</span><span>Tue</span><span>Wed</span><span>Thu</span><span>Fri</span><span>Sat</span><span>Sun</span><span>Now</span>
+              </div>
+            </div>
+            <div class="insight-stack">
+              <article class="insight-card">
+                <span>Peak throughput</span>
+                <strong>91K events</strong>
+              </article>
+              <article class="insight-card">
+                <span>Anomaly clusters</span>
+                <strong>2 regions</strong>
+              </article>
+              <article class="insight-card">
+                <span>Forecast confidence</span>
+                <strong>94.2%</strong>
+              </article>
+            </div>
+          </div>
+        </section>
+        <section class="section" id="dashboards" aria-labelledby="dashboard-title">
+          <div class="section-heading">
+            <div>
+              <h2 id="dashboard-title">Dashboard Library</h2>
+              <p>Reusable analytical rooms organized by business owner, chart inventory, and modification recency.</p>
+            </div>
+            <a class="button secondary" href="#reports">Export selected</a>
+          </div>
+          <div class="library-grid">
+            <article class="dashboard-card">
+              <h3>Revenue Command</h3>
+              <div class="card-chart" aria-hidden="true">
+                <span class="mini-bar" style="height: 48%;"></span><span class="mini-bar" style="height: 70%;"></span><span class="mini-bar" style="height: 58%;"></span><span class="mini-bar" style="height: 86%;"></span><span class="mini-bar" style="height: 64%;"></span>
+              </div>
+              <ul class="meta-list">
+                <li><span>Last modified</span><b>14 min ago</b></li>
+                <li><span>Charts</span><b>18</b></li>
+                <li><span>Owner</span><b>Maya Chen</b></li>
+              </ul>
+            </article>
+            <article class="dashboard-card">
+              <h3>Retention Cohorts</h3>
+              <div class="card-chart" aria-hidden="true">
+                <span class="mini-bar" style="height: 68%;"></span><span class="mini-bar" style="height: 54%;"></span><span class="mini-bar" style="height: 73%;"></span><span class="mini-bar" style="height: 62%;"></span><span class="mini-bar" style="height: 79%;"></span>
+              </div>
+              <ul class="meta-list">
+                <li><span>Last modified</span><b>42 min ago</b></li>
+                <li><span>Charts</span><b>12</b></li>
+                <li><span>Owner</span><b>Noah Ivers</b></li>
+              </ul>
+            </article>
+            <article class="dashboard-card">
+              <h3>Supply Signals</h3>
+              <div class="card-chart" aria-hidden="true">
+                <span class="mini-bar" style="height: 38%;"></span><span class="mini-bar" style="height: 61%;"></span><span class="mini-bar" style="height: 47%;"></span><span class="mini-bar" style="height: 74%;"></span><span class="mini-bar" style="height: 88%;"></span>
+              </div>
+              <ul class="meta-list">
+                <li><span>Last modified</span><b>2 hrs ago</b></li>
+                <li><span>Charts</span><b>15</b></li>
+                <li><span>Owner</span><b>Priya Rao</b></li>
+              </ul>
+            </article>
+          </div>
+        </section>
+        <section class="section" id="reports" aria-labelledby="report-title">
+          <div class="section-heading">
+            <div>
+              <h2 id="report-title">Report Generator</h2>
+              <p>Build a clean recurring report by selecting a type, date range, and metrics that matter for the review cycle.</p>
+            </div>
+            <span class="status live">Template synced</span>
+          </div>
+          <div class="report-grid">
+            <form class="report-form" id="report-form">
+              <label class="field" for="report-type">
+                <span>Report type</span>
+                <select id="report-type">
+                  <option>Executive KPI Review</option>
+                  <option>Revenue Anomaly Brief</option>
+                  <option>Customer Health Pack</option>
+                  <option>Source Reliability Audit</option>
+                </select>
+              </label>
+              <div class="date-row">
+                <label class="field" for="date-start">
+                  <span>Start date</span>
+                  <input id="date-start" type="date" value="2026-05-01">
+                </label>
+                <label class="field" for="date-end">
+                  <span>End date</span>
+                  <input id="date-end" type="date" value="2026-05-27">
+                </label>
+              </div>
+              <fieldset class="metric-group">
+                <legend>Metrics</legend>
+                <label class="check-row"><input type="checkbox" checked> Revenue movement</label>
+                <label class="check-row"><input type="checkbox" checked> Query latency</label>
+                <label class="check-row"><input type="checkbox" checked> Dashboard adoption</label>
+                <label class="check-row"><input type="checkbox"> Source freshness</label>
+              </fieldset>
+              <button class="button primary" type="submit">Generate report</button>
+            </form>
+            <aside class="report-preview" aria-live="polite">
+              <h3 id="report-output-title">Executive KPI Review</h3>
+              <p id="report-output-copy">Prepared for May 1 through May 27 with revenue movement, query latency, and dashboard adoption included.</p>
+              <div class="preview-metrics">
+                <div class="preview-metric"><span>Pages</span><strong>18</strong></div>
+                <div class="preview-metric"><span>Charts</span><strong>11</strong></div>
+                <div class="preview-metric"><span>Audience</span><strong>42</strong></div>
+              </div>
+            </aside>
+          </div>
+        </section>
+        <section class="section" id="sources" aria-labelledby="sources-title">
+          <div class="section-heading">
+            <div>
+              <h2 id="sources-title">Data Sources</h2>
+              <p>Connected operational systems with live status, sync recency, and row volume for governance checks.</p>
+            </div>
+            <span class="status ok">26 healthy</span>
+          </div>
+          <div class="source-list">
+            <article class="source-row">
+              <span class="source-icon" aria-hidden="true">DB</span>
+              <div class="source-title"><strong>Warehouse Core</strong><span>PostgreSQL cluster</span></div>
+              <span class="status ok">Healthy</span>
+              <span class="source-time">Synced 3 min ago</span>
+              <span class="source-count">2.4B rows</span>
+            </article>
+            <article class="source-row">
+              <span class="source-icon" aria-hidden="true">EV</span>
+              <div class="source-title"><strong>Event Stream</strong><span>Kafka topics</span></div>
+              <span class="status live">Live</span>
+              <span class="source-time">Synced now</span>
+              <span class="source-count">918M rows</span>
+            </article>
+            <article class="source-row">
+              <span class="source-icon" aria-hidden="true">SF</span>
+              <div class="source-title"><strong>Sales Ledger</strong><span>CRM object mirror</span></div>
+              <span class="status ok">Healthy</span>
+              <span class="source-time">Synced 11 min ago</span>
+              <span class="source-count">72M rows</span>
+            </article>
+            <article class="source-row">
+              <span class="source-icon" aria-hidden="true">BI</span>
+              <div class="source-title"><strong>Legacy BI Import</strong><span>Scheduled flat files</span></div>
+              <span class="status warn">Review</span>
+              <span class="source-time">Synced 2 hrs ago</span>
+              <span class="source-count">14M rows</span>
+            </article>
+          </div>
+        </section>
+      </div>
+    </main>
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <p><strong>Quant Analytics Lab</strong> — designed by Meridian Signal Studio</p>
+        <p>Analytics skeleton for query, dashboard, report, and source workflows.</p>
+      </div>
+    </footer>
+  </div>
+  <script>
+    const body = document.body;
+    const drawer = document.getElementById("mobile-drawer");
+    const menuButton = document.querySelector(".hamburger");
+    const closeTargets = document.querySelectorAll("[data-close-drawer]");
+    const runButton = document.getElementById("run-query");
+    const resultBody = document.getElementById("result-body");
+    const queryNote = document.getElementById("query-note");
+    const reportForm = document.getElementById("report-form");
+    const reportType = document.getElementById("report-type");
+    const reportTitle = document.getElementById("report-output-title");
+    const reportCopy = document.getElementById("report-output-copy");
+    function openDrawer() {
+      body.classList.add("drawer-open");
+      drawer.setAttribute("aria-hidden", "false");
+      menuButton.setAttribute("aria-expanded", "true");
+      const firstLink = drawer.querySelector("a");
+      if (firstLink) {
+        firstLink.focus();
+      }
+    }
+    function closeDrawer() {
+      body.classList.remove("drawer-open");
+      drawer.setAttribute("aria-hidden", "true");
+      menuButton.setAttribute("aria-expanded", "false");
+      menuButton.focus();
+    }
+    menuButton.addEventListener("click", openDrawer);
+    closeTargets.forEach((target) => {
+      target.addEventListener("click", closeDrawer);
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && body.classList.contains("drawer-open")) {
+        closeDrawer();
+      }
+    });
+    runButton.addEventListener("click", () => {
+      queryNote.textContent = "Query completed in 438ms with 3 preview rows";
+      resultBody.innerHTML = `
+        <tr>
+          <td>May 27</td>
+          <td>North America</td>
+          <td>$864K</td>
+          <td>438ms</td>
+          <td><span class="status ok">Healthy</span></td>
+        </tr>
+        <tr>
+          <td>May 27</td>
+          <td>Europe</td>
+          <td>$631K</td>
+          <td>486ms</td>
+          <td><span class="status live">Watch</span></td>
+        </tr>
+        <tr>
+          <td>May 27</td>
+          <td>APAC</td>
+          <td>$344K</td>
+          <td>705ms</td>
+          <td><span class="status warn">Critical</span></td>
+        </tr>
+      `;
+    });
+    reportForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const checkedMetrics = [...reportForm.querySelectorAll("input[type='checkbox']:checked")]
+        .map((item) => item.parentElement.textContent.trim().toLowerCase());
+      const start = document.getElementById("date-start").value;
+      const end = document.getElementById("date-end").value;
+      reportTitle.textContent = reportType.value;
+      reportCopy.textContent = `Prepared for ${start} through ${end} with ${checkedMetrics.join(", ")} included.`;
+    });
+  </script>
+</body>
+</html>
