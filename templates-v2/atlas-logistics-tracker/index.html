@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas Logistics Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --cloud: #F6F8FC;
+    --ink: #19212B;
+    --indigo: #4F46E5;
+    --cyan: #06B6D4;
+    --lime: #A3E635;
+    --coral: #FB7185;
+    --card: #FFFFFF;
+    --border: #E5E7EB;
+    --text-primary: #111827;
+    --text-secondary: #6B7280;
+    --text-muted: #9CA3AF;
+    --green: #10B981;
+    --orange: #F59E0B;
+    --red: #EF4444;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cloud);
+    color: var(--text-primary);
+    line-height: 1.5;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+  }
+
+  a {
+    color: var(--indigo);
+    text-decoration: none;
+  }
+
+  button {
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  /* ── Skip Link ── */
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--indigo);
+    color: #fff;
+    padding: 8px 16px;
+    z-index: 100;
+    font-size: 0.875rem;
+  }
+
+  .skip-link:focus {
+    top: 0;
+  }
+
+  /* ── Top Nav ── */
+  .top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 24px;
+    height: 60px;
+    background: var(--ink);
+    color: #fff;
+  }
+
+  .nav-brand {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--cyan);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-brand svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 4px;
+    margin-left: 24px;
+  }
+
+  .nav-links a {
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .nav-links a:hover,
+  .nav-links a[aria-current="page"] {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+  }
+
+  .nav-search {
+    margin-left: auto;
+    position: relative;
+  }
+
+  .nav-search input {
+    width: 200px;
+    padding: 8px 12px 8px 36px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+  }
+
+  .nav-search input::ph {
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .nav-search svg {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .nav-cta {
+    margin-left: 12px;
+    padding: 8px 18px;
+    background: var(--indigo);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .nav-cta:hover {
+    background: #4338CA;
+  }
+
+  /* ── Hamburger ── */
+  .hamburger {
+    display: none;
+    background: none;
+    border: none;
+    padding: 8px;
+    color: #fff;
+  }
+
+  .hamburger svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* ── Drawer ── */
+  .drawer-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 60;
+  }
+
+  .drawer-overlay.open {
+    display: block;
+  }
+
+  .drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100%;
+    background: #fff;
+    z-index: 70;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    padding: 24px;
+    overflow-y: auto;
+  }
+
+  .drawer.open {
+    transform: translateX(0);
+  }
+
+  .drawer-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    color: var(--text-primary);
+  }
+
+  .drawer nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 24px;
+  }
+
+  .drawer nav a {
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: var(--text-primary);
+  }
+
+  .drawer nav a:hover {
+    background: var(--cloud);
+  }
+
+  @media (max-width: 768px) {
+    .nav-links,
+    .nav-search,
+    .nav-cta {
+      display: none;
+    }
+
+    .hamburger {
+      display: block;
+    }
+
+    .top-nav {
+      padding: 0 16px;
+    }
+  }
+
+  /* ── KPI Strip ── */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 24px;
+  }
+
+  .kpi-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .kpi-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  .kpi-content .kpi-label {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    margin-bottom: 2px;
+  }
+
+  .kpi-content .kpi-value {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+  }
+
+  .kpi-content .kpi-trend {
+    font-size: 0.75rem;
+    margin-top: 2px;
+  }
+
+  .kpi-trend.up {
+    color: var(--green);
+  }
+
+  .kpi-trend.down {
+    color: var(--coral);
+  }
+
+  /* ── Main ── */
+  .main {
+    padding: 0 24px 48px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .section-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .badge {
+    background: var(--cloud);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+  }
+
+  /* ── Data Table ── */
+  .data-tbl {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+
+  .data-tbl th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    background: var(--cloud);
+  }
+
+  .data-tbl td {
+    padding: 12px 16px;
+    font-size: 0.875rem;
+    border-bottom: 1px solid #F3F4F6;
+  }
+
+  .data-tbl tr:last-child td {
+    border-bottom: none;
+  }
+
+  .data-tbl tr:hover {
+    background: var(--cloud);
+  }
+
+  .badge-status {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .st-transit {
+    background: #DBEAFE;
+    color: #1E40AF;
+  }
+
+  .st-delivered {
+    background: #D1FAE5;
+    color: #065F46;
+  }
+
+  .st-delayed {
+    background: #FEE2E2;
+    color: #991B1B;
+  }
+
+  .st-loading {
+    background: #FEF3C7;
+    color: #92400E;
+  }
+
+  /* ── Fleet Cards ── */
+  .fleet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .fleet-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+  }
+
+  .fleet-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .fleet-card-header h4 {
+    font-size: 1rem;
+  }
+
+  .fleet-card-header .status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .fleet-card .location {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+
+  .fleet-card .meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+
+  .progress-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    border-radius: 3px;
+  }
+
+  /* ── Bar Chart ── */
+  .chart-box {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+
+  .chart-title {
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+
+  .chart-sub {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+  }
+
+  .bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    height: 200px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .bar-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+  }
+
+  .bar-rect {
+    width: 100%;
+    max-width: 48px;
+    border-radius: 4px 4px 0 0;
+    min-height: 4px;
+    transition: height 0.3s ease;
+  }
+
+  .bar-lbl {
+    font-size: 0.6875rem;
+    color: var(--text-muted);
+    margin-top: 8px;
+  }
+
+  .bar-val {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    margin-bottom: 4px;
+  }
+
+  /* ── Route Items ── */
+  .route-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .route-item {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 14px 18px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .route-item .route-arrow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    font-size: 0.875rem;
+  }
+
+  .route-item .route-arrow .from {
+    font-weight: 600;
+  }
+
+  .route-item .route-arrow svg {
+    width: 20px;
+    height: 20px;
+    color: var(--text-muted);
+    flex-shrink: 0;
+  }
+
+  .route-item .route-meta {
+    display: flex;
+    gap: 16px;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+  }
+
+  /* ── Activity List ── */
+  .activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+
+  .activity-item {
+    background: var(--card);
+    border-radius: 8px;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.875rem;
+  }
+
+  .activity-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .activity-time {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  /* ── Footer ── */
+  .site-footer {
+    padding: 32px 24px;
+    text-align: center;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+  }
+
+  /* ── Accessibility ── */
+  :focus-visible {
+    outline: 2px solid var(--indigo);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .kpi-strip {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .fleet-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .data-tbl {
+      display: block;
+      overflow-x: auto;
+    }
+
+    .route-item {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .route-item .route-meta {
+      width: 100%;
+      justify-content: space-between;
+    }
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header class="top-nav">
+  <button class="hamburger" aria-label="Open menu" aria-expanded="false"
+    onclick="document.getElementById('drawer').classList.toggle('open');document.getElementById('overlay').classList.toggle('open');this.setAttribute('aria-expanded',document.getElementById('drawer').classList.contains('open'))">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M3 12h18M3 6h18M3 18h18"/>
+    </svg>
+  </button>
+  <a href="#" class="nav-brand">
+    <svg viewBox="0 0 28 28" fill="none">
+      <rect x="2" y="8" width="24" height="12" rx="3" stroke="#06B6D4" stroke-width="2"/>
+      <circle cx="8" cy="22" r="2.5" stroke="#06B6D4" stroke-width="2"/>
+      <circle cx="20" cy="22" r="2.5" stroke="#06B6D4" stroke-width="2"/>
+      <path d="M2 14h6l2-6h12" stroke="#4F46E5" stroke-width="2"/>
+    </svg>
+    Atlas Logistics
+  </a>
+  <nav class="nav-links" aria-label="Main">
+    <a href="#" aria-current="page">Dashboard</a>
+    <a href="#shipments">Shipments</a>
+    <a href="#fleet">Fleet</a>
+    <a href="#routes">Routes</a>
+    <a href="#warehouse">Warehouse</a>
+  </nav>
+  <div class="nav-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8"/>
+      <path d="m21 21-4.35-4.35"/>
+    </svg>
+    <input type="search" title="Track shipment" aria-label="Search shipments">
+  </div>
+  <button class="nav-cta">+ New Shipment</button>
+</header>
+
+<div class="drawer-overlay" id="overlay" onclick="document.getElementById('drawer').classList.remove('open');this.classList.remove('open')"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-label="Navigation">
+  <button class="drawer-close" aria-label="Close menu"
+    onclick="document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open')">
+    &times;
+  </button>
+  <nav>
+    <a href="#">Dashboard</a>
+    <a href="#shipments">Shipments</a>
+    <a href="#fleet">Fleet</a>
+    <a href="#routes">Routes</a>
+    <a href="#warehouse">Warehouse</a>
+  </nav>
+</aside>
+
+<main id="main">
+  <!-- KPI Strip -->
+  <div class="kpi-strip" role="region" aria-label="Key metrics">
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#EEF2FF">
+        <span>📦</span>
+      </div>
+      <div class="kpi-content">
+        <div class="kpi-label">Active Shipments</div>
+        <div class="kpi-value" style="color:var(--indigo)">847</div>
+        <div class="kpi-trend up">↑ 12% from last week</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#D1FAE5">
+        <span>✅</span>
+      </div>
+      <div class="kpi-content">
+        <div class="kpi-label">On-Time Delivery</div>
+        <div class="kpi-value" style="color:var(--green)">94.2%</div>
+        <div class="kpi-trend up">↑ 2.1% improvement</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#DBEAFE">
+        <span>🚛</span>
+      </div>
+      <div class="kpi-content">
+        <div class="kpi-label">Fleet Utilization</div>
+        <div class="kpi-value" style="color:var(--cyan)">87%</div>
+        <div class="kpi-trend up">↑ 5% from last month</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#FEF3C7">
+        <span>⏱️</span>
+      </div>
+      <div class="kpi-content">
+        <div class="kpi-label">Avg Transit Time</div>
+        <div class="kpi-value" style="color:var(--orange)">3.2 days</div>
+        <div class="kpi-trend down">↓ 0.4 days faster</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <!-- Shipment Tracking -->
+    <section id="shipments">
+      <div class="section-header">
+        <h2>Shipment Tracking</h2>
+        <span class="badge">847 active</span>
+      </div>
+      <table class="data-tbl" aria-label="Active shipments">
+        <thead>
+          <tr>
+            <th>Shipment ID</th>
+            <th>Origin</th>
+            <th>Destination</th>
+            <th>Status</th>
+            <th>ETA</th>
+            <th>Carrier</th>
+            <th>Weight</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>SHP-48291</strong></td>
+            <td>Shanghai, CN</td>
+            <td>Rotterdam, NL</td>
+            <td><span class="badge-status st-transit">In Transit</span></td>
+            <td>Jun 14</td>
+            <td>Oceanic Freight</td>
+            <td>12,400 kg</td>
+          </tr>
+          <tr>
+            <td><strong>SHP-48290</strong></td>
+            <td>Los Angeles, US</td>
+            <td>Chicago, US</td>
+            <td><span class="badge-status st-delivered">Delivered</span></td>
+            <td>May 28</td>
+            <td>RoadRunner Inc</td>
+            <td>3,200 kg</td>
+          </tr>
+          <tr>
+            <td><strong>SHP-48289</strong></td>
+            <td>Hamburg, DE</td>
+            <td>Warsaw, PL</td>
+            <td><span class="badge-status st-delayed">Delayed</span></td>
+            <td>Jun 3</td>
+            <td>EuroTrans GmbH</td>
+            <td>8,100 kg</td>
+          </tr>
+          <tr>
+            <td><strong>SHP-48288</strong></td>
+            <td>Tokyo, JP</td>
+            <td>Busan, KR</td>
+            <td><span class="badge-status st-transit">In Transit</span></td>
+            <td>Jun 1</td>
+            <td>Pacific Lines</td>
+            <td>5,600 kg</td>
+          </tr>
+          <tr>
+            <td><strong>SHP-48287</strong></td>
+            <td>Mumbai, IN</td>
+            <td>Dubai, AE</td>
+            <td><span class="badge-status st-loading">Loading</span></td>
+            <td>Jun 8</td>
+            <td>IndoGulf Shipping</td>
+            <td>9,300 kg</td>
+          </tr>
+          <tr>
+            <td><strong>SHP-48286</strong></td>
+            <td>São Paulo, BR</td>
+            <td>Buenos Aires, AR</td>
+            <td><span class="badge-status st-delivered">Delivered</span></td>
+            <td>May 26</td>
+            <td>LatamCargo</td>
+            <td>2,800 kg</td>
+          </tr>
+          <tr>
+            <td><strong>SHP-48285</strong></td>
+            <td>London, UK</td>
+            <td>New York, US</td>
+            <td><span class="badge-status st-transit">In Transit</span></td>
+            <td>Jun 5</td>
+            <td>TransAtlantic Co</td>
+            <td>18,200 kg</td>
+          </tr>
+          <tr>
+            <td><strong>SHP-48284</strong></td>
+            <td>Sydney, AU</td>
+            <td>Auckland, NZ</td>
+            <td><span class="badge-status st-transit">In Transit</span></td>
+            <td>Jun 2</td>
+            <td>PacFreight</td>
+            <td>4,100 kg</td>
+          </tr>
+          <tr>
+            <td><strong>SHP-48283</strong></td>
+            <td>Dubai, AE</td>
+            <td>Cairo, EG</td>
+            <td><span class="badge-status st-delayed">Delayed</span></td>
+            <td>Jun 7</td>
+            <td>MiddleEast Logistics</td>
+            <td>6,700 kg</td>
+          </tr>
+          <tr>
+            <td><strong>SHP-48282</strong></td>
+            <td>Shenzhen, CN</td>
+            <td>Los Angeles, US</td>
+            <td><span class="badge-status st-loading">Loading</span></td>
+            <td>Jun 18</td>
+            <td>Oceanic Freight</td>
+            <td>22,500 kg</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Fleet Status -->
+    <section id="fleet">
+      <div class="section-header">
+        <h2>Fleet Status</h2>
+        <span class="badge">48 vehicles</span>
+      </div>
+      <div class="fleet-grid">
+        <div class="fleet-card">
+          <div class="fleet-card-header">
+            <h4>Alpha-7 Heavy Hauler</h4>
+            <div class="status-dot" style="background:var(--green)"></div>
+          </div>
+          <div class="location">📍 I-80 West, Nebraska</div>
+          <div class="meta"><span>Driver: M. Johnson</span><span>ETA: 4h 20m</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:78%;background:var(--indigo)"></div></div>
+        </div>
+        <div class="fleet-card">
+          <div class="fleet-card-header">
+            <h4>Bravo-3 Express</h4>
+            <div class="status-dot" style="background:var(--green)"></div>
+          </div>
+          <div class="location">📍 I-95 South, Virginia</div>
+          <div class="meta"><span>Driver: S. Kim</span><span>ETA: 2h 10m</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:92%;background:var(--cyan)"></div></div>
+        </div>
+        <div class="fleet-card">
+          <div class="fleet-card-header">
+            <h4>Charlie-1 Flatbed</h4>
+            <div class="status-dot" style="background:var(--orange)"></div>
+          </div>
+          <div class="location">📍 Depot, Dallas TX</div>
+          <div class="meta"><span>Driver: R. Chen</span><span>Status: Maintenance</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:0%;background:var(--orange)"></div></div>
+        </div>
+        <div class="fleet-card">
+          <div class="fleet-card-header">
+            <h4>Delta-9 Refrigerated</h4>
+            <div class="status-dot" style="background:var(--green)"></div>
+          </div>
+          <div class="location">📍 I-10 East, Arizona</div>
+          <div class="meta"><span>Driver: L. Martinez</span><span>ETA: 6h 45m</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:55%;background:var(--indigo)"></div></div>
+        </div>
+        <div class="fleet-card">
+          <div class="fleet-card-header">
+            <h4>Echo-5 Tanker</h4>
+            <div class="status-dot" style="background:var(--red)"></div>
+          </div>
+          <div class="location">📍 Route 66, Oklahoma</div>
+          <div class="meta"><span>Driver: T. Brown</span><span>Status: Delayed</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:30%;background:var(--coral)"></div></div>
+        </div>
+        <div class="fleet-card">
+          <div class="fleet-card-header">
+            <h4>Foxtrot-2 Box Truck</h4>
+            <div class="status-dot" style="background:var(--green)"></div>
+          </div>
+          <div class="location">📍 Downtown, Seattle WA</div>
+          <div class="meta"><span>Driver: A. Nguyen</span><span>ETA: 45m</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:95%;background:var(--lime)"></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Delivery Chart -->
+    <div class="chart-box">
+      <h3 class="chart-title">Daily Deliveries — Last 7 Days</h3>
+      <div class="chart-sub">Total packages delivered per day</div>
+      <div class="bar-chart" role="img" aria-label="Bar chart showing daily deliveries">
+        <div class="bar-group">
+          <div class="bar-val">312</div>
+          <div class="bar-rect" style="height:140px;background:var(--indigo)"></div>
+          <span class="bar-lbl">Mon</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">287</div>
+          <div class="bar-rect" style="height:128px;background:var(--indigo)"></div>
+          <span class="bar-lbl">Tue</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">345</div>
+          <div class="bar-rect" style="height:155px;background:var(--indigo)"></div>
+          <span class="bar-lbl">Wed</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">298</div>
+          <div class="bar-rect" style="height:133px;background:var(--indigo)"></div>
