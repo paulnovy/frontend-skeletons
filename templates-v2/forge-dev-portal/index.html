@@ -1,0 +1,1496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forge Dev Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --indigo: #4F46E5;
+      --cyan: #06B6D4;
+      --lime: #A3E635;
+      --coral: #FB7185;
+      --cloud-strong: color-mix(in srgb, var(--cloud) 72%, white);
+      --cloud-soft: color-mix(in srgb, var(--cloud) 88%, var(--indigo));
+      --ink-soft: color-mix(in srgb, var(--ink) 68%, var(--cloud));
+      --ink-muted: color-mix(in srgb, var(--ink) 52%, var(--cloud));
+      --panel: color-mix(in srgb, var(--cloud) 94%, white);
+      --panel-raised: color-mix(in srgb, var(--cloud) 82%, white);
+      --line: color-mix(in srgb, var(--ink) 13%, var(--cloud));
+      --line-strong: color-mix(in srgb, var(--ink) 20%, var(--cloud));
+      --indigo-soft: color-mix(in srgb, var(--indigo) 12%, var(--cloud));
+      --cyan-soft: color-mix(in srgb, var(--cyan) 14%, var(--cloud));
+      --lime-soft: color-mix(in srgb, var(--lime) 22%, var(--cloud));
+      --coral-soft: color-mix(in srgb, var(--coral) 18%, var(--cloud));
+      --shadow: 0 24px 80px color-mix(in srgb, var(--ink) 14%, transparent);
+      --radius: 8px;
+      --font-heading: "Manrope", sans-serif;
+      --font-ui: "Inter", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        linear-gradient(135deg, color-mix(in srgb, var(--indigo) 8%, transparent), transparent 34%),
+        linear-gradient(225deg, color-mix(in srgb, var(--cyan) 10%, transparent), transparent 38%),
+        var(--cloud);
+      color: var(--ink);
+      font-family: var(--font-ui);
+      line-height: 1.5;
+    }
+
+    body.drawer-open {
+      overflow: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    :focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--cyan) 70%, white);
+      outline-offset: 3px;
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .skip-link {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 100;
+      transform: translateY(-180%);
+      padding: 10px 14px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--cloud);
+      transition: transform 180ms ease;
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      border-bottom: 1px solid var(--line);
+      background: color-mix(in srgb, var(--cloud) 84%, transparent);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 18px;
+      min-height: 78px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: var(--font-heading);
+      font-weight: 800;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--lime);
+      box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--lime) 35%, transparent);
+    }
+
+    .brand-mark svg {
+      width: 23px;
+      height: 23px;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .nav-links a {
+      padding: 9px 12px;
+      border-radius: var(--radius);
+      color: var(--ink-soft);
+      font-size: 0.92rem;
+      font-weight: 700;
+    }
+
+    .nav-links a:hover,
+    .nav-links a:focus-visible {
+      background: var(--indigo-soft);
+      color: var(--indigo);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .search {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      width: min(280px, 28vw);
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      color: var(--ink-muted);
+    }
+
+    .search svg {
+      width: 17px;
+      height: 17px;
+      flex: 0 0 auto;
+    }
+
+    .search input {
+      width: 100%;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+    }
+
+    .avatar {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border: 1px solid color-mix(in srgb, var(--indigo) 34%, var(--cloud));
+      border-radius: 50%;
+      background: var(--indigo);
+      color: var(--cloud);
+      font-weight: 800;
+    }
+
+    .menu-button {
+      display: none;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      color: var(--ink);
+    }
+
+    .menu-button svg {
+      width: 22px;
+      height: 22px;
+    }
+
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      pointer-events: none;
+      opacity: 0;
+      background: color-mix(in srgb, var(--ink) 46%, transparent);
+      transition: opacity 180ms ease;
+    }
+
+    .drawer-backdrop.is-open {
+      pointer-events: auto;
+      opacity: 1;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 80;
+      width: min(360px, 86vw);
+      height: 100vh;
+      padding: 22px;
+      background: var(--cloud);
+      border-left: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      transform: translateX(102%);
+      transition: transform 220ms ease;
+    }
+
+    .drawer.is-open {
+      transform: translateX(0);
+    }
+
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .drawer-close {
+      display: grid;
+      place-items: center;
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      color: var(--ink);
+    }
+
+    .drawer-close svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .drawer-links {
+      display: grid;
+      gap: 8px;
+    }
+
+    .drawer-links a {
+      padding: 13px 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      font-weight: 800;
+    }
+
+    .hero {
+      padding: 52px 0 26px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 430px);
+      gap: 26px;
+      align-items: stretch;
+    }
+
+    .hero-copy {
+      min-height: 330px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 22px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      padding: 7px 10px;
+      border: 1px solid color-mix(in srgb, var(--cyan) 38%, var(--cloud));
+      border-radius: var(--radius);
+      background: var(--cyan-soft);
+      color: color-mix(in srgb, var(--cyan) 72%, var(--ink));
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--lime);
+      box-shadow: 0 0 0 6px color-mix(in srgb, var(--lime) 18%, transparent);
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      font-family: var(--font-heading);
+      letter-spacing: 0;
+      line-height: 1.05;
+    }
+
+    h1 {
+      max-width: 760px;
+      font-size: clamp(2.65rem, 7vw, 5.7rem);
+      font-weight: 800;
+    }
+
+    h2 {
+      font-size: clamp(1.55rem, 2.2vw, 2.2rem);
+      font-weight: 800;
+    }
+
+    h3 {
+      font-size: 1rem;
+      font-weight: 800;
+    }
+
+    .hero-copy p {
+      max-width: 670px;
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 1.08rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 44px;
+      padding: 0 16px;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      font-weight: 800;
+    }
+
+    .button svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .button.primary {
+      background: var(--indigo);
+      color: var(--cloud);
+      box-shadow: 0 16px 30px color-mix(in srgb, var(--indigo) 24%, transparent);
+    }
+
+    .button.secondary {
+      border-color: var(--line-strong);
+      background: var(--panel);
+      color: var(--ink);
+    }
+
+    .terminal-card {
+      min-height: 330px;
+      overflow: hidden;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--cloud);
+      box-shadow: var(--shadow);
+    }
+
+    .terminal-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid color-mix(in srgb, var(--cloud) 14%, transparent);
+    }
+
+    .terminal-dots {
+      display: flex;
+      gap: 7px;
+    }
+
+    .terminal-dots span {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--coral);
+    }
+
+    .terminal-dots span:nth-child(2) {
+      background: var(--lime);
+    }
+
+    .terminal-dots span:nth-child(3) {
+      background: var(--cyan);
+    }
+
+    .terminal-title {
+      color: color-mix(in srgb, var(--cloud) 68%, transparent);
+      font-size: 0.84rem;
+      font-weight: 800;
+    }
+
+    .terminal-body {
+      display: grid;
+      gap: 10px;
+      padding: 18px;
+      font-size: 0.9rem;
+    }
+
+    .terminal-line {
+      display: grid;
+      grid-template-columns: 88px 1fr;
+      gap: 12px;
+      color: color-mix(in srgb, var(--cloud) 78%, transparent);
+    }
+
+    .terminal-line strong {
+      color: var(--lime);
+      font-weight: 800;
+    }
+
+    .terminal-response {
+      margin-top: 10px;
+      padding: 15px;
+      border: 1px solid color-mix(in srgb, var(--cyan) 28%, transparent);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--cyan) 10%, transparent);
+      color: color-mix(in srgb, var(--cloud) 88%, transparent);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      overflow-wrap: anywhere;
+    }
+
+    main {
+      padding-bottom: 44px;
+    }
+
+    .section {
+      padding: 22px 0;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+
+    .section-heading p {
+      max-width: 620px;
+      margin: 7px 0 0;
+      color: var(--ink-soft);
+    }
+
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .kpi {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: 0 12px 34px color-mix(in srgb, var(--ink) 6%, transparent);
+    }
+
+    .kpi span {
+      display: block;
+      color: var(--ink-muted);
+      font-size: 0.84rem;
+      font-weight: 800;
+    }
+
+    .kpi strong {
+      display: block;
+      margin-top: 6px;
+      font-family: var(--font-heading);
+      font-size: 2rem;
+      line-height: 1.1;
+    }
+
+    .kpi small {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 10px;
+      color: var(--ink-soft);
+      font-weight: 700;
+    }
+
+    .kpi small::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--cyan);
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(300px, 0.9fr);
+      gap: 16px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: 0 14px 48px color-mix(in srgb, var(--ink) 7%, transparent);
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .panel-head span {
+      color: var(--ink-muted);
+      font-size: 0.84rem;
+      font-weight: 800;
+    }
+
+    .playground-form {
+      display: grid;
+      gap: 14px;
+      padding: 16px;
+    }
+
+    .request-row {
+      display: grid;
+      grid-template-columns: 140px minmax(0, 1fr) auto;
+      gap: 10px;
+    }
+
+    label {
+      display: grid;
+      gap: 7px;
+      color: var(--ink-soft);
+      font-size: 0.83rem;
+      font-weight: 800;
+    }
+
+    select,
+    input,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--line-strong);
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--cloud) 78%, white);
+      color: var(--ink);
+    }
+
+    select,
+    input {
+      min-height: 44px;
+      padding: 0 12px;
+    }
+
+    textarea {
+      min-height: 138px;
+      resize: vertical;
+      padding: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.88rem;
+    }
+
+    .editor-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .response-panel {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      min-height: 100%;
+    }
+
+    .response-body {
+      padding: 16px;
+      background: var(--ink);
+      color: var(--cloud);
+      border-radius: 0 0 var(--radius) var(--radius);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.88rem;
+      overflow: auto;
+    }
+
+    .response-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 9px;
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--lime) 22%, transparent);
+      color: color-mix(in srgb, var(--lime) 78%, var(--cloud));
+      font-weight: 800;
+    }
+
+    .response-status::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--lime);
+    }
+
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .data-table th,
+    .data-table td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+      font-size: 0.92rem;
+    }
+
+    .data-table th {
+      color: var(--ink-muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .data-table tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .mono {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      color: var(--ink);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      padding: 6px 9px;
+      border-radius: var(--radius);
+      font-size: 0.78rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .badge::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .badge.active {
+      background: var(--lime-soft);
+      color: color-mix(in srgb, var(--lime) 60%, var(--ink));
+    }
+
+    .badge.active::before {
+      background: var(--lime);
+    }
+
+    .badge.paused {
+      background: var(--coral-soft);
+      color: color-mix(in srgb, var(--coral) 68%, var(--ink));
+    }
+
+    .badge.paused::before {
+      background: var(--coral);
+    }
+
+    .tag-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tag {
+      padding: 4px 7px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--cloud-soft);
+      color: var(--ink-soft);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .keys-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .key-card {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+    }
+
+    .key-top {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .key-top p,
+    .key-meta p {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 0.86rem;
+    }
+
+    .key-prefix {
+      padding: 8px 10px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--cloud);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      overflow-wrap: anywhere;
+    }
+
+    .key-meta {
+      display: grid;
+      gap: 6px;
+    }
+
+    .danger {
+      min-height: 38px;
+      border: 1px solid color-mix(in srgb, var(--coral) 34%, var(--cloud));
+      border-radius: var(--radius);
+      background: var(--coral-soft);
+      color: color-mix(in srgb, var(--coral) 72%, var(--ink));
+      font-weight: 800;
+    }
+
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+      gap: 16px;
+    }
+
+    .chart {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      align-items: end;
+      gap: 12px;
+      min-height: 280px;
+      padding: 18px;
+    }
+
+    .bar {
+      display: grid;
+      align-items: end;
+      gap: 8px;
+      height: 230px;
+    }
+
+    .bar-track {
+      position: relative;
+      height: 100%;
+      border-radius: var(--radius);
+      background: color-mix(in srgb, var(--indigo) 8%, var(--cloud));
+      overflow: hidden;
+    }
+
+    .bar-fill {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: var(--h);
+      border-radius: var(--radius) var(--radius) 0 0;
+      background: linear-gradient(180deg, var(--cyan), var(--indigo));
+    }
+
+    .bar-label {
+      text-align: center;
+      color: var(--ink-muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .analytics-summary {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+    }
+
+    .summary-tile {
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel-raised);
+    }
+
+    .summary-tile span {
+      color: var(--ink-muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .summary-tile strong {
+      display: block;
+      margin-top: 4px;
+      font-family: var(--font-heading);
+      font-size: 1.45rem;
+    }
+
+    .activity-feed {
+      display: grid;
+      gap: 0;
+    }
+
+    .activity-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: start;
+      padding: 15px 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .activity-item:last-child {
+      border-bottom: 0;
+    }
+
+    .activity-icon {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: var(--radius);
+      background: var(--indigo-soft);
+      color: var(--indigo);
+    }
+
+    .activity-icon svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .activity-text strong {
+      display: block;
+      font-weight: 800;
+    }
+
+    .activity-text span,
+    .activity-time {
+      color: var(--ink-muted);
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    .site-footer {
+      padding: 28px 0 38px;
+      border-top: 1px solid var(--line);
+      color: var(--ink-muted);
+      font-weight: 700;
+    }
+
+    .footer-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    @media (max-width: 980px) {
+      .nav {
+        grid-template-columns: auto 1fr auto;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .menu-button {
+        display: grid;
+      }
+
+      .search {
+        width: min(360px, 46vw);
+      }
+
+      .hero-grid,
+      .workspace,
+      .analytics-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-strip,
+      .keys-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      .shell {
+        width: min(100% - 24px, 1180px);
+      }
+
+      .topbar {
+        position: static;
+      }
+
+      .nav {
+        min-height: 68px;
+      }
+
+      .search {
+        display: none;
+      }
+
+      .hero {
+        padding-top: 34px;
+      }
+
+      .hero-copy {
+        min-height: auto;
+      }
+
+      h1 {
+        font-size: clamp(2.25rem, 13vw, 4.1rem);
+      }
+
+      .kpi-strip,
+      .keys-grid,
+      .editor-grid,
+      .request-row {
+        grid-template-columns: 1fr;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .table-scroll {
+        overflow-x: auto;
+      }
+
+      .data-table {
+        min-width: 780px;
+      }
+
+      .chart {
+        gap: 8px;
+        padding: 12px;
+      }
+
+      .activity-item {
+        grid-template-columns: auto 1fr;
+      }
+
+      .activity-time {
+        grid-column: 2;
+      }
+
+      .footer-row {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+  <header class="topbar">
+    <nav class="nav shell" aria-label="Primary navigation">
+      <a class="brand" href="#dashboard" aria-label="Forge Dev Portal home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 6.5h8.5a4.5 4.5 0 0 1 0 9H10v3H5v-12Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M10 10h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Forge Dev Portal</span>
+      </a>
+      <div class="nav-links" aria-label="Section links">
+        <a href="#dashboard">Dashboard</a>
+        <a href="#playground">Playground</a>
+        <a href="#webhooks">Webhooks</a>
+        <a href="#keys">API Keys</a>
+        <a href="#docs">Docs</a>
+      </div>
+      <div class="nav-actions">
+        <label class="search" aria-label="Search documentation">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="m21 21-4.2-4.2m1.2-5.3a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <input type="search" aria-label="Search docs" value="Search APIs">
+        </label>
+        <span class="avatar" aria-label="Account initials">MS</span>
+        <button class="menu-button" type="button" aria-label="Open menu" aria-controls="mobile-drawer" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </nav>
+  </header>
+  <div class="drawer-backdrop" data-drawer-backdrop></div>
+  <aside class="drawer" id="mobile-drawer" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="drawer-head">
+      <span class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M5 6.5h8.5a4.5 4.5 0 0 1 0 9H10v3H5v-12Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M10 10h7" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        <span>Forge</span>
+      </span>
+      <button class="drawer-close" type="button" aria-label="Close menu">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="drawer-links">
+      <a href="#dashboard">Dashboard</a>
+      <a href="#playground">Playground</a>
+      <a href="#webhooks">Webhooks</a>
+      <a href="#keys">API Keys</a>
+      <a href="#docs">Docs</a>
+    </div>
+  </aside>
+  <main id="main">
+    <section class="hero shell" id="dashboard">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <span class="eyebrow">Production APIs online</span>
+          <h1>Forge reliable integrations from one command center.</h1>
+          <p>Inspect live traffic, test endpoints, rotate credentials, and keep webhook deliveries observable without leaving the developer portal.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#playground">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="m8 5 10 7-10 7V5Z" fill="currentColor"/>
+              </svg>
+              Open playground
+            </a>
+            <a class="button secondary" href="#docs">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M5 4h10a4 4 0 0 1 4 4v12H9a4 4 0 0 0-4-4V4Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              </svg>
+              View docs
+            </a>
+          </div>
+        </div>
+        <div class="terminal-card" aria-label="Live API stream">
+          <div class="terminal-top">
+            <div class="terminal-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+            <span class="terminal-title">live request trace</span>
+          </div>
+          <div class="terminal-body">
+            <div class="terminal-line"><strong>GET</strong><span>/v2/customers?limit=50</span></div>
+            <div class="terminal-line"><strong>POST</strong><span>/v2/webhooks/deliveries</span></div>
+            <div class="terminal-line"><strong>PUT</strong><span>/v2/api-keys/sk_live_admin</span></div>
+            <div class="terminal-response">
+              <pre>{
+  "status": "healthy",
+  "region": "eu-central",
+  "latency_ms": 84,
+  "deliveries": 12844
+}</pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section shell" aria-labelledby="kpi-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="kpi-title">Operational snapshot</h2>
+          <p>Live indicators for production traffic, credentials, webhook delivery, and reliability.</p>
+        </div>
+      </div>
+      <div class="kpi-strip">
+        <article class="kpi">
+          <span>Total API calls today</span>
+          <strong>1.48M</strong>
+          <small>24 percent above baseline</small>
+        </article>
+        <article class="kpi">
+          <span>Active keys</span>
+          <strong>28</strong>
+          <small>4 keys rotated this week</small>
+        </article>
+        <article class="kpi">
+          <span>Webhooks delivered</span>
+          <strong>94.2K</strong>
+          <small>99.94 percent success</small>
+        </article>
+        <article class="kpi">
+          <span>Error rate</span>
+          <strong>0.18%</strong>
+          <small>Within service target</small>
+        </article>
+      </div>
+    </section>
+    <section class="section shell" id="playground" aria-labelledby="playground-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="playground-title">API playground</h2>
+          <p>Compose signed requests with editable headers and payloads, then inspect the response body beside the request.</p>
+        </div>
+      </div>
+      <div class="workspace">
+        <form class="panel playground-form">
+          <div class="request-row">
+            <label>
+              Method
+              <select aria-label="HTTP method">
+                <option>GET</option>
+                <option>POST</option>
+                <option>PUT</option>
+                <option>DELETE</option>
+              </select>
+            </label>
+            <label>
+              URL
+              <input type="url" aria-label="Request URL" value="https://api.forge.dev/v2/accounts">
+            </label>
+            <button class="button primary" type="button">Send request</button>
+          </div>
+          <div class="editor-grid">
+            <label>
+              Headers
+              <textarea aria-label="Request headers">Authorization: Bearer sk_live_ops_42
+Content-Type: application/json
+X-Forge-Trace: dashboard-run</textarea>
+            </label>
+            <label>
+              Body
+              <textarea aria-label="Request body">{
+  "expand": ["usage", "webhooks"],
+  "limit": 25,
+  "mode": "production"
+}</textarea>
+            </label>
+          </div>
+        </form>
+        <aside class="panel response-panel" aria-label="Response panel">
+          <div class="panel-head">
+            <h3>Response</h3>
+            <span class="response-status">200 OK</span>
+          </div>
+          <div class="response-body">
+            <pre>{
+  "request_id": "req_8h2P9aQ",
+  "duration_ms": 92,
+  "data": [
+    {
+      "id": "acct_main",
+      "plan": "Scale",
+      "api_calls_today": 1482032,
+      "webhook_health": "active"
+    }
+  ]
+}</pre>
+          </div>
+        </aside>
+      </div>
+    </section>
+    <section class="section shell" id="webhooks" aria-labelledby="webhooks-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="webhooks-title">Webhook management</h2>
+          <p>Review destinations, subscribed event types, delivery posture, and recent success rate.</p>
+        </div>
+        <button class="button secondary" type="button">Add endpoint</button>
+      </div>
+      <div class="panel table-scroll">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Endpoint URL</th>
+              <th>Event types</th>
+              <th>Status</th>
+              <th>Last delivery</th>
+              <th>Success rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="mono">https://app.acme.io/hooks/billing</td>
+              <td>
+                <div class="tag-list">
+                  <span class="tag">invoice.paid</span>
+                  <span class="tag">payment.failed</span>
+                </div>
+              </td>
+              <td><span class="badge active">Active</span></td>
+              <td>2 minutes ago</td>
+              <td>99.99%</td>
+            </tr>
+            <tr>
+              <td class="mono">https://ops.acme.io/events/usage</td>
+              <td>
+                <div class="tag-list">
+                  <span class="tag">usage.reported</span>
+                  <span class="tag">limit.reached</span>
+                </div>
+              </td>
+              <td><span class="badge active">Active</span></td>
+              <td>11 minutes ago</td>
+              <td>99.82%</td>
+            </tr>
+            <tr>
+              <td class="mono">https://staging.acme.io/hooks/test</td>
+              <td>
+                <div class="tag-list">
+                  <span class="tag">customer.created</span>
+                  <span class="tag">key.rotated</span>
+                </div>
+              </td>
+              <td><span class="badge paused">Paused</span></td>
+              <td>Yesterday 18:42</td>
+              <td>96.30%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class="section shell" id="keys" aria-labelledby="keys-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="keys-title">API key administration</h2>
+          <p>Track credential ownership, permission scope, creation date, and last activity before revocation.</p>
+        </div>
+        <button class="button primary" type="button">Create key</button>
+      </div>
+      <div class="keys-grid">
+        <article class="key-card">
+          <div class="key-top">
+            <div>
+              <h3>Production Admin</h3>
+              <p>Owner: platform team</p>
+            </div>
+            <button class="danger" type="button">Revoke</button>
+          </div>
+          <div class="key-prefix">sk-live-admin-8d2***</div>
+          <div class="key-meta">
+            <p>Created: May 12, 2026</p>
+            <p>Last used: 4 minutes ago</p>
+          </div>
+          <div class="tag-list">
+            <span class="tag">read</span>
+            <span class="tag">write</span>
+            <span class="tag">admin</span>
+          </div>
+        </article>
+        <article class="key-card">
+          <div class="key-top">
+            <div>
+              <h3>Analytics Worker</h3>
+              <p>Owner: data platform</p>
+            </div>
+            <button class="danger" type="button">Revoke</button>
+          </div>
+          <div class="key-prefix">sk-live-metrics-4a9***</div>
+          <div class="key-meta">
+            <p>Created: Apr 24, 2026</p>
+            <p>Last used: 19 minutes ago</p>
+          </div>
+          <div class="tag-list">
+            <span class="tag">read</span>
+            <span class="tag">events</span>
+          </div>
+        </article>
+        <article class="key-card">
+          <div class="key-top">
+            <div>
+              <h3>Webhook Signer</h3>
+              <p>Owner: integrations</p>
+            </div>
+            <button class="danger" type="button">Revoke</button>
+          </div>
+          <div class="key-prefix">sk-live-hooks-1fc***</div>
+          <div class="key-meta">
+            <p>Created: Mar 31, 2026</p>
+            <p>Last used: 1 hour ago</p>
+          </div>
+          <div class="tag-list">
+            <span class="tag">webhooks</span>
+            <span class="tag">sign</span>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="section shell" id="docs" aria-labelledby="analytics-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="analytics-title">Usage analytics</h2>
+          <p>Seven-day volume trend for API calls across production regions.</p>
+        </div>
+      </div>
+      <div class="analytics-grid">
+        <div class="panel">
+          <div class="chart" role="img" aria-label="API calls per day for the last seven days">
+            <div class="bar"><div class="bar-track"><span class="bar-fill" style="--h: 54%"></span></div><span class="bar-label">Thu</span></div>
+            <div class="bar"><div class="bar-track"><span class="bar-fill" style="--h: 62%"></span></div><span class="bar-label">Fri</span></div>
+            <div class="bar"><div class="bar-track"><span class="bar-fill" style="--h: 48%"></span></div><span class="bar-label">Sat</span></div>
+            <div class="bar"><div class="bar-track"><span class="bar-fill" style="--h: 70%"></span></div><span class="bar-label">Sun</span></div>
+            <div class="bar"><div class="bar-track"><span class="bar-fill" style="--h: 83%"></span></div><span class="bar-label">Mon</span></div>
+            <div class="bar"><div class="bar-track"><span class="bar-fill" style="--h: 76%"></span></div><span class="bar-label">Tue</span></div>
+            <div class="bar"><div class="bar-track"><span class="bar-fill" style="--h: 91%"></span></div><span class="bar-label">Wed</span></div>
+          </div>
+        </div>
+        <aside class="panel analytics-summary" aria-label="Usage summary">
+          <div class="summary-tile">
+            <span>Peak day</span>
+            <strong>Wednesday</strong>
+          </div>
+          <div class="summary-tile">
+            <span>Average latency</span>
+            <strong>88 ms</strong>
+          </div>
+          <div class="summary-tile">
+            <span>Critical alerts</span>
+            <strong>0 open</strong>
+          </div>
+        </aside>
+      </div>
+    </section>
+    <section class="section shell" aria-labelledby="activity-title">
+      <div class="section-heading">
+        <div>
+          <h2 id="activity-title">Recent activity</h2>
+          <p>Chronological feed of requests, deliveries, and credential lifecycle events.</p>
+        </div>
+      </div>
+      <div class="panel activity-feed">
+        <article class="activity-item">
+          <span class="activity-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="m8 5 8 7-8 7V5Z" fill="currentColor"/></svg>
+          </span>
+          <div class="activity-text">
+            <strong>GET /v2/accounts completed</strong>
+            <span>Production Admin key returned 200 OK from eu-central.</span>
+          </div>
+          <time class="activity-time" datetime="2026-05-27T19:49:00+02:00">6 min ago</time>
+        </article>
+        <article class="activity-item">
+          <span class="activity-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M5 12h14M12 5v14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </span>
+          <div class="activity-text">
+            <strong>Webhook delivered to billing endpoint</strong>
+            <span>invoice.paid acknowledged in 142 ms.</span>
+          </div>
+          <time class="activity-time" datetime="2026-05-27T19:41:00+02:00">14 min ago</time>
+        </article>
+        <article class="activity-item">
+          <span class="activity-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M7 11V8a5 5 0 0 1 10 0v3M6 11h12v9H6v-9Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+          </span>
+          <div class="activity-text">
+            <strong>API key created for data platform</strong>
+            <span>Analytics Worker received read and events permissions.</span>
+          </div>
+          <time class="activity-time" datetime="2026-05-27T18:58:00+02:00">57 min ago</time>
+        </article>
+        <article class="activity-item">
+          <span class="activity-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none"><path d="M12 3v18M4 12h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+          </span>
+          <div class="activity-text">
+            <strong>PUT /v2/api-keys updated permissions</strong>
+            <span>Webhook Signer key limited to sign and webhooks scopes.</span>
+          </div>
+          <time class="activity-time" datetime="2026-05-27T17:20:00+02:00">2 hr ago</time>
+        </article>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="footer-row shell">
+      <span>Forge Dev Portal — designed by Northstar Interface Studio</span>
+    </div>
+  </footer>
+  <script>
+    const body = document.body;
+    const openButton = document.querySelector(".menu-button");
+    const drawer = document.querySelector(".drawer");
+    const closeButton = document.querySelector(".drawer-close");
+    const backdrop = document.querySelector("[data-drawer-backdrop]");
+    const drawerLinks = drawer.querySelectorAll("a");
+
+    function setDrawer(open) {
+      drawer.classList.toggle("is-open", open);
+      backdrop.classList.toggle("is-open", open);
+      body.classList.toggle("drawer-open", open);
+      drawer.setAttribute("aria-hidden", String(!open));
+      openButton.setAttribute("aria-expanded", String(open));
+      if (open) {
+        closeButton.focus();
+      } else {
+        openButton.focus();
+      }
+    }
+
+    openButton.addEventListener("click", () => setDrawer(true));
+    closeButton.addEventListener("click", () => setDrawer(false));
+    backdrop.addEventListener("click", () => setDrawer(false));
+    drawerLinks.forEach((link) => {
+      link.addEventListener("click", () => setDrawer(false));
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && drawer.classList.contains("is-open")) {
+        setDrawer(false);
+      }
+    });
+  </script>
+</body>
+</html>
