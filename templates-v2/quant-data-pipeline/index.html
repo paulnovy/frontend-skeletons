@@ -1,0 +1,1121 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quant Data Pipeline</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --indigo: #4F46E5;
+      --cyan: #06B6D4;
+      --lime: #A3E635;
+      --coral: #FB7185;
+      --ink-90: rgba(25, 33, 43, 0.90);
+      --ink-72: rgba(25, 33, 43, 0.72);
+      --ink-56: rgba(25, 33, 43, 0.56);
+      --ink-12: rgba(25, 33, 43, 0.12);
+      --ink-08: rgba(25, 33, 43, 0.08);
+      --cloud-92: rgba(246, 248, 252, 0.92);
+      --cloud-74: rgba(246, 248, 252, 0.74);
+      --indigo-14: rgba(79, 70, 229, 0.14);
+      --indigo-08: rgba(79, 70, 229, 0.08);
+      --cyan-16: rgba(6, 182, 212, 0.16);
+      --cyan-08: rgba(6, 182, 212, 0.08);
+      --lime-18: rgba(163, 230, 53, 0.18);
+      --lime-10: rgba(163, 230, 53, 0.10);
+      --coral-18: rgba(251, 113, 133, 0.18);
+      --coral-10: rgba(251, 113, 133, 0.10);
+      --shadow: 0 24px 70px rgba(25, 33, 43, 0.14);
+      --panel: rgba(255, 255, 255, 0.82);
+      --radius: 8px;
+      --radius-lg: 12px;
+      --max: 1220px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--cloud);
+      color: var(--ink);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+    body.drawer-open { overflow: hidden; }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .skip-link {
+      position: fixed;
+      left: 16px;
+      top: 12px;
+      z-index: 100;
+      transform: translateY(-180%);
+      border: 0;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--cloud);
+      padding: 10px 14px;
+      transition: transform 180ms ease;
+    }
+    .skip-link:focus { transform: translateY(0); }
+    :focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 3px;
+      border-radius: 6px;
+    }
+    .shell { min-height: 100vh; }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      border-bottom: 1px solid var(--ink-08);
+      background: rgba(246, 248, 252, 0.88);
+      backdrop-filter: blur(18px);
+    }
+    .topbar__inner {
+      width: min(100% - 32px, var(--max));
+      margin: 0 auto;
+      min-height: 76px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 22px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: Manrope, Inter, sans-serif;
+      font-weight: 800;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+    .brand__mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 8px;
+      background: var(--ink);
+      color: var(--lime);
+      box-shadow: 0 10px 26px rgba(25, 33, 43, 0.18);
+    }
+    .brand__mark svg { width: 22px; height: 22px; }
+    .navlinks {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .navlinks a {
+      color: var(--ink-72);
+      font-size: 14px;
+      font-weight: 700;
+      padding: 10px 12px;
+      border-radius: var(--radius);
+    }
+    .navlinks a:hover { background: var(--ink-08); color: var(--ink); }
+    .topbar__actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    .search {
+      width: min(28vw, 260px);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border: 1px solid var(--ink-12);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.74);
+      color: var(--ink-56);
+    }
+    .search svg { width: 17px; height: 17px; flex: 0 0 auto; }
+    .search input {
+      width: 100%;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+      font-size: 14px;
+    }
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+    .button {
+      min-height: 42px;
+      border: 0;
+      border-radius: var(--radius);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 14px;
+      background: var(--ink);
+      color: var(--cloud);
+      font-weight: 800;
+      box-shadow: 0 14px 26px rgba(25, 33, 43, 0.18);
+    }
+    .button svg { width: 17px; height: 17px; }
+    .button:hover { transform: translateY(-1px); }
+    .icon-button {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--ink-12);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.76);
+      color: var(--ink);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .icon-button svg { width: 20px; height: 20px; }
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      background: rgba(25, 33, 43, 0.42);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+    }
+    .drawer-backdrop[data-open="true"] { opacity: 1; pointer-events: auto; }
+    .drawer {
+      position: fixed;
+      inset: 0 0 0 auto;
+      z-index: 80;
+      width: min(86vw, 360px);
+      padding: 20px;
+      background: var(--cloud);
+      box-shadow: -28px 0 70px rgba(25, 33, 43, 0.18);
+      transform: translateX(105%);
+      transition: transform 220ms ease;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .drawer[data-open="true"] { transform: translateX(0); }
+    .drawer__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .drawer__links { display: grid; gap: 8px; }
+    .drawer__links a {
+      border: 1px solid var(--ink-08);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.7);
+      padding: 14px;
+      font-weight: 800;
+      color: var(--ink-72);
+    }
+    main {
+      width: min(100% - 32px, var(--max));
+      margin: 0 auto;
+      padding: 28px 0 42px;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+      gap: 22px;
+      align-items: stretch;
+      margin-bottom: 22px;
+    }
+    .hero__copy {
+      min-height: 260px;
+      border-radius: var(--radius-lg);
+      background: var(--ink);
+      color: var(--cloud);
+      padding: clamp(24px, 4vw, 42px);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      position: relative;
+    }
+    .hero__copy::after {
+      content: "";
+      position: absolute;
+      width: 260px;
+      height: 260px;
+      right: -90px;
+      top: -100px;
+      border: 1px solid rgba(6, 182, 212, 0.30);
+      border-radius: 999px;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--lime);
+      font-weight: 800;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--cyan);
+      box-shadow: 0 0 0 7px var(--cyan-16);
+    }
+    h1, h2, h3 {
+      margin: 0;
+      font-family: Manrope, Inter, sans-serif;
+      letter-spacing: 0;
+      line-height: 1.05;
+    }
+    h1 { max-width: 760px; margin-top: 18px; font-size: clamp(42px, 7vw, 86px); }
+    .hero__copy p { max-width: 660px; margin: 20px 0 0; color: rgba(246, 248, 252, 0.78); font-size: 17px; }
+    .hero__meta {
+      margin-top: 28px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .meta-chip {
+      border: 1px solid rgba(246, 248, 252, 0.18);
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      color: rgba(246, 248, 252, 0.86);
+      font-weight: 800;
+      background: rgba(246, 248, 252, 0.06);
+    }
+    .ops-card {
+      border: 1px solid var(--ink-08);
+      border-radius: var(--radius-lg);
+      background: var(--panel);
+      padding: 22px;
+      box-shadow: var(--shadow);
+      display: grid;
+      align-content: space-between;
+      gap: 20px;
+    }
+    .ops-card__top { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+    .ops-card h2 { font-size: 24px; }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 8px 10px;
+      background: var(--lime-18);
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--cyan);
+      box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.40);
+      animation: pulse 1.8s infinite;
+    }
+    @keyframes pulse { 70% { box-shadow: 0 0 0 11px rgba(6, 182, 212, 0); } 100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); } }
+    .mini-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .mini-tile {
+      min-height: 92px;
+      border: 1px solid var(--ink-08);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.72);
+      padding: 14px;
+    }
+    .mini-tile span { color: var(--ink-56); font-weight: 800; font-size: 12px; text-transform: uppercase; }
+    .mini-tile strong { display: block; margin-top: 8px; font-size: 26px; font-weight: 900; }
+    .section { margin-top: 22px; }
+    .section__head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 14px;
+    }
+    .section__head h2 { font-size: clamp(26px, 4vw, 38px); }
+    .section__head p { margin: 6px 0 0; color: var(--ink-56); font-weight: 600; }
+    .kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+    .kpi {
+      border: 1px solid var(--ink-08);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.82);
+      padding: 18px;
+      min-height: 142px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .kpi__label { color: var(--ink-56); font-size: 13px; font-weight: 800; }
+    .kpi__value { margin-top: 12px; font-size: clamp(28px, 4vw, 42px); font-weight: 900; line-height: 1; }
+    .kpi__delta { margin-top: 12px; display: inline-flex; align-items: center; gap: 6px; color: var(--ink-72); font-size: 13px; font-weight: 800; }
+    .kpi__delta.good { color: var(--ink); }
+    .panel {
+      border: 1px solid var(--ink-08);
+      border-radius: var(--radius-lg);
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow: 0 18px 50px rgba(25, 33, 43, 0.08);
+      overflow: hidden;
+    }
+    .panel__bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--ink-08);
+    }
+    .panel__bar h3 { font-size: 21px; }
+    .panel__bar small { color: var(--ink-56); font-weight: 800; }
+    .dag {
+      padding: 26px;
+      overflow-x: auto;
+    }
+    .dag__canvas {
+      min-width: 880px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(160px, 1fr));
+      grid-template-rows: repeat(3, 118px);
+      gap: 22px 34px;
+      position: relative;
+    }
+    .lane {
+      position: absolute;
+      height: 3px;
+      background: linear-gradient(90deg, var(--indigo), var(--cyan));
+      opacity: 0.64;
+      border-radius: 999px;
+    }
+    .lane.one { left: 16%; right: 58%; top: 58px; }
+    .lane.two { left: 41%; right: 33%; top: 58px; }
+    .lane.three { left: 66%; right: 8%; top: 58px; }
+    .lane.four { left: 16%; right: 33%; top: 198px; }
+    .lane.five { left: 41%; right: 8%; top: 338px; }
+    .dag-node {
+      position: relative;
+      z-index: 1;
+      border: 1px solid var(--ink-12);
+      border-radius: var(--radius);
+      background: var(--cloud-92);
+      padding: 16px;
+      display: grid;
+      gap: 12px;
+      box-shadow: 0 10px 28px rgba(25, 33, 43, 0.08);
+    }
+    .dag-node[data-status="running"] { border-color: rgba(6, 182, 212, 0.46); box-shadow: 0 12px 34px rgba(6, 182, 212, 0.16); }
+    .dag-node[data-status="failed"] { border-color: rgba(251, 113, 133, 0.70); background: rgba(251, 113, 133, 0.08); }
+    .dag-node[data-status="success"] { border-color: rgba(163, 230, 53, 0.76); }
+    .dag-node.extract { grid-column: 1; grid-row: 1; }
+    .dag-node.normalize { grid-column: 2; grid-row: 1; }
+    .dag-node.enrich { grid-column: 3; grid-row: 1; }
+    .dag-node.publish { grid-column: 4; grid-row: 1; }
+    .dag-node.fx { grid-column: 1; grid-row: 2; }
+    .dag-node.features { grid-column: 2; grid-row: 2; }
+    .dag-node.risk { grid-column: 3; grid-row: 2; }
+    .dag-node.audit { grid-column: 4; grid-row: 2; }
+    .dag-node.load { grid-column: 3; grid-row: 3; }
+    .dag-node.archive { grid-column: 4; grid-row: 3; }
+    .node__head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .node__type { color: var(--ink-56); font-size: 12px; font-weight: 900; text-transform: uppercase; }
+    .node__name { font-family: Manrope, Inter, sans-serif; font-size: 18px; font-weight: 800; }
+    .node__foot { display: flex; align-items: center; justify-content: space-between; color: var(--ink-56); font-size: 12px; font-weight: 800; }
+    .dot { width: 10px; height: 10px; border-radius: 999px; background: var(--ink-12); }
+    .dot.running { background: var(--cyan); box-shadow: 0 0 0 6px var(--cyan-16); }
+    .dot.success { background: var(--lime); box-shadow: 0 0 0 6px var(--lime-18); }
+    .dot.failed { background: var(--coral); box-shadow: 0 0 0 6px var(--coral-18); }
+    .grid-two { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr); gap: 22px; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; min-width: 760px; }
+    th, td { padding: 16px 18px; border-bottom: 1px solid var(--ink-08); text-align: left; vertical-align: middle; }
+    th { color: var(--ink-56); font-size: 12px; font-weight: 900; text-transform: uppercase; }
+    td { font-weight: 700; color: var(--ink-72); }
+    td strong { color: var(--ink); }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      font-weight: 900;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+    .badge.running { background: var(--cyan-16); }
+    .badge.success { background: var(--lime-18); }
+    .badge.failed { background: var(--coral-18); }
+    .badge.queued { background: var(--indigo-14); }
+    .quality-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; padding: 18px; }
+    .quality-card {
+      border: 1px solid var(--ink-08);
+      border-radius: var(--radius);
+      background: var(--cloud-74);
+      padding: 16px;
+      min-height: 154px;
+      display: grid;
+      gap: 12px;
+    }
+    .quality-card__top { display: flex; align-items: start; justify-content: space-between; gap: 12px; }
+    .quality-card h3 { font-size: 18px; }
+    .score { font-size: 34px; font-weight: 900; line-height: 1; }
+    .trend { color: var(--ink-56); font-weight: 900; font-size: 13px; }
+    .threshold { height: 8px; border-radius: 999px; background: var(--ink-08); overflow: hidden; }
+    .threshold span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--indigo), var(--cyan), var(--lime)); }
+    .quality-card small { color: var(--ink-56); font-weight: 800; }
+    .alerts { display: grid; gap: 10px; padding: 16px; }
+    .alert {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 14px;
+      align-items: center;
+      border: 1px solid var(--ink-08);
+      border-radius: var(--radius);
+      background: var(--cloud-74);
+      padding: 14px;
+    }
+    .alert__severity {
+      width: 88px;
+      border-radius: 999px;
+      padding: 7px 9px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 900;
+    }
+    .alert__severity.info { background: var(--cyan-16); }
+    .alert__severity.warning { background: var(--indigo-14); }
+    .alert__severity.critical { background: var(--coral-18); }
+    .alert p { margin: 0; font-weight: 800; }
+    .alert small { color: var(--ink-56); font-weight: 800; }
+    .ack {
+      border: 1px solid var(--ink-12);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.86);
+      color: var(--ink);
+      min-height: 36px;
+      padding: 0 12px;
+      font-weight: 900;
+    }
+    .history { padding: 18px; display: grid; gap: 14px; }
+    .run {
+      display: grid;
+      grid-template-columns: 150px 1fr 84px;
+      align-items: center;
+      gap: 14px;
+    }
+    .run__name { font-weight: 900; }
+    .run__track { height: 18px; border-radius: 999px; background: var(--ink-08); overflow: hidden; }
+    .run__bar { height: 100%; border-radius: inherit; }
+    .run__bar.success { background: linear-gradient(90deg, var(--lime), var(--cyan)); }
+    .run__bar.running { background: linear-gradient(90deg, var(--cyan), var(--indigo)); }
+    .run__bar.failed { background: linear-gradient(90deg, var(--coral), var(--indigo)); }
+    .run__time { color: var(--ink-56); font-weight: 900; text-align: right; }
+    footer {
+      width: min(100% - 32px, var(--max));
+      margin: 0 auto;
+      padding: 28px 0 38px;
+      color: var(--ink-56);
+      font-weight: 800;
+      border-top: 1px solid var(--ink-08);
+    }
+    @media (max-width: 1060px) {
+      .navlinks { display: none; }
+      .icon-button { display: inline-flex; }
+      .topbar__inner { grid-template-columns: auto 1fr auto; }
+      .search { width: min(42vw, 260px); }
+      .hero, .grid-two { grid-template-columns: 1fr; }
+      .kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    }
+    @media (max-width: 760px) {
+      .topbar__inner { width: min(100% - 24px, var(--max)); min-height: 68px; gap: 10px; }
+      .brand__word { display: none; }
+      .search { display: none; }
+      main, footer { width: min(100% - 24px, var(--max)); }
+      .hero__copy { min-height: 340px; }
+      .kpis { grid-template-columns: 1fr; }
+      .mini-grid, .quality-grid { grid-template-columns: 1fr; }
+      .panel__bar { align-items: flex-start; flex-direction: column; }
+      .dag { padding: 16px; }
+      .alert { grid-template-columns: 1fr; }
+      .alert__severity { width: max-content; }
+      .run { grid-template-columns: 1fr; gap: 8px; }
+      .run__time { text-align: left; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.001ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to pipeline dashboard</a>
+  <div class="shell">
+    <header class="topbar" role="banner">
+      <div class="topbar__inner">
+        <a class="brand" href="#main" aria-label="Quant Data Pipeline home">
+          <span class="brand__mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 7h5v5H4z"></path>
+              <path d="M15 4h5v5h-5z"></path>
+              <path d="M15 15h5v5h-5z"></path>
+              <path d="M9 9l6-2"></path>
+              <path d="M9 11l6 6"></path>
+            </svg>
+          </span>
+          <span class="brand__word">Quant Data Pipeline</span>
+        </a>
+        <nav class="navlinks" aria-label="Primary navigation">
+          <a href="#pipelines">Pipelines</a>
+          <a href="#jobs">Jobs</a>
+          <a href="#quality">Quality</a>
+          <a href="#alerts">Alerts</a>
+          <a href="#settings">Settings</a>
+        </nav>
+        <div class="topbar__actions">
+          <label class="search">
+            <span class="sr-only">Search pipeline assets</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="M20 20l-3.5-3.5"></path>
+            </svg>
+            <input type="search" aria-label="Search jobs, pipelines, and alerts" value="equities">
+          </label>
+          <button class="button" type="button" id="refreshButton">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 12a9 9 0 0 1-15.6 6.1"></path>
+              <path d="M3 12A9 9 0 0 1 18.6 5.9"></path>
+              <path d="M18 3v5h-5"></path>
+              <path d="M6 21v-5h5"></path>
+            </svg>
+            Refresh
+          </button>
+          <button class="icon-button" type="button" id="menuButton" aria-controls="mobileDrawer" aria-expanded="false" aria-label="Open navigation menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+              <path d="M4 7h16"></path>
+              <path d="M4 12h16"></path>
+              <path d="M4 17h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+    <div class="drawer-backdrop" id="drawerBackdrop" data-open="false"></div>
+    <aside class="drawer" id="mobileDrawer" data-open="false" aria-label="Mobile navigation" aria-hidden="true">
+      <div class="drawer__head">
+        <span class="brand">
+          <span class="brand__mark" aria-hidden="true">QD</span>
+          <span>Pipeline Menu</span>
+        </span>
+        <button class="icon-button" type="button" id="closeDrawer" aria-label="Close navigation menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+            <path d="M6 6l12 12"></path>
+            <path d="M18 6L6 18"></path>
+          </svg>
+        </button>
+      </div>
+      <nav class="drawer__links" aria-label="Drawer navigation">
+        <a href="#pipelines">Pipelines</a>
+        <a href="#jobs">Jobs</a>
+        <a href="#quality">Quality</a>
+        <a href="#alerts">Alerts</a>
+        <a href="#settings">Settings</a>
+      </nav>
+    </aside>
+    <main id="main" tabindex="-1">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero__copy">
+          <div>
+            <span class="eyebrow">Live market data operations</span>
+            <h1 id="hero-title">Quant Data Pipeline</h1>
+            <p>Monitor equity, factor, risk, and reference data pipelines from extraction through publication with latency, lineage, and quality signals in one operational view.</p>
+          </div>
+          <div class="hero__meta" aria-label="Pipeline operating state">
+            <span class="meta-chip">North America session active</span>
+            <span class="meta-chip">SLA window 04:00-09:30 UTC</span>
+            <span class="meta-chip">17 data vendors streaming</span>
+          </div>
+        </div>
+        <aside class="ops-card" aria-label="Operations summary">
+          <div class="ops-card__top">
+            <div>
+              <h2>Control Room</h2>
+              <p>Critical market open workloads are inside tolerance.</p>
+            </div>
+            <span class="status-pill"><span class="pulse" aria-hidden="true"></span>Live</span>
+          </div>
+          <div class="mini-grid">
+            <div class="mini-tile">
+              <span>Median lag</span>
+              <strong>41s</strong>
+            </div>
+            <div class="mini-tile">
+              <span>Open alerts</span>
+              <strong>6</strong>
+            </div>
+            <div class="mini-tile">
+              <span>Rows today</span>
+              <strong>92.4M</strong>
+            </div>
+            <div class="mini-tile">
+              <span>Warehouse load</span>
+              <strong>68%</strong>
+            </div>
+          </div>
+        </aside>
+      </section>
+      <section class="section" aria-labelledby="kpi-title">
+        <div class="section__head">
+          <div>
+            <h2 id="kpi-title">Pipeline KPIs</h2>
+            <p>Coverage across production data products for the current trading day.</p>
+          </div>
+        </div>
+        <div class="kpis">
+          <article class="kpi">
+            <span class="kpi__label">Active pipelines</span>
+            <strong class="kpi__value">42</strong>
+            <span class="kpi__delta good">+4 since yesterday</span>
+          </article>
+          <article class="kpi">
+            <span class="kpi__label">Running jobs</span>
+            <strong class="kpi__value">18</strong>
+            <span class="kpi__delta ">6 nearing SLA</span>
+          </article>
+          <article class="kpi">
+            <span class="kpi__label">Success rate</span>
+            <strong class="kpi__value">99.2%</strong>
+            <span class="kpi__delta good">+0.6% week over week</span>
+          </article>
+          <article class="kpi">
+            <span class="kpi__label">Avg run time</span>
+            <strong class="kpi__value">07m 18s</strong>
+            <span class="kpi__delta good">38s faster than median</span>
+          </article>
+          <article class="kpi">
+            <span class="kpi__label">Data quality score</span>
+            <strong class="kpi__value">96.8%</strong>
+            <span class="kpi__delta ">2 checks under watch</span>
+          </article>
+        </div>
+      </section>
+      <section class="section" id="pipelines" aria-labelledby="dag-title">
+        <div class="section__head">
+          <div>
+            <h2 id="dag-title">DAG Visualization</h2>
+            <p>Equities golden record flow with status at each dependency boundary.</p>
+          </div>
+        </div>
+        <div class="panel">
+          <div class="panel__bar">
+            <h3>equities-golden-record</h3>
+            <small>10 nodes · 2 running · 1 failed retry</small>
+          </div>
+          <div class="dag" role="img" aria-label="Directed acyclic graph for extract transform load pipeline">
+            <div class="dag__canvas">
+              <span class="lane one" aria-hidden="true"></span>
+              <span class="lane two" aria-hidden="true"></span>
+              <span class="lane three" aria-hidden="true"></span>
+              <span class="lane four" aria-hidden="true"></span>
+              <span class="lane five" aria-hidden="true"></span>
+              <article class="dag-node extract" data-status="success">
+                <div class="node__head">
+                  <span class="node__type">Extract</span>
+                  <span class="dot success" aria-label="success status"></span>
+                </div>
+                <strong class="node__name">Vendor Tick Feed</strong>
+                <div class="node__foot">
+                  <span>92.4M rows</span>
+                  <span>03:12 UTC</span>
+                </div>
+              </article>
+              <article class="dag-node normalize" data-status="success">
+                <div class="node__head">
+                  <span class="node__type">Transform</span>
+                  <span class="dot success" aria-label="success status"></span>
+                </div>
+                <strong class="node__name">Normalize Symbols</strong>
+                <div class="node__foot">
+                  <span>CUSIP mapped</span>
+                  <span>03:18 UTC</span>
+                </div>
+              </article>
+              <article class="dag-node enrich" data-status="running">
+                <div class="node__head">
+                  <span class="node__type">Transform</span>
+                  <span class="dot running" aria-label="running status"></span>
+                </div>
+                <strong class="node__name">Factor Enrichment</strong>
+                <div class="node__foot">
+                  <span>73% complete</span>
+                  <span>Now</span>
+                </div>
+              </article>
+              <article class="dag-node publish" data-status="queued">
+                <div class="node__head">
+                  <span class="node__type">Load</span>
+                  <span class="dot " aria-label="queued status"></span>
+                </div>
+                <strong class="node__name">Research Lake</strong>
+                <div class="node__foot">
+                  <span>Queued</span>
+                  <span>04:10 UTC</span>
+                </div>
+              </article>
+              <article class="dag-node fx" data-status="success">
+                <div class="node__head">
+                  <span class="node__type">Extract</span>
+                  <span class="dot success" aria-label="success status"></span>
+                </div>
+                <strong class="node__name">FX Reference</strong>
+                <div class="node__foot">
+                  <span>217 crosses</span>
+                  <span>03:04 UTC</span>
+                </div>
+              </article>
+              <article class="dag-node features" data-status="running">
+                <div class="node__head">
+                  <span class="node__type">Transform</span>
+                  <span class="dot running" aria-label="running status"></span>
+                </div>
+                <strong class="node__name">Feature Store</strong>
+                <div class="node__foot">
+                  <span>18 partitions</span>
+                  <span>Now</span>
+                </div>
+              </article>
+              <article class="dag-node risk" data-status="failed">
+                <div class="node__head">
+                  <span class="node__type">Transform</span>
+                  <span class="dot failed" aria-label="failed status"></span>
+                </div>
+                <strong class="node__name">Risk Model Join</strong>
+                <div class="node__foot">
+                  <span>Retry 2 of 3</span>
+                  <span>03:57 UTC</span>
+                </div>
+              </article>
+              <article class="dag-node audit" data-status="success">
+                <div class="node__head">
+                  <span class="node__type">Quality</span>
+                  <span class="dot success" aria-label="success status"></span>
+                </div>
+                <strong class="node__name">Lineage Audit</strong>
+                <div class="node__foot">
+                  <span>Signed</span>
+                  <span>03:42 UTC</span>
+                </div>
+              </article>
+              <article class="dag-node load" data-status="queued">
+                <div class="node__head">
+                  <span class="node__type">Load</span>
+                  <span class="dot " aria-label="queued status"></span>
+                </div>
+                <strong class="node__name">Warehouse Merge</strong>
+                <div class="node__foot">
+                  <span>Waiting</span>
+                  <span>04:18 UTC</span>
+                </div>
+              </article>
+              <article class="dag-node archive" data-status="success">
+                <div class="node__head">
+                  <span class="node__type">Load</span>
+                  <span class="dot success" aria-label="success status"></span>
+                </div>
+                <strong class="node__name">Cold Archive</strong>
+                <div class="node__foot">
+                  <span>Immutable</span>
+                  <span>03:46 UTC</span>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="grid-two section">
+        <section id="jobs" aria-labelledby="jobs-title">
+          <div class="section__head">
+            <div>
+              <h2 id="jobs-title">Job Monitoring</h2>
+              <p>Latest execution details for high-value production jobs.</p>
+            </div>
+          </div>
+          <div class="panel table-wrap">
+            <table>
+              <thead>
+                <tr><th>Job name</th><th>Pipeline</th><th>Status</th><th>Duration</th><th>Last run</th><th>Next run</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Vendor ingest</strong></td>
+                  <td>equities-golden-record</td>
+                  <td><span class="badge running"><span class="dot running" aria-hidden="true"></span>Running</span></td>
+                  <td>04m 22s</td>
+                  <td>03:54 UTC</td>
+                  <td>04:15 UTC</td>
+                </tr>
+                <tr>
+                  <td><strong>Symbol normalization</strong></td>
+                  <td>equities-golden-record</td>
+                  <td><span class="badge success"><span class="dot success" aria-hidden="true"></span>Success</span></td>
+                  <td>02m 41s</td>
+                  <td>03:48 UTC</td>
+                  <td>04:18 UTC</td>
+                </tr>
+                <tr>
+                  <td><strong>Risk model join</strong></td>
+                  <td>risk-factor-daily</td>
+                  <td><span class="badge failed"><span class="dot failed" aria-hidden="true"></span>Failed</span></td>
+                  <td>09m 03s</td>
+                  <td>03:57 UTC</td>
+                  <td>Retrying</td>
+                </tr>
+                <tr>
+                  <td><strong>FX snapshot</strong></td>
+                  <td>macro-reference</td>
+                  <td><span class="badge success"><span class="dot success" aria-hidden="true"></span>Success</span></td>
+                  <td>01m 18s</td>
+                  <td>03:44 UTC</td>
+                  <td>04:14 UTC</td>
+                </tr>
+                <tr>
+                  <td><strong>Warehouse merge</strong></td>
+                  <td>research-lake</td>
+                  <td><span class="badge queued"><span class="dot " aria-hidden="true"></span>Queued</span></td>
+                  <td>Pending</td>
+                  <td>03:30 UTC</td>
+                  <td>04:18 UTC</td>
+                </tr>
+                <tr>
+                  <td><strong>Quality audit</strong></td>
+                  <td>lineage-control</td>
+                  <td><span class="badge success"><span class="dot success" aria-hidden="true"></span>Success</span></td>
+                  <td>03m 09s</td>
+                  <td>03:42 UTC</td>
+                  <td>04:12 UTC</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+        <section id="quality" aria-labelledby="quality-title">
+          <div class="section__head">
+            <div>
+              <h2 id="quality-title">Data Quality</h2>
+              <p>Metric thresholds from the most recent validation checks.</p>
+            </div>
+          </div>
+          <div class="panel quality-grid">
+            <article class="quality-card">
+              <div class="quality-card__top">
+                <h3>Completeness</h3>
+                <span class="trend">↑ 1.1%</span>
+              </div>
+              <strong class="score">98.7%</strong>
+              <div class="threshold" aria-label="Threshold indicator 98.7%"><span style="width: 98%"></span></div>
+              <small>Checked 04:02 UTC</small>
+            </article>
+            <article class="quality-card">
+              <div class="quality-card__top">
+                <h3>Freshness</h3>
+                <span class="trend">↓ 0.8%</span>
+              </div>
+              <strong class="score">94.1%</strong>
+              <div class="threshold" aria-label="Threshold indicator 94.1%"><span style="width: 94%"></span></div>
+              <small>Checked 04:01 UTC</small>
+            </article>
+            <article class="quality-card">
+              <div class="quality-card__top">
+                <h3>Schema drift</h3>
+                <span class="trend">→ stable</span>
+              </div>
+              <strong class="score">99.9%</strong>
+              <div class="threshold" aria-label="Threshold indicator 99.9%"><span style="width: 99%"></span></div>
+              <small>Checked 03:59 UTC</small>
+            </article>
+            <article class="quality-card">
+              <div class="quality-card__top">
+                <h3>Outlier rate</h3>
+                <span class="trend">↑ 0.4%</span>
+              </div>
+              <strong class="score">92.8%</strong>
+              <div class="threshold" aria-label="Threshold indicator 92.8%"><span style="width: 92%"></span></div>
+              <small>Checked 03:58 UTC</small>
+            </article>
+          </div>
+        </section>
+      </div>
+      <div class="grid-two section">
+        <section id="alerts" aria-labelledby="alerts-title">
+          <div class="section__head">
+            <div>
+              <h2 id="alerts-title">Alerts</h2>
+              <p>Actionable events grouped by severity and pipeline reference.</p>
+            </div>
+          </div>
+          <div class="panel alerts">
+            <article class="alert">
+              <span class="alert__severity critical">Critical</span>
+              <div>
+                <p>Risk model join exceeded retry threshold</p>
+                <small>risk-factor-daily · 04:03 UTC</small>
+              </div>
+              <button class="ack" type="button">Acknowledge</button>
+            </article>
+            <article class="alert">
+              <span class="alert__severity warning">Warning</span>
+              <div>
+                <p>Freshness check below morning threshold</p>
+                <small>equities-golden-record · 04:01 UTC</small>
+              </div>
+              <button class="ack" type="button">Acknowledge</button>
+            </article>
+            <article class="alert">
+              <span class="alert__severity info">Info</span>
+              <div>
+                <p>New vendor sequence accepted</p>
+                <small>vendor-tick-feed · 03:55 UTC</small>
+              </div>
+              <button class="ack" type="button">Acknowledge</button>
+            </article>
+            <article class="alert">
+              <span class="alert__severity warning">Warning</span>
+              <div>
+                <p>Warehouse merge waiting on feature partitions</p>
+                <small>research-lake · 03:51 UTC</small>
+              </div>
+              <button class="ack" type="button">Acknowledge</button>
+            </article>
+          </div>
+        </section>
+        <section aria-labelledby="history-title">
+          <div class="section__head">
+            <div>
+              <h2 id="history-title">Run History</h2>
+              <p>Recent pipeline durations with completion state.</p>
+            </div>
+          </div>
+          <div class="panel history">
+            <div class="run">
+              <span class="run__name">03:45 batch</span>
+              <span class="run__track"><span class="run__bar success" style="width: 72%"></span></span>
+              <span class="run__time">08m 10s</span>
+            </div>
+            <div class="run">
+              <span class="run__name">03:30 batch</span>
+              <span class="run__track"><span class="run__bar success" style="width: 58%"></span></span>
+              <span class="run__time">06m 42s</span>
+            </div>
+            <div class="run">
+              <span class="run__name">03:15 batch</span>
+              <span class="run__track"><span class="run__bar running" style="width: 86%"></span></span>
+              <span class="run__time">10m 04s</span>
+            </div>
+            <div class="run">
+              <span class="run__name">03:00 batch</span>
+              <span class="run__track"><span class="run__bar failed" style="width: 44%"></span></span>
+              <span class="run__time">05m 22s</span>
+            </div>
+            <div class="run">
+              <span class="run__name">02:45 batch</span>
+              <span class="run__track"><span class="run__bar success" style="width: 67%"></span></span>
+              <span class="run__time">07m 38s</span>
+            </div>
+            <div class="run">
+              <span class="run__name">02:30 batch</span>
+              <span class="run__track"><span class="run__bar success" style="width: 62%"></span></span>
+              <span class="run__time">07m 02s</span>
+            </div>
+          </div>
+        </section>
+      </div>
+      <section class="section" id="settings" aria-labelledby="settings-title">
+        <div class="panel">
+          <div class="panel__bar">
+            <div>
+              <h3 id="settings-title">Settings Snapshot</h3>
+              <small>Operational controls are staged for production change windows.</small>
+            </div>
+            <button class="ack" type="button">Open controls</button>
+          </div>
+        </div>
+      </section>
+    </main>
+    <footer>Quant Data Pipeline — designed by Northstar Systems Studio</footer>
+  </div>
+  <script>
+    const menuButton = document.getElementById('menuButton');
+    const drawer = document.getElementById('mobileDrawer');
+    const closeDrawer = document.getElementById('closeDrawer');
+    const backdrop = document.getElementById('drawerBackdrop');
+    const refreshButton = document.getElementById('refreshButton');
+    const focusable = 'a[href], button:not([disabled]), input:not([disabled])';
+    let lastFocus = null;
+    function openDrawer() {
+      lastFocus = document.activeElement;
+      drawer.dataset.open = 'true';
+      backdrop.dataset.open = 'true';
+      drawer.setAttribute('aria-hidden', 'false');
+      menuButton.setAttribute('aria-expanded', 'true');
+      document.body.classList.add('drawer-open');
+      const first = drawer.querySelector(focusable);
+      if (first) first.focus();
+    }
+    function closeDrawerPanel() {
+      drawer.dataset.open = 'false';
+      backdrop.dataset.open = 'false';
+      drawer.setAttribute('aria-hidden', 'true');
+      menuButton.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('drawer-open');
+      if (lastFocus) lastFocus.focus();
+    }
+    menuButton.addEventListener('click', openDrawer);
+    closeDrawer.addEventListener('click', closeDrawerPanel);
+    backdrop.addEventListener('click', closeDrawerPanel);
+    drawer.addEventListener('click', (event) => {
+      if (event.target.matches('a')) closeDrawerPanel();
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && drawer.dataset.open === 'true') closeDrawerPanel();
+      if (event.key !== 'Tab' || drawer.dataset.open !== 'true') return;
+      const items = [...drawer.querySelectorAll(focusable)];
+      if (!items.length) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+    refreshButton.addEventListener('click', () => {
+      refreshButton.setAttribute('aria-live', 'polite');
+      refreshButton.disabled = true;
+      const original = refreshButton.innerHTML;
+      refreshButton.textContent = 'Refreshing';
+      window.setTimeout(() => {
+        refreshButton.innerHTML = original;
+        refreshButton.disabled = false;
+      }, 700);
+    });
+  </script>
+</body>
+</html>
