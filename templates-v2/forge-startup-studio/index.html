@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forge Startup Studio — Accelerator Portal</title>
+  <meta name="description" content="Premium startup accelerator portal skeleton with program tracks, portfolio showcase, events, mentors, and application flow.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+:root {--cloud: #F6F8FC;--ink: #19212B;--indigo: #4F46E5;--cyan: #06B6D4;--lime: #A3E635;--coral: #FB7185;--cloud-strong: rgba(246, 248, 252, 0.98);--cloud-soft: rgba(246, 248, 252, 0.74);--cloud-faint: rgba(246, 248, 252, 0.42);--ink-soft: rgba(25, 33, 43, 0.72);--ink-muted: rgba(25, 33, 43, 0.55);--ink-faint: rgba(25, 33, 43, 0.12);--ink-line: rgba(25, 33, 43, 0.18);--ink-panel: rgba(25, 33, 43, 0.96);--indigo-soft: rgba(79, 70, 229, 0.12);--indigo-line: rgba(79, 70, 229, 0.26);--cyan-soft: rgba(6, 182, 212, 0.14);--cyan-line: rgba(6, 182, 212, 0.34);--lime-soft: rgba(163, 230, 53, 0.2);--coral-soft: rgba(251, 113, 133, 0.16);--shadow-wide: 0 26px 80px rgba(25, 33, 43, 0.13);--shadow-tight: 0 14px 40px rgba(25, 33, 43, 0.1);--radius-sm: 8px;--radius-md: 14px;--radius-lg: 22px;--font-heading: "Manrope", system-ui, sans-serif;--font-ui: "Inter", system-ui, sans-serif;
+}
+* {box-sizing: border-box;
+}
+html {scroll-behavior: smooth;
+}
+body {margin: 0;min-width: 320px;background: var(--cloud);color: var(--ink);font-family: var(--font-ui);line-height: 1.5;
+}
+body.drawer-open {overflow: hidden;
+}
+a {color: inherit;text-decoration: none;
+}
+button,input,select,textarea {font: inherit;
+}
+button {cursor: pointer;
+}
+h1,h2,h3,h4 {margin: 0;color: var(--ink);font-family: var(--font-heading);line-height: 1.08;letter-spacing: 0;
+}
+p {margin: 0;
+}
+ul {margin: 0;padding: 0;list-style: none;
+}
+svg {display: block;
+}
+.skip-link {position: fixed;top: 12px;left: 18px;z-index: 300;transform: translateY(-140%);border-radius: var(--radius-sm);background: var(--ink);color: var(--cloud);padding: 10px 14px;font-weight: 800;
+}
+.skip-link:focus-visible {transform: translateY(0);
+}
+.page-shell {overflow: hidden;
+}
+.site-header {position: sticky;top: 0;z-index: 90;border-bottom: 1px solid var(--ink-faint);background: rgba(246, 248, 252, 0.9);backdrop-filter: blur(18px);
+}
+.nav {width: min(1180px, calc(100% - 32px));min-height: 76px;margin: 0 auto;display: flex;align-items: center;justify-content: space-between;gap: 18px;
+}
+.brand {display: inline-flex;align-items: center;gap: 10px;font-family: var(--font-heading);font-size: 20px;font-weight: 800;white-space: nowrap;
+}
+.brand-mark {width: 36px;height: 36px;display: grid;place-items: center;border-radius: 10px;background: var(--ink);color: var(--cloud);box-shadow: 0 12px 32px rgba(79, 70, 229, 0.26);
+}
+.nav-links {display: flex;align-items: center;gap: 22px;color: var(--ink-soft);font-size: 14px;font-weight: 800;
+}
+.nav-links a {padding: 8px 0;
+}
+.nav-links a:hover {color: var(--ink);
+}
+.nav-actions {display: flex;align-items: center;gap: 10px;
+}
+.button {min-height: 42px;display: inline-flex;align-items: center;justify-content: center;gap: 8px;border: 1px solid transparent;border-radius: var(--radius-sm);padding: 0 18px;font-size: 14px;font-weight: 800;white-space: nowrap;transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+}
+.button-primary {background: var(--indigo);color: var(--cloud);box-shadow: 0 14px 34px rgba(79, 70, 229, 0.28);
+}
+.button-primary:hover {transform: translateY(-1px);box-shadow: 0 18px 46px rgba(79, 70, 229, 0.34);
+}
+.button-secondary {border-color: var(--ink-faint);background: var(--cloud-strong);color: var(--ink);
+}
+.button-dark {background: var(--ink);color: var(--cloud);
+}
+.menu-button {width: 42px;height: 42px;display: none;align-items: center;justify-content: center;border: 1px solid var(--ink-faint);border-radius: var(--radius-sm);background: var(--cloud-strong);color: var(--ink);
+}
+.drawer-overlay {position: fixed;inset: 0;z-index: 120;visibility: hidden;background: rgba(25, 33, 43, 0.44);opacity: 0;transition: opacity 180ms ease, visibility 180ms ease;
+}
+.drawer {position: fixed;top: 0;right: 0;z-index: 130;width: min(360px, 86vw);height: 100%;transform: translateX(110%);border-left: 1px solid var(--ink-faint);background: var(--cloud);padding: 22px;box-shadow: var(--shadow-wide);transition: transform 220ms ease;
+}
+.drawer-open .drawer-overlay {visibility: visible;opacity: 1;
+}
+.drawer-open .drawer {transform: translateX(0);
+}
+.drawer-head {display: flex;align-items: center;justify-content: space-between;gap: 16px;
+}
+.drawer-close {width: 42px;height: 42px;display: inline-grid;place-items: center;border: 1px solid var(--ink-faint);border-radius: var(--radius-sm);background: var(--cloud-strong);color: var(--ink);
+}
+.drawer-links {display: grid;gap: 8px;padding-top: 24px;
+}
+.drawer-links a {border-radius: var(--radius-sm);padding: 14px 12px;color: var(--ink-soft);font-weight: 800;
+}
+.drawer-links a:hover {background: var(--indigo-soft);color: var(--ink);
+}
+.drawer .button {width: 100%;margin-top: 18px;
+}
+.hero {position: relative;padding: 76px 0 54px;
+}
+.hero::before {content: "";position: absolute;inset: 0 auto auto 50%;width: min(980px, 96vw);height: 530px;transform: translateX(-50%);background:radial-gradient(circle at 18% 18%, rgba(6, 182, 212, 0.2), transparent 30%),radial-gradient(circle at 82% 8%, rgba(79, 70, 229, 0.2), transparent 28%),radial-gradient(circle at 64% 82%, rgba(163, 230, 53, 0.16), transparent 24%);pointer-events: none;
+}
+.hero-inner {position: relative;width: min(1180px, calc(100% - 32px));margin: 0 auto;display: grid;grid-template-columns: minmax(0, 0.96fr) minmax(420px, 1.04fr);align-items: center;gap: 42px;
+}
+.eyebrow {width: fit-content;display: inline-flex;align-items: center;gap: 8px;margin-bottom: 18px;border: 1px solid var(--indigo-line);border-radius: 999px;background: var(--cloud-strong);color: var(--indigo);padding: 8px 12px;font-size: 13px;font-weight: 800;
+}
+.live-dot {width: 8px;height: 8px;border-radius: 999px;background: var(--cyan);box-shadow: 0 0 0 6px var(--cyan-soft);
+}
+.hero-copy h1 {max-width: 670px;font-size: clamp(42px, 6vw, 76px);font-weight: 800;
+}
+.hero-copy h1 span {color: var(--indigo);
+}
+.hero-copy > p {max-width: 610px;margin-top: 22px;color: var(--ink-soft);font-size: 18px;
+}
+.hero-actions {display: flex;flex-wrap: wrap;gap: 12px;margin-top: 30px;
+}
+.stats-strip {display: grid;grid-template-columns: repeat(3, 1fr);gap: 12px;margin-top: 34px;
+}
+.stat-card {min-height: 112px;display: grid;align-content: space-between;border: 1px solid var(--ink-faint);border-radius: var(--radius-md);background: var(--cloud-strong);padding: 18px;box-shadow: var(--shadow-tight);
+}
+.stat-card strong {font-family: var(--font-heading);font-size: 30px;line-height: 1;
+}
+.stat-card span {color: var(--ink-muted);font-size: 13px;font-weight: 800;
+}
+.command-panel {position: relative;overflow: hidden;border: 1px solid rgba(246, 248, 252, 0.16);border-radius: var(--radius-lg);background: var(--ink-panel);color: var(--cloud);box-shadow: var(--shadow-wide);
+}
+.command-panel::before {content: "";position: absolute;inset: 0;background:linear-gradient(135deg, rgba(79, 70, 229, 0.18), transparent 32%),linear-gradient(225deg, rgba(6, 182, 212, 0.14), transparent 36%);pointer-events: none;
+}
+.panel-top {position: relative;display: flex;align-items: center;justify-content: space-between;gap: 16px;border-bottom: 1px solid rgba(246, 248, 252, 0.14);padding: 18px 20px;
+}
+.window-controls {display: flex;gap: 7px;
+}
+.window-controls span {width: 10px;height: 10px;border-radius: 50%;background: var(--cloud-faint);
+}
+.panel-status {display: inline-flex;align-items: center;gap: 8px;color: var(--cloud-strong);font-size: 12px;font-weight: 800;
+}
+.panel-grid {position: relative;display: grid;grid-template-columns: 1fr 0.8fr;gap: 16px;padding: 20px;
+}
+.panel-card {border: 1px solid rgba(246, 248, 252, 0.14);border-radius: var(--radius-md);background: rgba(246, 248, 252, 0.06);padding: 18px;
+}
+.panel-label {color: rgba(246, 248, 252, 0.62);font-size: 12px;font-weight: 800;text-transform: uppercase;
+}
+.cohort-number {margin-top: 8px;color: var(--cloud);font-family: var(--font-heading);font-size: 48px;font-weight: 800;line-height: 1;
+}
+.cohort-note {margin-top: 10px;color: rgba(246, 248, 252, 0.68);font-size: 13px;font-weight: 700;
+}
+.mini-grid {display: grid;grid-template-columns: repeat(3, 1fr);gap: 10px;margin-top: 18px;
+}
+.mini-grid span {display: grid;gap: 4px;border-radius: var(--radius-sm);background: rgba(246, 248, 252, 0.08);padding: 12px;color: rgba(246, 248, 252, 0.62);font-size: 11px;font-weight: 800;
+}
+.mini-grid strong {color: var(--cloud);font-size: 18px;
+}
+.thesis-list {display: grid;gap: 10px;
+}
+.thesis-item {display: flex;align-items: center;justify-content: space-between;gap: 12px;border-radius: var(--radius-sm);background: rgba(246, 248, 252, 0.08);padding: 12px;color: var(--cloud-strong);font-size: 13px;font-weight: 800;
+}
+.thesis-item i {width: 10px;height: 10px;flex: 0 0 auto;border-radius: 50%;background: var(--cyan);box-shadow: 0 0 0 6px rgba(6, 182, 212, 0.12);
+}
+.route-map {display: grid;gap: 12px;margin-top: 8px;
+}
+.route-step {display: grid;grid-template-columns: auto 1fr auto;align-items: center;gap: 10px;color: var(--cloud-strong);font-size: 13px;font-weight: 800;
+}
+.route-step b {width: 30px;height: 30px;display: grid;place-items: center;border-radius: 50%;background: var(--indigo);color: var(--cloud);
+}
+.route-step span {color: rgba(246, 248, 252, 0.66);
+}
+.section {width: min(1180px, calc(100% - 32px));margin: 0 auto;padding: 74px 0;
+}
+.section-head {display: flex;align-items: end;justify-content: space-between;gap: 28px;margin-bottom: 28px;
+}
+.section-kicker {color: var(--indigo);font-size: 13px;font-weight: 900;text-transform: uppercase;
+}
+.section-head h2 {max-width: 680px;margin-top: 10px;font-size: clamp(32px, 4vw, 52px);
+}
+.section-head p {max-width: 430px;color: var(--ink-soft);font-weight: 600;
+}
+.program-grid {display: grid;grid-template-columns: repeat(3, 1fr);gap: 18px;
+}
+.program-card {position: relative;overflow: hidden;border: 1px solid var(--ink-faint);border-radius: var(--radius-md);background: var(--cloud-strong);padding: 22px;box-shadow: var(--shadow-tight);
+}
+.program-card::after {content: "";position: absolute;inset: auto 22px 0 22px;height: 4px;border-radius: 999px 999px 0 0;background: var(--indigo);
+}
+.program-card:nth-child(2)::after {background: var(--cyan);
+}
+.program-card:nth-child(3)::after {background: var(--lime);
+}
+.track-tag {display: inline-flex;border-radius: 999px;background: var(--indigo-soft);color: var(--indigo);padding: 7px 10px;font-size: 12px;font-weight: 900;
+}
+.program-card h3 {margin-top: 18px;font-size: 26px;
+}
+.program-card p {margin-top: 10px;color: var(--ink-soft);font-weight: 600;
+}
+.program-meta {display: grid;grid-template-columns: repeat(3, 1fr);gap: 10px;margin-top: 22px;
+}
+.program-meta span {border-radius: var(--radius-sm);background: rgba(25, 33, 43, 0.05);padding: 12px;color: var(--ink-muted);font-size: 12px;font-weight: 800;
+}
+.program-meta strong {display: block;color: var(--ink);font-size: 16px;
+}
+.portfolio-band {background: var(--ink);color: var(--cloud);
+}
+.portfolio-band .section-head h2,.portfolio-band .section-head p {color: var(--cloud);
+}
+.portfolio-band .section-head p {color: rgba(246, 248, 252, 0.7);
+}
+.portfolio-grid {display: grid;grid-template-columns: repeat(3, 1fr);gap: 16px;
+}
+.startup-card {min-height: 245px;display: grid;align-content: space-between;border: 1px solid rgba(246, 248, 252, 0.14);border-radius: var(--radius-md);background: rgba(246, 248, 252, 0.06);padding: 20px;
+}
+.startup-card h3 {color: var(--cloud);font-size: 24px;
+}
+.startup-card p {margin-top: 12px;color: rgba(246, 248, 252, 0.72);
+}
+.card-row {display: flex;flex-wrap: wrap;gap: 8px;margin-bottom: 18px;
+}
+.tag,.badge {display: inline-flex;align-items: center;min-height: 28px;border-radius: 999px;padding: 0 10px;font-size: 12px;font-weight: 900;
+}
+.tag {background: var(--cyan-soft);color: var(--cyan);
+}
+.badge {background: var(--indigo);color: var(--cloud);
+}
+.application-layout {display: grid;grid-template-columns: minmax(0, 0.9fr) minmax(360px, 1.1fr);gap: 22px;
+}
+.flow-panel,.form-card {border: 1px solid var(--ink-faint);border-radius: var(--radius-md);background: var(--cloud-strong);box-shadow: var(--shadow-tight);
+}
+.flow-panel {padding: 24px;
+}
+.progress-line {position: relative;display: grid;gap: 18px;
+}
+.progress-line::before {content: "";position: absolute;top: 20px;bottom: 20px;left: 20px;width: 2px;background: var(--ink-faint);
+}
+.flow-step {position: relative;display: grid;grid-template-columns: 42px 1fr;gap: 14px;border: 0;background: transparent;padding: 0;text-align: left;
+}
+.step-dot {width: 42px;height: 42px;display: grid;place-items: center;border: 1px solid var(--ink-faint);border-radius: 50%;background: var(--cloud);color: var(--ink-muted);font-weight: 900;
+}
+.flow-step.is-active .step-dot {border-color: var(--indigo);background: var(--indigo);color: var(--cloud);
+}
+.flow-step div {border-radius: var(--radius-sm);padding: 12px 14px;
+}
+.flow-step.is-active div {background: var(--indigo-soft);
+}
+.flow-step h3 {font-size: 18px;
+}
+.flow-step p {margin-top: 4px;color: var(--ink-soft);font-size: 14px;font-weight: 600;
+}
+.form-card {padding: 24px;
+}
+.form-card h3 {font-size: 26px;
+}
+.form-grid {display: grid;grid-template-columns: 1fr 1fr;gap: 14px;margin-top: 20px;
+}
+.field {display: grid;gap: 7px;
+}
+.field-full {grid-column: 1 / -1;
+}
+.field label {color: var(--ink-soft);font-size: 13px;font-weight: 800;
+}
+.field input,.field select,.field textarea {width: 100%;border: 1px solid var(--ink-faint);border-radius: var(--radius-sm);background: var(--cloud);color: var(--ink);padding: 12px 13px;outline: 0;
+}
+.field textarea {min-height: 88px;resize: vertical;
+}
+.events-grid,.mentor-grid {display: grid;grid-template-columns: repeat(3, 1fr);gap: 16px;
+}
+.event-card,.mentor-card {border: 1px solid var(--ink-faint);border-radius: var(--radius-md);background: var(--cloud-strong);padding: 20px;box-shadow: var(--shadow-tight);
+}
+.event-date {width: 64px;min-height: 64px;display: grid;place-items: center;border-radius: var(--radius-sm);background: var(--ink);color: var(--cloud);font-family: var(--font-heading);font-weight: 800;line-height: 1.05;text-align: center;
+}
+.event-date span {display: block;color: var(--cyan);font-size: 13px;
+}
+.event-card h3,.mentor-card h3 {margin-top: 18px;font-size: 22px;
+}
+.event-card p,.mentor-card p {margin-top: 8px;color: var(--ink-soft);font-weight: 600;
+}
+.event-actions {display: flex;align-items: center;justify-content: space-between;gap: 12px;margin-top: 22px;
+}
+.event-type {border-radius: 999px;background: var(--coral-soft);color: var(--coral);padding: 7px 10px;font-size: 12px;font-weight: 900;
+}
+.mentor-avatar {width: 58px;height: 58px;display: grid;place-items: center;border-radius: 16px;background: var(--ink);color: var(--cloud);font-family: var(--font-heading);font-weight: 800;
+}
+.mentor-tags {display: flex;flex-wrap: wrap;gap: 8px;margin-top: 18px;
+}
+.mentor-tags span {border-radius: 999px;background: var(--lime-soft);color: var(--ink);padding: 7px 10px;font-size: 12px;font-weight: 900;
+}
+.site-footer {border-top: 1px solid var(--ink-faint);padding: 34px 0;
+}
+.footer-inner {width: min(1180px, calc(100% - 32px));margin: 0 auto;display: flex;align-items: center;justify-content: space-between;gap: 18px;color: var(--ink-muted);font-size: 14px;font-weight: 700;
+}
+:focus-visible {outline: 3px solid var(--cyan);outline-offset: 3px;
+}
+@media (max-width: 980px) {
+.nav-links,.nav-actions .button-primary {display: none;
+}
+.menu-button {display: inline-flex;
+}
+.hero-inner,.application-layout {grid-template-columns: 1fr;
+}
+.command-panel {max-width: 680px;
+}
+.program-grid,.portfolio-grid,.events-grid,.mentor-grid {grid-template-columns: repeat(2, 1fr);
+}
+}
+@media (max-width: 680px) {
+.hero {padding-top: 44px;
+}
+.hero-copy h1 {font-size: 42px;
+}
+.hero-actions,.section-head,.footer-inner {align-items: stretch;flex-direction: column;
+}
+.stats-strip,.program-grid,.portfolio-grid,.events-grid,.mentor-grid,.panel-grid,.mini-grid,.form-grid {grid-template-columns: 1fr;
+}
+.program-meta {grid-template-columns: 1fr;
+}
+.application-layout {gap: 16px;
+}
+.button {width: 100%;
+}
+}
+@media (prefers-reduced-motion: reduce) {
+*,*::before,*::after {scroll-behavior: auto !important;transition-duration: 0.01ms !important;animation-duration: 0.01ms !important;animation-iteration-count: 1 !important;
+}
+}
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="page-shell">
+    <header class="site-header">
+      <nav class="nav" aria-label="Main navigation">
+        <a class="brand" href="#top" aria-label="Forge Startup Studio home">
+          <span class="brand-mark" aria-hidden="true">F</span>
+          Forge
+        </a>
+        <div class="nav-links" aria-label="Primary">
+          <a href="#programs">Programs</a>
+          <a href="#portfolio">Portfolio</a>
+          <a href="#apply">Apply</a>
+          <a href="#events">Events</a>
+          <a href="#about">About</a>
+        </div>
+        <div class="nav-actions">
+          <a class="button button-primary" href="#apply">Apply Now</a>
+          <button class="menu-button" type="button" aria-label="Open menu" aria-controls="mobile-drawer" aria-expanded="false">
+            <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+              <path d="M3 5h14M3 10h14M3 15h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </nav>
+    </header>
+
+    <div class="drawer-overlay" data-close-drawer></div>
+    <aside class="drawer" id="mobile-drawer" aria-hidden="true" aria-label="Mobile navigation">
+      <div class="drawer-head">
+        <a class="brand" href="#top">
+          <span class="brand-mark" aria-hidden="true">F</span>
+          Forge
+        </a>
+        <button class="drawer-close" type="button" aria-label="Close menu" data-close-drawer>
+          <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
+            <path d="M5 5l10 10M15 5L5 15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <div class="drawer-links">
+        <a href="#programs">Programs</a>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#apply">Apply</a>
+        <a href="#events">Events</a>
+        <a href="#about">About</a>
+      </div>
+      <a class="button button-primary" href="#apply">Apply Now</a>
+    </aside>
+
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero-inner">
+          <div class="hero-copy">
+            <span class="eyebrow"><span class="live-dot" aria-hidden="true"></span>Spring cohort applications open</span>
+            <h1 id="hero-title">Accelerating startups from sharp thesis to <span>fundable scale.</span></h1>
+            <p>Forge Startup Studio gives founders capital, operators, customer access, and a measurable path from first traction to institutional growth.</p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#apply">Start Application</a>
+              <a class="button button-secondary" href="#portfolio">View Portfolio</a>
+            </div>
+            <div class="stats-strip" aria-label="Accelerator statistics">
+              <div class="stat-card">
+                <strong>186</strong>
+                <span>companies funded</span>
+              </div>
+              <div class="stat-card">
+                <strong>$940M</strong>
+                <span>total raised</span>
+              </div>
+              <div class="stat-card">
+                <strong>82%</strong>
+                <span>success rate</span>
+              </div>
+            </div>
+          </div>
+          <aside class="command-panel" aria-label="Live cohort command center">
+            <div class="panel-top">
+              <div class="window-controls" aria-hidden="true"><span></span><span></span><span></span></div>
+              <div class="panel-status"><span class="live-dot" aria-hidden="true"></span>Live cohort signal</div>
+            </div>
+            <div class="panel-grid">
+              <div class="panel-card">
+                <div class="panel-label">Current cohort</div>
+                <div class="cohort-number">42</div>
+                <p class="cohort-note">Teams moving through founder-market fit, customer validation, and partner introductions.</p>
+                <div class="mini-grid">
+                  <span><strong>19</strong>B2B SaaS</span>
+                  <span><strong>11</strong>Climate</span>
+                  <span><strong>12</strong>Health</span>
+                </div>
+              </div>
+              <div class="panel-card">
+                <div class="panel-label">Investment thesis</div>
+                <div class="thesis-list">
+                  <div class="thesis-item">AI workflow infrastructure <i aria-hidden="true"></i></div>
+                  <div class="thesis-item">Energy resilience platforms <i aria-hidden="true"></i></div>
+                  <div class="thesis-item">Clinical operating systems <i aria-hidden="true"></i></div>
+                </div>
+              </div>
+              <div class="panel-card">
+                <div class="panel-label">Founder route</div>
+                <div class="route-map">
+                  <div class="route-step"><b>1</b>Submit venture profile <span>4 min</span></div>
+                  <div class="route-step"><b>2</b>Partner screen <span>48h</span></div>
+                  <div class="route-step"><b>3</b>Investment council <span>1 wk</span></div>
+                </div>
+              </div>
+              <div class="panel-card">
+                <div class="panel-label">Program health</div>
+                <div class="cohort-number">96%</div>
+                <p class="cohort-note">Mentor coverage, founder momentum, and investor readiness are inside target bands.</p>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section" id="programs" aria-labelledby="programs-title">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Program overview</div>
+            <h2 id="programs-title">Three tracks for each startup altitude.</h2>
+          </div>
+          <p>Founders enter the track that matches their traction, capital needs, and operating pressure, then graduate with board-ready evidence.</p>
+        </div>
+        <div class="program-grid">
+          <article class="program-card">
+            <span class="track-tag">Seed</span>
+            <h3>Signal Sprint</h3>
+            <p>Validate a painful market wedge, tighten your pitch, and build a customer pipeline with senior operator support.</p>
+            <div class="program-meta">
+              <span><strong>8 wk</strong>Duration</span>
+              <span><strong>$150K</strong>Funding</span>
+              <span><strong>22</strong>Mentors</span>
+            </div>
+          </article>
+          <article class="program-card">
+            <span class="track-tag">Growth</span>
+            <h3>Revenue Lab</h3>
+            <p>Install repeatable sales motion, refine pricing, and prepare a crisp growth narrative for top-tier investors.</p>
+            <div class="program-meta">
+              <span><strong>12 wk</strong>Duration</span>
+              <span><strong>$500K</strong>Funding</span>
+              <span><strong>38</strong>Mentors</span>
+            </div>
+          </article>
+          <article class="program-card">
+            <span class="track-tag">Scale</span>
+            <h3>Board Room</h3>
+            <p>Strengthen leadership cadence, enterprise readiness, finance systems, and strategic partnerships before a major round.</p>
+            <div class="program-meta">
+              <span><strong>16 wk</strong>Duration</span>
+              <span><strong>$1.2M</strong>Funding</span>
+              <span><strong>54</strong>Mentors</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="portfolio-band" id="portfolio" aria-labelledby="portfolio-title">
+        <div class="section">
+          <div class="section-head">
+            <div>
+              <div class="section-kicker">Portfolio showcase</div>
+              <h2 id="portfolio-title">Companies building durable categories.</h2>
+            </div>
+            <p>Forge alumni move fast, report cleanly, and turn advisory hours into measurable revenue and product velocity.</p>
+          </div>
+          <div class="portfolio-grid">
+            <article class="startup-card">
+              <div>
+                <div class="card-row"><span class="tag">Climate</span><span class="badge">Series A</span></div>
+                <h3>Volt Ledger</h3>
+                <p>Grid analytics for industrial energy teams balancing resilience, cost, and compliance in real time.</p>
+              </div>
+            </article>
+            <article class="startup-card">
+              <div>
+                <div class="card-row"><span class="tag">Health AI</span><span class="badge">Seed</span></div>
+                <h3>Clinova</h3>
+                <p>Clinical workflow intelligence that reduces care-team admin and surfaces patient risk earlier.</p>
+              </div>
+            </article>
+            <article class="startup-card">
+              <div>
+                <div class="card-row"><span class="tag">FinOps</span><span class="badge">Growth</span></div>
+                <h3>Marginbase</h3>
+                <p>Cloud spend governance for finance and engineering leaders with automated commitment planning.</p>
+              </div>
+            </article>
+            <article class="startup-card">
+              <div>
+                <div class="card-row"><span class="tag">Security</span><span class="badge">Series B</span></div>
+                <h3>Keyrail</h3>
+                <p>Identity posture platform that maps access drift across apps, data stores, and privileged workflows.</p>
+              </div>
+            </article>
+            <article class="startup-card">
+              <div>
+                <div class="card-row"><span class="tag">Mobility</span><span class="badge">Seed</span></div>
+                <h3>Routekind</h3>
+                <p>Fleet orchestration software for regional delivery teams improving utilization and driver reliability.</p>
+              </div>
+            </article>
+            <article class="startup-card">
+              <div>
+                <div class="card-row"><span class="tag">Developer Tools</span><span class="badge">Growth</span></div>
+                <h3>Patchplane</h3>
+                <p>Release intelligence for platform teams tracking risk, ownership, and incident patterns before launch.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="apply" aria-labelledby="apply-title">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Application flow</div>
+            <h2 id="apply-title">A focused three-step founder review.</h2>
+          </div>
+          <p>The preview below mirrors the intake experience founders use before partner screening and investment council review.</p>
+        </div>
+        <div class="application-layout">
+          <div class="flow-panel" aria-label="Application progress">
+            <div class="progress-line">
+              <button class="flow-step is-active" type="button" data-step="venture">
+                <span class="step-dot">1</span>
+                <div>
+                  <h3>Venture profile</h3>
+                  <p>Share the market, team, stage, and traction signal that makes the company worth studying.</p>
+                </div>
+              </button>
+              <button class="flow-step" type="button" data-step="traction">
+                <span class="step-dot">2</span>
+                <div>
+                  <h3>Traction evidence</h3>
+                  <p>Attach revenue, pipeline, retention, or usage proof so reviewers can calibrate momentum.</p>
+                </div>
+              </button>
+              <button class="flow-step" type="button" data-step="council">
+                <span class="step-dot">3</span>
+                <div>
+                  <h3>Council review</h3>
+                  <p>Selected teams meet partners, mentors, and investor guests for a high-context decision.</p>
+                </div>
+              </button>
+            </div>
+          </div>
+          <form class="form-card" aria-label="Application preview">
+            <h3 id="form-title">Venture profile</h3>
+            <p id="form-help" class="cohort-note">Start with the core company details so Forge can route your application to the right track.</p>
+            <div class="form-grid">
+              <div class="field">
+                <label for="company">Company name</label>
+                <input id="company" name="company" value="North Pier AI">
+              </div>
+              <div class="field">
+                <label for="stage">Stage</label>
+                <select id="stage" name="stage">
+                  <option>Seed</option>
+                  <option>Growth</option>
+                  <option>Scale</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="sector">Sector</label>
+                <input id="sector" name="sector" value="AI workflow infrastructure">
+              </div>
+              <div class="field">
+                <label for="round">Target round</label>
+                <input id="round" name="round" value="$2.5M">
+              </div>
+              <div class="field field-full">
+                <label for="summary">Founder thesis</label>
+                <textarea id="summary" name="summary">We automate audit-heavy operational decisions for mid-market finance teams using human-reviewed AI playbooks.</textarea>
+              </div>
+            </div>
+            <div class="hero-actions">
+              <button class="button button-primary" type="button">Continue Preview</button>
+              <button class="button button-secondary" type="button">Save Draft</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <section class="section" id="events" aria-labelledby="events-title">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Upcoming events</div>
+            <h2 id="events-title">Rooms where founders meet unfair advantage.</h2>
+          </div>
+          <p>Events pair practical operating depth with investor access, customer discovery, and founder-to-founder trust.</p>
+        </div>
+        <div class="events-grid">
+          <article class="event-card">
+            <div class="event-date">14<span>JUN</span></div>
+            <h3>Spring Demo Day</h3>
+            <p>Twelve cohort companies pitch customers, angels, and institutional investors in one curated session.</p>
+            <div class="event-actions"><span class="event-type">Demo Day</span><button class="button button-dark" type="button">RSVP</button></div>
+          </article>
+          <article class="event-card">
+            <div class="event-date">21<span>JUN</span></div>
+            <h3>Pricing Pressure Lab</h3>
+            <p>Operators unpack packaging, sales friction, and expansion triggers for companies selling to teams.</p>
+            <div class="event-actions"><span class="event-type">Workshop</span><button class="button button-dark" type="button">RSVP</button></div>
+          </article>
+          <article class="event-card">
+            <div class="event-date">02<span>JUL</span></div>
+            <h3>Partner Office Hours</h3>
+            <p>Mentors review hiring plans, enterprise pilots, and investor narratives with selected founders.</p>
+            <div class="event-actions"><span class="event-type">Mentor Session</span><button class="button button-dark" type="button">RSVP</button></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="about" aria-labelledby="mentors-title">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Mentor network</div>
+            <h2 id="mentors-title">Operators who have scaled the hard parts.</h2>
+          </div>
+          <p>Every mentor is mapped to a founder need: product velocity, enterprise sales, capital strategy, hiring, or category creation.</p>
+        </div>
+        <div class="mentor-grid">
+          <article class="mentor-card">
+            <div class="mentor-avatar" aria-hidden="true">AR</div>
+            <h3>Amara Reid</h3>
+            <p>Former VP Product at HelioStack</p>
+            <div class="mentor-tags"><span>AI Product</span><span>Roadmaps</span></div>
+          </article>
+          <article class="mentor-card">
+            <div class="mentor-avatar" aria-hidden="true">MK</div>
+            <h3>Mateo Kim</h3>
+            <p>Partner at Northline Ventures</p>
+            <div class="mentor-tags"><span>Fundraising</span><span>Board Prep</span></div>
+          </article>
+          <article class="mentor-card">
+            <div class="mentor-avatar" aria-hidden="true">LS</div>
+            <h3>Lena Shah</h3>
+            <p>Revenue leader at Cloudlane</p>
+            <div class="mentor-tags"><span>Enterprise Sales</span><span>Pricing</span></div>
+          </article>
+          <article class="mentor-card">
+            <div class="mentor-avatar" aria-hidden="true">OD</div>
+            <h3>Owen Duarte</h3>
+            <p>Founder of Gridwise Labs</p>
+            <div class="mentor-tags"><span>Climate Tech</span><span>Hardware</span></div>
+          </article>
+          <article class="mentor-card">
+            <div class="mentor-avatar" aria-hidden="true">NP</div>
+            <h3>Nia Park</h3>
+            <p>People architect at ScaleFoundry</p>
+            <div class="mentor-tags"><span>Hiring</span><span>Culture</span></div>
+          </article>
+          <article class="mentor-card">
+            <div class="mentor-avatar" aria-hidden="true">JB</div>
+            <h3>Jon Bell</h3>
+            <p>Security advisor at Keyrail</p>
+            <div class="mentor-tags"><span>Compliance</span><span>Trust</span></div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-inner">
+        <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">F</span>Forge</a>
+        <p>Forge Startup Studio — designed by Northstar Studio.</p>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+const body = document.body;
+const menuButton = document.querySelector(".menu-button");
+const drawer = document.querySelector(".drawer");
+const closeTargets = document.querySelectorAll("[data-close-drawer]");
+const drawerLinks = document.querySelectorAll(".drawer a");
+let previousFocus = null;
+
+function openDrawer() {
+  previousFocus = document.activeElement;
+  body.classList.add("drawer-open");
+  menuButton.setAttribute("aria-expanded", "true");
+  drawer.setAttribute("aria-hidden", "false");
+  const firstLink = drawer.querySelector("a, button");
+  if (firstLink) firstLink.focus();
+}
+
+function closeDrawer() {
+  body.classList.remove("drawer-open");
+  menuButton.setAttribute("aria-expanded", "false");
+  drawer.setAttribute("aria-hidden", "true");
+  if (previousFocus) previousFocus.focus();
+}
+
+menuButton.addEventListener("click", openDrawer);
+closeTargets.forEach((target) => target.addEventListener("click", closeDrawer));
+drawerLinks.forEach((link) => link.addEventListener("click", closeDrawer));
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && body.classList.contains("drawer-open")) closeDrawer();
+});
+
+const flowSteps = document.querySelectorAll(".flow-step");
+const formTitle = document.getElementById("form-title");
+const formHelp = document.getElementById("form-help");
+const stepCopy = {
+  venture: ["Venture profile", "Start with the core company details so Forge can route your application to the right track."],
+  traction: ["Traction evidence", "Show customer proof, commercial momentum, and retention signals reviewers can compare."],
+  council: ["Council review", "Prepare the partner notes, investor questions, and next-step agenda for final selection."]
+};
+
+flowSteps.forEach((step) => {
+  step.addEventListener("click", () => {
+    flowSteps.forEach((item) => item.classList.remove("is-active"));
+    step.classList.add("is-active");
+    const copy = stepCopy[step.dataset.step];
+    formTitle.textContent = copy[0];
+    formHelp.textContent = copy[1];
+  });
+});
+  </script>
+</body>
+</html>
