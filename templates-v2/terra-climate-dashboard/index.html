@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Terra Climate Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --cloud: #F6F8FC; --ink: #19212B; --indigo: #4F46E5; --cyan: #06B6D4; --lime: #A3E635; --coral: #FB7185; --cloud-strong: rgba(246, 248, 252, 0.94); --cloud-soft: rgba(246, 248, 252, 0.72); --ink-90: rgba(25, 33, 43, 0.9); --ink-72: rgba(25, 33, 43, 0.72); --ink-58: rgba(25, 33, 43, 0.58); --ink-42: rgba(25, 33, 43, 0.42); --ink-16: rgba(25, 33, 43, 0.16); --ink-10: rgba(25, 33, 43, 0.1); --ink-06: rgba(25, 33, 43, 0.06); --indigo-soft: rgba(79, 70, 229, 0.12); --indigo-line: rgba(79, 70, 229, 0.28); --cyan-soft: rgba(6, 182, 212, 0.12); --cyan-line: rgba(6, 182, 212, 0.3); --lime-soft: rgba(163, 230, 53, 0.22); --lime-line: rgba(163, 230, 53, 0.5); --coral-soft: rgba(251, 113, 133, 0.14); --coral-line: rgba(251, 113, 133, 0.35); --shadow: 0 24px 70px rgba(25, 33, 43, 0.12); --panel: rgba(246, 248, 252, 0.86); --radius: 8px; --max: 1440px; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; min-height: 100vh; background: linear-gradient(135deg, rgba(6, 182, 212, 0.08), transparent 30%), linear-gradient(225deg, rgba(79, 70, 229, 0.08), transparent 34%), var(--cloud); color: var(--ink); font-family: "Inter", system-ui, sans-serif; letter-spacing: 0; }
+    body.drawer-open { overflow: hidden; }
+    a { color: inherit; text-decoration: none; }
+    button, input { font: inherit; }
+    button { border: 0; cursor: pointer; }
+    :focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
+    .page-shell { width: min(100%, var(--max)); margin: 0 auto; padding: 18px; }
+    .topbar { position: sticky; top: 0; z-index: 30; border-bottom: 1px solid var(--ink-10); background: rgba(246, 248, 252, 0.84); backdrop-filter: blur(18px); }
+    .nav-inner { width: min(100%, var(--max)); margin: 0 auto; padding: 14px 18px; display: grid; grid-template-columns: auto 1fr auto auto; gap: 18px; align-items: center; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; font-family: "Manrope", system-ui, sans-serif; font-weight: 800; letter-spacing: 0; color: var(--ink); white-space: nowrap; }
+    .brand-mark { width: 38px; height: 38px; border-radius: 8px; display: grid; place-items: center; background: var(--ink); color: var(--lime); box-shadow: inset 0 0 0 1px rgba(246, 248, 252, 0.18); }
+    .brand-mark svg { width: 23px; height: 23px; }
+    .nav-links { display: flex; justify-content: center; gap: 6px; align-items: center; }
+    .nav-links a { padding: 10px 12px; border-radius: 8px; color: var(--ink-72); font-size: 14px; font-weight: 700; }
+    .nav-links a:hover { color: var(--ink); background: var(--ink-06); }
+    .search-box { width: min(320px, 28vw); display: flex; align-items: center; gap: 8px; border: 1px solid var(--ink-10); border-radius: 8px; padding: 10px 12px; background: var(--cloud-strong); color: var(--ink-58); }
+    .search-box svg { width: 16px; height: 16px; flex: 0 0 auto; }
+    .search-box input { width: 100%; border: 0; outline: 0; background: transparent; color: var(--ink); min-width: 0; }
+    .nav-actions { display: flex; align-items: center; gap: 8px; }
+    .icon-button { position: relative; width: 42px; height: 42px; border-radius: 8px; display: grid; place-items: center; background: var(--cloud-strong); color: var(--ink); border: 1px solid var(--ink-10); }
+    .icon-button svg { width: 19px; height: 19px; }
+    .alert-dot { position: absolute; top: 7px; right: 7px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 999px; display: grid; place-items: center; background: var(--coral); color: var(--cloud); font-size: 10px; font-weight: 800; border: 2px solid var(--cloud); }
+    .menu-button { display: none; }
+    .drawer-backdrop { position: fixed; inset: 0; z-index: 40; background: rgba(25, 33, 43, 0.42); opacity: 0; pointer-events: none; transition: opacity 220ms ease; }
+    .drawer-backdrop.is-visible { opacity: 1; pointer-events: auto; }
+    .mobile-drawer { position: fixed; top: 0; right: 0; z-index: 50; width: min(86vw, 360px); height: 100vh; padding: 18px; background: var(--cloud); box-shadow: -24px 0 60px rgba(25, 33, 43, 0.2); transform: translateX(105%); transition: transform 240ms ease; display: flex; flex-direction: column; gap: 18px; }
+    .mobile-drawer.is-open { transform: translateX(0); }
+    .drawer-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+    .drawer-links { display: grid; gap: 8px; }
+    .drawer-links a { padding: 14px 12px; border-radius: 8px; border: 1px solid var(--ink-10); background: var(--cloud-strong); font-weight: 800; color: var(--ink-90); }
+    .drawer-search { width: 100%; }
+    .hero { padding: 38px 0 18px; display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(340px, 0.88fr); gap: 18px; align-items: stretch; }
+    .hero-panel { min-height: 360px; border-radius: 8px; padding: 30px; color: var(--cloud); background: linear-gradient(135deg, rgba(6, 182, 212, 0.22), transparent 46%), linear-gradient(225deg, rgba(79, 70, 229, 0.26), transparent 50%), var(--ink); box-shadow: var(--shadow); display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; position: relative; }
+    .hero-panel::after { content: ""; position: absolute; inset: 18px 18px auto auto; width: 190px; height: 190px; border: 1px solid rgba(246, 248, 252, 0.16); border-radius: 50%; background: radial-gradient(circle, rgba(163, 230, 53, 0.28) 0 24%, transparent 25% 34%, rgba(6, 182, 212, 0.18) 35% 48%, transparent 49% 100%); opacity: 0.8; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; width: fit-content; padding: 8px 10px; border-radius: 8px; background: rgba(246, 248, 252, 0.1); color: var(--lime); font-size: 12px; font-weight: 800; text-transform: uppercase; }
+    .live-pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 0 6px rgba(6, 182, 212, 0.18); }
+    .hero-copy { position: relative; z-index: 1; max-width: 760px; }
+    h1, h2, h3 { font-family: "Manrope", system-ui, sans-serif; letter-spacing: 0; margin: 0; color: inherit; }
+    h1 { margin-top: 22px; font-size: clamp(42px, 6vw, 78px); line-height: 0.96; max-width: 820px; }
+    .hero-copy p { margin: 18px 0 0; max-width: 650px; color: rgba(246, 248, 252, 0.78); font-size: 17px; line-height: 1.7; }
+    .hero-actions { margin-top: 28px; display: flex; gap: 10px; flex-wrap: wrap; }
+    .button { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid transparent; font-weight: 800; font-size: 14px; }
+    .button-primary { background: var(--lime); color: var(--ink); }
+    .button-secondary { color: var(--cloud); border-color: rgba(246, 248, 252, 0.2); background: rgba(246, 248, 252, 0.08); }
+    .hero-meta { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; border: 1px solid rgba(246, 248, 252, 0.14); border-radius: 8px; overflow: hidden; background: rgba(246, 248, 252, 0.12); }
+    .hero-meta div { padding: 16px; background: rgba(25, 33, 43, 0.28); }
+    .hero-meta span { display: block; color: rgba(246, 248, 252, 0.58); font-size: 12px; font-weight: 700; }
+    .hero-meta strong { display: block; margin-top: 6px; color: var(--cloud); font-size: 18px; font-weight: 800; }
+    .assurance-panel { border-radius: 8px; padding: 22px; background: var(--panel); border: 1px solid var(--ink-10); box-shadow: 0 18px 48px rgba(25, 33, 43, 0.08); display: grid; gap: 16px; }
+    .assurance-head { display: flex; justify-content: space-between; gap: 14px; align-items: flex-start; }
+    .assurance-head p { margin: 6px 0 0; color: var(--ink-58); line-height: 1.5; font-size: 14px; }
+    .status-pill { display: inline-flex; align-items: center; gap: 7px; min-height: 30px; padding: 0 10px; border-radius: 999px; background: var(--lime-soft); color: var(--ink); font-size: 12px; font-weight: 800; white-space: nowrap; }
+    .status-pill::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--lime); }
+    .assurance-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .assurance-card { border-radius: 8px; padding: 16px; border: 1px solid var(--ink-10); background: var(--cloud-strong); }
+    .assurance-card span { color: var(--ink-58); font-size: 12px; font-weight: 800; text-transform: uppercase; }
+    .assurance-card strong { display: block; margin-top: 8px; font-size: 24px; color: var(--ink); }
+    .audit-timeline { display: grid; gap: 11px; margin-top: 2px; }
+    .audit-item { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 12px; border: 1px solid var(--ink-10); border-radius: 8px; background: rgba(246, 248, 252, 0.72); }
+    .audit-icon { width: 32px; height: 32px; border-radius: 8px; display: grid; place-items: center; background: var(--cyan-soft); color: var(--cyan); font-weight: 900; }
+    .audit-item strong { display: block; font-size: 13px; }
+    .audit-item span { color: var(--ink-58); font-size: 12px; }
+    .audit-item time { color: var(--ink-42); font-size: 12px; font-weight: 800; }
+    .kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 10px 0 18px; }
+    .kpi-card { border-radius: 8px; padding: 18px; background: var(--cloud-strong); border: 1px solid var(--ink-10); box-shadow: 0 14px 40px rgba(25, 33, 43, 0.06); }
+    .kpi-label { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: var(--ink-58); font-size: 12px; font-weight: 800; text-transform: uppercase; }
+    .kpi-value { margin-top: 16px; display: flex; align-items: baseline; gap: 7px; }
+    .kpi-value strong { font-size: 30px; line-height: 1; color: var(--ink); }
+    .kpi-value span { color: var(--ink-58); font-weight: 700; font-size: 13px; }
+    .delta { display: inline-flex; align-items: center; gap: 4px; margin-top: 14px; padding: 6px 8px; border-radius: 999px; font-size: 12px; font-weight: 800; }
+    .delta.good { background: var(--lime-soft); color: var(--ink); }
+    .delta.watch { background: var(--coral-soft); color: var(--ink); }
+    .delta.live { background: var(--cyan-soft); color: var(--ink); }
+    main { display: grid; gap: 18px; }
+    .section-grid { display: grid; grid-template-columns: minmax(0, 0.82fr) minmax(0, 1.18fr); gap: 18px; align-items: stretch; }
+    .wide-grid { display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 18px; align-items: stretch; }
+    .panel { border-radius: 8px; padding: 22px; background: var(--panel); border: 1px solid var(--ink-10); box-shadow: 0 18px 48px rgba(25, 33, 43, 0.07); }
+    .section-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
+    .section-title span { display: block; margin-bottom: 6px; color: var(--indigo); font-size: 12px; font-weight: 900; text-transform: uppercase; }
+    .section-title h2 { font-size: 24px; line-height: 1.12; }
+    .section-note { max-width: 320px; margin: 0; color: var(--ink-58); font-size: 14px; line-height: 1.55; }
+    .donut-layout { display: grid; grid-template-columns: 240px 1fr; gap: 22px; align-items: center; }
+    .donut { width: 240px; aspect-ratio: 1; border-radius: 50%; background: conic-gradient( var(--indigo) 0 26%, var(--cyan) 26% 47%, var(--coral) 47% 100% ); display: grid; place-items: center; box-shadow: inset 0 0 0 1px rgba(25, 33, 43, 0.05), 0 20px 48px rgba(25, 33, 43, 0.1); }
+    .donut-core { width: 61%; aspect-ratio: 1; border-radius: 50%; background: var(--cloud); display: grid; place-items: center; text-align: center; padding: 18px; border: 1px solid var(--ink-10); }
+    .donut-core strong { display: block; font-size: 25px; color: var(--ink); }
+    .donut-core span { display: block; margin-top: 4px; color: var(--ink-58); font-size: 12px; font-weight: 800; }
+    .legend { display: grid; gap: 12px; }
+    .legend-item { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; padding: 13px; border-radius: 8px; background: var(--cloud-soft); border: 1px solid var(--ink-10); }
+    .legend-swatch { width: 12px; height: 12px; border-radius: 3px; }
+    .swatch-indigo { background: var(--indigo); }
+    .swatch-cyan { background: var(--cyan); }
+    .swatch-coral { background: var(--coral); }
+    .legend-copy strong { display: block; font-size: 14px; }
+    .legend-copy span { color: var(--ink-58); font-size: 12px; }
+    .legend-item b { font-size: 18px; }
+    .trend-panel { min-height: 406px; }
+    .chart-area { position: relative; min-height: 286px; padding: 24px 8px 0; border-left: 1px solid var(--ink-10); border-bottom: 1px solid var(--ink-10); background: linear-gradient(to top, var(--ink-06) 1px, transparent 1px) 0 0 / 100% 25%; }
+    .target-line { position: absolute; left: 0; right: 0; top: 38%; border-top: 2px dashed var(--coral); }
+    .target-line span { position: absolute; right: 10px; top: -26px; padding: 5px 8px; border-radius: 999px; background: var(--coral-soft); color: var(--ink); font-size: 11px; font-weight: 900; }
+    .bars { position: relative; z-index: 1; height: 250px; display: grid; grid-template-columns: repeat(12, 1fr); gap: 8px; align-items: end; }
+    .bar-wrap { min-width: 0; display: grid; gap: 8px; justify-items: center; align-items: end; }
+    .bar { width: 100%; max-width: 38px; border-radius: 6px 6px 0 0; background: linear-gradient(180deg, var(--indigo), var(--cyan)); border: 1px solid rgba(246, 248, 252, 0.72); min-height: 30px; }
+    .bar-wrap:nth-child(1) .bar { height: 78%; } .bar-wrap:nth-child(2) .bar { height: 74%; } .bar-wrap:nth-child(3) .bar { height: 70%; } .bar-wrap:nth-child(4) .bar { height: 64%; } .bar-wrap:nth-child(5) .bar { height: 62%; } .bar-wrap:nth-child(6) .bar { height: 59%; } .bar-wrap:nth-child(7) .bar { height: 55%; } .bar-wrap:nth-child(8) .bar { height: 52%; } .bar-wrap:nth-child(9) .bar { height: 48%; } .bar-wrap:nth-child(10) .bar { height: 45%; } .bar-wrap:nth-child(11) .bar { height: 42%; } .bar-wrap:nth-child(12) .bar { height: 39%; } .bar-label { color: var(--ink-58); font-size: 11px; font-weight: 800; }
+    .source-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .source-card { min-height: 210px; padding: 18px; border-radius: 8px; border: 1px solid var(--ink-10); background: var(--cloud-strong); display: flex; flex-direction: column; justify-content: space-between; gap: 16px; }
+    .source-icon { width: 42px; height: 42px; border-radius: 8px; display: grid; place-items: center; background: var(--indigo-soft); color: var(--indigo); }
+    .source-icon svg { width: 22px; height: 22px; }
+    .source-card h3 { margin-top: 14px; font-size: 18px; }
+    .source-card p { margin: 6px 0 0; color: var(--ink-58); font-size: 13px; line-height: 1.5; }
+    .source-metric { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; border-top: 1px solid var(--ink-10); padding-top: 14px; }
+    .source-metric strong { font-size: 24px; }
+    .source-metric span { color: var(--ink-58); font-size: 12px; font-weight: 800; }
+    .offset-list { display: grid; gap: 12px; }
+    .offset-item { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; padding: 16px; border-radius: 8px; border: 1px solid var(--ink-10); background: var(--cloud-strong); }
+    .offset-item h3 { font-size: 17px; }
+    .offset-item p { margin: 6px 0 0; color: var(--ink-58); line-height: 1.5; font-size: 13px; }
+    .offset-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .tag { display: inline-flex; align-items: center; min-height: 26px; padding: 0 8px; border-radius: 999px; background: var(--cyan-soft); color: var(--ink); font-size: 12px; font-weight: 800; }
+    .tag.verified { background: var(--lime-soft); }
+    .tag.critical { background: var(--coral-soft); }
+    .offset-number { min-width: 112px; text-align: right; }
+    .offset-number strong { display: block; font-size: 24px; }
+    .offset-number span { display: block; margin-top: 4px; color: var(--ink-58); font-size: 12px; font-weight: 800; }
+    .target-list { display: grid; gap: 16px; }
+    .target-item { display: grid; gap: 10px; padding: 16px; border: 1px solid var(--ink-10); border-radius: 8px; background: var(--cloud-strong); }
+    .target-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    .target-row strong { font-size: 15px; }
+    .target-row span { color: var(--ink-58); font-size: 13px; font-weight: 800; text-align: right; }
+    .progress-track { height: 12px; border-radius: 999px; background: var(--ink-10); overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--indigo), var(--cyan), var(--lime)); }
+    .progress-fill.net-zero { width: 68%; }
+    .progress-fill.renewable { width: 74%; }
+    .progress-fill.waste { width: 57%; }
+    .progress-fill.supplier { width: 81%; }
+    .report-band { display: grid; grid-template-columns: 1fr auto; gap: 18px; align-items: center; padding: 24px; border-radius: 8px; background: var(--ink); color: var(--cloud); overflow: hidden; position: relative; }
+    .report-band::after { content: ""; position: absolute; right: 22px; top: -26px; width: 150px; height: 150px; border-radius: 50%; border: 1px solid rgba(163, 230, 53, 0.32); background: rgba(6, 182, 212, 0.12); }
+    .report-band h2 { font-size: 26px; max-width: 720px; }
+    .report-band p { margin: 8px 0 0; max-width: 760px; color: rgba(246, 248, 252, 0.68); line-height: 1.6; }
+    .report-actions { position: relative; z-index: 1; display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+    .site-footer { margin-top: 18px; padding: 24px 0 10px; color: var(--ink-58); font-size: 14px; text-align: center; }
+    @media (max-width: 1120px) {
+      .nav-links { display: none; }
+      .nav-inner { grid-template-columns: auto 1fr auto; }
+      .menu-button { display: grid; }
+      .hero, .section-grid, .wide-grid { grid-template-columns: 1fr; }
+      .kpi-strip, .source-grid { grid-template-columns: repeat(2, 1fr); }
+      .search-box { width: min(360px, 100%); justify-self: end; }
+    }
+    @media (max-width: 720px) {
+      .page-shell { padding: 12px; }
+      .nav-inner { padding: 12px; gap: 10px; }
+      .topbar .search-box { display: none; }
+      .hero { padding-top: 20px; }
+      .hero-panel { min-height: auto; padding: 22px; }
+      h1 { font-size: 42px; }
+      .hero-meta, .kpi-strip, .source-grid, .assurance-grid { grid-template-columns: 1fr; }
+      .donut-layout { grid-template-columns: 1fr; justify-items: center; }
+      .donut { width: min(240px, 72vw); }
+      .section-head, .report-band, .offset-item { grid-template-columns: 1fr; }
+      .section-head { display: grid; }
+      .offset-number { text-align: left; }
+      .bars { gap: 4px; }
+      .bar-label { font-size: 10px; }
+      .report-actions { justify-content: flex-start; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <nav class="nav-inner" aria-label="Primary navigation">
+      <a class="brand" href="#overview" aria-label="Terra Climate Dashboard home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 3c4.5 2.8 7 6.2 7 10.1A7 7 0 0 1 5 13.1C5 9.2 7.5 5.8 12 3Z"></path>
+            <path d="M12 7v10"></path>
+            <path d="M8.5 13.5c2.1-.1 4.4-1.2 7-3.4"></path>
+          </svg>
+        </span>
+        <span>Terra</span>
+      </a>
+      <div class="nav-links">
+        <a href="#overview">Overview</a>
+        <a href="#emissions">Emissions</a>
+        <a href="#targets">Targets</a>
+        <a href="#reports">Reports</a>
+        <a href="#settings">Settings</a>
+      </div>
+      <label class="search-box" for="site-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="11" cy="11" r="7"></circle>
+          <path d="m20 20-3.2-3.2"></path>
+        </svg>
+        <input id="site-search" type="search" aria-label="Search facilities, reports, and sources">
+      </label>
+      <div class="nav-actions">
+        <button class="icon-button" type="button" aria-label="Open notifications">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path>
+            <path d="M13.7 21a2 2 0 0 1-3.4 0"></path>
+          </svg>
+          <span class="alert-dot">3</span>
+        </button>
+        <button class="icon-button menu-button" id="menuButton" type="button" aria-label="Open navigation menu" aria-controls="mobileDrawer" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M4 7h16"></path>
+            <path d="M4 12h16"></path>
+            <path d="M4 17h16"></path>
+          </svg>
+        </button>
+      </div>
+    </nav>
+  </header>
+
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+  <aside class="mobile-drawer" id="mobileDrawer" aria-hidden="true" aria-label="Mobile navigation">
+    <div class="drawer-head">
+      <a class="brand" href="#overview">
+        <span class="brand-mark" aria-hidden="true">T</span>
+        <span>Terra</span>
+      </a>
+      <button class="icon-button" id="closeDrawer" type="button" aria-label="Close navigation menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M18 6 6 18"></path>
+          <path d="m6 6 12 12"></path>
+        </svg>
+      </button>
+    </div>
+    <label class="search-box drawer-search" for="drawerSearch">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <circle cx="11" cy="11" r="7"></circle>
+        <path d="m20 20-3.2-3.2"></path>
+      </svg>
+      <input id="drawerSearch" type="search" aria-label="Search dashboard from drawer">
+    </label>
+    <div class="drawer-links">
+      <a href="#overview">Overview</a>
+      <a href="#emissions">Emissions</a>
+      <a href="#targets">Targets</a>
+      <a href="#reports">Reports</a>
+      <a href="#settings">Settings</a>
+    </div>
+  </aside>
+
+  <div class="page-shell">
+    <main id="overview">
+      <section class="hero" aria-labelledby="page-title">
+        <div class="hero-panel">
+          <div class="hero-copy">
+            <span class="eyebrow"><span class="live-pulse"></span>Live ESG reporting</span>
+            <h1 id="page-title">Enterprise carbon intelligence without spreadsheet drift.</h1>
+            <p>Track Scope 1, 2, and 3 emissions, audit carbon offsets, and keep board-ready sustainability reports aligned across regions, suppliers, and facilities.</p>
+            <div class="hero-actions">
+              <a class="button button-primary" href="#reports">Generate report</a>
+              <a class="button button-secondary" href="#emissions">Review emissions</a>
+            </div>
+          </div>
+          <div class="hero-meta" aria-label="Reporting coverage">
+            <div>
+              <span>Facilities covered</span>
+              <strong>184</strong>
+            </div>
+            <div>
+              <span>Supplier feeds</span>
+              <strong>2,940</strong>
+            </div>
+            <div>
+              <span>Audit readiness</span>
+              <strong>96%</strong>
+            </div>
+          </div>
+        </div>
+
+        <aside class="assurance-panel" aria-labelledby="assurance-title">
+          <div class="assurance-head">
+            <div>
+              <h2 id="assurance-title">Assurance cockpit</h2>
+              <p>Data quality, verification status, and reporting readiness for the current ESG close.</p>
+            </div>
+            <span class="status-pill">Verified</span>
+          </div>
+          <div class="assurance-grid">
+            <div class="assurance-card">
+              <span>Open anomalies</span>
+              <strong>12</strong>
+            </div>
+            <div class="assurance-card">
+              <span>Evidence files</span>
+              <strong>8.7k</strong>
+            </div>
+            <div class="assurance-card">
+              <span>Regions synced</span>
+              <strong>31</strong>
+            </div>
+            <div class="assurance-card">
+              <span>Next close</span>
+              <strong>6d</strong>
+            </div>
+          </div>
+          <div class="audit-timeline">
+            <div class="audit-item">
+              <span class="audit-icon">1</span>
+              <div>
+                <strong>EU CSRD pack reconciled</strong>
+                <span>Finance evidence matched to emission factors</span>
+              </div>
+              <time datetime="2026-05-27">Today</time>
+            </div>
+            <div class="audit-item">
+              <span class="audit-icon">2</span>
+              <div>
+                <strong>Supplier factor drift flagged</strong>
+                <span>Transport vendor needs fresh certificate</span>
+              </div>
+              <time datetime="2026-05-26">Tue</time>
+            </div>
+            <div class="audit-item">
+              <span class="audit-icon">3</span>
+              <div>
+                <strong>Offset registry synced</strong>
+                <span>VCS and Gold Standard ledgers aligned</span>
+              </div>
+              <time datetime="2026-05-24">Sun</time>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="kpi-strip" aria-label="Climate performance indicators">
+        <article class="kpi-card">
+          <div class="kpi-label">
+            <span>Total CO2e this month</span>
+          </div>
+          <div class="kpi-value">
+            <strong>42.8k</strong>
+            <span>tCO2e</span>
+          </div>
+          <span class="delta good">↓ 8.4% vs April</span>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-label">
+            <span>Offset coverage</span>
+          </div>
+          <div class="kpi-value">
+            <strong>37%</strong>
+            <span>retired</span>
+          </div>
+          <span class="delta live">+4.1 pts secured</span>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-label">
+            <span>Target progress</span>
+          </div>
+          <div class="kpi-value">
+            <strong>68%</strong>
+            <span>toward 2030</span>
+          </div>
+          <span class="delta good">On pathway</span>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-label">
+            <span>ESG score</span>
+          </div>
+          <div class="kpi-value">
+            <strong>91</strong>
+            <span>/100</span>
+          </div>
+          <span class="delta watch">2 risks active</span>
+        </article>
+      </section>
+
+      <section class="section-grid" id="emissions" aria-label="Emissions analytics">
+        <article class="panel">
+          <div class="section-head">
+            <div class="section-title">
+              <span>Breakdown</span>
+              <h2>Emissions by scope</h2>
+            </div>
+          </div>
+          <div class="donut-layout">
+            <div class="donut" aria-label="Scope 1 26 percent, Scope 2 21 percent, Scope 3 53 percent">
+              <div class="donut-core">
+                <strong>42.8k</strong>
+                <span>tCO2e total</span>
+              </div>
+            </div>
+            <div class="legend">
+              <div class="legend-item">
+                <span class="legend-swatch swatch-indigo"></span>
+                <span class="legend-copy">
+                  <strong>Scope 1</strong>
+                  <span>Fleet fuel and onsite heat</span>
+                </span>
+                <b>26%</b>
+              </div>
+              <div class="legend-item">
+                <span class="legend-swatch swatch-cyan"></span>
+                <span class="legend-copy">
+                  <strong>Scope 2</strong>
+                  <span>Purchased electricity</span>
+                </span>
+                <b>21%</b>
+              </div>
+              <div class="legend-item">
+                <span class="legend-swatch swatch-coral"></span>
+                <span class="legend-copy">
+                  <strong>Scope 3</strong>
+                  <span>Supply chain and logistics</span>
+                </span>
+                <b>53%</b>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel trend-panel" aria-labelledby="trend-title">
+          <div class="section-head">
+            <div class="section-title">
+              <span>Trend</span>
+              <h2 id="trend-title">Last 12 months vs target</h2>
+            </div>
+            <p class="section-note">Monthly emissions are down as renewable procurement and route optimization take effect.</p>
+          </div>
+          <div class="chart-area" aria-label="Bar chart showing a declining 12 month emissions trend">
+            <div class="target-line"><span>Target line</span></div>
+            <div class="bars">
+              <div class="bar-wrap"><div class="bar"></div><span class="bar-label">Jun</span></div>
+              <div class="bar-wrap"><div class="bar"></div><span class="bar-label">Jul</span></div>
+              <div class="bar-wrap"><div class="bar"></div><span class="bar-label">Aug</span></div>
+              <div class="bar-wrap"><div class="bar"></div><span class="bar-label">Sep</span></div>
+              <div class="bar-wrap"><div class="bar"></div><span class="bar-label">Oct</span></div>
+              <div class="bar-wrap"><div class="bar"></div><span class="bar-label">Nov</span></div>
+              <div class="bar-wrap"><div class="bar"></div><span class="bar-label">Dec</span></div>
+              <div class="bar-wrap"><div class="bar"></div><span class="bar-label">Jan</span></div>
+              <div class="bar-wrap"><div class="bar"></div><span class="bar-label">Feb</span></div>
+              <div class="bar-wrap"><div class="bar"></div><span class="bar-label">Mar</span></div>
+              <div class="bar-wrap"><div class="bar"></div><span class="bar-label">Apr</span></div>
+              <div class="bar-wrap"><div class="bar"></div><span class="bar-label">May</span></div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="panel" aria-labelledby="source-title">
+        <div class="section-head">
+          <div class="section-title">
+            <span>Sources</span>
+            <h2 id="source-title">Emission source tracker</h2>
+          </div>
+          <p class="section-note">Current period performance compared with the previous reporting window.</p>
+        </div>
+        <div class="source-grid">
+          <article class="source-card">
+            <div>
+              <span class="source-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M13 2 4 14h7l-1 8 10-13h-7l1-7Z"></path>
+                </svg>
+              </span>
+              <h3>Energy</h3>
+              <p>Electricity, steam, and thermal load across operated facilities.</p>
+            </div>
+            <div class="source-metric">
+              <strong>13.2k</strong>
+              <span>↓ 11%</span>
+            </div>
+          </article>
+          <article class="source-card">
+            <div>
+              <span class="source-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 13h13l4 4v3h-3a2 2 0 0 1-4 0H8a2 2 0 0 1-4 0H3v-7Z"></path>
+                  <path d="M5 13V7h8l3 6"></path>
+                </svg>
+              </span>
+              <h3>Transport</h3>
+              <p>Fleet, freight, and employee travel activity by distance and fuel type.</p>
+            </div>
+            <div class="source-metric">
+              <strong>8.7k</strong>
+              <span>↓ 6%</span>
+            </div>
+          </article>
+          <article class="source-card">
+            <div>
+              <span class="source-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 7h16"></path>
+                  <path d="M6 7v13h12V7"></path>
+                  <path d="M9 7V4h6v3"></path>
+                  <path d="M10 11v5"></path>
+                  <path d="M14 11v5"></path>
+                </svg>
+              </span>
+              <h3>Waste</h3>
+              <p>Landfill, recycling, treatment, and circularity programs by site.</p>
+            </div>
+            <div class="source-metric">
+              <strong>2.1k</strong>
+              <span>↓ 18%</span>
+            </div>
+          </article>
+          <article class="source-card">
+            <div>
+              <span class="source-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M3 7 12 2l9 5-9 5-9-5Z"></path>
+                  <path d="m3 12 9 5 9-5"></path>
+                  <path d="m3 17 9 5 9-5"></path>
+                </svg>
+              </span>
+              <h3>Supply Chain</h3>
+              <p>Purchased goods, vendor activity, and upstream logistics factors.</p>
+            </div>
+            <div class="source-metric">
+              <strong>18.8k</strong>
+              <span>↑ 3%</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="wide-grid" aria-label="Offset projects and sustainability goals">
+        <article class="panel">
+          <div class="section-head">
+            <div class="section-title">
+              <span>Offsets</span>
+              <h2>Carbon offset panel</h2>
+            </div>
+          </div>
+          <div class="offset-list">
+            <article class="offset-item">
+              <div>
+                <h3>Amazon basin restoration</h3>
+                <p>Verified reforestation credits retired for North American operational emissions.</p>
+                <div class="offset-meta">
+                  <span class="tag verified">Verified</span>
+                  <span class="tag">Gold Standard</span>
+                  <span class="tag">14.2k hectares protected</span>
+                </div>
+              </div>
+              <div class="offset-number">
+                <strong>9.8k</strong>
+                <span>credits purchased</span>
+              </div>
+            </article>
+            <article class="offset-item">
+              <div>
+                <h3>Nordic biochar storage</h3>
+                <p>Durable removal portfolio with soil enrichment impact reports attached.</p>
+                <div class="offset-meta">
+                  <span class="tag verified">Verified</span>
+                  <span class="tag">VCS registry</span>
+                  <span class="tag">6.4k tCO2e stored</span>
+                </div>
+              </div>
+              <div class="offset-number">
+                <strong>6.4k</strong>
+                <span>credits purchased</span>
+              </div>
+            </article>
+            <article class="offset-item">
+              <div>
+                <h3>Grid-scale wind expansion</h3>
+                <p>Renewable energy certificates assigned to European manufacturing sites.</p>
+                <div class="offset-meta">
+                  <span class="tag critical">Review</span>
+                  <span class="tag">I-REC</span>
+                  <span class="tag">41 GWh added</span>
+                </div>
+              </div>
+              <div class="offset-number">
+                <strong>12.1k</strong>
+                <span>credits purchased</span>
+              </div>
+            </article>
+          </div>
+        </article>
+
+        <article class="panel" id="targets">
+          <div class="section-head">
+            <div class="section-title">
+              <span>Targets</span>
+              <h2>Sustainability goals</h2>
+            </div>
+          </div>
+          <div class="target-list">
+            <div class="target-item">
+              <div class="target-row">
+                <strong>Net-zero date commitment</strong>
+                <span>2038 pathway, 68%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill net-zero"></div>
+              </div>
+            </div>
+            <div class="target-item">
+              <div class="target-row">
+                <strong>Renewable electricity share</strong>
+                <span>74% of global load</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill renewable"></div>
+              </div>
+            </div>
+            <div class="target-item">
+              <div class="target-row">
+                <strong>Waste reduction program</strong>
+                <span>57% of 2028 goal</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill waste"></div>
+              </div>
+            </div>
+            <div class="target-item">
+              <div class="target-row">
+                <strong>Supplier science-based targets</strong>
+                <span>81% contracted spend</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill supplier"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="report-band" id="reports" aria-labelledby="report-title">
+        <div>
+          <h2 id="report-title">Board pack, CSRD disclosure, and CDP response are ready for review.</h2>
+          <p>Export evidence-backed reporting bundles with emission factors, offset ledgers, variance explanations, and approval history already attached.</p>
+        </div>
+        <div class="report-actions">
+          <a class="button button-primary" href="#overview">Open board pack</a>
+          <a class="button button-secondary" href="#settings">Manage controls</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer" id="settings">
+      Terra Climate Dashboard — designed by Northstar Studio.
+    </footer>
+  </div>
+
+  <script>
+    const body = document.body;
+    const menuButton = document.getElementById("menuButton");
+    const closeDrawer = document.getElementById("closeDrawer");
+    const drawer = document.getElementById("mobileDrawer");
+    const backdrop = document.getElementById("drawerBackdrop");
+    const drawerLinks = drawer.querySelectorAll("a");
+
+    function openDrawer() {
+      drawer.classList.add("is-open");
+      backdrop.classList.add("is-visible");
+      body.classList.add("drawer-open");
+      drawer.setAttribute("aria-hidden", "false");
+      menuButton.setAttribute("aria-expanded", "true");
+      closeDrawer.focus();
+    }
+
+    function shutDrawer() {
+      drawer.classList.remove("is-open");
+      backdrop.classList.remove("is-visible");
+      body.classList.remove("drawer-open");
+      drawer.setAttribute("aria-hidden", "true");
+      menuButton.setAttribute("aria-expanded", "false");
+      menuButton.focus();
+    }
+
+    menuButton.addEventListener("click", openDrawer);
+    closeDrawer.addEventListener("click", shutDrawer);
+    backdrop.addEventListener("click", shutDrawer);
+    drawerLinks.forEach((link) => link.addEventListener("click", shutDrawer));
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && drawer.classList.contains("is-open")) {
+        shutDrawer();
+      }
+    });
+  </script>
+</body>
+</html>
