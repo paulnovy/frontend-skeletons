@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hive Community Hub</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --cloud:#F6F8FC; --cloud-96:rgba(246,248,252,0.96); --cloud-88:rgba(246,248,252,0.88); --cloud-72:rgba(246,248,252,0.72); --cloud-44:rgba(246,248,252,0.44); --cloud-22:rgba(246,248,252,0.22); --ink:#19212B; --ink-92:rgba(25,33,43,0.92); --ink-80:rgba(25,33,43,0.80); --ink-64:rgba(25,33,43,0.64); --ink-48:rgba(25,33,43,0.48); --ink-28:rgba(25,33,43,0.28); --ink-16:rgba(25,33,43,0.16); --ink-10:rgba(25,33,43,0.10); --ink-06:rgba(25,33,43,0.06); --indigo:#4F46E5; --indigo-88:rgba(79,70,229,0.88); --indigo-42:rgba(79,70,229,0.42); --indigo-22:rgba(79,70,229,0.22); --indigo-12:rgba(79,70,229,0.12); --cyan:#06B6D4; --cyan-84:rgba(6,182,212,0.84); --cyan-34:rgba(6,182,212,0.34); --cyan-18:rgba(6,182,212,0.18); --lime:#A3E635; --lime-84:rgba(163,230,53,0.84); --lime-34:rgba(163,230,53,0.34); --lime-18:rgba(163,230,53,0.18); --coral:#FB7185; --coral-84:rgba(251,113,133,0.84); --coral-34:rgba(251,113,133,0.34); --coral-18:rgba(251,113,133,0.18); --shadow:0 22px 70px rgba(25,33,43,0.12); --radius:8px; --max:1240px;
+    }
+    *{
+      box-sizing:border-box;
+    }
+    html{
+      scroll-behavior:smooth;
+    }
+    body{
+      margin:0; min-height:100vh; color:var(--ink); background:
+        radial-gradient(circle at 12% 0,var(--cyan-18),transparent 27rem),
+        radial-gradient(circle at 92% 4%,var(--indigo-12),transparent 30rem),
+        linear-gradient(180deg,var(--cloud),var(--cloud)); font-family:"Inter",system-ui,sans-serif; line-height:1.5;
+    }
+    body.drawer-open{
+      overflow:hidden;
+    }
+    a{
+      color:inherit; text-decoration:none;
+    }
+    button,
+    input,
+    select{
+      font:inherit;
+    }
+    button{
+      cursor:pointer;
+    }
+    :focus-visible{
+      outline:3px solid var(--cyan); outline-offset:3px;
+    }
+    .sr-only{
+      position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0;
+    }
+    .page{
+      min-height:100vh; overflow:hidden;
+    }
+    .skip-link{
+      position:absolute; left:16px; top:-60px; z-index:100; padding:10px 14px; border-radius:var(--radius); color:var(--cloud); background:var(--ink); font-weight:900;
+    }
+    .skip-link:focus{
+      top:16px;
+    }
+    .topbar{
+      position:sticky; top:0; z-index:60; border-bottom:1px solid var(--ink-10); background:var(--cloud-96); backdrop-filter:blur(18px);
+    }
+    .nav-inner{
+      width:min(100% - 32px,var(--max)); min-height:78px; margin:0 auto; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:18px;
+    }
+    .brand{
+      display:inline-flex; align-items:center; gap:10px; font-family:"Manrope",sans-serif; font-weight:800; letter-spacing:0;
+    }
+    .brand-mark{
+      width:40px; height:40px; display:grid; place-items:center; border-radius:var(--radius); color:var(--cloud); background:linear-gradient(135deg,var(--indigo),var(--cyan)); box-shadow:0 16px 38px var(--indigo-22); font-weight:900;
+    }
+    .nav-links{
+      display:flex; justify-content:center; align-items:center; gap:6px;
+    }
+    .nav-links a{
+      padding:10px 12px; border-radius:var(--radius); color:var(--ink-64); font-weight:800; font-size:0.92rem;
+    }
+    .nav-links a:hover{
+      color:var(--ink); background:var(--indigo-12);
+    }
+    .nav-tools{
+      display:flex; justify-content:flex-end; align-items:center; gap:10px;
+    }
+    .search-shell{
+      width:238px; height:42px; display:flex; align-items:center; gap:8px; padding:0 12px; border:1px solid var(--ink-10); border-radius:var(--radius); background:var(--cloud-88);
+    }
+    .search-shell input{
+      width:100%; min-width:0; border:0; color:var(--ink); background:transparent; outline:0;
+    }
+    .icon-button{
+      position:relative; width:42px; height:42px; display:grid; place-items:center; border:1px solid var(--ink-10); border-radius:var(--radius); color:var(--ink); background:var(--cloud-88); font-weight:900;
+    }
+    .badge{
+      position:absolute; top:-6px; right:-6px; min-width:21px; height:21px; display:grid; place-items:center; border:2px solid var(--cloud); border-radius:999px; color:var(--cloud); background:var(--coral); font-size:0.7rem; font-weight:900;
+    }
+    .hamburger{
+      width:42px; height:42px; display:none; align-items:center; justify-content:center; border:1px solid var(--ink-10); border-radius:var(--radius); background:var(--cloud-88);
+    }
+    .hamburger-lines{
+      width:18px; height:14px; display:grid; gap:4px;
+    }
+    .hamburger-lines span{
+      height:2px; border-radius:999px; background:var(--ink);
+    }
+    .drawer-backdrop{
+      position:fixed; inset:0; z-index:80; display:none; background:rgba(25,33,43,0.48);
+    }
+    .drawer-backdrop.open{
+      display:block;
+    }
+    .mobile-drawer{
+      position:fixed; top:0; right:0; z-index:90; width:min(88vw,350px); height:100vh; padding:22px; display:flex; flex-direction:column; gap:22px; color:var(--cloud); background:var(--ink); box-shadow:-24px 0 60px rgba(25,33,43,0.34); transform:translateX(104%); transition:transform 260ms ease;
+    }
+    .mobile-drawer.open{
+      transform:translateX(0);
+    }
+    .drawer-head{
+      display:flex; align-items:center; justify-content:space-between; gap:16px;
+    }
+    .drawer-close{
+      width:40px; height:40px; border:1px solid var(--cloud-44); border-radius:var(--radius); color:var(--cloud); background:transparent; font-size:1.3rem;
+    }
+    .drawer-links{
+      display:grid; gap:8px;
+    }
+    .drawer-links a{
+      padding:13px 12px; border-radius:var(--radius); background:rgba(246,248,252,0.08); font-weight:900;
+    }
+    .drawer-search{
+      display:grid; gap:9px;
+    }
+    .drawer-search input{
+      min-height:44px; border:1px solid var(--cloud-22); border-radius:var(--radius); color:var(--cloud); background:rgba(246,248,252,0.08); padding:0 12px;
+    }
+    main{
+      width:min(100% - 32px,var(--max)); margin:0 auto; padding:28px 0 58px;
+    }
+    .hero{
+      display:grid; grid-template-columns:1.06fr 0.94fr; gap:20px; align-items:stretch;
+    }
+    .hero-panel{
+      min-height:330px; padding:30px; border-radius:var(--radius); color:var(--cloud); background:
+        radial-gradient(circle at 86% 16%,var(--cyan-34),transparent 19rem),
+        radial-gradient(circle at 14% 100%,var(--indigo-42),transparent 22rem),
+        linear-gradient(135deg,var(--ink),var(--ink-92)); box-shadow:var(--shadow);
+    }
+    .eyebrow{
+      margin:0 0 10px; color:var(--cyan); font-size:0.78rem; font-weight:900; letter-spacing:0.12em; text-transform:uppercase;
+    }
+    h1,
+    h2,
+    h3{
+      font-family:"Manrope",sans-serif; letter-spacing:0; line-height:1.06;
+    }
+    h1{
+      max-width:780px; margin:0; font-size:clamp(2.5rem,5vw,5.05rem);
+    }
+    h2{
+      margin:0; font-size:clamp(1.55rem,3vw,2.35rem);
+    }
+    h3{
+      margin:0; font-size:1.05rem;
+    }
+    .hero-panel p{
+      max-width:650px; margin:18px 0 0; color:var(--cloud-72); font-size:1.04rem;
+    }
+    .hero-actions{
+      display:flex; flex-wrap:wrap; gap:10px; margin-top:26px;
+    }
+    .button{
+      min-height:44px; display:inline-flex; align-items:center; justify-content:center; gap:8px; padding:0 16px; border:1px solid transparent; border-radius:var(--radius); font-weight:900; white-space:nowrap;
+    }
+    .button.primary{
+      color:var(--cloud); background:var(--indigo); box-shadow:0 16px 36px var(--indigo-22);
+    }
+    .button.secondary{
+      color:var(--cloud); border-color:var(--cloud-22); background:rgba(246,248,252,0.08);
+    }
+    .button.light{
+      color:var(--ink); border-color:var(--ink-10); background:var(--cloud);
+    }
+    .button.slim{
+      min-height:38px; padding:0 12px; font-size:0.86rem;
+    }
+    .live-panel{
+      padding:24px; border:1px solid var(--ink-10); border-radius:var(--radius); background:var(--cloud-88); box-shadow:var(--shadow);
+    }
+    .section-kicker{
+      display:flex; align-items:center; justify-content:space-between; gap:14px; margin-bottom:16px;
+    }
+    .status-pill{
+      display:inline-flex; align-items:center; gap:7px; padding:8px 10px; border-radius:999px; background:var(--cyan-18); color:var(--ink); font-size:0.78rem; font-weight:900;
+    }
+    .dot{
+      width:9px; height:9px; border-radius:50%; background:var(--cyan); box-shadow:0 0 0 5px var(--cyan-18);
+    }
+    .activity-stack{
+      display:grid; gap:12px; margin-top:16px;
+    }
+    .activity-item{
+      display:grid; grid-template-columns:auto 1fr auto; gap:12px; align-items:center; padding:13px; border:1px solid var(--ink-10); border-radius:var(--radius); background:var(--cloud);
+    }
+    .avatar{
+      width:40px; height:40px; display:grid; place-items:center; border-radius:50%; color:var(--cloud); background:linear-gradient(135deg,var(--indigo),var(--cyan)); font-weight:900;
+    }
+    .mini{
+      margin:2px 0 0; color:var(--ink-48); font-size:0.82rem; font-weight:700;
+    }
+    .metric-chip{
+      padding:6px 9px; border-radius:999px; background:var(--lime-18); font-size:0.78rem; font-weight:900;
+    }
+    .kpi-strip{
+      display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin:18px 0 26px;
+    }
+    .kpi-card{
+      padding:18px; border:1px solid var(--ink-10); border-radius:var(--radius); background:var(--cloud-88); box-shadow:0 16px 42px rgba(25,33,43,0.07);
+    }
+    .kpi-card span{
+      color:var(--ink-48); font-size:0.78rem; font-weight:900; text-transform:uppercase; letter-spacing:0.08em;
+    }
+    .kpi-card strong{
+      display:block; margin-top:8px; font-family:"Manrope",sans-serif; font-size:2rem; line-height:1;
+    }
+    .kpi-card em{
+      display:block; margin-top:10px; color:var(--ink-64); font-style:normal; font-size:0.86rem; font-weight:800;
+    }
+    .workspace-grid{
+      display:grid; grid-template-columns:minmax(0,1.35fr) minmax(320px,0.65fr); gap:20px; align-items:start;
+    }
+    .stack{
+      display:grid; gap:20px;
+    }
+    .panel{
+      padding:22px; border:1px solid var(--ink-10); border-radius:var(--radius); background:var(--cloud-88); box-shadow:0 16px 44px rgba(25,33,43,0.08);
+    }
+    .panel-head{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:18px;
+    }
+    .panel-head p{
+      margin:6px 0 0; color:var(--ink-64); font-weight:700;
+    }
+    .thread-list{
+      display:grid; gap:12px;
+    }
+    .thread-card{
+      display:grid; grid-template-columns:auto 1fr auto; gap:14px; align-items:center; padding:15px; border:1px solid var(--ink-10); border-radius:var(--radius); background:var(--cloud);
+    }
+    .thread-card:hover{
+      border-color:var(--indigo-42); box-shadow:0 12px 30px rgba(79,70,229,0.12);
+    }
+    .thread-main{
+      min-width:0;
+    }
+    .thread-title{
+      display:flex; flex-wrap:wrap; align-items:center; gap:8px; font-weight:900;
+    }
+    .tag{
+      display:inline-flex; align-items:center; min-height:24px; padding:0 8px; border-radius:999px; color:var(--indigo); background:var(--indigo-12); font-size:0.74rem; font-weight:900;
+    }
+    .tag.cyan{
+      color:var(--ink); background:var(--cyan-18);
+    }
+    .tag.lime{
+      color:var(--ink); background:var(--lime-18);
+    }
+    .tag.coral{
+      color:var(--ink); background:var(--coral-18);
+    }
+    .thread-meta{
+      margin-top:5px; color:var(--ink-48); font-size:0.85rem; font-weight:700;
+    }
+    .reply-count{
+      min-width:76px; text-align:right; font-weight:900;
+    }
+    .reply-count span{
+      display:block; color:var(--ink-48); font-size:0.75rem; text-transform:uppercase; letter-spacing:0.08em;
+    }
+    .directory-tools{
+      display:grid; grid-template-columns:1fr auto; gap:10px; margin-bottom:16px;
+    }
+    .directory-tools input,
+    .directory-tools select{
+      min-height:44px; width:100%; border:1px solid var(--ink-10); border-radius:var(--radius); background:var(--cloud); color:var(--ink); padding:0 12px; font-weight:700;
+    }
+    .member-grid{
+      display:grid; grid-template-columns:repeat(3,1fr); gap:12px;
+    }
+    .member-card{
+      padding:16px; border:1px solid var(--ink-10); border-radius:var(--radius); background:var(--cloud);
+    }
+    .member-top{
+      display:flex; align-items:center; gap:12px; min-width:0;
+    }
+    .member-top h3{
+      overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    }
+    .member-stats{
+      display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:14px;
+    }
+    .stat-cell{
+      padding:10px; border-radius:var(--radius); background:var(--ink-06);
+    }
+    .stat-cell span{
+      display:block; color:var(--ink-48); font-size:0.72rem; font-weight:900; text-transform:uppercase; letter-spacing:0.08em;
+    }
+    .stat-cell strong{
+      display:block; margin-top:4px; font-size:0.94rem;
+    }
+    .event-list{
+      display:grid; gap:12px;
+    }
+    .event-card{
+      display:grid; grid-template-columns:auto 1fr; gap:14px; align-items:start; padding:15px; border:1px solid var(--ink-10); border-radius:var(--radius); background:var(--cloud);
+    }
+    .date-tile{
+      width:60px; border-radius:var(--radius); overflow:hidden; text-align:center; border:1px solid var(--ink-10); background:var(--cloud);
+    }
+    .date-tile span{
+      display:block; padding:5px 0; color:var(--cloud); background:var(--indigo); font-size:0.75rem; font-weight:900;
+    }
+    .date-tile strong{
+      display:block; padding:8px 0; font-size:1.35rem; line-height:1;
+    }
+    .event-body{
+      min-width:0;
+    }
+    .event-row{
+      display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:10px; margin-top:12px;
+    }
+    .topic-cloud{
+      display:flex; flex-wrap:wrap; gap:10px;
+    }
+    .topic{
+      display:inline-flex; align-items:center; gap:8px; padding:10px 12px; border:1px solid var(--ink-10); border-radius:999px; background:var(--cloud); font-weight:900;
+    }
+    .topic span{
+      color:var(--ink-48); font-size:0.82rem;
+    }
+    .guideline-list{
+      display:grid; gap:10px;
+    }
+    .guideline{
+      border:1px solid var(--ink-10); border-radius:var(--radius); background:var(--cloud); overflow:hidden;
+    }
+    .guideline button{
+      width:100%; display:flex; align-items:center; justify-content:space-between; gap:14px; padding:15px; border:0; color:var(--ink); background:transparent; font-weight:900; text-align:left;
+    }
+    .guideline button span{
+      width:26px; height:26px; display:grid; place-items:center; border-radius:50%; background:var(--indigo-12); color:var(--indigo);
+    }
+    .guideline-panel{
+      display:none; padding:0 15px 15px; color:var(--ink-64); font-weight:700;
+    }
+    .guideline.open .guideline-panel{
+      display:block;
+    }
+    .side-note{
+      padding:20px; border-radius:var(--radius); color:var(--cloud); background:
+        radial-gradient(circle at 100% 0,var(--cyan-34),transparent 15rem),
+        linear-gradient(135deg,var(--ink),var(--ink-92));
+    }
+    .side-note p{
+      margin:10px 0 0; color:var(--cloud-72); font-weight:700;
+    }
+    .health-list{
+      display:grid; gap:10px; margin-top:16px;
+    }
+    .health-row{
+      display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center; padding:11px 0; border-top:1px solid var(--cloud-22); font-weight:800;
+    }
+    .health-row strong{
+      color:var(--lime);
+    }
+    footer{
+      width:min(100% - 32px,var(--max)); margin:0 auto; padding:28px 0 42px; color:var(--ink-64); border-top:1px solid var(--ink-10); font-weight:800;
+    }
+    @media (max-width:1040px){
+      .search-shell{
+        display:none; }
+      .hero,
+      .workspace-grid{
+        grid-template-columns:1fr; }
+      .member-grid{
+        grid-template-columns:repeat(2,1fr); }
+    }
+    @media (max-width:820px){
+      .nav-inner{
+        grid-template-columns:auto auto; justify-content:space-between; }
+      .nav-links,
+      .nav-tools .icon-button{
+        display:none; }
+      .hamburger{
+        display:flex; }
+      .kpi-strip{
+        grid-template-columns:repeat(2,1fr); }
+      .hero-panel,
+      .live-panel,
+      .panel{
+        padding:18px; }
+    }
+    @media (max-width:560px){
+      main{
+        width:min(100% - 24px,var(--max)); padding-top:18px; }
+      .nav-inner,
+      footer{
+        width:min(100% - 24px,var(--max)); }
+      .hero-panel{
+        min-height:auto; }
+      .hero-actions,
+      .event-row{
+        align-items:stretch; flex-direction:column; }
+      .button{
+        width:100%; }
+      .kpi-strip,
+      .member-grid,
+      .directory-tools{
+        grid-template-columns:1fr; }
+      .thread-card{
+        grid-template-columns:auto 1fr; }
+      .reply-count{
+        grid-column:2; min-width:0; text-align:left; }
+    }
+    @media (prefers-reduced-motion:reduce){
+      *,
+      *::before,
+      *::after{
+        scroll-behavior:auto !important; transition:none !important; animation:none !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to community hub</a>
+  <div class="page">
+    <header class="topbar">
+      <div class="nav-inner">
+        <a class="brand" href="#top" aria-label="Hive Community Hub home">
+          <span class="brand-mark">H</span>
+          <span>Hive Community Hub</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="#forums">Forums</a>
+          <a href="#members">Members</a>
+          <a href="#events">Events</a>
+          <a href="#resources">Resources</a>
+          <a href="#about">About</a>
+        </nav>
+        <div class="nav-tools">
+          <label class="search-shell" aria-label="Search community">
+            <span aria-hidden="true">⌕</span>
+            <input type="search" value="Design systems" aria-label="Search community content">
+          </label>
+          <button class="icon-button" type="button" aria-label="Notifications">
+            <span aria-hidden="true">●</span>
+            <span class="badge">6</span>
+          </button>
+          <button class="hamburger" type="button" aria-label="Open menu" aria-controls="mobileDrawer" aria-expanded="false">
+            <span class="hamburger-lines" aria-hidden="true"><span></span><span></span><span></span></span>
+          </button>
+        </div>
+      </div>
+    </header>
+    <div class="drawer-backdrop" data-close-drawer></div>
+    <aside class="mobile-drawer" id="mobileDrawer" aria-hidden="true" aria-label="Mobile navigation">
+      <div class="drawer-head">
+        <span class="brand"><span class="brand-mark">H</span><span>Hive Hub</span></span>
+        <button class="drawer-close" type="button" aria-label="Close menu" data-close-drawer>×</button>
+      </div>
+      <nav class="drawer-links" aria-label="Mobile primary navigation">
+        <a href="#forums">Forums</a>
+        <a href="#members">Members</a>
+        <a href="#events">Events</a>
+        <a href="#resources">Resources</a>
+        <a href="#about">About</a>
+      </nav>
+      <label class="drawer-search">
+        <span>Community search</span>
+        <input type="search" value="Weekly meetup" aria-label="Search from mobile menu">
+      </label>
+    </aside>
+    <main id="content">
+      <section class="hero" id="top" aria-labelledby="heroTitle">
+        <div class="hero-panel">
+          <p class="eyebrow">Live community operating room</p>
+          <h1 id="heroTitle">Forums, members, and events in one focused hub.</h1>
+          <p>Hive helps community teams surface active discussions, spotlight contributors, and fill events without making members jump across disconnected tools.</p>
+          <div class="hero-actions">
+            <a class="button primary" href="#forums">Review discussions</a>
+            <a class="button secondary" href="#events">Plan next event</a>
+          </div>
+        </div>
+        <aside class="live-panel" aria-label="Live community activity">
+          <div class="section-kicker">
+            <div>
+              <p class="eyebrow">Now in Hive</p>
+              <h2>Member pulse</h2>
+            </div>
+            <span class="status-pill"><span class="dot"></span>Live</span>
+          </div>
+          <div class="activity-stack">
+            <article class="activity-item">
+              <span class="avatar">MN</span>
+              <div>
+                <strong>Mina answered onboarding questions</strong>
+                <p class="mini">Community Operations · 4 minutes ago</p>
+              </div>
+              <span class="metric-chip">+18 rep</span>
+            </article>
+            <article class="activity-item">
+              <span class="avatar">JR</span>
+              <div>
+                <strong>Jonas opened a workshop waitlist</strong>
+                <p class="mini">Events Team · 12 minutes ago</p>
+              </div>
+              <span class="metric-chip">63 RSVP</span>
+            </article>
+            <article class="activity-item">
+              <span class="avatar">AL</span>
+              <div>
+                <strong>Alea merged resources for moderators</strong>
+                <p class="mini">Knowledge Base · 26 minutes ago</p>
+              </div>
+              <span class="metric-chip">OK</span>
+            </article>
+          </div>
+        </aside>
+      </section>
+      <section class="kpi-strip" aria-label="Community metrics">
+        <article class="kpi-card">
+          <span>Total members</span>
+          <strong>18,420</strong>
+          <em>1,208 joined this quarter</em>
+        </article>
+        <article class="kpi-card">
+          <span>Active discussions</span>
+          <strong>342</strong>
+          <em>74 awaiting expert replies</em>
+        </article>
+        <article class="kpi-card">
+          <span>Events this month</span>
+          <strong>19</strong>
+          <em>6 hosted by members</em>
+        </article>
+        <article class="kpi-card">
+          <span>Online now</span>
+          <strong>812</strong>
+          <em>Cyan signal healthy</em>
+        </article>
+      </section>
+      <div class="workspace-grid">
+        <div class="stack">
+          <section class="panel" id="forums" aria-labelledby="forumsTitle">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Forum threads</p>
+                <h2 id="forumsTitle">Discussions needing attention</h2>
+                <p>Ranked by recent activity, reply velocity, and moderation risk.</p>
+              </div>
+              <a class="button light slim" href="#resources">Open queue</a>
+            </div>
+            <div class="thread-list">
+              <article class="thread-card">
+                <span class="avatar">SC</span>
+                <div class="thread-main">
+                  <div class="thread-title">How are teams structuring welcome rituals? <span class="tag">Onboarding</span></div>
+                  <p class="thread-meta">Started by Sofia Chen · last active 8 minutes ago</p>
+                </div>
+                <div class="reply-count">42<span>replies</span></div>
+              </article>
+              <article class="thread-card">
+                <span class="avatar">DN</span>
+                <div class="thread-main">
+                  <div class="thread-title">Recommended stack for member-led events <span class="tag cyan">Events</span></div>
+                  <p class="thread-meta">Started by Diego Navarro · last active 19 minutes ago</p>
+                </div>
+                <div class="reply-count">28<span>replies</span></div>
+              </article>
+              <article class="thread-card">
+                <span class="avatar">KT</span>
+                <div class="thread-main">
+                  <div class="thread-title">Moderator handoff guide for weekend coverage <span class="tag lime">Governance</span></div>
+                  <p class="thread-meta">Started by Kai Tan · last active 31 minutes ago</p>
+                </div>
+                <div class="reply-count">17<span>replies</span></div>
+              </article>
+              <article class="thread-card">
+                <span class="avatar">RP</span>
+                <div class="thread-main">
+                  <div class="thread-title">API examples for profile sync <span class="tag coral">Critical</span></div>
+                  <p class="thread-meta">Started by Riya Patel · last active 44 minutes ago</p>
+                </div>
+                <div class="reply-count">36<span>replies</span></div>
+              </article>
+            </div>
+          </section>
+          <section class="panel" id="members" aria-labelledby="membersTitle">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Member directory</p>
+                <h2 id="membersTitle">Find contributors fast</h2>
+                <p>Search by name, role, or expertise and filter by member type.</p>
+              </div>
+            </div>
+            <div class="directory-tools">
+              <input id="memberSearch" type="search" value="" aria-label="Filter members by name or role">
+              <select id="roleFilter" aria-label="Filter by role">
+                <option value="all">All roles</option>
+                <option value="mentor">Mentors</option>
+                <option value="builder">Builders</option>
+                <option value="moderator">Moderators</option>
+              </select>
+            </div>
+            <div class="member-grid" id="memberGrid">
+              <article class="member-card" data-role="mentor" data-search="amina cole mentor community strategy">
+                <div class="member-top"><span class="avatar">AC</span><div><h3>Amina Cole</h3><span class="tag">Mentor</span></div></div>
+                <p class="mini">Joined Feb 2024 · Community strategy</p>
+                <div class="member-stats"><div class="stat-cell"><span>Reputation</span><strong>8,940</strong></div><div class="stat-cell"><span>Answers</span><strong>312</strong></div></div>
+              </article>
+              <article class="member-card" data-role="builder" data-search="marco weiss builder integrations">
+                <div class="member-top"><span class="avatar">MW</span><div><h3>Marco Weiss</h3><span class="tag cyan">Builder</span></div></div>
+                <p class="mini">Joined Aug 2023 · Integrations</p>
+                <div class="member-stats"><div class="stat-cell"><span>Reputation</span><strong>6,210</strong></div><div class="stat-cell"><span>Answers</span><strong>188</strong></div></div>
+              </article>
+              <article class="member-card" data-role="moderator" data-search="nora shah moderator safety">
+                <div class="member-top"><span class="avatar">NS</span><div><h3>Nora Shah</h3><span class="tag lime">Moderator</span></div></div>
+                <p class="mini">Joined Nov 2022 · Safety</p>
+                <div class="member-stats"><div class="stat-cell"><span>Reputation</span><strong>12,440</strong></div><div class="stat-cell"><span>Answers</span><strong>521</strong></div></div>
+              </article>
+              <article class="member-card" data-role="builder" data-search="eli grant builder product ops">
+                <div class="member-top"><span class="avatar">EG</span><div><h3>Eli Grant</h3><span class="tag cyan">Builder</span></div></div>
+                <p class="mini">Joined Jan 2024 · Product ops</p>
+                <div class="member-stats"><div class="stat-cell"><span>Reputation</span><strong>4,870</strong></div><div class="stat-cell"><span>Answers</span><strong>144</strong></div></div>
+              </article>
+              <article class="member-card" data-role="mentor" data-search="lea moritz mentor events">
+                <div class="member-top"><span class="avatar">LM</span><div><h3>Lea Moritz</h3><span class="tag">Mentor</span></div></div>
+                <p class="mini">Joined May 2023 · Events</p>
+                <div class="member-stats"><div class="stat-cell"><span>Reputation</span><strong>7,705</strong></div><div class="stat-cell"><span>Answers</span><strong>239</strong></div></div>
+              </article>
+              <article class="member-card" data-role="moderator" data-search="omar reed moderator knowledge base">
+                <div class="member-top"><span class="avatar">OR</span><div><h3>Omar Reed</h3><span class="tag lime">Moderator</span></div></div>
+                <p class="mini">Joined Sep 2022 · Knowledge base</p>
+                <div class="member-stats"><div class="stat-cell"><span>Reputation</span><strong>9,330</strong></div><div class="stat-cell"><span>Answers</span><strong>406</strong></div></div>
+              </article>
+            </div>
+          </section>
+        </div>
+        <aside class="stack" aria-label="Community sidebar">
+          <section class="panel" id="events" aria-labelledby="eventsTitle">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Events calendar</p>
+                <h2 id="eventsTitle">Upcoming sessions</h2>
+              </div>
+            </div>
+            <div class="event-list">
+              <article class="event-card">
+                <div class="date-tile"><span>JUN</span><strong>04</strong></div>
+                <div class="event-body"><h3>Regional host meetup</h3><p class="mini">Meetup · 128 RSVP</p><div class="event-row"><span class="tag cyan">Meetup</span><button class="button primary slim" type="button">Register</button></div></div>
+              </article>
+              <article class="event-card">
+                <div class="date-tile"><span>JUN</span><strong>11</strong></div>
+                <div class="event-body"><h3>Designing better rituals</h3><p class="mini">Workshop · 86 RSVP</p><div class="event-row"><span class="tag">Workshop</span><button class="button primary slim" type="button">Register</button></div></div>
+              </article>
+              <article class="event-card">
+                <div class="date-tile"><span>JUN</span><strong>18</strong></div>
+                <div class="event-body"><h3>Ask moderators anything</h3><p class="mini">AMA · 214 RSVP</p><div class="event-row"><span class="tag lime">AMA</span><button class="button primary slim" type="button">Register</button></div></div>
+              </article>
+            </div>
+          </section>
+          <section class="panel" id="resources" aria-labelledby="topicsTitle">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Trending topics</p>
+                <h2 id="topicsTitle">What members are reading</h2>
+              </div>
+            </div>
+            <div class="topic-cloud">
+              <a class="topic" href="#forums">onboarding <span>214</span></a>
+              <a class="topic" href="#forums">moderation <span>172</span></a>
+              <a class="topic" href="#forums">events <span>149</span></a>
+              <a class="topic" href="#forums">member ops <span>132</span></a>
+              <a class="topic" href="#forums">api sync <span>88</span></a>
+              <a class="topic" href="#forums">templates <span>76</span></a>
+              <a class="topic" href="#forums">analytics <span>64</span></a>
+            </div>
+          </section>
+          <section class="panel" id="about" aria-labelledby="guidelinesTitle">
+            <div class="panel-head">
+              <div>
+                <p class="eyebrow">Community guidelines</p>
+                <h2 id="guidelinesTitle">Shared rules</h2>
+              </div>
+            </div>
+            <div class="guideline-list">
+              <article class="guideline open">
+                <button type="button" aria-expanded="true">Be useful before being loud <span>−</span></button>
+                <div class="guideline-panel">Lead with context, evidence, and a clear next step when helping another member.</div>
+              </article>
+              <article class="guideline">
+                <button type="button" aria-expanded="false">Protect private member details <span>+</span></button>
+                <div class="guideline-panel">Move sensitive account, health, payment, or identity details to approved private channels.</div>
+              </article>
+              <article class="guideline">
+                <button type="button" aria-expanded="false">Credit people and sources <span>+</span></button>
+                <div class="guideline-panel">Name the creator, link the resource, and explain how a shared idea was adapted.</div>
+              </article>
+            </div>
+          </section>
+          <section class="side-note" aria-label="Community health">
+            <p class="eyebrow">Health signals</p>
+            <h2>Moderation looks calm.</h2>
+            <p>Response time is under target, unresolved alerts are low, and this week’s onboarding cohort is trending above activation goals.</p>
+            <div class="health-list">
+              <div class="health-row"><span>First reply median</span><strong>9m</strong></div>
+              <div class="health-row"><span>Open alerts</span><strong>3</strong></div>
+              <div class="health-row"><span>Activation health</span><strong>92%</strong></div>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+    <footer>
+      Hive Community Hub — designed by Northstar Studio.
+    </footer>
+  </div>
+  <script>
+    const drawer = document.querySelector("#mobileDrawer");
+    const openButton = document.querySelector(".hamburger");
+    const backdrop = document.querySelector(".drawer-backdrop");
+    const closeItems = document.querySelectorAll("[data-close-drawer]");
+    const drawerLinks = drawer.querySelectorAll("a");
+    const memberSearch = document.querySelector("#memberSearch");
+    const roleFilter = document.querySelector("#roleFilter");
+    const memberCards = document.querySelectorAll(".member-card");
+    const guidelineButtons = document.querySelectorAll(".guideline button");
+    let previousFocus = null;
+
+    function setDrawer(open){
+      drawer.classList.toggle("open", open);
+      backdrop.classList.toggle("open", open);
+      document.body.classList.toggle("drawer-open", open);
+      drawer.setAttribute("aria-hidden", String(!open));
+      openButton.setAttribute("aria-expanded", String(open));
+      if(open){
+        previousFocus = document.activeElement;
+        drawer.querySelector("a").focus();
+      }else if(previousFocus){
+        previousFocus.focus();
+      }
+    }
+
+    openButton.addEventListener("click", () => setDrawer(true));
+    closeItems.forEach((item) => item.addEventListener("click", () => setDrawer(false)));
+    drawerLinks.forEach((link) => link.addEventListener("click", () => setDrawer(false)));
+    document.addEventListener("keydown", (event) => {
+      if(event.key === "Escape" && drawer.classList.contains("open")){
+        setDrawer(false);
+      }
+    });
+
+    function filterMembers(){
+      const query = memberSearch.value.trim().toLowerCase();
+      const role = roleFilter.value;
+      memberCards.forEach((card) => {
+        const matchesQuery = card.dataset.search.includes(query);
+        const matchesRole = role === "all" || card.dataset.role === role;
+        card.hidden = !(matchesQuery && matchesRole);
+      });
+    }
+
+    memberSearch.addEventListener("input", filterMembers);
+    roleFilter.addEventListener("change", filterMembers);
+
+    guidelineButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const item = button.closest(".guideline");
+        const open = !item.classList.contains("open");
+        item.classList.toggle("open", open);
+        button.setAttribute("aria-expanded", String(open));
+        button.querySelector("span").textContent = open ? "−" : "+";
+      });
+    });
+  </script>
+</body>
+</html>
