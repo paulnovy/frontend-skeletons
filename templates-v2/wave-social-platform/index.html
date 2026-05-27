@@ -1,0 +1,982 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wave Social Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --ink-92: rgba(25, 33, 43, 0.92);
+      --ink-72: rgba(25, 33, 43, 0.72);
+      --ink-56: rgba(25, 33, 43, 0.56);
+      --ink-40: rgba(25, 33, 43, 0.40);
+      --ink-16: rgba(25, 33, 43, 0.16);
+      --ink-10: rgba(25, 33, 43, 0.10);
+      --ink-06: rgba(25, 33, 43, 0.06);
+      --indigo: #4F46E5;
+      --indigo-16: rgba(79, 70, 229, 0.16);
+      --indigo-10: rgba(79, 70, 229, 0.10);
+      --cyan: #06B6D4;
+      --cyan-18: rgba(6, 182, 212, 0.18);
+      --cyan-10: rgba(6, 182, 212, 0.10);
+      --lime: #A3E635;
+      --lime-18: rgba(163, 230, 53, 0.18);
+      --coral: #FB7185;
+      --coral-18: rgba(251, 113, 133, 0.18);
+      --panel: rgba(246, 248, 252, 0.86);
+      --line: rgba(25, 33, 43, 0.12);
+      --shadow: 0 24px 70px rgba(25, 33, 43, 0.12);
+      --radius: 8px;    }
+    * {
+      box-sizing: border-box;    }
+    html {
+      scroll-behavior: smooth;    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 14% 4%, var(--cyan-18), transparent 30%),
+        radial-gradient(circle at 90% 8%, var(--indigo-16), transparent 32%),
+        var(--cloud);
+      color: var(--ink);
+      font-family: "Inter", system-ui, sans-serif;
+      line-height: 1.5;    }
+    body.drawer-open,
+    body.chat-open {
+      overflow: hidden;    }
+    a {
+      color: inherit;
+      text-decoration: none;    }
+    button,
+    input,
+    textarea {
+      font: inherit;    }
+    button {
+      cursor: pointer;    }
+    img {
+      max-width: 100%;
+      display: block;    }
+    :focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 3px;    }
+    .skip-link {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 40;
+      transform: translateY(-140%);
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--cloud);
+      padding: 10px 14px;
+      transition: transform 180ms ease;    }
+    .skip-link:focus {
+      transform: translateY(0);    }
+    .app-shell {
+      width: min(1440px, 100%);
+      margin: 0 auto;    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      border-bottom: 1px solid var(--line);
+      background: rgba(246, 248, 252, 0.94);
+      backdrop-filter: blur(18px);    }
+    .topbar-inner {
+      display: grid;
+      grid-template-columns: auto minmax(280px, 1fr) auto;
+      gap: 24px;
+      align-items: center;
+      padding: 14px 28px;    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Manrope", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 1.25rem;
+      letter-spacing: 0;    }
+    .brand-mark {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--indigo), var(--cyan));
+      color: var(--cloud);
+      box-shadow: 0 10px 26px rgba(79, 70, 229, 0.22);    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;    }
+    .nav-link {
+      border-radius: var(--radius);
+      padding: 10px 12px;
+      color: var(--ink-72);
+      font-weight: 700;
+      transition: background 160ms ease, color 160ms ease;    }
+    .nav-link[aria-current="page"],
+    .nav-link:hover {
+      background: var(--indigo-10);
+      color: var(--indigo);    }
+    .top-actions {
+      display: flex;
+      align-items: center;
+      justify-content: end;
+      gap: 12px;    }
+    .search {
+      position: relative;
+      width: min(310px, 34vw);    }
+    .search input {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      color: var(--ink);
+      padding: 0 42px 0 14px;    }
+    .search svg {
+      position: absolute;
+      top: 50%;
+      right: 14px;
+      width: 18px;
+      height: 18px;
+      transform: translateY(-50%);
+      color: var(--ink-56);    }
+    .icon-button,
+    .avatar-button,
+    .hamburger {
+      display: inline-grid;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      color: var(--ink);
+      transition: transform 160ms ease, border-color 160ms ease, background 160ms ease;    }
+    .icon-button:hover,
+    .avatar-button:hover,
+    .hamburger:hover {
+      border-color: var(--indigo);
+      background: var(--indigo-10);
+      transform: translateY(-1px);    }
+    .avatar,
+    .mini-avatar {
+      display: inline-grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--indigo), var(--cyan));
+      color: var(--cloud);
+      font-weight: 800;    }
+    .avatar {
+      width: 42px;
+      height: 42px;    }
+    .mini-avatar {
+      width: 36px;
+      height: 36px;
+      font-size: 0.85rem;    }
+    .hamburger {
+      display: none;    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 340px;
+      gap: 28px;
+      padding: 26px 28px 36px;    }
+    .main-column {
+      display: grid;
+      gap: 20px;
+      min-width: 0;    }
+    .rail {
+      display: grid;
+      align-content: start;
+      gap: 20px;
+      position: sticky;
+      top: 86px;
+      height: fit-content;    }
+    .panel,
+    .post-card,
+    .composer,
+    .profile-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.76);
+      box-shadow: var(--shadow);    }
+    .section-heading {
+      margin: 0;
+      font-family: "Manrope", system-ui, sans-serif;
+      font-size: 1.05rem;
+      letter-spacing: 0;    }
+    .composer {
+      padding: 18px;    }
+    .composer-top {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 12px;    }
+    .composer textarea {
+      width: 100%;
+      min-height: 108px;
+      resize: vertical;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--cloud);
+      color: var(--ink);
+      padding: 14px;    }
+    .composer-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 12px;
+      padding-left: 54px;    }
+    .composer-tools {
+      display: flex;
+      align-items: center;
+      gap: 10px;    }
+    .count {
+      min-width: 78px;
+      color: var(--ink-56);
+      font-size: 0.9rem;
+      font-weight: 700;
+      text-align: right;    }
+    .button {
+      display: inline-flex;
+      min-height: 42px;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--cloud);
+      color: var(--ink);
+      padding: 0 14px;
+      font-weight: 800;
+      transition: transform 160ms ease, background 160ms ease, border-color 160ms ease;    }
+    .button:hover {
+      transform: translateY(-1px);
+      border-color: var(--indigo);
+      background: var(--indigo-10);    }
+    .button.primary {
+      border-color: var(--indigo);
+      background: var(--indigo);
+      color: var(--cloud);    }
+    .button.cyan {
+      border-color: var(--cyan);
+      background: var(--cyan);
+      color: var(--ink);    }
+    .feed {
+      display: grid;
+      gap: 18px;    }
+    .post-card {
+      overflow: hidden;    }
+    .post-body {
+      padding: 18px;    }
+    .post-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 12px;    }
+    .author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;    }
+    .author strong,
+    .profile-name,
+    .conversation strong {
+      display: block;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;    }
+    .meta {
+      color: var(--ink-56);
+      font-size: 0.88rem;
+      font-weight: 700;    }
+    .live-pill,
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border-radius: 999px;
+      padding: 6px 10px;
+      background: var(--cyan-10);
+      color: var(--ink);
+      font-size: 0.8rem;
+      font-weight: 800;    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--cyan);
+      box-shadow: 0 0 0 5px var(--cyan-18);    }
+    .post-text {
+      margin: 0 0 14px;
+      color: var(--ink-92);
+      font-size: 1rem;    }
+    .media {
+      min-height: 260px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background:
+        linear-gradient(135deg, rgba(79, 70, 229, 0.86), rgba(6, 182, 212, 0.76)),
+        radial-gradient(circle at 72% 24%, rgba(163, 230, 53, 0.72), transparent 26%),
+        var(--ink);
+      overflow: hidden;
+      position: relative;    }
+    .media::before,
+    .media::after {
+      content: "";
+      position: absolute;
+      border: 1px solid rgba(246, 248, 252, 0.45);
+      border-radius: var(--radius);    }
+    .media::before {
+      inset: 28px 34px auto auto;
+      width: 38%;
+      height: 42%;
+      background: rgba(246, 248, 252, 0.16);    }
+    .media::after {
+      left: 34px;
+      bottom: 30px;
+      width: 46%;
+      height: 22%;
+      background: rgba(25, 33, 43, 0.14);    }
+    .media.coral {
+      background:
+        linear-gradient(135deg, rgba(251, 113, 133, 0.84), rgba(79, 70, 229, 0.74)),
+        radial-gradient(circle at 72% 24%, rgba(6, 182, 212, 0.70), transparent 26%),
+        var(--ink);    }
+    .media.lime {
+      background:
+        linear-gradient(135deg, rgba(163, 230, 53, 0.74), rgba(6, 182, 212, 0.72)),
+        radial-gradient(circle at 18% 82%, rgba(79, 70, 229, 0.80), transparent 24%),
+        var(--ink);    }
+    .post-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-top: 1px solid var(--line);
+      background: rgba(246, 248, 252, 0.58);    }
+    .action {
+      min-height: 48px;
+      border: 0;
+      border-right: 1px solid var(--line);
+      background: transparent;
+      color: var(--ink-72);
+      font-weight: 800;    }
+    .action:last-child {
+      border-right: 0;    }
+    .action:hover,
+    .action.active {
+      color: var(--indigo);
+      background: var(--indigo-10);    }
+    .panel {
+      padding: 18px;    }
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;    }
+    .trend-list,
+    .suggestions,
+    .notification-list,
+    .conversation-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;    }
+    .trend,
+    .suggestion,
+    .notification-item,
+    .conversation {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.58);
+      padding: 12px;    }
+    .trend {
+      justify-content: space-between;    }
+    .trend strong {
+      color: var(--indigo);    }
+    .trend span,
+    .suggestion span,
+    .notification-item span,
+    .conversation span {
+      color: var(--ink-56);
+      font-size: 0.86rem;
+      font-weight: 700;    }
+    .profile-card {
+      overflow: hidden;    }
+    .profile-cover {
+      height: 92px;
+      background:
+        linear-gradient(135deg, var(--indigo), var(--cyan)),
+        var(--ink);    }
+    .profile-content {
+      padding: 0 18px 18px;    }
+    .profile-avatar {
+      display: grid;
+      width: 76px;
+      height: 76px;
+      place-items: center;
+      margin-top: -38px;
+      border: 4px solid var(--cloud);
+      border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--coral), var(--indigo));
+      color: var(--cloud);
+      font-size: 1.35rem;
+      font-weight: 900;    }
+    .profile-name {
+      margin: 12px 0 2px;
+      font-family: "Manrope", system-ui, sans-serif;
+      font-size: 1.25rem;    }
+    .profile-bio {
+      margin: 8px 0 16px;
+      color: var(--ink-72);    }
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;    }
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.58);
+      padding: 10px;    }
+    .stat strong {
+      display: block;
+      font-family: "Manrope", system-ui, sans-serif;
+      font-size: 1.2rem;    }
+    .stat span {
+      color: var(--ink-56);
+      font-size: 0.82rem;
+      font-weight: 800;    }
+    .notifications {
+      position: relative;    }
+    .notification-menu {
+      position: absolute;
+      top: 52px;
+      right: 0;
+      width: min(360px, calc(100vw - 28px));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--cloud);
+      box-shadow: var(--shadow);
+      padding: 14px;
+      transform: translateY(-8px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease, transform 180ms ease;    }
+    .notification-menu.open {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;    }
+    .note-icon {
+      display: grid;
+      width: 34px;
+      height: 34px;
+      place-items: center;
+      border-radius: var(--radius);
+      background: var(--indigo-10);
+      color: var(--indigo);
+      flex: 0 0 auto;
+      font-weight: 900;    }
+    .note-icon.coral {
+      background: var(--coral-18);
+      color: var(--coral);    }
+    .note-icon.cyan {
+      background: var(--cyan-10);
+      color: var(--cyan);    }
+    .chat-toggle {
+      position: fixed;
+      right: 24px;
+      bottom: 24px;
+      z-index: 25;
+      width: 58px;
+      height: 58px;
+      border: 1px solid var(--cyan);
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--cloud);
+      box-shadow: var(--shadow);    }
+    .scrim {
+      position: fixed;
+      inset: 0;
+      z-index: 35;
+      background: rgba(25, 33, 43, 0.38);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;    }
+    .scrim.open {
+      opacity: 1;
+      pointer-events: auto;    }
+    .mobile-drawer,
+    .chat-drawer {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      z-index: 45;
+      width: min(390px, 92vw);
+      border: 1px solid var(--line);
+      background: var(--cloud);
+      box-shadow: var(--shadow);
+      transition: transform 220ms ease;    }
+    .mobile-drawer {
+      left: 0;
+      transform: translateX(-104%);
+      padding: 18px;    }
+    .mobile-drawer.open {
+      transform: translateX(0);    }
+    .drawer-head,
+    .chat-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;    }
+    .drawer-nav {
+      display: grid;
+      gap: 8px;
+      margin-bottom: 18px;    }
+    .drawer-nav .nav-link {
+      display: block;
+      background: rgba(246, 248, 252, 0.58);
+      border: 1px solid var(--line);    }
+    .chat-drawer {
+      right: 0;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      transform: translateX(104%);
+      padding: 18px;    }
+    .chat-drawer.open {
+      transform: translateX(0);    }
+    .chat-body {
+      display: grid;
+      grid-template-columns: 132px 1fr;
+      gap: 14px;
+      min-height: 0;    }
+    .conversation-list {
+      align-content: start;
+      overflow: auto;
+      padding-right: 4px;    }
+    .conversation {
+      align-items: flex-start;
+      padding: 10px;    }
+    .conversation.active {
+      border-color: var(--indigo);
+      background: var(--indigo-10);    }
+    .thread {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      overflow: auto;
+      padding: 2px 4px 2px 0;    }
+    .bubble {
+      max-width: 86%;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.64);
+      padding: 10px 12px;
+      color: var(--ink-92);    }
+    .bubble.me {
+      align-self: flex-end;
+      border-color: var(--indigo);
+      background: var(--indigo);
+      color: var(--cloud);    }
+    .chat-form {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      margin-top: 14px;    }
+    .chat-form input {
+      min-width: 0;
+      min-height: 42px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--cloud);
+      color: var(--ink);
+      padding: 0 12px;    }
+    .footer {
+      border-top: 1px solid var(--line);
+      padding: 22px 28px 38px;
+      color: var(--ink-56);
+      font-weight: 700;
+      text-align: center;    }
+    @media (max-width: 1080px) {
+      .topbar-inner {
+        grid-template-columns: auto 1fr auto;      }
+      .nav-links {
+        display: none;      }
+      .hamburger {
+        display: inline-grid;      }
+      .layout {
+        grid-template-columns: 1fr;      }
+      .rail {
+        position: static;
+        grid-template-columns: repeat(2, minmax(0, 1fr));      }    }
+    @media (max-width: 760px) {
+      .topbar-inner {
+        gap: 12px;
+        padding: 12px 16px;      }
+      .brand span:last-child,
+      .search {
+        display: none;      }
+      .layout {
+        padding: 18px 16px 28px;      }
+      .rail {
+        grid-template-columns: 1fr;      }
+      .composer-footer {
+        align-items: stretch;
+        flex-direction: column;
+        padding-left: 0;      }
+      .composer-tools {
+        justify-content: space-between;      }
+      .post-actions {
+        grid-template-columns: 1fr;      }
+      .action {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);      }
+      .action:last-child {
+        border-bottom: 0;      }
+      .media {
+        min-height: 210px;      }
+      .chat-body {
+        grid-template-columns: 1fr;      }
+      .conversation-list {
+        grid-auto-flow: column;
+        grid-auto-columns: 132px;
+        overflow-x: auto;      }    }
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;      }    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#feed">Skip to feed</a>
+  <div class="app-shell">
+    <header class="topbar" aria-label="Primary">
+      <div class="topbar-inner">
+        <button class="hamburger" type="button" aria-label="Open menu" aria-controls="mobileDrawer" aria-expanded="false" data-open-drawer>
+          <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none">
+            <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <a class="brand" href="#" aria-label="Wave home">
+          <span class="brand-mark">W</span>
+          <span>Wave</span>
+        </a>
+        <nav class="nav-links" aria-label="Site">
+          <a class="nav-link" href="#feed" aria-current="page">Feed</a>
+          <a class="nav-link" href="#explore">Explore</a>
+          <a class="nav-link" href="#messages">Messages</a>
+          <a class="nav-link" href="#notifications">Notifications</a>
+          <a class="nav-link" href="#profile">Profile</a>
+        </nav>
+        <div class="top-actions">
+          <label class="search">
+            <span class="sr-only">Search Wave</span>
+            <input type="search" aria-label="Search Wave" value="">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+              <path d="m21 21-4.35-4.35m1.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </label>
+          <div class="notifications" id="notifications">
+            <button class="icon-button" type="button" aria-label="Open notifications" aria-controls="notificationMenu" aria-expanded="false" data-toggle-notes>
+              <svg aria-hidden="true" width="21" height="21" viewBox="0 0 24 24" fill="none">
+                <path d="M15 17H9m9-6a6 6 0 1 0-12 0c0 7-3 7-3 7h18s-3 0-3-7Zm-4.3 10a2 2 0 0 1-3.4 0" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </button>
+            <section class="notification-menu" id="notificationMenu" aria-label="Notifications">
+              <div class="panel-head">
+                <h2 class="section-heading">Notifications</h2>
+                <span class="status-pill"><span class="dot"></span>Live</span>
+              </div>
+              <ul class="notification-list">
+                <li class="notification-item">
+                  <span class="note-icon coral">♥</span>
+                  <div><strong>Mika liked your launch notes</strong><br><span>2 minutes ago</span></div>
+                </li>
+                <li class="notification-item">
+                  <span class="note-icon cyan">+</span>
+                  <div><strong>Rin started following you</strong><br><span>12 minutes ago</span></div>
+                </li>
+                <li class="notification-item">
+                  <span class="note-icon">“</span>
+                  <div><strong>Ari commented on your studio tour</strong><br><span>24 minutes ago</span></div>
+                </li>
+              </ul>
+            </section>
+          </div>
+          <button class="avatar-button" type="button" aria-label="Open profile preview">
+            <span class="avatar">NS</span>
+          </button>
+        </div>
+      </div>
+    </header>
+    <main class="layout" id="feed">
+      <section class="main-column" aria-label="Social feed">
+        <article class="composer" aria-labelledby="composerTitle">
+          <h1 class="section-heading" id="composerTitle">Share a new wave</h1>
+          <div class="composer-top">
+            <span class="avatar" aria-hidden="true">NS</span>
+            <textarea id="postText" maxlength="280" aria-label="Write your post">Shipping the community sprint board today. Drop a note if you want early access to the creator analytics panel.</textarea>
+          </div>
+          <div class="composer-footer">
+            <div class="composer-tools">
+              <button class="button" type="button" aria-label="Attach image">
+                <svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none">
+                  <path d="M4 16l4.6-4.6a2 2 0 0 1 2.8 0L16 16m-2-2 1.6-1.6a2 2 0 0 1 2.8 0L20 14m-1 5H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2ZM8.5 8.5h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Image
+              </button>
+              <span class="count" id="charCount" aria-live="polite">0 / 280</span>
+            </div>
+            <button class="button primary" type="button">Post wave</button>
+          </div>
+        </article>
+        <section class="feed" aria-label="Latest posts">
+          <article class="post-card">
+            <div class="post-body">
+              <header class="post-head">
+                <div class="author">
+                  <span class="mini-avatar">AR</span>
+                  <div><strong>Ari Rowan</strong><div class="meta">18 minutes ago · Product studio</div></div>
+                </div>
+                <span class="live-pill"><span class="dot"></span>Now</span>
+              </header>
+              <p class="post-text">The new group messaging lanes make planning launches feel less scattered. Our design crew is already using pinned threads for critiques, research, and release notes.</p>
+              <div class="media" role="img" aria-label="Abstract preview for group messaging lanes"></div>
+            </div>
+            <footer class="post-actions">
+              <button class="action active" type="button">Like · 2.4K</button>
+              <button class="action" type="button">Comment · 318</button>
+              <button class="action" type="button">Share · 94</button>
+            </footer>
+          </article>
+          <article class="post-card">
+            <div class="post-body">
+              <header class="post-head">
+                <div class="author">
+                  <span class="mini-avatar">MK</span>
+                  <div><strong>Mika Kim</strong><div class="meta">46 minutes ago · Creator ops</div></div>
+                </div>
+                <span class="status-pill">Featured</span>
+              </header>
+              <p class="post-text">Built a lightweight ritual for community hosts: morning prompt, afternoon highlight, evening recap. The cadence has doubled replies without adding more channels.</p>
+              <div class="media coral" role="img" aria-label="Abstract preview for creator host ritual"></div>
+            </div>
+            <footer class="post-actions">
+              <button class="action" type="button">Like · 982</button>
+              <button class="action" type="button">Comment · 121</button>
+              <button class="action" type="button">Share · 43</button>
+            </footer>
+          </article>
+          <article class="post-card" id="explore">
+            <div class="post-body">
+              <header class="post-head">
+                <div class="author">
+                  <span class="mini-avatar">RJ</span>
+                  <div><strong>Rin Jae</strong><div class="meta">1 hour ago · Explore team</div></div>
+                </div>
+                <span class="status-pill">Rising</span>
+              </header>
+              <p class="post-text">Explore is surfacing smaller circles with unusually healthy reply quality. The best conversations this week came from teams under 500 members.</p>
+              <div class="media lime" role="img" aria-label="Abstract preview for healthy conversation discovery"></div>
+            </div>
+            <footer class="post-actions">
+              <button class="action" type="button">Like · 1.1K</button>
+              <button class="action" type="button">Comment · 207</button>
+              <button class="action" type="button">Share · 61</button>
+            </footer>
+          </article>
+        </section>
+      </section>
+      <aside class="rail" aria-label="Community sidebar">
+        <section class="profile-card" id="profile" aria-labelledby="profileTitle">
+          <div class="profile-cover"></div>
+          <div class="profile-content">
+            <span class="profile-avatar">NS</span>
+            <h2 class="profile-name" id="profileTitle">Nova Sato</h2>
+            <p class="profile-bio">Community designer building calm social spaces for high-trust creator circles.</p>
+            <div class="stats" aria-label="Profile stats">
+              <div class="stat"><strong>84.2K</strong><span>Followers</span></div>
+              <div class="stat"><strong>418</strong><span>Following</span></div>
+            </div>
+            <button class="button primary" type="button">Follow Nova</button>
+          </div>
+        </section>
+        <section class="panel" aria-labelledby="trendingTitle">
+          <div class="panel-head">
+            <h2 class="section-heading" id="trendingTitle">Trending now</h2>
+            <span class="status-pill">Fresh</span>
+          </div>
+          <ul class="trend-list">
+            <li class="trend"><div><strong>#LaunchRooms</strong><br><span>42.8K posts</span></div><span>↗</span></li>
+            <li class="trend"><div><strong>#CalmFeeds</strong><br><span>31.2K posts</span></div><span>↗</span></li>
+            <li class="trend"><div><strong>#CreatorCare</strong><br><span>18.6K posts</span></div><span>↗</span></li>
+            <li class="trend"><div><strong>#ReplyQuality</strong><br><span>9.4K posts</span></div><span>↗</span></li>
+          </ul>
+        </section>
+        <section class="panel" aria-labelledby="suggestedTitle">
+          <div class="panel-head">
+            <h2 class="section-heading" id="suggestedTitle">Suggested people</h2>
+          </div>
+          <ul class="suggestions">
+            <li class="suggestion"><span class="mini-avatar">JL</span><div><strong>June Lee</strong><br><span>Social systems lead</span></div><button class="button" type="button">Follow</button></li>
+            <li class="suggestion"><span class="mini-avatar">OC</span><div><strong>Omar Cruz</strong><br><span>Community research</span></div><button class="button" type="button">Follow</button></li>
+            <li class="suggestion"><span class="mini-avatar">SV</span><div><strong>Sia Vale</strong><br><span>Messaging design</span></div><button class="button" type="button">Follow</button></li>
+          </ul>
+        </section>
+      </aside>
+    </main>
+    <footer class="footer">
+      Wave Social Platform — designed by Northstar Interface Studio
+    </footer>
+  </div>
+  <button class="chat-toggle" type="button" aria-label="Open messages" aria-controls="chatDrawer" aria-expanded="false" data-open-chat>
+    <svg aria-hidden="true" width="25" height="25" viewBox="0 0 24 24" fill="none">
+      <path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+    </svg>
+  </button>
+  <div class="scrim" data-scrim></div>
+  <aside class="mobile-drawer" id="mobileDrawer" aria-label="Mobile menu" aria-hidden="true">
+    <div class="drawer-head">
+      <a class="brand" href="#"><span class="brand-mark">W</span><span>Wave</span></a>
+      <button class="icon-button" type="button" aria-label="Close menu" data-close-drawer>×</button>
+    </div>
+    <nav class="drawer-nav" aria-label="Mobile site">
+      <a class="nav-link" href="#feed">Feed</a>
+      <a class="nav-link" href="#explore">Explore</a>
+      <a class="nav-link" href="#messages">Messages</a>
+      <a class="nav-link" href="#notifications">Notifications</a>
+      <a class="nav-link" href="#profile">Profile</a>
+    </nav>
+    <button class="button primary" type="button" data-open-chat>Open messages</button>
+  </aside>
+  <aside class="chat-drawer" id="chatDrawer" aria-label="Messaging panel" aria-hidden="true">
+    <div class="chat-head">
+      <div>
+        <h2 class="section-heading" id="messages">Messages</h2>
+        <span class="meta">3 active conversations</span>
+      </div>
+      <button class="icon-button" type="button" aria-label="Close messages" data-close-chat>×</button>
+    </div>
+    <div class="panel-head">
+      <span class="status-pill"><span class="dot"></span>Online</span>
+      <button class="button" type="button">New chat</button>
+    </div>
+    <div class="chat-body">
+      <ul class="conversation-list" aria-label="Conversation list">
+        <li class="conversation active"><span class="mini-avatar">AR</span><div><strong>Ari</strong><span>Draft looks sharp</span></div></li>
+        <li class="conversation"><span class="mini-avatar">MK</span><div><strong>Mika</strong><span>Host guide ready</span></div></li>
+        <li class="conversation"><span class="mini-avatar">RJ</span><div><strong>Rin</strong><span>Explore metrics in</span></div></li>
+      </ul>
+      <div class="thread" aria-label="Message thread">
+        <p class="bubble">The profile preview is testing well. People understand the social proof in a single glance.</p>
+        <p class="bubble me">Great. I tightened the follow path and kept the activity stats visible above the fold.</p>
+        <p class="bubble">Perfect. Can you send the post composer state next?</p>
+      </div>
+    </div>
+    <form class="chat-form">
+      <input type="text" aria-label="Write a message" value="">
+      <button class="button cyan" type="submit">Send</button>
+    </form>
+  </aside>
+  <script>
+    const body = document.body;
+    const postText = document.querySelector("#postText");
+    const charCount = document.querySelector("#charCount");
+    const notesButton = document.querySelector("[data-toggle-notes]");
+    const notesMenu = document.querySelector("#notificationMenu");
+    const drawer = document.querySelector("#mobileDrawer");
+    const chat = document.querySelector("#chatDrawer");
+    const scrim = document.querySelector("[data-scrim]");
+    const drawerOpeners = document.querySelectorAll("[data-open-drawer]");
+    const drawerClosers = document.querySelectorAll("[data-close-drawer]");
+    const chatOpeners = document.querySelectorAll("[data-open-chat]");
+    const chatClosers = document.querySelectorAll("[data-close-chat]");
+    function updateCount() {
+      charCount.textContent = `${postText.value.length} / ${postText.maxLength}`;    }
+    function setExpanded(control, expanded) {
+      control.setAttribute("aria-expanded", String(expanded));    }
+    function openDrawer() {
+      drawer.classList.add("open");
+      scrim.classList.add("open");
+      drawer.setAttribute("aria-hidden", "false");
+      body.classList.add("drawer-open");
+      drawerOpeners.forEach((button) => setExpanded(button, true));
+      drawer.querySelector("a, button").focus();    }
+    function closeDrawer() {
+      drawer.classList.remove("open");
+      drawer.setAttribute("aria-hidden", "true");
+      body.classList.remove("drawer-open");
+      drawerOpeners.forEach((button) => setExpanded(button, false));
+      if (!chat.classList.contains("open")) {
+        scrim.classList.remove("open");      }    }
+    function openChat() {
+      chat.classList.add("open");
+      scrim.classList.add("open");
+      chat.setAttribute("aria-hidden", "false");
+      body.classList.add("chat-open");
+      chatOpeners.forEach((button) => setExpanded(button, true));
+      chat.querySelector("button, input").focus();    }
+    function closeChat() {
+      chat.classList.remove("open");
+      chat.setAttribute("aria-hidden", "true");
+      body.classList.remove("chat-open");
+      chatOpeners.forEach((button) => setExpanded(button, false));
+      if (!drawer.classList.contains("open")) {
+        scrim.classList.remove("open");      }    }
+    postText.addEventListener("input", updateCount);
+    notesButton.addEventListener("click", () => {
+      const isOpen = notesMenu.classList.toggle("open");
+      setExpanded(notesButton, isOpen);    });
+    drawerOpeners.forEach((button) => button.addEventListener("click", openDrawer));
+    drawerClosers.forEach((button) => button.addEventListener("click", closeDrawer));
+    chatOpeners.forEach((button) => button.addEventListener("click", openChat));
+    chatClosers.forEach((button) => button.addEventListener("click", closeChat));
+    scrim.addEventListener("click", () => {
+      closeDrawer();
+      closeChat();    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        notesMenu.classList.remove("open");
+        setExpanded(notesButton, false);
+        closeDrawer();
+        closeChat();      }    });
+    document.addEventListener("click", (event) => {
+      if (!event.target.closest(".notifications")) {
+        notesMenu.classList.remove("open");
+        setExpanded(notesButton, false);      }    });
+    document.querySelectorAll(".drawer-nav a").forEach((link) => {
+      link.addEventListener("click", closeDrawer);    });
+    document.querySelector(".chat-form").addEventListener("submit", (event) => {
+      event.preventDefault();
+      const input = event.currentTarget.querySelector("input");
+      const text = input.value.trim();
+      if (!text) return;
+      const bubble = document.createElement("p");
+      bubble.className = "bubble me";
+      bubble.textContent = text;
+      document.querySelector(".thread").appendChild(bubble);
+      input.value = "";
+      bubble.scrollIntoView({ block: "nearest" });    });
+    updateCount();
+  </script>
+</body>
+</html>
