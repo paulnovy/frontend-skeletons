@@ -1,0 +1,1499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bolt Logistics Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --cloud-2: rgba(246, 248, 252, 0.78);
+      --cloud-3: rgba(246, 248, 252, 0.92);
+      --ink: #19212B;
+      --ink-2: rgba(25, 33, 43, 0.72);
+      --ink-3: rgba(25, 33, 43, 0.54);
+      --ink-4: rgba(25, 33, 43, 0.12);
+      --ink-5: rgba(25, 33, 43, 0.06);
+      --indigo: #4F46E5;
+      --indigo-2: rgba(79, 70, 229, 0.14);
+      --indigo-3: rgba(79, 70, 229, 0.32);
+      --cyan: #06B6D4;
+      --cyan-2: rgba(6, 182, 212, 0.15);
+      --cyan-3: rgba(6, 182, 212, 0.34);
+      --lime: #A3E635;
+      --lime-2: rgba(163, 230, 53, 0.18);
+      --lime-3: rgba(163, 230, 53, 0.42);
+      --coral: #FB7185;
+      --coral-2: rgba(251, 113, 133, 0.16);
+      --coral-3: rgba(251, 113, 133, 0.34);
+      --panel: rgba(255, 255, 255, 0.76);
+      --line: rgba(25, 33, 43, 0.10);
+      --shadow: 0 20px 60px rgba(25, 33, 43, 0.10);
+      --radius: 8px;
+      --nav-height: 76px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 16% 0%, rgba(6, 182, 212, 0.11), transparent 34%),
+        radial-gradient(circle at 86% 4%, rgba(79, 70, 229, 0.11), transparent 38%),
+        var(--cloud);
+      color: var(--ink);
+      font-family: "Inter", system-ui, sans-serif;
+      line-height: 1.5;
+    }
+
+    body.drawer-open {
+      overflow: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 3px;
+    }
+
+    .skip-link {
+      position: fixed;
+      top: 12px;
+      left: 12px;
+      z-index: 100;
+      transform: translateY(-140%);
+      background: var(--ink);
+      color: var(--cloud);
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      font-weight: 800;
+      transition: transform 160ms ease;
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    .page-shell {
+      width: min(1480px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      background: rgba(246, 248, 252, 0.84);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .topbar-inner {
+      min-height: var(--nav-height);
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: max-content;
+      font-family: "Manrope", system-ui, sans-serif;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      color: var(--cloud);
+      background: var(--ink);
+      box-shadow: inset 0 0 0 2px rgba(246, 248, 252, 0.12);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .brand-mark::before {
+      content: "";
+      width: 18px;
+      height: 18px;
+      border: 4px solid var(--cyan);
+      border-left-color: var(--lime);
+      border-bottom-color: var(--indigo);
+      transform: rotate(45deg);
+      border-radius: 4px;
+    }
+
+    .brand-copy {
+      display: grid;
+      gap: 1px;
+    }
+
+    .brand-name {
+      font-size: 1.06rem;
+      line-height: 1.1;
+    }
+
+    .brand-mode {
+      font-size: 0.72rem;
+      color: var(--ink-3);
+      font-family: "Inter", system-ui, sans-serif;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .desktop-nav {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: 10px;
+      flex: 1;
+    }
+
+    .desktop-nav a,
+    .drawer-nav a {
+      display: inline-flex;
+      align-items: center;
+      min-height: 40px;
+      padding: 0 12px;
+      border-radius: var(--radius);
+      color: var(--ink-2);
+      font-weight: 700;
+      font-size: 0.91rem;
+    }
+
+    .desktop-nav a:hover,
+    .drawer-nav a:hover {
+      color: var(--ink);
+      background: var(--ink-5);
+    }
+
+    .desktop-nav a[aria-current="page"] {
+      color: var(--indigo);
+      background: var(--indigo-2);
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+    }
+
+    .search-field {
+      width: min(300px, 26vw);
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 0 13px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.78);
+    }
+
+    .search-field svg {
+      width: 18px;
+      height: 18px;
+      color: var(--ink-3);
+      flex: 0 0 auto;
+    }
+
+    .search-field input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+      font-weight: 650;
+    }
+
+    .icon-button {
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.78);
+      color: var(--ink);
+      display: inline-grid;
+      place-items: center;
+      position: relative;
+    }
+
+    .icon-button:hover {
+      background: var(--cloud);
+    }
+
+    .icon-button svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .badge-dot {
+      position: absolute;
+      top: 6px;
+      right: 7px;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      padding: 0 5px;
+      background: var(--coral);
+      color: var(--cloud);
+      font-size: 0.68rem;
+      font-weight: 900;
+      border: 2px solid var(--cloud);
+    }
+
+    .hamburger {
+      display: none;
+    }
+
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      background: rgba(25, 33, 43, 0.34);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+    }
+
+    .drawer {
+      position: fixed;
+      inset: 0 0 0 auto;
+      z-index: 80;
+      width: min(360px, calc(100vw - 32px));
+      background: var(--cloud);
+      border-left: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      transform: translateX(110%);
+      transition: transform 220ms ease;
+      display: flex;
+      flex-direction: column;
+      padding: 18px;
+    }
+
+    body.drawer-open .drawer-backdrop {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    body.drawer-open .drawer {
+      transform: translateX(0);
+    }
+
+    .drawer-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .drawer-nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    .drawer-search {
+      width: 100%;
+      margin: 18px 0;
+    }
+
+    main {
+      padding: 28px 0 26px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(320px, 0.8fr);
+      gap: 18px;
+      align-items: stretch;
+      margin-bottom: 18px;
+    }
+
+    .command-panel {
+      background: var(--ink);
+      color: var(--cloud);
+      border-radius: var(--radius);
+      padding: clamp(24px, 4vw, 42px);
+      position: relative;
+      overflow: hidden;
+      min-height: 312px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: var(--shadow);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      border-radius: 999px;
+      padding: 7px 11px;
+      color: var(--cloud);
+      background: rgba(246, 248, 252, 0.10);
+      font-weight: 850;
+      font-size: 0.78rem;
+    }
+
+    .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--cyan);
+      box-shadow: 0 0 0 7px rgba(6, 182, 212, 0.17);
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      font-family: "Manrope", system-ui, sans-serif;
+      letter-spacing: 0;
+      line-height: 1.05;
+    }
+
+    h1 {
+      max-width: 720px;
+      margin-top: 28px;
+      font-size: clamp(2.15rem, 5vw, 5.4rem);
+    }
+
+    .hero-copy {
+      max-width: 700px;
+      margin: 18px 0 0;
+      color: rgba(246, 248, 252, 0.74);
+      font-size: clamp(1rem, 1.6vw, 1.18rem);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 10px;
+      margin-top: 28px;
+    }
+
+    .button {
+      min-height: 46px;
+      border: 0;
+      border-radius: var(--radius);
+      padding: 0 15px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      font-weight: 850;
+      color: var(--ink);
+      background: var(--lime);
+    }
+
+    .button.secondary {
+      color: var(--cloud);
+      background: rgba(246, 248, 252, 0.12);
+      border: 1px solid rgba(246, 248, 252, 0.18);
+    }
+
+    .button svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .live-panel {
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.84);
+      border: 1px solid var(--line);
+      box-shadow: var(--shadow);
+      padding: 20px;
+      display: grid;
+      gap: 17px;
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .panel-title p {
+      margin: 7px 0 0;
+      color: var(--ink-3);
+      font-weight: 650;
+      font-size: 0.92rem;
+    }
+
+    .load-meter {
+      display: grid;
+      gap: 12px;
+      padding: 16px;
+      background: var(--cloud-3);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    .load-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      color: var(--ink-2);
+      font-weight: 800;
+      font-size: 0.85rem;
+    }
+
+    .meter-track {
+      height: 12px;
+      background: var(--ink-5);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .meter-fill {
+      width: var(--value);
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--indigo), var(--cyan));
+    }
+
+    .section {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: 0 16px 42px rgba(25, 33, 43, 0.06);
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 22px 22px 0;
+    }
+
+    .section-header p {
+      margin: 8px 0 0;
+      color: var(--ink-3);
+      font-weight: 650;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 32px;
+      border-radius: 999px;
+      padding: 0 10px;
+      font-weight: 850;
+      font-size: 0.8rem;
+      color: var(--ink);
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .status-chip.live {
+      background: var(--cyan-2);
+      border-color: var(--cyan-3);
+    }
+
+    .status-chip.ok {
+      background: var(--lime-2);
+      border-color: var(--lime-3);
+    }
+
+    .status-chip.warning {
+      background: var(--coral-2);
+      border-color: var(--coral-3);
+    }
+
+    .status-chip.indigo {
+      background: var(--indigo-2);
+      border-color: var(--indigo-3);
+    }
+
+    .status-chip::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: currentColor;
+    }
+
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .kpi-card {
+      border-radius: var(--radius);
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid var(--line);
+      box-shadow: 0 16px 36px rgba(25, 33, 43, 0.06);
+      min-width: 0;
+    }
+
+    .kpi-label {
+      color: var(--ink-3);
+      font-size: 0.82rem;
+      font-weight: 850;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .kpi-value {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-top: 8px;
+      font-family: "Manrope", system-ui, sans-serif;
+      font-size: clamp(1.9rem, 4vw, 3rem);
+      line-height: 1;
+      font-weight: 800;
+    }
+
+    .kpi-value span {
+      color: var(--ink-3);
+      font-size: 0.86rem;
+      font-family: "Inter", system-ui, sans-serif;
+      font-weight: 850;
+    }
+
+    .kpi-note {
+      margin-top: 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      color: var(--ink-2);
+      font-weight: 800;
+      font-size: 0.86rem;
+    }
+
+    .mini-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--lime);
+    }
+
+    .mini-dot.cyan {
+      background: var(--cyan);
+    }
+
+    .mini-dot.indigo {
+      background: var(--indigo);
+    }
+
+    .mini-dot.coral {
+      background: var(--coral);
+    }
+
+    .tracking-table-wrap {
+      overflow-x: auto;
+      padding: 18px 22px 22px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 820px;
+    }
+
+    th,
+    td {
+      padding: 15px 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      vertical-align: middle;
+    }
+
+    th {
+      color: var(--ink-3);
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      font-weight: 900;
+    }
+
+    td {
+      font-weight: 720;
+      color: var(--ink-2);
+    }
+
+    tbody tr:hover {
+      background: var(--cloud-2);
+    }
+
+    .tracking-id {
+      color: var(--ink);
+      font-weight: 900;
+    }
+
+    .route-cell {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      min-width: 230px;
+      color: var(--ink);
+    }
+
+    .route-arrow {
+      width: 28px;
+      height: 2px;
+      background: var(--ink-4);
+      position: relative;
+      flex: 0 0 auto;
+    }
+
+    .route-arrow::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: -4px;
+      width: 9px;
+      height: 9px;
+      border-top: 2px solid var(--ink-4);
+      border-right: 2px solid var(--ink-4);
+      transform: rotate(45deg);
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(360px, 0.82fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .warehouse-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      padding: 18px 22px 22px;
+    }
+
+    .warehouse-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--cloud-3);
+      padding: 16px;
+    }
+
+    .warehouse-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: flex-start;
+    }
+
+    .warehouse-card h3 {
+      font-size: 1.05rem;
+    }
+
+    .warehouse-card p {
+      margin: 4px 0 0;
+      color: var(--ink-3);
+      font-weight: 720;
+      font-size: 0.88rem;
+    }
+
+    .shipment-count {
+      min-width: 58px;
+      min-height: 44px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--cloud);
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+    }
+
+    .capacity {
+      margin-top: 18px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .capacity-label {
+      display: flex;
+      justify-content: space-between;
+      color: var(--ink-2);
+      font-size: 0.82rem;
+      font-weight: 850;
+    }
+
+    .capacity-track {
+      height: 10px;
+      border-radius: 999px;
+      background: var(--ink-5);
+      overflow: hidden;
+    }
+
+    .capacity-fill {
+      width: var(--capacity);
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--indigo), var(--cyan));
+    }
+
+    .map-section {
+      min-height: 420px;
+    }
+
+    .route-map {
+      margin: 18px 22px 22px;
+      min-height: 326px;
+      border-radius: var(--radius);
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(rgba(25, 33, 43, 0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(25, 33, 43, 0.055) 1px, transparent 1px),
+        rgba(246, 248, 252, 0.86);
+      background-size: 34px 34px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .map-route {
+      position: absolute;
+      height: 3px;
+      transform-origin: left center;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--indigo), var(--cyan));
+      box-shadow: 0 0 0 6px rgba(6, 182, 212, 0.08);
+    }
+
+    .map-route.r1 {
+      width: 56%;
+      left: 15%;
+      top: 28%;
+      transform: rotate(14deg);
+    }
+
+    .map-route.r2 {
+      width: 44%;
+      left: 33%;
+      top: 62%;
+      transform: rotate(-18deg);
+      background: linear-gradient(90deg, var(--cyan), var(--lime));
+    }
+
+    .map-route.r3 {
+      width: 38%;
+      left: 18%;
+      top: 76%;
+      transform: rotate(-42deg);
+      background: linear-gradient(90deg, var(--indigo), var(--coral));
+    }
+
+    .map-node {
+      position: absolute;
+      display: grid;
+      gap: 7px;
+      justify-items: center;
+      transform: translate(-50%, -50%);
+      font-weight: 900;
+      color: var(--ink);
+    }
+
+    .map-node::before {
+      content: "";
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      border: 4px solid var(--cloud);
+      background: var(--indigo);
+      box-shadow: 0 0 0 7px var(--indigo-2), 0 8px 22px rgba(25, 33, 43, 0.18);
+    }
+
+    .map-node.destination::before {
+      background: var(--cyan);
+      box-shadow: 0 0 0 7px var(--cyan-2), 0 8px 22px rgba(25, 33, 43, 0.18);
+    }
+
+    .map-node.issue::before {
+      background: var(--coral);
+      box-shadow: 0 0 0 7px var(--coral-2), 0 8px 22px rgba(25, 33, 43, 0.18);
+    }
+
+    .node-a { left: 15%; top: 28%; } .node-b { left: 70%; top: 42%; } .node-c { left: 33%; top: 62%; }
+    .node-d { left: 77%; top: 48%; } .node-e { left: 18%; top: 76%; } .node-f { left: 45%; top: 42%; }
+
+    .map-label {
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid var(--line);
+      font-size: 0.75rem;
+      white-space: nowrap;
+    }
+
+    .analytics {
+      padding: 18px 22px 22px;
+    }
+
+    .chart {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(42px, 1fr));
+      align-items: end;
+      gap: 12px;
+      min-height: 270px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 18px 16px 12px;
+      background: var(--cloud-3);
+    }
+
+    .bar-group {
+      height: 220px;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .bars {
+      display: flex;
+      align-items: end;
+      justify-content: center;
+      gap: 5px;
+      height: 100%;
+    }
+
+    .bar {
+      width: min(18px, 42%);
+      height: var(--bar);
+      min-height: 18px;
+      border-radius: 999px 999px 4px 4px;
+      background: var(--cyan);
+    }
+
+    .bar.late {
+      background: var(--coral);
+    }
+
+    .bar-label {
+      text-align: center;
+      color: var(--ink-3);
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    .chart-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 14px;
+      color: var(--ink-2);
+      font-weight: 800;
+      font-size: 0.88rem;
+    }
+
+    .legend-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .legend-swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--cyan);
+    }
+
+    .legend-swatch.late {
+      background: var(--coral);
+    }
+
+    .exceptions {
+      padding: 18px 22px 22px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .exception-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--cloud-3);
+      padding: 14px;
+    }
+
+    .exception-main {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .exception-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      background: var(--coral-2);
+      color: var(--coral);
+      font-weight: 900;
+      flex: 0 0 auto;
+    }
+
+    .exception-copy strong {
+      display: block;
+      line-height: 1.2;
+    }
+
+    .exception-copy span {
+      color: var(--ink-3);
+      font-size: 0.84rem;
+      font-weight: 760;
+    }
+
+    .timestamp {
+      color: var(--ink-3);
+      font-size: 0.8rem;
+      font-weight: 850;
+      white-space: nowrap;
+    }
+
+    .site-footer {
+      margin: 20px 0 26px;
+      padding: 18px 0 0;
+      color: var(--ink-3);
+      font-weight: 750;
+      text-align: center;
+    }
+
+    @media (max-width: 1180px) {
+      .hero-grid,
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .search-field {
+        width: 220px;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .desktop-nav,
+      .topbar-actions .search-field {
+        display: none;
+      }
+
+      .hamburger {
+        display: inline-grid;
+      }
+
+      .warehouse-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-header {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .page-shell {
+        width: min(100% - 20px, 1480px);
+      }
+
+      main {
+        padding-top: 16px;
+      }
+
+      .brand-mode {
+        display: none;
+      }
+
+      .command-panel {
+        min-height: 420px;
+      }
+
+      .kpi-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .chart {
+        grid-template-columns: repeat(7, minmax(34px, 1fr));
+        gap: 6px;
+        padding-inline: 10px;
+      }
+
+      .bar {
+        width: 13px;
+      }
+
+      .exception-item {
+        grid-template-columns: 1fr;
+      }
+
+      .timestamp {
+        white-space: normal;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to operations</a>
+  <header class="topbar">
+    <div class="page-shell topbar-inner">
+      <a class="brand" href="#" aria-label="Bolt Logistics home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-copy">
+          <span class="brand-name">Bolt Logistics</span>
+          <span class="brand-mode">Control tower</span>
+        </span>
+      </a>
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="#dashboard" aria-current="page">Dashboard</a>
+        <a href="#shipments">Shipments</a>
+        <a href="#warehouses">Warehouses</a>
+        <a href="#routes">Routes</a>
+        <a href="#analytics">Analytics</a>
+      </nav>
+      <div class="topbar-actions">
+        <label class="search-field">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+            <path d="M10.8 18.1a7.3 7.3 0 1 1 0-14.6 7.3 7.3 0 0 1 0 14.6Zm5.2-2.1 4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <input type="search" aria-label="Search shipments">
+        </label>
+        <button class="icon-button" type="button" aria-label="Notifications, 4 active alerts">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+            <path d="M18 9a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+            <path d="M10 21h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span class="badge-dot">4</span>
+        </button>
+        <button class="icon-button hamburger" id="menuButton" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileDrawer">
+          <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+            <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <div class="drawer-backdrop" id="drawerBackdrop" tabindex="-1" aria-hidden="true"></div>
+  <aside class="drawer" id="mobileDrawer" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="drawer-head">
+      <a class="brand" href="#" aria-label="Bolt Logistics home">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-copy">
+          <span class="brand-name">Bolt Logistics</span>
+          <span class="brand-mode">Control tower</span>
+        </span>
+      </a>
+      <button class="icon-button" id="closeDrawer" type="button" aria-label="Close navigation menu">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+          <path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <nav class="drawer-nav" aria-label="Mobile primary navigation">
+      <a href="#dashboard">Dashboard</a>
+      <a href="#shipments">Shipments</a>
+      <a href="#warehouses">Warehouses</a>
+      <a href="#routes">Routes</a>
+      <a href="#analytics">Analytics</a>
+    </nav>
+    <label class="search-field drawer-search">
+      <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+        <path d="M10.8 18.1a7.3 7.3 0 1 1 0-14.6 7.3 7.3 0 0 1 0 14.6Zm5.2-2.1 4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <input type="search" aria-label="Search shipments in mobile menu">
+    </label>
+  </aside>
+  <main id="main" class="page-shell">
+    <section class="hero-grid" id="dashboard" aria-labelledby="dashboardTitle">
+      <div class="command-panel">
+        <div>
+          <span class="eyebrow"><span class="pulse" aria-hidden="true"></span>Live shipment network</span>
+          <h1 id="dashboardTitle">Supply chain control without the static.</h1>
+          <p class="hero-copy">Track high-priority freight, warehouse capacity, lane health, and delivery exceptions from one focused operating desk.</p>
+          <div class="hero-actions">
+            <a class="button" href="#shipments">
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                <path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Review shipments
+            </a>
+            <a class="button secondary" href="#exceptions">
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                <path d="M12 8v5m0 4h.01M10.3 3.9 2.6 17.2A2 2 0 0 0 4.3 20h15.4a2 2 0 0 0 1.7-2.8L13.7 3.9a2 2 0 0 0-3.4 0Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Triage exceptions
+            </a>
+          </div>
+        </div>
+      </div>
+      <aside class="live-panel" aria-label="Live network summary">
+        <div class="panel-title">
+          <div>
+            <h2>Network pulse</h2>
+            <p>Updated 3 minutes ago across 18 active lanes.</p>
+          </div>
+          <span class="status-chip live">Live</span>
+        </div>
+        <div class="load-meter">
+          <div class="load-row">
+            <span>Linehaul utilization</span>
+            <strong>82%</strong>
+          </div>
+          <div class="meter-track"><div class="meter-fill" style="--value: 82%"></div></div>
+        </div>
+      </aside>
+    </section>
+    <section class="kpi-strip" aria-label="Key performance indicators">
+      <article class="kpi-card">
+        <div class="kpi-label">Shipments in transit</div>
+        <div class="kpi-value">1,284 <span>loads</span></div>
+        <div class="kpi-note"><span class="mini-dot cyan"></span>148 expedited</div>
+      </article>
+      <article class="kpi-card">
+        <div class="kpi-label">On-time delivery</div>
+        <div class="kpi-value">96.8 <span>%</span></div>
+        <div class="kpi-note"><span class="mini-dot"></span>2.1% above target</div>
+      </article>
+      <article class="kpi-card">
+        <div class="kpi-label">Avg transit time</div>
+        <div class="kpi-value">37.4 <span>hrs</span></div>
+        <div class="kpi-note"><span class="mini-dot indigo"></span>4 lanes improving</div>
+      </article>
+      <article class="kpi-card">
+        <div class="kpi-label">Active exceptions</div>
+        <div class="kpi-value">24 <span>open</span></div>
+        <div class="kpi-note"><span class="mini-dot coral"></span>6 high severity</div>
+      </article>
+    </section>
+    <section class="section" id="shipments" aria-labelledby="shipmentsTitle">
+      <div class="section-header">
+        <div>
+          <h2 id="shipmentsTitle">Shipment tracking</h2>
+          <p>Priority loads sorted by operational impact and nearest ETA.</p>
+        </div>
+        <span class="status-chip indigo">Dispatch view</span>
+      </div>
+      <div class="tracking-table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Tracking ID</th>
+              <th scope="col">Origin to destination</th>
+              <th scope="col">Status</th>
+              <th scope="col">ETA</th>
+              <th scope="col">Carrier</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="tracking-id">BLT-48291</td>
+              <td><span class="route-cell">Chicago, IL <span class="route-arrow"></span> Newark, NJ</span></td>
+              <td><span class="status-chip live">In Transit</span></td>
+              <td>Today, 16:30</td>
+              <td>NorthLine Freight</td>
+            </tr>
+            <tr>
+              <td class="tracking-id">BLT-48304</td>
+              <td><span class="route-cell">Dallas, TX <span class="route-arrow"></span> Phoenix, AZ</span></td>
+              <td><span class="status-chip ok">Delivered</span></td>
+              <td>Today, 10:12</td>
+              <td>Vector Haul</td>
+            </tr>
+            <tr>
+              <td class="tracking-id">BLT-48316</td>
+              <td><span class="route-cell">Seattle, WA <span class="route-arrow"></span> Denver, CO</span></td>
+              <td><span class="status-chip warning">Exception</span></td>
+              <td>Tomorrow, 09:40</td>
+              <td>Summit Cargo</td>
+            </tr>
+            <tr>
+              <td class="tracking-id">BLT-48322</td>
+              <td><span class="route-cell">Toronto, ON <span class="route-arrow"></span> Boston, MA</span></td>
+              <td><span class="status-chip live">In Transit</span></td>
+              <td>Today, 21:15</td>
+              <td>BridgeRoute</td>
+            </tr>
+            <tr>
+              <td class="tracking-id">BLT-48337</td>
+              <td><span class="route-cell">Atlanta, GA <span class="route-arrow"></span> Miami, FL</span></td>
+              <td><span class="status-chip live">In Transit</span></td>
+              <td>Tomorrow, 06:05</td>
+              <td>Coastal Express</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <div class="content-grid">
+      <section class="section" id="warehouses" aria-labelledby="warehousesTitle">
+        <div class="section-header">
+          <div>
+            <h2 id="warehousesTitle">Warehouse overview</h2>
+            <p>Capacity, location, and shipment load for active fulfillment hubs.</p>
+          </div>
+          <span class="status-chip ok">Healthy</span>
+        </div>
+        <div class="warehouse-grid">
+          <article class="warehouse-card">
+            <div class="warehouse-top">
+              <div>
+                <h3>ORD North Hub</h3>
+                <p>Chicago, Illinois</p>
+              </div>
+              <span class="shipment-count">214</span>
+            </div>
+            <div class="capacity">
+              <div class="capacity-label"><span>Capacity</span><strong>78%</strong></div>
+              <div class="capacity-track"><div class="capacity-fill" style="--capacity: 78%"></div></div>
+            </div>
+          </article>
+          <article class="warehouse-card">
+            <div class="warehouse-top">
+              <div>
+                <h3>DFW Crossdock</h3>
+                <p>Dallas, Texas</p>
+              </div>
+              <span class="shipment-count">188</span>
+            </div>
+            <div class="capacity">
+              <div class="capacity-label"><span>Capacity</span><strong>64%</strong></div>
+              <div class="capacity-track"><div class="capacity-fill" style="--capacity: 64%"></div></div>
+            </div>
+          </article>
+          <article class="warehouse-card">
+            <div class="warehouse-top">
+              <div>
+                <h3>EWR Metro Gate</h3>
+                <p>Newark, New Jersey</p>
+              </div>
+              <span class="shipment-count">146</span>
+            </div>
+            <div class="capacity">
+              <div class="capacity-label"><span>Capacity</span><strong>91%</strong></div>
+              <div class="capacity-track"><div class="capacity-fill" style="--capacity: 91%"></div></div>
+            </div>
+          </article>
+          <article class="warehouse-card">
+            <div class="warehouse-top">
+              <div>
+                <h3>SEA Cold Chain</h3>
+                <p>Seattle, Washington</p>
+              </div>
+              <span class="shipment-count">92</span>
+            </div>
+            <div class="capacity">
+              <div class="capacity-label"><span>Capacity</span><strong>57%</strong></div>
+              <div class="capacity-track"><div class="capacity-fill" style="--capacity: 57%"></div></div>
+            </div>
+          </article>
+        </div>
+      </section>
+      <section class="section map-section" id="routes" aria-labelledby="routesTitle">
+        <div class="section-header">
+          <div>
+            <h2 id="routesTitle">Route map</h2>
+            <p>Lane visualization for origin, destination, and exception nodes.</p>
+          </div>
+          <span class="status-chip live">18 lanes</span>
+        </div>
+        <div class="route-map" role="img" aria-label="Simplified route map with active shipment lanes">
+          <span class="map-route r1"></span>
+          <span class="map-route r2"></span>
+          <span class="map-route r3"></span>
+          <span class="map-node node-a"><span class="map-label">ORD</span></span>
+          <span class="map-node destination node-b"><span class="map-label">EWR</span></span>
+          <span class="map-node node-c"><span class="map-label">DFW</span></span>
+          <span class="map-node destination node-d"><span class="map-label">MIA</span></span>
+          <span class="map-node node-e"><span class="map-label">SEA</span></span>
+          <span class="map-node issue node-f"><span class="map-label">DEN</span></span>
+        </div>
+      </section>
+    </div>
+    <div class="content-grid">
+      <section class="section" id="analytics" aria-labelledby="analyticsTitle">
+        <div class="section-header">
+          <div>
+            <h2 id="analyticsTitle">Delivery analytics</h2>
+            <p>On-time and late deliveries across the last seven operating days.</p>
+          </div>
+          <span class="status-chip indigo">7 day trend</span>
+        </div>
+        <div class="analytics">
+          <div class="chart" aria-label="Bar chart of on-time versus late deliveries">
+            <div class="bar-group">
+              <div class="bars"><span class="bar" style="--bar: 86%"></span><span class="bar late" style="--bar: 18%"></span></div>
+              <span class="bar-label">Thu</span>
+            </div>
+            <div class="bar-group">
+              <div class="bars"><span class="bar" style="--bar: 76%"></span><span class="bar late" style="--bar: 24%"></span></div>
+              <span class="bar-label">Fri</span>
+            </div>
+            <div class="bar-group">
+              <div class="bars"><span class="bar" style="--bar: 68%"></span><span class="bar late" style="--bar: 29%"></span></div>
+              <span class="bar-label">Sat</span>
+            </div>
+            <div class="bar-group">
+              <div class="bars"><span class="bar" style="--bar: 82%"></span><span class="bar late" style="--bar: 16%"></span></div>
+              <span class="bar-label">Sun</span>
+            </div>
+            <div class="bar-group">
+              <div class="bars"><span class="bar" style="--bar: 92%"></span><span class="bar late" style="--bar: 12%"></span></div>
+              <span class="bar-label">Mon</span>
+            </div>
+            <div class="bar-group">
+              <div class="bars"><span class="bar" style="--bar: 88%"></span><span class="bar late" style="--bar: 15%"></span></div>
+              <span class="bar-label">Tue</span>
+            </div>
+            <div class="bar-group">
+              <div class="bars"><span class="bar" style="--bar: 95%"></span><span class="bar late" style="--bar: 9%"></span></div>
+              <span class="bar-label">Wed</span>
+            </div>
+          </div>
+          <div class="chart-legend" aria-label="Chart legend">
+            <span class="legend-item"><span class="legend-swatch"></span>On-time deliveries</span>
+            <span class="legend-item"><span class="legend-swatch late"></span>Late deliveries</span>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="exceptions" aria-labelledby="exceptionsTitle">
+        <div class="section-header">
+          <div>
+            <h2 id="exceptionsTitle">Exception alerts</h2>
+            <p>Open delivery issues requiring dispatcher review.</p>
+          </div>
+          <span class="status-chip warning">Action needed</span>
+        </div>
+        <div class="exceptions">
+          <article class="exception-item">
+            <div class="exception-main">
+              <span class="exception-icon">D</span>
+              <div class="exception-copy"><strong>Delay on BLT-48316</strong><span>High severity lane disruption near Denver</span></div>
+            </div>
+            <span class="timestamp">12 minutes ago</span>
+          </article>
+          <article class="exception-item">
+            <div class="exception-main">
+              <span class="exception-icon">C</span>
+              <div class="exception-copy"><strong>Customs hold on BLT-48322</strong><span>Medium severity document match review</span></div>
+            </div>
+            <span class="timestamp">31 minutes ago</span>
+          </article>
+          <article class="exception-item">
+            <div class="exception-main">
+              <span class="exception-icon">A</span>
+              <div class="exception-copy"><strong>Damage scan on BLT-48287</strong><span>Critical severity pallet inspection request</span></div>
+            </div>
+            <span class="timestamp">47 minutes ago</span>
+          </article>
+        </div>
+      </section>
+    </div>
+  </main>
+  <footer class="page-shell site-footer">Bolt Logistics Dashboard — designed by Northstar Supply Studio</footer>
+  <script>
+    const menuButton = document.querySelector("#menuButton");
+    const drawer = document.querySelector("#mobileDrawer");
+    const closeDrawer = document.querySelector("#closeDrawer");
+    const backdrop = document.querySelector("#drawerBackdrop");
+    const drawerLinks = drawer.querySelectorAll("a");
+    const focusableSelector = "a, button, input";
+    let lastFocus = null;
+
+    function setDrawer(open) {
+      document.body.classList.toggle("drawer-open", open);
+      drawer.setAttribute("aria-hidden", String(!open));
+      menuButton.setAttribute("aria-expanded", String(open));
+      if (open) {
+        lastFocus = document.activeElement;
+        closeDrawer.focus();
+      } else if (lastFocus) {
+        lastFocus.focus();
+      }
+    }
+
+    menuButton.addEventListener("click", () => setDrawer(true));
+    closeDrawer.addEventListener("click", () => setDrawer(false));
+    backdrop.addEventListener("click", () => setDrawer(false));
+    drawerLinks.forEach((link) => link.addEventListener("click", () => setDrawer(false)));
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && document.body.classList.contains("drawer-open")) {
+        setDrawer(false);
+      }
+
+      if (event.key !== "Tab" || !document.body.classList.contains("drawer-open")) {
+        return;
+      }
+
+      const focusable = Array.from(drawer.querySelectorAll(focusableSelector));
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+  </script>
+</body>
+</html>
