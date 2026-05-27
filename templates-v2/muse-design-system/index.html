@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Muse Design System documentation with tokens, components, patterns, and guidelines.">
+  <title>Muse Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --indigo: #4F46E5;
+      --cyan: #06B6D4;
+      --lime: #A3E635;
+      --coral: #FB7185;
+      --cloud-soft: rgba(246, 248, 252, .72);
+      --cloud-strong: rgba(246, 248, 252, .96);
+      --ink-soft: rgba(25, 33, 43, .72);
+      --ink-line: rgba(25, 33, 43, .14);
+      --ink-faint: rgba(25, 33, 43, .06);
+      --indigo-soft: rgba(79, 70, 229, .12);
+      --cyan-soft: rgba(6, 182, 212, .14);
+      --lime-soft: rgba(163, 230, 53, .2);
+      --coral-soft: rgba(251, 113, 133, .16);
+      --shadow: 0 24px 70px rgba(25, 33, 43, .12);
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 22px;
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-10: 40px;
+      --space-12: 48px;
+      --space-16: 64px;
+      --max: 1180px;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 12% 8%, rgba(6, 182, 212, .08), transparent 28%),
+        radial-gradient(circle at 86% 0%, rgba(79, 70, 229, .11), transparent 26%),
+        var(--cloud);
+      color: var(--ink);
+      font-family: Inter, system-ui, sans-serif;
+      line-height: 1.6;
+    }
+    body.drawer-open {
+      overflow: hidden;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      font-family: Manrope, Inter, sans-serif;
+      line-height: 1.08;
+      letter-spacing: 0;
+      margin: 0;
+    }
+    p {
+      margin: 0;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    code, pre {
+      font-family: "SFMono-Regular", Consolas, monospace;
+    }
+    button,
+    input {
+      font: inherit;
+    }
+    :focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 3px;
+    }
+    .skip-link {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      z-index: 30;
+      transform: translateY(-150%);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      background: var(--ink);
+      color: var(--cloud);
+    }
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid var(--ink-line);
+      background: rgba(246, 248, 252, .88);
+      backdrop-filter: blur(18px);
+    }
+    .nav {
+      max-width: var(--max);
+      margin: 0 auto;
+      min-height: 76px;
+      padding: 0 var(--space-6);
+      display: flex;
+      align-items: center;
+      gap: var(--space-5);
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-3);
+      font-family: Manrope, Inter, sans-serif;
+      font-weight: 800;
+      font-size: 1.08rem;
+      white-space: nowrap;
+    }
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      background:
+        linear-gradient(135deg, var(--indigo), var(--cyan));
+      box-shadow: 0 12px 22px rgba(79, 70, 229, .24);
+      display: grid;
+      place-items: center;
+      color: var(--cloud);
+      font-weight: 800;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+      margin-left: auto;
+    }
+    .nav-links a {
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      color: var(--ink-soft);
+      font-weight: 700;
+      font-size: .9rem;
+    }
+    .nav-links a:hover {
+      background: var(--ink-faint);
+      color: var(--ink);
+    }
+    .search {
+      width: min(220px, 24vw);
+      position: relative;
+    }
+    .search input {
+      width: 100%;
+      border: 1px solid var(--ink-line);
+      border-radius: 999px;
+      padding: 10px 14px 10px 36px;
+      background: var(--cloud-strong);
+      color: var(--ink);
+    }
+    .search::before {
+      content: "⌕";
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--indigo);
+      font-weight: 800;
+    }
+    .version {
+      border: 1px solid rgba(79, 70, 229, .2);
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: var(--indigo-soft);
+      color: var(--indigo);
+      font-weight: 800;
+      font-size: .82rem;
+      white-space: nowrap;
+    }
+    .menu-button {
+      display: none;
+      margin-left: auto;
+      border: 1px solid var(--ink-line);
+      background: var(--cloud-strong);
+      color: var(--ink);
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+    }
+    .menu-lines,
+    .menu-lines::before,
+    .menu-lines::after {
+      display: block;
+      width: 18px;
+      height: 2px;
+      margin: 0 auto;
+      background: var(--ink);
+      border-radius: 2px;
+      transition: transform .2s ease, opacity .2s ease;
+    }
+    .menu-lines::before,
+    .menu-lines::after {
+      content: "";
+      position: relative;
+    }
+    .menu-lines::before {
+      top: -6px;
+    }
+    .menu-lines::after {
+      top: 4px;
+    }
+    .menu-button[aria-expanded="true"] .menu-lines {
+      transform: rotate(45deg);
+    }
+    .menu-button[aria-expanded="true"] .menu-lines::before {
+      transform: translateY(6px) rotate(90deg);
+    }
+    .menu-button[aria-expanded="true"] .menu-lines::after {
+      opacity: 0;
+    }
+    .drawer {
+      position: fixed;
+      inset: 0 0 0 auto;
+      z-index: 25;
+      width: min(86vw, 360px);
+      padding: 86px var(--space-6) var(--space-6);
+      background: var(--cloud);
+      border-left: 1px solid var(--ink-line);
+      box-shadow: var(--shadow);
+      transform: translateX(105%);
+      transition: transform .25s ease;
+    }
+    .drawer.open {
+      transform: translateX(0);
+    }
+    .drawer a {
+      display: block;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--ink-line);
+      font-weight: 800;
+    }
+    .scrim {
+      position: fixed;
+      inset: 0;
+      z-index: 24;
+      background: rgba(25, 33, 43, .42);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease;
+    }
+    .scrim.show {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    main {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: var(--space-10) var(--space-6) var(--space-16);
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(280px, .8fr);
+      gap: var(--space-8);
+      align-items: stretch;
+      padding: var(--space-10) 0 var(--space-12);
+    }
+    .hero-copy {
+      padding: var(--space-8);
+      border-radius: var(--radius-lg);
+      background: var(--ink);
+      color: var(--cloud);
+      box-shadow: var(--shadow);
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      color: var(--cyan);
+      font-weight: 800;
+      text-transform: uppercase;
+      font-size: .75rem;
+      letter-spacing: .08em;
+    }
+    .pulse {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--lime);
+      box-shadow: 0 0 0 7px rgba(163, 230, 53, .16);
+    }
+    .hero h1 {
+      margin-top: var(--space-4);
+      max-width: 760px;
+      font-size: clamp(2.6rem, 7vw, 5.7rem);
+    }
+    .hero p {
+      margin-top: var(--space-5);
+      max-width: 650px;
+      color: rgba(246, 248, 252, .78);
+      font-size: 1.08rem;
+    }
+    .hero-panel {
+      display: grid;
+      gap: var(--space-4);
+      padding: var(--space-6);
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius-lg);
+      background: var(--cloud-strong);
+      box-shadow: var(--shadow);
+    }
+    .signal {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-4);
+      padding: var(--space-4);
+      border-radius: var(--radius-md);
+      background: var(--ink-faint);
+    }
+    .signal strong {
+      display: block;
+      font-family: Manrope, Inter, sans-serif;
+    }
+    .meter {
+      width: 108px;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(25, 33, 43, .1);
+      overflow: hidden;
+    }
+    .meter span {
+      display: block;
+      height: 100%;
+      width: var(--w);
+      background: var(--c);
+    }
+    .section {
+      padding: var(--space-10) 0;
+      border-top: 1px solid var(--ink-line);
+    }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: var(--space-6);
+      margin-bottom: var(--space-6);
+    }
+    .section h2 {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+    }
+    .section-lede {
+      max-width: 620px;
+      color: var(--ink-soft);
+    }
+    .grid {
+      display: grid;
+      gap: var(--space-4);
+    }
+    .swatches {
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+    }
+    .swatch {
+      min-height: 220px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      background: var(--cloud-strong);
+    }
+    .swatch-sample {
+      min-height: 96px;
+      background: var(--swatch);
+    }
+    .swatch-body {
+      padding: var(--space-4);
+    }
+    .token {
+      display: inline-flex;
+      margin-top: var(--space-3);
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: var(--ink-faint);
+      color: var(--ink-soft);
+      font-size: .78rem;
+      font-weight: 800;
+    }
+    .type-list {
+      display: grid;
+      gap: var(--space-3);
+    }
+    .type-row {
+      display: grid;
+      grid-template-columns: 140px minmax(0, 1fr) 240px;
+      gap: var(--space-4);
+      align-items: center;
+      padding: var(--space-4);
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius-md);
+      background: var(--cloud-strong);
+    }
+    .type-meta {
+      color: var(--ink-soft);
+      font-size: .86rem;
+      font-weight: 700;
+    }
+    .components {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .component-card,
+    .guideline-card,
+    .icon-card,
+    .change-card {
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius-md);
+      background: var(--cloud-strong);
+      overflow: hidden;
+    }
+    .component-head {
+      padding: var(--space-5);
+      border-bottom: 1px solid var(--ink-line);
+    }
+    .preview {
+      min-height: 132px;
+      display: grid;
+      place-items: center;
+      padding: var(--space-6);
+      background: rgba(255, 255, 255, .38);
+    }
+    .snippet {
+      margin: 0;
+      padding: var(--space-4);
+      overflow-x: auto;
+      background: var(--ink);
+      color: var(--cloud);
+      font-size: .82rem;
+      line-height: 1.55;
+    }
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+    }
+    .btn {
+      border: 0;
+      border-radius: var(--radius-sm);
+      padding: 11px 15px;
+      background: var(--indigo);
+      color: var(--cloud);
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .btn.secondary {
+      background: var(--cyan);
+      color: var(--ink);
+    }
+    .field {
+      width: min(280px, 100%);
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      background: var(--cloud);
+      color: var(--ink);
+    }
+    .mini-card {
+      width: min(280px, 100%);
+      padding: var(--space-5);
+      border-radius: var(--radius-md);
+      background: var(--cloud);
+      border: 1px solid var(--ink-line);
+      box-shadow: 0 16px 36px rgba(25, 33, 43, .08);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      border-radius: 999px;
+      padding: 7px 10px;
+      background: var(--lime-soft);
+      color: var(--ink);
+      font-weight: 800;
+      font-size: .82rem;
+    }
+    .alert {
+      max-width: 360px;
+      border-left: 5px solid var(--coral);
+      border-radius: var(--radius-sm);
+      padding: var(--space-4);
+      background: var(--coral-soft);
+    }
+    .modal-demo {
+      width: min(320px, 100%);
+      border-radius: var(--radius-md);
+      padding: var(--space-5);
+      background: var(--cloud);
+      border: 1px solid var(--ink-line);
+      box-shadow: var(--shadow);
+    }
+    .spacing-grid {
+      display: grid;
+      gap: var(--space-3);
+    }
+    .space-row {
+      display: grid;
+      grid-template-columns: 120px 1fr 92px;
+      gap: var(--space-4);
+      align-items: center;
+      padding: var(--space-3) var(--space-4);
+      border-radius: var(--radius-sm);
+      background: var(--cloud-strong);
+      border: 1px solid var(--ink-line);
+    }
+    .space-bar {
+      height: 18px;
+      width: var(--size);
+      max-width: 100%;
+      border-radius: 999px;
+      background: linear-gradient(90deg, var(--indigo), var(--cyan));
+    }
+    .layout-examples {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      margin-top: var(--space-5);
+    }
+    .layout-box {
+      min-height: 150px;
+      padding: var(--space-4);
+      border: 1px dashed rgba(79, 70, 229, .44);
+      border-radius: var(--radius-md);
+      background: var(--indigo-soft);
+    }
+    .layout-box div {
+      height: 28px;
+      margin-bottom: var(--space-3);
+      border-radius: var(--radius-sm);
+      background: rgba(79, 70, 229, .28);
+    }
+    .icons {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+    .icon-card {
+      padding: var(--space-4);
+      text-align: center;
+    }
+    .icon-symbol {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      margin: 0 auto var(--space-3);
+      border-radius: 14px;
+      background: var(--cyan-soft);
+      color: var(--indigo);
+      font-size: 1.35rem;
+      font-weight: 900;
+    }
+    .icon-card span {
+      display: block;
+      color: var(--ink-soft);
+      font-size: .8rem;
+    }
+    .guidelines {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .guideline-card {
+      padding: var(--space-5);
+    }
+    .decision {
+      display: inline-flex;
+      align-items: center;
+      margin-bottom: var(--space-3);
+      padding: 6px 9px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: .78rem;
+    }
+    .decision.do {
+      background: var(--lime-soft);
+    }
+    .decision.dont {
+      background: var(--coral-soft);
+    }
+    .example-line {
+      margin-top: var(--space-4);
+      padding: var(--space-3);
+      border-radius: var(--radius-sm);
+      background: var(--ink-faint);
+      color: var(--ink-soft);
+      font-weight: 700;
+      font-size: .9rem;
+    }
+    .changelog {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .change-card {
+      padding: var(--space-5);
+    }
+    .change-card time {
+      color: var(--ink-soft);
+      font-weight: 700;
+      font-size: .86rem;
+    }
+    .change-card ul {
+      margin: var(--space-3) 0 0;
+      padding-left: 18px;
+      color: var(--ink-soft);
+    }
+    .footer {
+      border-top: 1px solid var(--ink-line);
+      padding: var(--space-8) var(--space-6);
+      text-align: center;
+      color: var(--ink-soft);
+      font-weight: 700;
+    }
+    @media (max-width: 980px) {
+      .nav-links,
+      .search,
+      .version {
+        display: none;
+      }
+      .menu-button {
+        display: inline-grid;
+        place-items: center;
+      }
+      .hero,
+      .components,
+      .guidelines,
+      .changelog {
+        grid-template-columns: 1fr;
+      }
+      .swatches,
+      .icons {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .type-row {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 640px) {
+      main {
+        padding-inline: var(--space-4);
+      }
+      .nav {
+        padding-inline: var(--space-4);
+      }
+      .hero-copy {
+        padding: var(--space-6);
+      }
+      .section-head {
+        display: block;
+      }
+      .section-lede {
+        margin-top: var(--space-3);
+      }
+      .swatches,
+      .icons,
+      .layout-examples {
+        grid-template-columns: 1fr;
+      }
+      .space-row {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+        animation: none !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to content</a>
+  <header class="topbar">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="#content" aria-label="Muse Design System home">
+        <span class="brand-mark">M</span>
+        <span>Muse Design System</span>
+      </a>
+      <div class="nav-links" aria-label="Documentation sections">
+        <a href="#tokens">Tokens</a>
+        <a href="#components">Components</a>
+        <a href="#patterns">Patterns</a>
+        <a href="#guidelines">Guidelines</a>
+        <a href="#changelog">Changelog</a>
+      </div>
+      <label class="search">
+        <span class="sr-only">Search documentation</span>
+        <input type="search" aria-label="Search documentation" value="Find tokens">
+      </label>
+      <span class="version" aria-label="Current version">v2.4.0</span>
+      <button class="menu-button" type="button" aria-label="Open navigation" aria-controls="mobile-drawer" aria-expanded="false">
+        <span class="menu-lines" aria-hidden="true"></span>
+      </button>
+    </nav>
+  </header>
+  <div class="scrim" data-close-drawer></div>
+  <aside class="drawer" id="mobile-drawer" aria-label="Mobile navigation" aria-hidden="true">
+    <a href="#tokens">Tokens</a>
+    <a href="#components">Components</a>
+    <a href="#patterns">Patterns</a>
+    <a href="#guidelines">Guidelines</a>
+    <a href="#changelog">Changelog</a>
+    <a href="#footer">Footer</a>
+  </aside>
+  <main id="content">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <span class="eyebrow"><span class="pulse" aria-hidden="true"></span>Design system docs</span>
+        <h1 id="hero-title">A precise foundation for expressive product teams.</h1>
+        <p>Muse combines stable tokens, accessible components, and practical usage rules for teams building polished interfaces with speed and care.</p>
+      </div>
+      <div class="hero-panel" aria-label="System health">
+        <div class="signal">
+          <div><strong>Token coverage</strong><span>Cloud, ink, accents, status</span></div>
+          <div class="meter"><span style="--w:94%;--c:var(--lime)"></span></div>
+        </div>
+        <div class="signal">
+          <div><strong>Component parity</strong><span>Core controls documented</span></div>
+          <div class="meter"><span style="--w:88%;--c:var(--cyan)"></span></div>
+        </div>
+        <div class="signal">
+          <div><strong>Release confidence</strong><span>Guidelines reviewed</span></div>
+          <div class="meter"><span style="--w:76%;--c:var(--indigo)"></span></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="tokens" aria-labelledby="tokens-title">
+      <div class="section-head">
+        <div>
+          <h2 id="tokens-title">Color Tokens</h2>
+          <p class="section-lede">A focused palette keeps product surfaces calm while reserving vivid color for state, action, and live feedback.</p>
+        </div>
+      </div>
+      <div class="grid swatches">
+        <article class="swatch"><div class="swatch-sample" style="--swatch:#F6F8FC"></div><div class="swatch-body"><h3>Cloud</h3><p>#F6F8FC</p><span class="token">--cloud • page surfaces</span></div></article>
+        <article class="swatch"><div class="swatch-sample" style="--swatch:#19212B"></div><div class="swatch-body"><h3>Ink</h3><p>#19212B</p><span class="token">--ink • text and panels</span></div></article>
+        <article class="swatch"><div class="swatch-sample" style="--swatch:#4F46E5"></div><div class="swatch-body"><h3>Indigo</h3><p>#4F46E5</p><span class="token">--indigo • primary action</span></div></article>
+        <article class="swatch"><div class="swatch-sample" style="--swatch:#06B6D4"></div><div class="swatch-body"><h3>Cyan</h3><p>#06B6D4</p><span class="token">--cyan • live indicator</span></div></article>
+        <article class="swatch"><div class="swatch-sample" style="--swatch:#A3E635"></div><div class="swatch-body"><h3>Lime</h3><p>#A3E635</p><span class="token">--lime • healthy state</span></div></article>
+        <article class="swatch"><div class="swatch-sample" style="--swatch:#FB7185"></div><div class="swatch-body"><h3>Coral</h3><p>#FB7185</p><span class="token">--coral • critical alert</span></div></article>
+      </div>
+    </section>
+    <section class="section" aria-labelledby="type-title">
+      <div class="section-head">
+        <div>
+          <h2 id="type-title">Typography Scale</h2>
+          <p class="section-lede">Manrope carries editorial hierarchy; Inter keeps controls, dense data, and body copy clear.</p>
+        </div>
+      </div>
+      <div class="type-list">
+        <div class="type-row"><span class="type-meta">H1 • Manrope 800</span><h1>Build with rhythm</h1><span class="type-meta">72px / 1.05</span></div>
+        <div class="type-row"><span class="type-meta">H2 • Manrope 800</span><h2>System sections</h2><span class="type-meta">48px / 1.08</span></div>
+        <div class="type-row"><span class="type-meta">H3 • Manrope 700</span><h3>Component title</h3><span class="type-meta">30px / 1.12</span></div>
+        <div class="type-row"><span class="type-meta">H4 • Manrope 700</span><h4>Pattern heading</h4><span class="type-meta">24px / 1.16</span></div>
+        <div class="type-row"><span class="type-meta">H5 • Manrope 700</span><h5>Guideline label</h5><span class="type-meta">18px / 1.22</span></div>
+        <div class="type-row"><span class="type-meta">H6 • Manrope 700</span><h6>Token group</h6><span class="type-meta">15px / 1.28</span></div>
+        <div class="type-row"><span class="type-meta">Body • Inter 400</span><p>Use body text for explanations, release notes, and component guidance.</p><span class="type-meta">16px / 1.6</span></div>
+      </div>
+    </section>
+    <section class="section" id="components" aria-labelledby="components-title">
+      <div class="section-head">
+        <div>
+          <h2 id="components-title">Component Library</h2>
+          <p class="section-lede">Each component includes a live preview and a compact snippet that demonstrates recommended structure.</p>
+        </div>
+      </div>
+      <div class="grid components">
+        <article class="component-card"><div class="component-head"><h3>Button</h3><p>Use for clear, intentional actions.</p></div><div class="preview"><div class="button-row"><button class="btn">Create kit</button><button class="btn secondary">Review state</button></div></div><pre class="snippet"><code>&lt;button class="btn"&gt;Create kit&lt;/button&gt;</code></pre></article>
+        <article class="component-card"><div class="component-head"><h3>Input</h3><p>Pair inputs with visible labels and concise help text.</p></div><div class="preview"><label>Workspace name <input class="field" type="text" value="Muse Core"></label></div><pre class="snippet"><code>&lt;label&gt;Workspace name &lt;input class="field"&gt;&lt;/label&gt;</code></pre></article>
+        <article class="component-card"><div class="component-head"><h3>Card</h3><p>Group related content without stacking frames.</p></div><div class="preview"><div class="mini-card"><h4>Audit ready</h4><p>Tokens and states align across surfaces.</p></div></div><pre class="snippet"><code>&lt;article class="mini-card"&gt;...&lt;/article&gt;</code></pre></article>
+        <article class="component-card"><div class="component-head"><h3>Badge</h3><p>Show status, scope, or release channel.</p></div><div class="preview"><span class="badge">● Healthy</span></div><pre class="snippet"><code>&lt;span class="badge"&gt;Healthy&lt;/span&gt;</code></pre></article>
+        <article class="component-card"><div class="component-head"><h3>Alert</h3><p>Reserve coral alerts for moments requiring attention.</p></div><div class="preview"><div class="alert" role="alert"><strong>Contrast drift</strong><p>Review changed tokens before release.</p></div></div><pre class="snippet"><code>&lt;div class="alert" role="alert"&gt;...&lt;/div&gt;</code></pre></article>
+        <article class="component-card"><div class="component-head"><h3>Modal</h3><p>Use modals for focused confirmation flows.</p></div><div class="preview"><div class="modal-demo" role="dialog" aria-label="Publish release"><h4>Publish release?</h4><p>This sends the updated library to teams.</p></div></div><pre class="snippet"><code>&lt;div role="dialog" aria-label="Publish release"&gt;...&lt;/div&gt;</code></pre></article>
+      </div>
+    </section>
+    <section class="section" id="patterns" aria-labelledby="spacing-title">
+      <div class="section-head">
+        <div>
+          <h2 id="spacing-title">Spacing &amp; Layout</h2>
+          <p class="section-lede">Spacing advances in 4px increments so dense screens and spacious documentation share the same rhythm.</p>
+        </div>
+      </div>
+      <div class="spacing-grid">
+        <div class="space-row"><strong>space-1</strong><div class="space-bar" style="--size:4px"></div><span>4px</span></div>
+        <div class="space-row"><strong>space-2</strong><div class="space-bar" style="--size:8px"></div><span>8px</span></div>
+        <div class="space-row"><strong>space-3</strong><div class="space-bar" style="--size:12px"></div><span>12px</span></div>
+        <div class="space-row"><strong>space-4</strong><div class="space-bar" style="--size:16px"></div><span>16px</span></div>
+        <div class="space-row"><strong>space-6</strong><div class="space-bar" style="--size:24px"></div><span>24px</span></div>
+        <div class="space-row"><strong>space-8</strong><div class="space-bar" style="--size:32px"></div><span>32px</span></div>
+        <div class="space-row"><strong>space-12</strong><div class="space-bar" style="--size:48px"></div><span>48px</span></div>
+      </div>
+      <div class="grid layout-examples">
+        <div class="layout-box" aria-label="Compact layout"><div></div><div></div><div></div></div>
+        <div class="layout-box" aria-label="Balanced layout"><div></div><div style="width:76%"></div><div style="width:58%"></div></div>
+        <div class="layout-box" aria-label="Spacious layout"><div></div><div style="width:68%"></div><div style="width:42%"></div></div>
+      </div>
+    </section>
+    <section class="section" aria-labelledby="icons-title">
+      <div class="section-head">
+        <div>
+          <h2 id="icons-title">Icon Set</h2>
+          <p class="section-lede">Icons are simple, high-contrast cues for repeated actions, object types, and system states.</p>
+        </div>
+      </div>
+      <div class="grid icons">
+        <article class="icon-card"><div class="icon-symbol">⌘</div><strong>Command</strong><span>global action</span></article>
+        <article class="icon-card"><div class="icon-symbol">↗</div><strong>Launch</strong><span>external path</span></article>
+        <article class="icon-card"><div class="icon-symbol">✓</div><strong>Check</strong><span>success state</span></article>
+        <article class="icon-card"><div class="icon-symbol">!</div><strong>Alert</strong><span>critical notice</span></article>
+        <article class="icon-card"><div class="icon-symbol">◌</div><strong>Loading</strong><span>pending state</span></article>
+        <article class="icon-card"><div class="icon-symbol">⌕</div><strong>Search</strong><span>find content</span></article>
+        <article class="icon-card"><div class="icon-symbol">◇</div><strong>Token</strong><span>design value</span></article>
+        <article class="icon-card"><div class="icon-symbol">↺</div><strong>Refresh</strong><span>sync data</span></article>
+        <article class="icon-card"><div class="icon-symbol">＋</div><strong>Add</strong><span>new item</span></article>
+        <article class="icon-card"><div class="icon-symbol">−</div><strong>Remove</strong><span>reduce scope</span></article>
+        <article class="icon-card"><div class="icon-symbol">◎</div><strong>Focus</strong><span>selected item</span></article>
+        <article class="icon-card"><div class="icon-symbol">☰</div><strong>Menu</strong><span>navigation</span></article>
+      </div>
+    </section>
+    <section class="section" id="guidelines" aria-labelledby="guidelines-title">
+      <div class="section-head">
+        <div>
+          <h2 id="guidelines-title">Usage Guidelines</h2>
+          <p class="section-lede">Rules are written for everyday product decisions: contrast, hierarchy, color intent, and interaction clarity.</p>
+        </div>
+      </div>
+      <div class="grid guidelines">
+        <article class="guideline-card"><span class="decision do">Do</span><h3>Use indigo for primary commitment.</h3><p>Reserve the strongest action color for the next meaningful step.</p><div class="example-line">Create release uses indigo.</div></article>
+        <article class="guideline-card"><span class="decision dont">Don't</span><h3>Use every accent at once.</h3><p>Multiple saturated signals make priority harder to scan.</p><div class="example-line">Avoid mixing alert, status, and action in one row.</div></article>
+        <article class="guideline-card"><span class="decision do">Do</span><h3>Keep labels visible.</h3><p>Fields should remain understandable after a user enters data.</p><div class="example-line">Workspace name sits above the input.</div></article>
+        <article class="guideline-card"><span class="decision dont">Don't</span><h3>Hide state in color alone.</h3><p>Pair color with text, icon, or structure for accessibility.</p><div class="example-line">Critical alert includes a label and message.</div></article>
+        <article class="guideline-card"><span class="decision do">Do</span><h3>Use 4px rhythm.</h3><p>Spacing tokens create predictable density across docs and apps.</p><div class="example-line">Controls use 8px or 12px internal gaps.</div></article>
+        <article class="guideline-card"><span class="decision dont">Don't</span><h3>Stack framed containers.</h3><p>Frames inside frames dilute hierarchy and add visual noise.</p><div class="example-line">Use one surface per repeated item.</div></article>
+      </div>
+    </section>
+    <section class="section" id="changelog" aria-labelledby="changelog-title">
+      <div class="section-head">
+        <div>
+          <h2 id="changelog-title">Changelog</h2>
+          <p class="section-lede">Recent releases keep designers and engineers aligned on visible behavior and token changes.</p>
+        </div>
+      </div>
+      <div class="grid changelog">
+        <article class="change-card"><time datetime="2026-05-12">May 12, 2026</time><h3>v2.4.0</h3><ul><li>Added drawer navigation guidance.</li><li>Expanded status token examples.</li><li>Refined alert contrast notes.</li></ul></article>
+        <article class="change-card"><time datetime="2026-04-18">April 18, 2026</time><h3>v2.3.0</h3><ul><li>Updated typography scale specimens.</li><li>Added modal usage rules.</li><li>Improved spacing documentation.</li></ul></article>
+        <article class="change-card"><time datetime="2026-03-06">March 6, 2026</time><h3>v2.2.0</h3><ul><li>Introduced lime health badges.</li><li>Aligned card radii.</li><li>Published icon naming guide.</li></ul></article>
+      </div>
+    </section>
+  </main>
+  <footer class="footer" id="footer">
+    <p>Muse Design System — designed by Northstar Studio.</p>
+  </footer>
+  <script>
+    const button = document.querySelector('.menu-button');
+    const drawer = document.querySelector('.drawer');
+    const scrim = document.querySelector('.scrim');
+    const links = drawer.querySelectorAll('a');
+    const setDrawer = (open) => {
+      button.setAttribute('aria-expanded', String(open));
+      button.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+      drawer.classList.toggle('open', open);
+      drawer.setAttribute('aria-hidden', String(!open));
+      scrim.classList.toggle('show', open);
+      document.body.classList.toggle('drawer-open', open);
+      if (open) links[0].focus();
+    };
+    button.addEventListener('click', () => {
+      setDrawer(button.getAttribute('aria-expanded') !== 'true');
+    });
+    scrim.addEventListener('click', () => setDrawer(false));
+    links.forEach((link) => link.addEventListener('click', () => setDrawer(false)));
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') setDrawer(false);
+    });
+  </script>
+</body>
+</html>
