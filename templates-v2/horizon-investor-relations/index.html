@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Horizon Investor Relations</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --indigo: #4F46E5;
+      --cyan: #06B6D4;
+      --lime: #A3E635;
+      --coral: #FB7185;
+      --white: #ffffff;
+      --ink-02: rgba(25, 33, 43, .02);
+      --ink-05: rgba(25, 33, 43, .05);
+      --ink-08: rgba(25, 33, 43, .08);
+      --ink-12: rgba(25, 33, 43, .12);
+      --ink-18: rgba(25, 33, 43, .18);
+      --ink-62: rgba(25, 33, 43, .62);
+      --ink-72: rgba(25, 33, 43, .72);
+      --indigo-10: rgba(79, 70, 229, .10);
+      --indigo-16: rgba(79, 70, 229, .16);
+      --cyan-12: rgba(6, 182, 212, .12);
+      --lime-18: rgba(163, 230, 53, .18);
+      --coral-14: rgba(251, 113, 133, .14);
+      --shadow: 0 24px 70px rgba(25, 33, 43, .10);
+      --line: 1px solid var(--ink-08);
+      --r: 8px;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 0%, var(--cyan-12), transparent 30%),
+        linear-gradient(180deg, var(--cloud), var(--white) 44%, var(--cloud));
+      font-family: Inter, system-ui, sans-serif;
+      line-height: 1.5;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    button,
+    input {
+      font: inherit;
+    }
+    button {
+      cursor: pointer;
+    }
+    :focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 3px;
+    }
+    .wrap {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+    .skip {
+      position: fixed;
+      left: 16px;
+      top: 12px;
+      z-index: 20;
+      padding: 10px 14px;
+      border-radius: var(--r);
+      background: var(--ink);
+      color: var(--white);
+      transform: translateY(-150%);
+      transition: transform .2s ease;
+    }
+    .skip:focus {
+      transform: translateY(0);
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(246, 248, 252, .86);
+      border-bottom: var(--line);
+      backdrop-filter: blur(18px);
+    }
+    .nav {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 22px;
+      min-height: 76px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: Manrope, Inter, sans-serif;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+    .mark {
+      display: grid;
+      width: 36px;
+      height: 36px;
+      place-items: center;
+      border-radius: var(--r);
+      background: var(--ink);
+      color: var(--lime);
+      box-shadow: inset 0 0 0 1px rgba(246, 248, 252, .16);
+    }
+    .links {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+    .links a {
+      display: block;
+      padding: 9px 11px;
+      border-radius: var(--r);
+      color: var(--ink-72);
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .links a:hover {
+      background: var(--ink-05);
+      color: var(--ink);
+    }
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .search {
+      display: flex;
+      align-items: center;
+      width: 230px;
+      gap: 8px;
+      padding: 8px 10px;
+      border: var(--line);
+      border-radius: var(--r);
+      background: var(--white);
+    }
+    .search span {
+      color: var(--indigo);
+      font-weight: 800;
+    }
+    .search input {
+      min-width: 0;
+      width: 100%;
+      border: 0;
+      outline: 0;
+      color: var(--ink);
+      background: transparent;
+    }
+    .icon-btn {
+      display: none;
+      width: 42px;
+      height: 42px;
+      place-items: center;
+      border: var(--line);
+      border-radius: var(--r);
+      background: var(--white);
+      color: var(--ink);
+    }
+    .hamb {
+      position: relative;
+      width: 18px;
+      height: 12px;
+    }
+    .hamb i,
+    .hamb::before,
+    .hamb::after {
+      position: absolute;
+      left: 0;
+      width: 18px;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--ink);
+      content: "";
+    }
+    .hamb i {
+      top: 5px;
+    }
+    .hamb::before {
+      top: 0;
+    }
+    .hamb::after {
+      bottom: 0;
+    }
+    .drawer {
+      position: fixed;
+      inset: 0 0 0 auto;
+      z-index: 30;
+      width: min(360px, 88vw);
+      padding: 20px;
+      background: var(--white);
+      box-shadow: var(--shadow);
+      transform: translateX(104%);
+      transition: transform .25s ease;
+    }
+    .drawer.open {
+      transform: translateX(0);
+    }
+    .drawer-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 26px;
+    }
+    .drawer nav {
+      display: grid;
+      gap: 8px;
+    }
+    .drawer a {
+      padding: 13px 12px;
+      border-radius: var(--r);
+      background: var(--cloud);
+      font-weight: 800;
+    }
+    .shade {
+      position: fixed;
+      inset: 0;
+      z-index: 25;
+      background: rgba(25, 33, 43, .36);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .2s ease;
+    }
+    .shade.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    main {
+      overflow: hidden;
+    }
+    .hero {
+      padding: 70px 0 28px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 10px;
+      border: var(--line);
+      border-radius: 999px;
+      background: var(--white);
+      color: var(--ink-72);
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 0 5px var(--cyan-12);
+    }
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      font-family: Manrope, Inter, sans-serif;
+      letter-spacing: 0;
+      line-height: 1.03;
+    }
+    h1 {
+      max-width: 780px;
+      margin-top: 22px;
+      font-size: clamp(42px, 7vw, 86px);
+    }
+    .lead {
+      max-width: 660px;
+      margin: 22px 0 0;
+      color: var(--ink-72);
+      font-size: clamp(18px, 2vw, 21px);
+    }
+    .cta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 30px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 44px;
+      padding: 11px 15px;
+      border: 1px solid transparent;
+      border-radius: var(--r);
+      font-weight: 800;
+    }
+    .btn.primary {
+      background: var(--indigo);
+      color: var(--white);
+    }
+    .btn.ghost {
+      border-color: var(--ink-12);
+      background: var(--white);
+      color: var(--ink);
+    }
+    .pulse {
+      position: relative;
+      display: inline-grid;
+      width: 10px;
+      height: 10px;
+      place-items: center;
+    }
+    .pulse::before,
+    .pulse::after {
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--lime);
+      content: "";
+    }
+    .pulse::after {
+      animation: ping 1.8s infinite;
+    }
+    .market-card {
+      display: grid;
+      align-content: space-between;
+      min-height: 390px;
+      padding: 24px;
+      border: var(--line);
+      border-radius: var(--r);
+      background:
+        linear-gradient(135deg, var(--ink), rgba(25, 33, 43, .92)),
+        var(--ink);
+      color: var(--white);
+      box-shadow: var(--shadow);
+    }
+    .market-card small {
+      color: rgba(246, 248, 252, .68);
+      font-weight: 800;
+    }
+    .ticker {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .ticker strong {
+      display: block;
+      margin-top: 8px;
+      font-family: Manrope, Inter, sans-serif;
+      font-size: clamp(42px, 5vw, 62px);
+      line-height: 1;
+    }
+    .change {
+      padding: 8px 10px;
+      border-radius: var(--r);
+      background: var(--lime-18);
+      color: var(--lime);
+      font-weight: 900;
+    }
+    .mini-bars {
+      display: grid;
+      grid-template-columns: repeat(18, 1fr);
+      align-items: end;
+      height: 130px;
+      gap: 5px;
+      margin: 32px 0;
+      padding-top: 16px;
+      border-top: 1px solid rgba(246, 248, 252, .14);
+    }
+    .mini-bars i {
+      display: block;
+      min-height: 16px;
+      border-radius: 4px 4px 0 0;
+      background: linear-gradient(180deg, var(--cyan), var(--indigo));
+    }
+    .mini-bars i:nth-child(1) { height: 42%; }
+    .mini-bars i:nth-child(2) { height: 48%; }
+    .mini-bars i:nth-child(3) { height: 44%; }
+    .mini-bars i:nth-child(4) { height: 52%; }
+    .mini-bars i:nth-child(5) { height: 58%; }
+    .mini-bars i:nth-child(6) { height: 55%; }
+    .mini-bars i:nth-child(7) { height: 61%; }
+    .mini-bars i:nth-child(8) { height: 67%; }
+    .mini-bars i:nth-child(9) { height: 63%; }
+    .mini-bars i:nth-child(10) { height: 70%; }
+    .mini-bars i:nth-child(11) { height: 76%; }
+    .mini-bars i:nth-child(12) { height: 73%; }
+    .mini-bars i:nth-child(13) { height: 82%; }
+    .mini-bars i:nth-child(14) { height: 88%; }
+    .mini-bars i:nth-child(15) { height: 84%; }
+    .mini-bars i:nth-child(16) { height: 91%; }
+    .mini-bars i:nth-child(17) { height: 95%; }
+    .mini-bars i:nth-child(18) { height: 100%; }
+    .feed {
+      display: grid;
+      gap: 10px;
+    }
+    .feed-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      color: rgba(246, 248, 252, .78);
+      font-size: 14px;
+    }
+    .kpis {
+      padding: 20px 0 28px;
+    }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+    .kpi {
+      padding: 18px;
+      border: var(--line);
+      border-radius: var(--r);
+      background: var(--white);
+    }
+    .kpi span {
+      display: block;
+      color: var(--ink-62);
+      font-size: 13px;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .kpi strong {
+      display: block;
+      margin-top: 8px;
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 28px;
+    }
+    .kpi em {
+      display: block;
+      margin-top: 5px;
+      color: var(--cyan);
+      font-style: normal;
+      font-weight: 800;
+    }
+    section {
+      padding: 56px 0;
+    }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 22px;
+      margin-bottom: 22px;
+    }
+    .section-head h2 {
+      font-size: clamp(30px, 4vw, 48px);
+    }
+    .section-head p {
+      max-width: 520px;
+      margin: 0;
+      color: var(--ink-72);
+    }
+    .reports {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+    .report,
+    .person,
+    .event,
+    .resource {
+      border: var(--line);
+      border-radius: var(--r);
+      background: var(--white);
+      box-shadow: 0 14px 36px var(--ink-05);
+    }
+    .report {
+      display: grid;
+      gap: 18px;
+      min-height: 236px;
+      padding: 18px;
+    }
+    .badge {
+      width: fit-content;
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: var(--indigo-10);
+      color: var(--indigo);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    .badge.cyan {
+      background: var(--cyan-12);
+      color: var(--cyan);
+    }
+    .report h3,
+    .person h3,
+    .event h3,
+    .resource h3 {
+      font-size: 21px;
+      line-height: 1.15;
+    }
+    .meta {
+      color: var(--ink-62);
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .download {
+      align-self: end;
+      justify-self: start;
+      padding: 9px 12px;
+      border: var(--line);
+      border-radius: var(--r);
+      background: var(--cloud);
+      color: var(--ink);
+      font-weight: 900;
+    }
+    .stock-grid {
+      display: grid;
+      grid-template-columns: 1.25fr .75fr;
+      gap: 16px;
+      align-items: stretch;
+    }
+    .chart-panel,
+    .metric-panel {
+      padding: 20px;
+      border: var(--line);
+      border-radius: var(--r);
+      background: var(--white);
+    }
+    .chart-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+    .chart-top strong {
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 24px;
+    }
+    .range {
+      display: inline-flex;
+      align-items: center;
+      min-height: 32px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: var(--lime-18);
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .chart {
+      display: grid;
+      grid-template-columns: repeat(24, 1fr);
+      align-items: end;
+      height: 280px;
+      gap: 7px;
+      padding: 18px;
+      border-radius: var(--r);
+      background:
+        repeating-linear-gradient(0deg, var(--ink-05), var(--ink-05) 1px, transparent 1px, transparent 56px),
+        var(--cloud);
+    }
+    .chart b {
+      min-height: 18px;
+      border-radius: 5px 5px 0 0;
+      background: var(--indigo);
+    }
+    .chart b:nth-child(3n) {
+      background: var(--cyan);
+    }
+    .chart b:nth-child(1) { height: 22%; }
+    .chart b:nth-child(2) { height: 26%; }
+    .chart b:nth-child(3) { height: 31%; }
+    .chart b:nth-child(4) { height: 28%; }
+    .chart b:nth-child(5) { height: 35%; }
+    .chart b:nth-child(6) { height: 39%; }
+    .chart b:nth-child(7) { height: 42%; }
+    .chart b:nth-child(8) { height: 45%; }
+    .chart b:nth-child(9) { height: 41%; }
+    .chart b:nth-child(10) { height: 50%; }
+    .chart b:nth-child(11) { height: 56%; }
+    .chart b:nth-child(12) { height: 53%; }
+    .chart b:nth-child(13) { height: 60%; }
+    .chart b:nth-child(14) { height: 64%; }
+    .chart b:nth-child(15) { height: 70%; }
+    .chart b:nth-child(16) { height: 66%; }
+    .chart b:nth-child(17) { height: 73%; }
+    .chart b:nth-child(18) { height: 78%; }
+    .chart b:nth-child(19) { height: 76%; }
+    .chart b:nth-child(20) { height: 83%; }
+    .chart b:nth-child(21) { height: 86%; }
+    .chart b:nth-child(22) { height: 91%; }
+    .chart b:nth-child(23) { height: 88%; }
+    .chart b:nth-child(24) { height: 95%; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th,
+    td {
+      padding: 13px 0;
+      border-bottom: var(--line);
+      text-align: left;
+    }
+    th {
+      color: var(--ink-62);
+      font-size: 13px;
+      text-transform: uppercase;
+    }
+    td {
+      font-weight: 800;
+    }
+    tr:last-child th,
+    tr:last-child td {
+      border-bottom: 0;
+    }
+    .people {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .person {
+      padding: 18px;
+    }
+    .avatar {
+      display: grid;
+      width: 56px;
+      height: 56px;
+      margin-bottom: 16px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--ink);
+      color: var(--lime);
+      font-family: Manrope, Inter, sans-serif;
+      font-weight: 900;
+    }
+    .committees {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 16px;
+    }
+    .committees span {
+      padding: 6px 8px;
+      border-radius: 999px;
+      background: var(--cloud);
+      color: var(--ink-72);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .events {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+    .event {
+      display: grid;
+      grid-template-columns: 78px 1fr;
+      gap: 16px;
+      padding: 18px;
+    }
+    .datebox {
+      display: grid;
+      height: 78px;
+      place-items: center;
+      border-radius: var(--r);
+      background: var(--ink);
+      color: var(--white);
+      text-align: center;
+      font-weight: 900;
+    }
+    .datebox span {
+      display: block;
+      color: var(--cyan);
+      font-size: 13px;
+    }
+    .event .btn {
+      min-height: 38px;
+      margin-top: 14px;
+      padding: 8px 11px;
+      font-size: 14px;
+    }
+    .resources {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+    .resource {
+      min-height: 180px;
+      padding: 18px;
+    }
+    .resource .arrow {
+      display: inline-grid;
+      width: 34px;
+      height: 34px;
+      margin-bottom: 28px;
+      place-items: center;
+      border-radius: var(--r);
+      background: var(--indigo);
+      color: var(--white);
+      font-weight: 900;
+    }
+    .resource p {
+      margin: 8px 0 0;
+      color: var(--ink-62);
+    }
+    footer {
+      padding: 42px 0;
+      border-top: var(--line);
+      background: var(--ink);
+      color: var(--white);
+    }
+    .foot {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+    .credit {
+      margin: 0 0 12px;
+      font-family: Manrope, Inter, sans-serif;
+      font-weight: 800;
+    }
+    .legal {
+      margin: 0;
+      color: rgba(246, 248, 252, .68);
+      font-size: 13px;
+    }
+    .foot-links {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: end;
+      gap: 12px;
+    }
+    .foot-links a {
+      color: rgba(246, 248, 252, .76);
+      font-weight: 800;
+    }
+    @keyframes ping {
+      from {
+        transform: scale(1);
+        opacity: .65;
+      }
+      to {
+        transform: scale(2.3);
+        opacity: 0;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+    @media (max-width: 980px) {
+      .nav {
+        grid-template-columns: auto 1fr auto;
+      }
+      .links {
+        display: none;
+      }
+      .icon-btn {
+        display: grid;
+      }
+      .search {
+        justify-self: end;
+        width: min(260px, 42vw);
+      }
+      .hero-grid,
+      .stock-grid,
+      .foot {
+        grid-template-columns: 1fr;
+      }
+      .reports,
+      .resources {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .people,
+      .events,
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    @media (max-width: 640px) {
+      .wrap {
+        width: min(100% - 24px, 1180px);
+      }
+      .hero {
+        padding-top: 42px;
+      }
+      .search {
+        display: none;
+      }
+      .section-head {
+        display: grid;
+      }
+      .reports,
+      .resources,
+      .people,
+      .events,
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+      .event {
+        grid-template-columns: 1fr;
+      }
+      .datebox {
+        width: 78px;
+      }
+      .chart {
+        height: 220px;
+        gap: 4px;
+        padding: 12px;
+      }
+      .foot-links {
+        justify-content: start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#content">Skip to investor content</a>
+  <header>
+    <div class="wrap nav" aria-label="Primary navigation">
+      <a class="brand" href="#">
+        <span class="mark">H</span>
+        <span>Horizon IR</span>
+      </a>
+      <nav aria-label="Investor sections">
+        <ul class="links">
+          <li><a href="#overview">Overview</a></li>
+          <li><a href="#financials">Financials</a></li>
+          <li><a href="#governance">Governance</a></li>
+          <li><a href="#stock">Stock</a></li>
+          <li><a href="#events">Events</a></li>
+          <li><a href="#resources">Resources</a></li>
+        </ul>
+      </nav>
+      <div class="actions">
+        <label class="search" aria-label="Search investor relations">
+          <span>⌕</span>
+          <input type="search" aria-label="Search reports and filings">
+        </label>
+        <button class="icon-btn" id="menuOpen" type="button" aria-label="Open menu" aria-controls="drawer" aria-expanded="false">
+          <span class="hamb" aria-hidden="true"><i></i></span>
+        </button>
+      </div>
+    </div>
+  </header>
+  <div class="shade" id="shade" hidden></div>
+  <aside class="drawer" id="drawer" aria-label="Mobile investor menu" aria-hidden="true">
+    <div class="drawer-top">
+      <a class="brand" href="#">
+        <span class="mark">H</span>
+        <span>Horizon IR</span>
+      </a>
+      <button class="icon-btn" id="menuClose" type="button" aria-label="Close menu">×</button>
+    </div>
+    <nav>
+      <a href="#overview">Overview</a>
+      <a href="#financials">Financials</a>
+      <a href="#governance">Governance</a>
+      <a href="#stock">Stock</a>
+      <a href="#events">Events</a>
+      <a href="#resources">Resources</a>
+    </nav>
+  </aside>
+  <main id="content">
+    <section class="hero" id="overview" aria-labelledby="hero-title">
+      <div class="wrap hero-grid">
+        <div>
+          <span class="eyebrow"><span class="dot"></span>NYSE: HRZN reporting center</span>
+          <h1 id="hero-title">Transparent performance for long-term shareholders.</h1>
+          <p class="lead">Horizon brings real-time market data, audited reports, governance materials, and upcoming investor events into one focused corporate IR experience.</p>
+          <div class="cta">
+            <a class="btn primary" href="#financials"><span class="pulse"></span>Download Q2 Results</a>
+            <a class="btn ghost" href="#events">Join next earnings call</a>
+          </div>
+        </div>
+        <aside class="market-card" aria-label="Live stock summary">
+          <div class="ticker">
+            <div>
+              <small>Last trade</small>
+              <strong>$148.72</strong>
+            </div>
+            <span class="change">+2.84%</span>
+          </div>
+          <div class="mini-bars" aria-label="Intraday trading volume">
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+            <i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+          <div class="feed">
+            <div class="feed-row"><span>Next earnings</span><strong>Aug 6, 2026</strong></div>
+            <div class="feed-row"><span>Dividend record date</span><strong>Sep 12, 2026</strong></div>
+            <div class="feed-row"><span>Consensus rating</span><strong>Outperform</strong></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+    <section class="kpis" aria-label="Key investor metrics">
+      <div class="wrap kpi-grid">
+        <article class="kpi">
+          <span>Stock price</span>
+          <strong>$148.72</strong>
+          <em>Delayed 15 minutes</em>
+        </article>
+        <article class="kpi">
+          <span>Market cap</span>
+          <strong>$42.8B</strong>
+          <em>As of close</em>
+        </article>
+        <article class="kpi">
+          <span>52-week range</span>
+          <strong>$101 / $154</strong>
+          <em>High momentum</em>
+        </article>
+        <article class="kpi">
+          <span>Dividend yield</span>
+          <strong>1.84%</strong>
+          <em>Healthy coverage</em>
+        </article>
+      </div>
+    </section>
+    <section id="financials" aria-labelledby="financial-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="financial-title">Financial reports</h2>
+          <p>Quarterly earnings, annual statements, and audited filings organized for analysts, shareholders, and governance teams.</p>
+        </div>
+        <div class="reports">
+          <article class="report">
+            <span class="badge">Quarterly</span>
+            <h3>Q2 Fiscal 2026 Results</h3>
+            <p class="meta">Earnings release and supplemental workbook · Aug 6, 2026</p>
+            <a class="download" href="#">Download PDF</a>
+          </article>
+          <article class="report">
+            <span class="badge cyan">Annual</span>
+            <h3>2025 Annual Report</h3>
+            <p class="meta">Audited financial statements and business review · Feb 18, 2026</p>
+            <a class="download" href="#">Download PDF</a>
+          </article>
+          <article class="report">
+            <span class="badge">Quarterly</span>
+            <h3>Q1 Fiscal 2026 Form 10-Q</h3>
+            <p class="meta">SEC filing package and XBRL data · May 7, 2026</p>
+            <a class="download" href="#">Download Filing</a>
+          </article>
+          <article class="report">
+            <span class="badge cyan">Annual</span>
+            <h3>Proxy Statement 2026</h3>
+            <p class="meta">Director slate, compensation, and voting items · Mar 22, 2026</p>
+            <a class="download" href="#">Download Proxy</a>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section id="stock" aria-labelledby="stock-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="stock-title">Stock information</h2>
+          <p>Six-month performance trend, valuation markers, and shareholder liquidity metrics for HRZN common stock.</p>
+        </div>
+        <div class="stock-grid">
+          <article class="chart-panel">
+            <div class="chart-top">
+              <div>
+                <strong>6-month price trend</strong>
+                <p class="meta">January through June 2026</p>
+              </div>
+              <span class="range">+28.4%</span>
+            </div>
+            <div class="chart" aria-label="CSS bar chart showing six-month upward stock trend">
+              <b></b><b></b><b></b><b></b><b></b><b></b>
+              <b></b><b></b><b></b><b></b><b></b><b></b>
+              <b></b><b></b><b></b><b></b><b></b><b></b>
+              <b></b><b></b><b></b><b></b><b></b><b></b>
+            </div>
+          </article>
+          <aside class="metric-panel">
+            <table aria-label="Stock key metrics">
+              <tbody>
+                <tr><th scope="row">Open</th><td>$144.18</td></tr>
+                <tr><th scope="row">Volume</th><td>3.8M</td></tr>
+                <tr><th scope="row">Avg volume</th><td>2.9M</td></tr>
+                <tr><th scope="row">P/E ratio</th><td>24.6x</td></tr>
+                <tr><th scope="row">EPS diluted</th><td>$6.04</td></tr>
+                <tr><th scope="row">Beta</th><td>0.92</td></tr>
+                <tr><th scope="row">Shares out</th><td>288M</td></tr>
+              </tbody>
+            </table>
+          </aside>
+        </div>
+      </div>
+    </section>
+    <section id="governance" aria-labelledby="gov-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="gov-title">Governance</h2>
+          <p>Independent directors, committee memberships, and board leadership aligned to durable shareholder value.</p>
+        </div>
+        <div class="people">
+          <article class="person">
+            <span class="avatar">AM</span>
+            <h3>Avery Morgan</h3>
+            <p class="meta">Independent Chair</p>
+            <div class="committees">
+              <span>Audit</span>
+              <span>Risk</span>
+              <span>Nominating</span>
+            </div>
+          </article>
+          <article class="person">
+            <span class="avatar">SK</span>
+            <h3>Sofia Kim</h3>
+            <p class="meta">Lead Director</p>
+            <div class="committees">
+              <span>Compensation</span>
+              <span>Governance</span>
+            </div>
+          </article>
+          <article class="person">
+            <span class="avatar">DR</span>
+            <h3>Devon Reyes</h3>
+            <p class="meta">Audit Committee Chair</p>
+            <div class="committees">
+              <span>Audit</span>
+              <span>Cybersecurity</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section id="events" aria-labelledby="event-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="event-title">Upcoming events</h2>
+          <p>Live calls, shareholder meetings, and institutional conference appearances with direct registration access.</p>
+        </div>
+        <div class="events">
+          <article class="event">
+            <div class="datebox"><div><span>AUG</span>06</div></div>
+            <div>
+              <span class="badge">Earnings Call</span>
+              <h3>Q2 2026 Results Webcast</h3>
+              <p class="meta">8:30 AM ET · webcast and replay</p>
+              <a class="btn ghost" href="#">Listen live</a>
+            </div>
+          </article>
+          <article class="event">
+            <div class="datebox"><div><span>SEP</span>18</div></div>
+            <div>
+              <span class="badge cyan">Conference</span>
+              <h3>Global Fintech Forum</h3>
+              <p class="meta">New York · fireside chat</p>
+              <a class="btn ghost" href="#">Register</a>
+            </div>
+          </article>
+          <article class="event">
+            <div class="datebox"><div><span>OCT</span>24</div></div>
+            <div>
+              <span class="badge">AGM</span>
+              <h3>Annual General Meeting</h3>
+              <p class="meta">Virtual meeting · voting portal</p>
+              <a class="btn ghost" href="#">View details</a>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section id="resources" aria-labelledby="resource-title">
+      <div class="wrap">
+        <div class="section-head">
+          <h2 id="resource-title">Shareholder resources</h2>
+          <p>Frequently requested materials for owners, analysts, institutional desks, and transfer agents.</p>
+        </div>
+        <div class="resources">
+          <a class="resource" href="#">
+            <span class="arrow">↗</span>
+            <h3>Annual Report</h3>
+            <p>Integrated performance review and audited statements.</p>
+          </a>
+          <a class="resource" href="#">
+            <span class="arrow">↗</span>
+            <h3>SEC Filings</h3>
+            <p>10-K, 10-Q, 8-K, proxy materials, and ownership forms.</p>
+          </a>
+          <a class="resource" href="#">
+            <span class="arrow">↗</span>
+            <h3>Dividend History</h3>
+            <p>Declaration dates, record dates, and payment history.</p>
+          </a>
+          <a class="resource" href="#">
+            <span class="arrow">↗</span>
+            <h3>Analyst Coverage</h3>
+            <p>Firms currently publishing independent HRZN research.</p>
+          </a>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer>
+    <div class="wrap foot">
+      <div>
+        <p class="credit">Horizon Investor Relations — designed by Northline Studio.</p>
+        <p class="legal">Market data is delayed and shown for interface demonstration. This page is not an offer to sell securities or a solicitation to buy securities. Forward-looking statements involve risks, assumptions, and uncertainties that may cause actual results to differ materially.</p>
+      </div>
+      <nav class="foot-links" aria-label="Footer links">
+        <a href="#">Contact IR</a>
+        <a href="#">Email alerts</a>
+        <a href="#">Transfer agent</a>
+        <a href="#">Privacy</a>
+      </nav>
+    </div>
+  </footer>
+  <script>
+    const openBtn = document.getElementById('menuOpen');
+    const closeBtn = document.getElementById('menuClose');
+    const drawer = document.getElementById('drawer');
+    const shade = document.getElementById('shade');
+    const links = drawer.querySelectorAll('a');
+    const show = () => {
+      shade.hidden = false;
+      drawer.classList.add('open');
+      shade.classList.add('open');
+      drawer.setAttribute('aria-hidden', 'false');
+      openBtn.setAttribute('aria-expanded', 'true');
+      closeBtn.focus();
+    };
+    const hide = () => {
+      drawer.classList.remove('open');
+      shade.classList.remove('open');
+      drawer.setAttribute('aria-hidden', 'true');
+      openBtn.setAttribute('aria-expanded', 'false');
+      setTimeout(() => { shade.hidden = true; }, 220);
+      openBtn.focus();
+    };
+    openBtn.addEventListener('click', show);
+    closeBtn.addEventListener('click', hide);
+    shade.addEventListener('click', hide);
+    links.forEach(link => link.addEventListener('click', hide));
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && drawer.classList.contains('open')) hide();
+      if (event.key !== 'Tab' || !drawer.classList.contains('open')) return;
+      const focusables = drawer.querySelectorAll('a,button');
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+  </script>
+</body>
+</html>
