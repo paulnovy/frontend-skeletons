@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orbit EdTech Campus</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --cloud: #F6F8FC; --ink: #19212B; --indigo: #4F46E5; --cyan: #06B6D4; --lime: #A3E635; --coral: #FB7185; --cloud-strong: rgba(246, 248, 252, 0.96); --cloud-soft: rgba(246, 248, 252, 0.74); --ink-soft: rgba(25, 33, 43, 0.72); --ink-muted: rgba(25, 33, 43, 0.52); --ink-faint: rgba(25, 33, 43, 0.12); --indigo-soft: rgba(79, 70, 229, 0.12); --indigo-mid: rgba(79, 70, 229, 0.22); --cyan-soft: rgba(6, 182, 212, 0.14); --lime-soft: rgba(163, 230, 53, 0.22); --coral-soft: rgba(251, 113, 133, 0.16); --shadow: 0 24px 70px rgba(25, 33, 43, 0.13); --radius: 8px; --max: 1180px; }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: radial-gradient(circle at 18% 8%, var(--cyan-soft), transparent 28%), linear-gradient(135deg, var(--cloud), rgba(79, 70, 229, 0.07)); color: var(--ink); font-family: "Inter", sans-serif; line-height: 1.5; min-height: 100vh; }
+    body.drawer-open { overflow: hidden; }
+    a { color: inherit; text-decoration: none; }
+    button,
+    input { font: inherit; }
+    button { cursor: pointer; }
+    .skip-link { position: absolute; top: -60px; left: 20px; z-index: 100; padding: 12px 16px; border-radius: var(--radius); background: var(--ink); color: var(--cloud); transition: top 0.2s ease; }
+    .skip-link:focus { top: 16px; }
+    :focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; border-radius: 6px; }
+    .site-header { position: sticky; top: 0; z-index: 40; background: rgba(246, 248, 252, 0.86); border-bottom: 1px solid var(--ink-faint); backdrop-filter: blur(18px); }
+    .nav-shell { width: min(var(--max), calc(100% - 40px)); min-height: 76px; margin: 0 auto; display: flex; align-items: center; gap: 20px; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; font-family: "Manrope", sans-serif; font-weight: 800; letter-spacing: 0; white-space: nowrap; }
+    .brand-mark { width: 38px; height: 38px; border-radius: 8px; display: grid; place-items: center; background: linear-gradient(135deg, var(--indigo), var(--cyan)); color: var(--cloud); box-shadow: 0 12px 30px var(--indigo-mid); }
+    .desktop-nav { display: flex; align-items: center; gap: 4px; margin-left: 10px; }
+    .desktop-nav a,
+    .drawer-nav a { padding: 10px 12px; border-radius: var(--radius); color: var(--ink-soft); font-size: 14px; font-weight: 700; }
+    .desktop-nav a:hover,
+    .drawer-nav a:hover { background: var(--indigo-soft); color: var(--ink); }
+    .nav-actions { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    .search-box { position: relative; width: min(280px, 28vw); }
+    .search-box label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); }
+    .search-box input { width: 100%; border: 1px solid var(--ink-faint); border-radius: var(--radius); background: var(--cloud-strong); color: var(--ink); padding: 11px 14px 11px 38px; min-height: 44px; }
+    .search-box span { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--ink-muted); font-weight: 800; }
+    .avatar { width: 42px; height: 42px; border: 0; border-radius: 8px; background: var(--ink); color: var(--cloud); font-weight: 800; box-shadow: 0 14px 30px rgba(25, 33, 43, 0.18); }
+    .menu-button { display: none; width: 44px; height: 44px; border: 1px solid var(--ink-faint); border-radius: var(--radius); background: var(--cloud-strong); color: var(--ink); }
+    .menu-button span { display: block; width: 18px; height: 2px; margin: 4px auto; background: var(--ink); border-radius: 8px; }
+    .drawer-backdrop { position: fixed; inset: 0; z-index: 60; background: rgba(25, 33, 43, 0.44); opacity: 0; pointer-events: none; transition: opacity 0.22s ease; }
+    .drawer-backdrop.is-visible { opacity: 1; pointer-events: auto; }
+    .drawer { position: fixed; inset: 0 0 0 auto; z-index: 70; width: min(360px, 88vw); background: var(--cloud); transform: translateX(100%); transition: transform 0.24s ease; box-shadow: -28px 0 80px rgba(25, 33, 43, 0.2); display: flex; flex-direction: column; padding: 22px; }
+    .drawer.is-open { transform: translateX(0); }
+    .drawer-top { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 22px; border-bottom: 1px solid var(--ink-faint); }
+    .drawer-close { width: 42px; height: 42px; border: 1px solid var(--ink-faint); border-radius: var(--radius); background: var(--cloud-strong); color: var(--ink); font-size: 22px; line-height: 1; }
+    .drawer-nav { display: grid; gap: 6px; margin-top: 22px; }
+    .drawer-search { margin-top: 22px; width: 100%; }
+    main { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; padding: 34px 0 56px; }
+    .hero { display: grid; grid-template-columns: minmax(0, 1.18fr) minmax(320px, 0.82fr); gap: 22px; align-items: stretch; margin-bottom: 22px; }
+    .hero-panel { border-radius: var(--radius); background: linear-gradient(135deg, var(--ink), rgba(25, 33, 43, 0.92)); color: var(--cloud); padding: clamp(28px, 5vw, 54px); position: relative; overflow: hidden; min-height: 330px; box-shadow: var(--shadow); }
+    .hero-panel::after { content: ""; position: absolute; width: 360px; height: 360px; right: -140px; top: -120px; background: conic-gradient(from 90deg, var(--cyan), var(--indigo), var(--lime), var(--cyan)); opacity: 0.24; border-radius: 50%; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 8px; color: var(--lime); font-weight: 800; font-size: 13px; text-transform: uppercase; letter-spacing: 0; }
+    .live-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--cyan); box-shadow: 0 0 0 8px rgba(6, 182, 212, 0.18); }
+    h1,
+    h2,
+    h3 { font-family: "Manrope", sans-serif; letter-spacing: 0; line-height: 1.05; margin: 0; }
+    h1 { max-width: 780px; margin-top: 20px; font-size: clamp(38px, 6vw, 74px); }
+    .hero-copy { max-width: 650px; color: var(--cloud-soft); font-size: 18px; margin: 22px 0 0; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+    .button { min-height: 44px; border: 0; border-radius: var(--radius); padding: 12px 16px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; font-weight: 800; color: var(--cloud); background: var(--indigo); }
+    .button.secondary { color: var(--ink); background: var(--lime); }
+    .button.ghost { background: var(--cloud); color: var(--ink); border: 1px solid var(--ink-faint); }
+    .hero-card { border: 1px solid var(--ink-faint); border-radius: var(--radius); background: var(--cloud-strong); padding: 22px; box-shadow: 0 18px 50px rgba(25, 33, 43, 0.09); display: flex; flex-direction: column; justify-content: space-between; min-height: 330px; }
+    .orbit-map { min-height: 202px; border-radius: var(--radius); background: linear-gradient(135deg, var(--indigo-soft), var(--cyan-soft)), repeating-linear-gradient(90deg, transparent 0 34px, var(--ink-faint) 35px 36px), repeating-linear-gradient(0deg, transparent 0 34px, var(--ink-faint) 35px 36px); position: relative; overflow: hidden; }
+    .course-node { position: absolute; width: 58px; height: 58px; border-radius: 50%; display: grid; place-items: center; color: var(--cloud); font-weight: 900; box-shadow: 0 12px 28px rgba(25, 33, 43, 0.18); }
+    .course-node.one { background: var(--indigo); left: 16%; top: 18%; }
+    .course-node.two { background: var(--cyan); right: 14%; top: 28%; }
+    .course-node.three { background: var(--ink); left: 38%; bottom: 14%; }
+    .orbit-map svg { position: absolute; inset: 0; width: 100%; height: 100%; stroke: var(--indigo); stroke-width: 2; fill: none; opacity: 0.6; }
+    .mentor-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 18px; }
+    .mentor-row strong { display: block; font-family: "Manrope", sans-serif; font-size: 18px; }
+    .mentor-row span { color: var(--ink-muted); font-size: 14px; }
+    .section { margin-top: 22px; border: 1px solid var(--ink-faint); border-radius: var(--radius); background: rgba(246, 248, 252, 0.76); box-shadow: 0 18px 55px rgba(25, 33, 43, 0.08); }
+    .section-header { display: flex; align-items: end; justify-content: space-between; gap: 18px; padding: 24px 24px 0; }
+    .section-kicker { margin: 0 0 8px; color: var(--indigo); font-size: 12px; font-weight: 900; text-transform: uppercase; }
+    .section h2 { font-size: clamp(24px, 3vw, 36px); }
+    .section-intro { max-width: 620px; margin: 10px 0 0; color: var(--ink-muted); }
+    .kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 22px 0; }
+    .kpi-card { border: 1px solid var(--ink-faint); border-radius: var(--radius); background: var(--cloud-strong); padding: 20px; position: relative; overflow: hidden; }
+    .kpi-card::after { content: ""; position: absolute; inset: auto 16px 16px auto; width: 56px; height: 56px; border-radius: 50%; background: var(--indigo-soft); }
+    .kpi-card.cyan::after { background: var(--cyan-soft); }
+    .kpi-card.lime::after { background: var(--lime-soft); }
+    .kpi-card.coral::after { background: var(--coral-soft); }
+    .kpi-label { color: var(--ink-muted); font-size: 13px; font-weight: 800; }
+    .kpi-value { display: block; margin-top: 8px; font-family: "Manrope", sans-serif; font-size: 34px; font-weight: 800; }
+    .kpi-note { display: block; margin-top: 4px; color: var(--ink-soft); font-size: 13px; }
+    .catalog-controls { display: flex; flex-wrap: wrap; gap: 10px; padding: 20px 24px 0; }
+    .filter-button { min-height: 38px; border: 1px solid var(--ink-faint); border-radius: var(--radius); background: var(--cloud); color: var(--ink-soft); padding: 8px 12px; font-weight: 800; }
+    .filter-button.is-active { color: var(--cloud); background: var(--indigo); border-color: var(--indigo); }
+    .course-grid { padding: 20px 24px 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .course-card { border: 1px solid var(--ink-faint); border-radius: var(--radius); background: var(--cloud-strong); overflow: hidden; display: flex; flex-direction: column; min-height: 100%; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .course-card:hover { transform: translateY(-3px); box-shadow: 0 18px 40px rgba(25, 33, 43, 0.12); }
+    .thumb { min-height: 132px; display: flex; align-items: end; padding: 16px; color: var(--cloud); background: linear-gradient(135deg, var(--indigo), var(--cyan)); }
+    .thumb.analytics { background: radial-gradient(circle at 70% 20%, var(--lime), transparent 24%), linear-gradient(135deg, var(--indigo), var(--ink)); }
+    .thumb.design { background: radial-gradient(circle at 18% 20%, var(--coral), transparent 24%), linear-gradient(135deg, var(--cyan), var(--indigo)); }
+    .thumb.code { background: repeating-linear-gradient(45deg, rgba(246, 248, 252, 0.14) 0 10px, transparent 10px 20px), linear-gradient(135deg, var(--ink), var(--indigo)); }
+    .thumb.leadership { background: radial-gradient(circle at 20% 72%, var(--lime), transparent 22%), linear-gradient(135deg, var(--ink), var(--cyan)); }
+    .thumb.science { background: radial-gradient(circle at 78% 32%, var(--cyan), transparent 26%), linear-gradient(135deg, var(--indigo), var(--coral)); }
+    .thumb strong { font-family: "Manrope", sans-serif; font-size: 18px; line-height: 1.1; }
+    .course-body { padding: 18px; display: grid; gap: 12px; flex: 1; }
+    .course-title { font-family: "Manrope", sans-serif; font-size: 20px; font-weight: 800; line-height: 1.18; }
+    .course-meta,
+    .post-meta,
+    .lesson-meta { color: var(--ink-muted); font-size: 13px; font-weight: 700; }
+    .card-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+    .badge { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; background: var(--indigo-soft); color: var(--indigo); padding: 6px 10px; font-size: 12px; font-weight: 900; }
+    .badge.cyan { background: var(--cyan-soft); color: var(--cyan); }
+    .badge.lime { background: var(--lime-soft); color: var(--ink); }
+    .badge.coral { background: var(--coral-soft); color: var(--coral); }
+    .rating { color: var(--ink-soft); font-size: 13px; font-weight: 900; }
+    .learning-layout { padding: 24px; display: grid; grid-template-columns: minmax(0, 1fr) 330px; gap: 18px; }
+    .progress-list { display: grid; gap: 14px; }
+    .progress-item { border: 1px solid var(--ink-faint); border-radius: var(--radius); background: var(--cloud-strong); padding: 18px; display: grid; gap: 12px; }
+    .progress-top { display: flex; justify-content: space-between; gap: 14px; align-items: start; }
+    .progress-top h3 { font-size: 20px; }
+    .progress-track { height: 10px; border-radius: 99px; background: var(--ink-faint); overflow: hidden; }
+    .progress-fill { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--indigo), var(--cyan)); }
+    .coach-panel { border-radius: var(--radius); padding: 22px; color: var(--cloud); background: var(--ink); display: grid; align-content: start; gap: 18px; }
+    .coach-panel h3 { font-size: 24px; }
+    .coach-panel p { margin: 0; color: var(--cloud-soft); }
+    .coach-stat { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; padding-top: 14px; border-top: 1px solid rgba(246, 248, 252, 0.16); }
+    .coach-stat strong { font-family: "Manrope", sans-serif; font-size: 28px; }
+    .lesson-layout { padding: 24px; display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 18px; }
+    .lesson-stage { border-radius: var(--radius); background: var(--ink); min-height: 390px; padding: 22px; color: var(--cloud); display: grid; align-content: space-between; position: relative; overflow: hidden; }
+    .lesson-stage::before { content: ""; position: absolute; inset: 38px; border: 1px solid rgba(246, 248, 252, 0.14); border-radius: var(--radius); background: linear-gradient(90deg, transparent 48%, rgba(246, 248, 252, 0.12) 49%, transparent 50%), linear-gradient(0deg, transparent 48%, rgba(246, 248, 252, 0.12) 49%, transparent 50%); }
+    .lesson-stage > * { position: relative; z-index: 1; }
+    .stage-label { display: inline-flex; width: fit-content; align-items: center; gap: 8px; border-radius: 999px; background: rgba(6, 182, 212, 0.16); color: var(--cloud); padding: 8px 12px; font-weight: 900; font-size: 13px; }
+    .play-button { width: 78px; height: 78px; border: 0; border-radius: 50%; place-self: center; background: var(--lime); color: var(--ink); font-size: 28px; font-weight: 900; box-shadow: 0 18px 50px rgba(163, 230, 53, 0.22); }
+    .lesson-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+    .icon-button { min-height: 40px; border: 1px solid rgba(246, 248, 252, 0.18); border-radius: var(--radius); background: rgba(246, 248, 252, 0.08); color: var(--cloud); padding: 10px 12px; font-weight: 800; }
+    .icon-button.is-on { background: var(--lime); color: var(--ink); border-color: var(--lime); }
+    .outline { border: 1px solid var(--ink-faint); border-radius: var(--radius); background: var(--cloud-strong); overflow: hidden; }
+    .outline h3 { font-size: 20px; padding: 18px 18px 10px; }
+    .outline-list { list-style: none; margin: 0; padding: 0 10px 12px; display: grid; gap: 6px; }
+    .outline-list button { width: 100%; border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-soft); padding: 12px; text-align: left; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; font-weight: 800; }
+    .outline-list button.is-current { background: var(--indigo-soft); color: var(--ink); }
+    .check { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--lime-soft); color: var(--ink); font-size: 12px; }
+    .feed-grid { padding: 24px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .post-card { border: 1px solid var(--ink-faint); border-radius: var(--radius); background: var(--cloud-strong); padding: 18px; display: grid; gap: 14px; }
+    .author { display: flex; gap: 12px; align-items: center; }
+    .author-mark { width: 42px; height: 42px; border-radius: 8px; background: var(--indigo); color: var(--cloud); display: grid; place-items: center; font-weight: 900; }
+    .post-card h3 { font-size: 19px; line-height: 1.16; }
+    .post-card p { margin: 0; color: var(--ink-soft); }
+    .post-stats { display: flex; gap: 12px; color: var(--ink-muted); font-weight: 800; font-size: 13px; }
+    .badge-grid { padding: 24px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .achievement { border: 1px solid var(--ink-faint); border-radius: var(--radius); background: var(--cloud-strong); padding: 18px; display: grid; gap: 12px; min-height: 186px; }
+    .achievement.is-locked { opacity: 0.58; }
+    .achievement-icon { width: 48px; height: 48px; border-radius: 8px; display: grid; place-items: center; background: var(--indigo-soft); color: var(--indigo); font-weight: 900; font-size: 20px; }
+    .achievement.is-earned .achievement-icon { background: var(--lime); color: var(--ink); }
+    .achievement h3 { font-size: 18px; line-height: 1.16; }
+    .achievement p { margin: 0; color: var(--ink-muted); font-size: 14px; }
+    .site-footer { border-top: 1px solid var(--ink-faint); background: rgba(246, 248, 252, 0.78); }
+    .footer-shell { width: min(var(--max), calc(100% - 40px)); margin: 0 auto; padding: 26px 0; display: flex; align-items: center; justify-content: space-between; gap: 18px; color: var(--ink-muted); font-weight: 700; font-size: 14px; }
+    .footer-links { display: flex; gap: 14px; flex-wrap: wrap; }
+    .footer-links a { color: var(--ink-soft); }
+    @media (max-width: 980px) {
+    .desktop-nav,
+    .search-box:not(.drawer-search) { display: none; }
+    .menu-button { display: inline-block; }
+    .hero,
+    .learning-layout,
+    .lesson-layout { grid-template-columns: 1fr; }
+    .kpi-strip,
+    .badge-grid { grid-template-columns: repeat(2, 1fr); }
+    .course-grid,
+    .feed-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+    .nav-shell,
+    main,
+    .footer-shell { width: min(100% - 28px, var(--max)); }
+    .nav-shell { min-height: 66px; }
+    .brand span:last-child { max-width: 160px; overflow: hidden; text-overflow: ellipsis; }
+    .avatar { display: none; }
+    main { padding-top: 20px; }
+    .hero-panel,
+    .hero-card,
+    .section-header,
+    .course-grid,
+    .learning-layout,
+    .lesson-layout,
+    .feed-grid,
+    .badge-grid { padding: 18px; }
+    .hero-panel { min-height: 360px; }
+    .kpi-strip,
+    .course-grid,
+    .feed-grid,
+    .badge-grid { grid-template-columns: 1fr; }
+    .section-header,
+    .progress-top,
+    .footer-shell { align-items: stretch; flex-direction: column; }
+    .catalog-controls { padding: 18px 18px 0; }
+    .lesson-stage { min-height: 340px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to learning dashboard</a>
+  <header class="site-header">
+    <div class="nav-shell">
+      <a class="brand" href="#top" aria-label="Orbit EdTech Campus home">
+        <span class="brand-mark">O</span>
+        <span>Orbit EdTech Campus</span>
+      </a>
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="#dashboard">Dashboard</a>
+        <a href="#courses">Courses</a>
+        <a href="#learning">My Learning</a>
+        <a href="#community">Community</a>
+        <a href="#resources">Resources</a>
+      </nav>
+      <div class="nav-actions">
+        <form class="search-box" role="search">
+          <label for="site-search">Search courses, mentors, and lessons</label>
+          <span aria-hidden="true">/</span>
+          <input id="site-search" type="search" value="" aria-label="Search courses, mentors, and lessons">
+        </form>
+        <button class="avatar" type="button" aria-label="Open learner profile">PL</button>
+        <button class="menu-button" type="button" aria-label="Open navigation menu" aria-controls="mobile-drawer" aria-expanded="false">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="drawer-backdrop" data-close-drawer></div>
+  <aside class="drawer" id="mobile-drawer" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="drawer-top">
+      <a class="brand" href="#top">
+        <span class="brand-mark">O</span>
+        <span>Orbit Campus</span>
+      </a>
+      <button class="drawer-close" type="button" aria-label="Close navigation menu" data-close-drawer>x</button>
+    </div>
+    <nav class="drawer-nav" aria-label="Mobile primary navigation">
+      <a href="#dashboard">Dashboard</a>
+      <a href="#courses">Courses</a>
+      <a href="#learning">My Learning</a>
+      <a href="#community">Community</a>
+      <a href="#resources">Resources</a>
+    </nav>
+    <form class="search-box drawer-search" role="search">
+      <label for="drawer-search">Search learning paths</label>
+      <span aria-hidden="true">/</span>
+      <input id="drawer-search" type="search" value="" aria-label="Search learning paths">
+    </form>
+  </aside>
+
+  <main id="main">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="hero-panel">
+        <span class="eyebrow"><span class="live-dot"></span> Live cohort week 6</span>
+        <h1 id="hero-title">A focused campus for adaptive online learning.</h1>
+        <p class="hero-copy">Coordinate courses, interactive lessons, mentorship, and measurable progress from one premium learner workspace.</p>
+        <div class="hero-actions" aria-label="Primary campus actions">
+          <a class="button secondary" href="#lesson">Resume lesson</a>
+          <a class="button" href="#courses">Explore catalog</a>
+        </div>
+      </div>
+      <aside class="hero-card" aria-label="Learning path map">
+        <div class="orbit-map">
+          <svg viewBox="0 0 360 220" aria-hidden="true">
+            <path d="M72 68 C144 12 218 22 286 84"></path>
+            <path d="M102 172 C156 126 214 126 258 92"></path>
+          </svg>
+          <span class="course-node one">AI</span>
+          <span class="course-node two">UX</span>
+          <span class="course-node three">JS</span>
+        </div>
+        <div class="mentor-row">
+          <div>
+            <strong>Mentor pulse</strong>
+            <span>3 instructors active in your cohort</span>
+          </div>
+          <span class="badge lime">Healthy</span>
+        </div>
+      </aside>
+    </section>
+
+    <section class="kpi-strip" id="dashboard" aria-label="Learning metrics">
+      <article class="kpi-card">
+        <span class="kpi-label">Courses enrolled</span>
+        <strong class="kpi-value">12</strong>
+        <span class="kpi-note">4 active this month</span>
+      </article>
+      <article class="kpi-card cyan">
+        <span class="kpi-label">Hours learned</span>
+        <strong class="kpi-value">148</strong>
+        <span class="kpi-note">9.5 hours this week</span>
+      </article>
+      <article class="kpi-card lime">
+        <span class="kpi-label">Streak days</span>
+        <strong class="kpi-value">26</strong>
+        <span class="kpi-note">Best streak in cohort</span>
+      </article>
+      <article class="kpi-card coral">
+        <span class="kpi-label">Certificates earned</span>
+        <strong class="kpi-value">7</strong>
+        <span class="kpi-note">2 assessments queued</span>
+      </article>
+    </section>
+
+    <section class="section" id="courses" aria-labelledby="courses-title">
+      <div class="section-header">
+        <div>
+          <p class="section-kicker">Course catalog</p>
+          <h2 id="courses-title">Build a path from fundamentals to mastery.</h2>
+          <p class="section-intro">Filter a curated catalog with live ratings, mentor-led cohorts, and practical lesson studios.</p>
+        </div>
+      </div>
+      <div class="catalog-controls" role="group" aria-label="Course filters">
+        <button class="filter-button is-active" type="button" data-filter="all">All</button>
+        <button class="filter-button" type="button" data-filter="data">Data</button>
+        <button class="filter-button" type="button" data-filter="design">Design</button>
+        <button class="filter-button" type="button" data-filter="code">Code</button>
+        <button class="filter-button" type="button" data-filter="leadership">Leadership</button>
+      </div>
+      <div class="course-grid" aria-live="polite">
+        <article class="course-card" data-category="data">
+          <div class="thumb analytics"><strong>Learning Analytics Lab</strong></div>
+          <div class="course-body">
+            <div>
+              <h3 class="course-title">Learning Analytics Lab</h3>
+              <p class="course-meta">Instructor: Rina Shah</p>
+            </div>
+            <div class="card-row">
+              <span class="badge">Intermediate</span>
+              <span class="rating">4.9 star</span>
+            </div>
+            <div class="card-row">
+              <span class="course-meta">8 weeks</span>
+              <a class="button ghost" href="#learning">View path</a>
+            </div>
+          </div>
+        </article>
+        <article class="course-card" data-category="design">
+          <div class="thumb design"><strong>Human-Centered Product Design</strong></div>
+          <div class="course-body">
+            <div>
+              <h3 class="course-title">Human-Centered Product Design</h3>
+              <p class="course-meta">Instructor: Mateo Cruz</p>
+            </div>
+            <div class="card-row">
+              <span class="badge cyan">Beginner</span>
+              <span class="rating">4.8 star</span>
+            </div>
+            <div class="card-row">
+              <span class="course-meta">6 weeks</span>
+              <a class="button ghost" href="#learning">View path</a>
+            </div>
+          </div>
+        </article>
+        <article class="course-card" data-category="code">
+          <div class="thumb code"><strong>JavaScript Systems Studio</strong></div>
+          <div class="course-body">
+            <div>
+              <h3 class="course-title">JavaScript Systems Studio</h3>
+              <p class="course-meta">Instructor: Anika Voss</p>
+            </div>
+            <div class="card-row">
+              <span class="badge coral">Advanced</span>
+              <span class="rating">4.7 star</span>
+            </div>
+            <div class="card-row">
+              <span class="course-meta">10 weeks</span>
+              <a class="button ghost" href="#learning">View path</a>
+            </div>
+          </div>
+        </article>
+        <article class="course-card" data-category="leadership">
+          <div class="thumb leadership"><strong>Remote Cohort Leadership</strong></div>
+          <div class="course-body">
+            <div>
+              <h3 class="course-title">Remote Cohort Leadership</h3>
+              <p class="course-meta">Instructor: Ezra Kim</p>
+            </div>
+            <div class="card-row">
+              <span class="badge lime">Intermediate</span>
+              <span class="rating">4.9 star</span>
+            </div>
+            <div class="card-row">
+              <span class="course-meta">5 weeks</span>
+              <a class="button ghost" href="#learning">View path</a>
+            </div>
+          </div>
+        </article>
+        <article class="course-card" data-category="data">
+          <div class="thumb science"><strong>Applied AI Foundations</strong></div>
+          <div class="course-body">
+            <div>
+              <h3 class="course-title">Applied AI Foundations</h3>
+              <p class="course-meta">Instructor: Noor Bennett</p>
+            </div>
+            <div class="card-row">
+              <span class="badge">Beginner</span>
+              <span class="rating">4.8 star</span>
+            </div>
+            <div class="card-row">
+              <span class="course-meta">7 weeks</span>
+              <a class="button ghost" href="#learning">View path</a>
+            </div>
+          </div>
+        </article>
+        <article class="course-card" data-category="code">
+          <div class="thumb"><strong>Accessible Interface Engineering</strong></div>
+          <div class="course-body">
+            <div>
+              <h3 class="course-title">Accessible Interface Engineering</h3>
+              <p class="course-meta">Instructor: Laila Morgan</p>
+            </div>
+            <div class="card-row">
+              <span class="badge cyan">Intermediate</span>
+              <span class="rating">4.9 star</span>
+            </div>
+            <div class="card-row">
+              <span class="course-meta">6 weeks</span>
+              <a class="button ghost" href="#learning">View path</a>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="learning" aria-labelledby="learning-title">
+      <div class="section-header">
+        <div>
+          <p class="section-kicker">My learning progress</p>
+          <h2 id="learning-title">Continue exactly where momentum is highest.</h2>
+          <p class="section-intro">Track active courses, last accessed lessons, and progress toward certificate milestones.</p>
+        </div>
+      </div>
+      <div class="learning-layout">
+        <div class="progress-list">
+          <article class="progress-item">
+            <div class="progress-top">
+              <div>
+                <h3>Applied AI Foundations</h3>
+                <p class="lesson-meta">Last accessed: Neural networks primer, today at 09:20</p>
+              </div>
+              <strong>72%</strong>
+            </div>
+            <div class="progress-track" aria-label="Applied AI Foundations progress">
+              <span class="progress-fill" style="width: 72%"></span>
+            </div>
+            <div class="card-row">
+              <span class="badge lime">On pace</span>
+              <a class="button" href="#lesson">Continue</a>
+            </div>
+          </article>
+          <article class="progress-item">
+            <div class="progress-top">
+              <div>
+                <h3>JavaScript Systems Studio</h3>
+                <p class="lesson-meta">Last accessed: State machines, yesterday at 18:44</p>
+              </div>
+              <strong>48%</strong>
+            </div>
+            <div class="progress-track" aria-label="JavaScript Systems Studio progress">
+              <span class="progress-fill" style="width: 48%"></span>
+            </div>
+            <div class="card-row">
+              <span class="badge">Project review due</span>
+              <a class="button" href="#lesson">Continue</a>
+            </div>
+          </article>
+          <article class="progress-item">
+            <div class="progress-top">
+              <div>
+                <h3>Human-Centered Product Design</h3>
+                <p class="lesson-meta">Last accessed: Interview synthesis, Monday at 13:12</p>
+              </div>
+              <strong>31%</strong>
+            </div>
+            <div class="progress-track" aria-label="Human-Centered Product Design progress">
+              <span class="progress-fill" style="width: 31%"></span>
+            </div>
+            <div class="card-row">
+              <span class="badge coral">Needs attention</span>
+              <a class="button" href="#lesson">Continue</a>
+            </div>
+          </article>
+        </div>
+        <aside class="coach-panel" aria-label="Weekly coaching insight">
+          <span class="eyebrow"><span class="live-dot"></span> Coach insight</span>
+          <h3>Two focused sessions will unlock your next certificate.</h3>
+          <p>Your strongest learning window is 08:30-10:00. The next AI lab and systems quiz both fit that rhythm.</p>
+          <div class="coach-stat">
+            <span>Recommended focus</span>
+            <strong>95 min</strong>
+          </div>
+          <div class="coach-stat">
+            <span>Cohort rank movement</span>
+            <strong>+4</strong>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="lesson" aria-labelledby="lesson-title">
+      <div class="section-header">
+        <div>
+          <p class="section-kicker">Interactive lesson preview</p>
+          <h2 id="lesson-title">Applied AI Foundations: model reasoning lab.</h2>
+          <p class="section-intro">Preview a lesson workspace with a media stage, outline navigation, and quick study actions.</p>
+        </div>
+      </div>
+      <div class="lesson-layout">
+        <article class="lesson-stage" aria-label="Lesson media stage">
+          <span class="stage-label"><span class="live-dot"></span> 18 minute lesson</span>
+          <button class="play-button" type="button" aria-label="Play model reasoning lab">▶</button>
+          <div>
+            <h3>Prompt strategy walkthrough</h3>
+            <p class="hero-copy">Instructor Noor Bennett compares chain planning, critique loops, and verification checks using one compact case study.</p>
+            <div class="lesson-actions">
+              <button class="icon-button" type="button" data-toggle-action>Bookmark</button>
+              <button class="icon-button" type="button" data-toggle-action>Add note</button>
+              <button class="icon-button" type="button" data-toggle-action>Mark key idea</button>
+            </div>
+          </div>
+        </article>
+        <aside class="outline" aria-label="Lesson outline">
+          <h3>Lesson outline</h3>
+          <ol class="outline-list">
+            <li><button type="button"><span class="check">✓</span><span>Warm-up concept map</span><span>4m</span></button></li>
+            <li><button class="is-current" type="button"><span class="check">2</span><span>Reasoning walkthrough</span><span>18m</span></button></li>
+            <li><button type="button"><span class="check">3</span><span>Notebook exercise</span><span>22m</span></button></li>
+            <li><button type="button"><span class="check">4</span><span>Peer critique</span><span>12m</span></button></li>
+            <li><button type="button"><span class="check">5</span><span>Assessment brief</span><span>8m</span></button></li>
+          </ol>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="community" aria-labelledby="community-title">
+      <div class="section-header">
+        <div>
+          <p class="section-kicker">Community feed</p>
+          <h2 id="community-title">Cohort discussions with useful signal.</h2>
+          <p class="section-intro">Surface timely learner questions, instructor responses, and peer wins without leaving the campus.</p>
+        </div>
+      </div>
+      <div class="feed-grid">
+        <article class="post-card">
+          <div class="author">
+            <span class="author-mark">MS</span>
+            <div>
+              <strong>Maya Sato</strong>
+              <div class="post-meta">12 minutes ago</div>
+            </div>
+          </div>
+          <h3>How are you checking model output quality before the quiz?</h3>
+          <p>I built a tiny rubric with factuality, clarity, and edge-case prompts. Sharing the scorecard in the thread.</p>
+          <div class="post-stats"><span>38 likes</span><span>14 replies</span></div>
+        </article>
+        <article class="post-card">
+          <div class="author">
+            <span class="author-mark">EK</span>
+            <div>
+              <strong>Ezra Kim</strong>
+              <div class="post-meta">46 minutes ago</div>
+            </div>
+          </div>
+          <h3>Mentor note: project review slots open today.</h3>
+          <p>Pick a 20-minute slot if your systems studio prototype is ready for architecture feedback.</p>
+          <div class="post-stats"><span>52 likes</span><span>21 replies</span></div>
+        </article>
+        <article class="post-card">
+          <div class="author">
+            <span class="author-mark">LB</span>
+            <div>
+              <strong>Luca Bell</strong>
+              <div class="post-meta">2 hours ago</div>
+            </div>
+          </div>
+          <h3>Finished the accessibility audit challenge.</h3>
+          <p>The screen reader pass caught three label issues I missed visually. Worth doing early.</p>
+          <div class="post-stats"><span>74 likes</span><span>18 replies</span></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section" id="resources" aria-labelledby="badges-title">
+      <div class="section-header">
+        <div>
+          <p class="section-kicker">Achievement badges</p>
+          <h2 id="badges-title">Milestones that make progress visible.</h2>
+          <p class="section-intro">Earn badges for consistency, collaboration, practical output, and verified assessment mastery.</p>
+        </div>
+      </div>
+      <div class="badge-grid">
+        <article class="achievement is-earned">
+          <span class="achievement-icon">26</span>
+          <h3>Streak Architect</h3>
+          <p>Earned by completing focused study across 25 consecutive days.</p>
+          <span class="badge lime">Earned</span>
+        </article>
+        <article class="achievement is-earned">
+          <span class="achievement-icon">AI</span>
+          <h3>Model Explorer</h3>
+          <p>Earned by completing three AI labs with assessment scores above 90 percent.</p>
+          <span class="badge lime">Earned</span>
+        </article>
+        <article class="achievement is-earned">
+          <span class="achievement-icon">UX</span>
+          <h3>Research Partner</h3>
+          <p>Earned by submitting five peer critiques with instructor endorsement.</p>
+          <span class="badge lime">Earned</span>
+        </article>
+        <article class="achievement is-locked">
+          <span class="achievement-icon">JS</span>
+          <h3>Systems Finisher</h3>
+          <p>Complete the state machine project and pass the final code review.</p>
+          <span class="badge">Locked</span>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-shell">
+      <span>Orbit EdTech Campus — designed by Meridian Learning Studio.</span>
+      <nav class="footer-links" aria-label="Footer links">
+        <a href="#courses">Catalog</a>
+        <a href="#lesson">Lesson lab</a>
+        <a href="#community">Community</a>
+      </nav>
+    </div>
+  </footer>
+
+  <script>
+    const menuButton = document.querySelector(".menu-button");
+    const drawer = document.querySelector(".drawer");
+    const backdrop = document.querySelector(".drawer-backdrop");
+    const closeTargets = document.querySelectorAll("[data-close-drawer]");
+    const drawerLinks = drawer.querySelectorAll("a");
+    const filterButtons = document.querySelectorAll("[data-filter]");
+    const courseCards = document.querySelectorAll(".course-card");
+    const actionButtons = document.querySelectorAll("[data-toggle-action]");
+    let lastFocus = null;
+    function openDrawer() {
+      lastFocus = document.activeElement;
+      drawer.classList.add("is-open");
+      backdrop.classList.add("is-visible");
+      document.body.classList.add("drawer-open");
+      drawer.setAttribute("aria-hidden", "false");
+      menuButton.setAttribute("aria-expanded", "true");
+      const firstLink = drawer.querySelector("a, button, input");
+      if (firstLink) firstLink.focus();
+    }
+    function closeDrawer() {
+      drawer.classList.remove("is-open");
+      backdrop.classList.remove("is-visible");
+      document.body.classList.remove("drawer-open");
+      drawer.setAttribute("aria-hidden", "true");
+      menuButton.setAttribute("aria-expanded", "false");
+      if (lastFocus) lastFocus.focus();
+    }
+    menuButton.addEventListener("click", openDrawer);
+    closeTargets.forEach((target) => target.addEventListener("click", closeDrawer));
+    drawerLinks.forEach((link) => link.addEventListener("click", closeDrawer));
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && drawer.classList.contains("is-open")) {
+        closeDrawer();
+      }
+    });
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const filter = button.dataset.filter;
+        filterButtons.forEach((item) => item.classList.remove("is-active"));
+        button.classList.add("is-active");
+        courseCards.forEach((card) => {
+          const isVisible = filter === "all" || card.dataset.category === filter;
+          card.hidden = !isVisible;
+        });
+      });
+    });
+    actionButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        button.classList.toggle("is-on");
+        button.setAttribute("aria-pressed", button.classList.contains("is-on").toString());
+      });
+      button.setAttribute("aria-pressed", "false");
+    });
+  </script>
+</body>
+</html>
