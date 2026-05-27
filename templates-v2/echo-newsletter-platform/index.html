@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Echo Newsletter Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --indigo: #4F46E5;
+      --cyan: #06B6D4;
+      --lime: #A3E635;
+      --coral: #FB7185;
+      --paper: #FFFFFF;
+      --line: #E2E8F0;
+      --muted: #667085;
+      --soft: #EEF2FF;
+      --shadow: 0 18px 48px rgba(25, 33, 43, 0.10);
+      --radius: 8px;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, sans-serif;
+      color: var(--ink);
+      background: var(--cloud);
+      min-height: 100vh;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+    button {
+      cursor: pointer;
+    }
+    .page-shell {
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(246, 248, 252, 0.92);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+    }
+    .nav-inner {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 14px 24px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 20px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Manrope", sans-serif;
+      font-weight: 800;
+      font-size: 20px;
+      letter-spacing: 0;
+    }
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: linear-gradient(135deg, var(--indigo), var(--cyan));
+      box-shadow: 0 10px 24px rgba(79, 70, 229, 0.24);
+    }
+    .brand-mark svg {
+      width: 20px;
+      height: 20px;
+    }
+    .nav-links {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+    .nav-links a {
+      padding: 10px 12px;
+      border-radius: 8px;
+      color: #344054;
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .nav-links a:hover {
+      background: #FFFFFF;
+      color: var(--indigo);
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .search-box {
+      position: relative;
+      width: 230px;
+    }
+    .search-box svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      color: #98A2B3;
+    }
+    .search-box input {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px 10px 36px;
+      background: #FFFFFF;
+      color: var(--ink);
+      outline: none;
+    }
+    .search-box input:focus {
+      border-color: var(--indigo);
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+    }
+    .primary-btn,
+    .secondary-btn,
+    .icon-btn {
+      border: 0;
+      border-radius: 8px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 40px;
+      transition: transform 160ms ease, box-shadow 160ms ease, background 160ms ease;
+    }
+    .primary-btn {
+      padding: 10px 16px;
+      color: #FFFFFF;
+      background: var(--indigo);
+      box-shadow: 0 12px 24px rgba(79, 70, 229, 0.22);
+    }
+    .primary-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 30px rgba(79, 70, 229, 0.28);
+    }
+    .secondary-btn {
+      padding: 10px 14px;
+      color: var(--ink);
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+    }
+    .icon-btn {
+      width: 42px;
+      color: var(--ink);
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+    }
+    .hamburger {
+      display: none;
+    }
+    .drawer {
+      position: fixed;
+      inset: 0 0 0 auto;
+      width: min(330px, 88vw);
+      background: #FFFFFF;
+      z-index: 60;
+      padding: 22px;
+      box-shadow: -18px 0 50px rgba(25, 33, 43, 0.18);
+      transform: translateX(105%);
+      transition: transform 220ms ease;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .drawer.open {
+      transform: translateX(0);
+    }
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .drawer-links {
+      display: grid;
+      gap: 8px;
+    }
+    .drawer-links a {
+      padding: 14px;
+      border-radius: 8px;
+      background: var(--cloud);
+      font-weight: 800;
+    }
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(25, 33, 43, 0.36);
+      z-index: 55;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+    }
+    .drawer-backdrop.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .hero-band {
+      background: linear-gradient(180deg, #FFFFFF 0%, var(--cloud) 100%);
+      border-bottom: 1px solid var(--line);
+    }
+    .hero {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 42px 24px 26px;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 28px;
+      align-items: end;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+      border-radius: 8px;
+      padding: 8px 10px;
+      background: #ECFEFF;
+      color: #0E7490;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    h1,
+    h2,
+    h3 {
+      font-family: "Manrope", sans-serif;
+      letter-spacing: 0;
+      margin: 0;
+    }
+    h1 {
+      max-width: 780px;
+      margin-top: 16px;
+      font-size: clamp(38px, 6vw, 70px);
+      line-height: 0.98;
+    }
+    .hero-copy {
+      max-width: 650px;
+      margin: 18px 0 0;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.65;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 24px;
+    }
+    .hero-panel {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 20px;
+    }
+    .mini-compose {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      background: var(--cloud);
+    }
+    .mini-compose-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px;
+      background: #FFFFFF;
+      border-bottom: 1px solid var(--line);
+    }
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border-radius: 8px;
+      padding: 7px 9px;
+      font-size: 12px;
+      font-weight: 800;
+      color: #365314;
+      background: #ECFCCB;
+    }
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--lime);
+    }
+    .mini-compose-body {
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+    .subject-line,
+    .content-line {
+      height: 12px;
+      border-radius: 8px;
+      background: #DDE6F3;
+    }
+    .subject-line {
+      width: 78%;
+      background: #CBD5E1;
+    }
+    .content-line:nth-child(2) {
+      width: 92%;
+    }
+    .content-line:nth-child(3) {
+      width: 84%;
+    }
+    .content-line:nth-child(4) {
+      width: 70%;
+    }
+    .send-card {
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 8px;
+      background: #EEF2FF;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
+    .send-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: var(--indigo);
+      color: #FFFFFF;
+      display: grid;
+      place-items: center;
+    }
+    .send-card strong {
+      display: block;
+      font-size: 14px;
+    }
+    .send-card span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .section {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 28px 24px;
+    }
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+    .section-title {
+      display: grid;
+      gap: 6px;
+    }
+    .section-title h2 {
+      font-size: clamp(24px, 3vw, 34px);
+    }
+    .section-title p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.55;
+    }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+    }
+    .kpi-card {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      min-height: 138px;
+      display: grid;
+      align-content: space-between;
+      box-shadow: 0 10px 28px rgba(25, 33, 43, 0.05);
+    }
+    .kpi-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: var(--muted);
+      font-weight: 800;
+      font-size: 13px;
+    }
+    .kpi-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: var(--ink);
+      background: var(--cloud);
+    }
+    .kpi-value {
+      margin-top: 18px;
+      font-family: "Manrope", sans-serif;
+      font-size: 34px;
+      font-weight: 800;
+    }
+    .kpi-change {
+      margin-top: 8px;
+      color: #047857;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .work-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .table-shell,
+    .card-shell,
+    .builder-shell,
+    .scheduler-shell,
+    .analytics-shell {
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 12px 34px rgba(25, 33, 43, 0.06);
+    }
+    .shell-head {
+      padding: 16px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .shell-head h3 {
+      font-size: 18px;
+    }
+    .toolbar {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .chip {
+      border: 1px solid var(--line);
+      background: #FFFFFF;
+      color: #344054;
+      border-radius: 8px;
+      padding: 7px 9px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .chip.active {
+      color: var(--indigo);
+      background: var(--soft);
+      border-color: #C7D2FE;
+    }
+    .campaign-table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 720px;
+    }
+    .campaign-table th,
+    .campaign-table td {
+      padding: 14px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      vertical-align: middle;
+    }
+    .campaign-table th {
+      color: #667085;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+    .campaign-table td {
+      font-size: 14px;
+      color: #344054;
+      font-weight: 600;
+    }
+    .campaign-name {
+      display: grid;
+      gap: 4px;
+    }
+    .campaign-name strong {
+      color: var(--ink);
+      font-size: 15px;
+    }
+    .campaign-name span {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 8px;
+      padding: 6px 8px;
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .status.scheduled {
+      color: #3730A3;
+      background: #EEF2FF;
+    }
+    .status.sent {
+      color: #0F766E;
+      background: #CCFBF1;
+    }
+    .status.draft {
+      color: #9F1239;
+      background: #FFE4E6;
+    }
+    .table-wrap {
+      overflow-x: auto;
+    }
+    .subscriber-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 16px;
+    }
+    .subscriber-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: var(--cloud);
+      display: grid;
+      gap: 12px;
+    }
+    .person-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: #FFFFFF;
+      font-weight: 900;
+      background: var(--indigo);
+    }
+    .avatar.cyan {
+      background: var(--cyan);
+    }
+    .avatar.coral {
+      background: var(--coral);
+    }
+    .avatar.ink {
+      background: var(--ink);
+    }
+    .person-row strong {
+      display: block;
+      font-size: 14px;
+    }
+    .person-row span {
+      display: block;
+      margin-top: 2px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .tag {
+      border-radius: 8px;
+      padding: 5px 7px;
+      background: #FFFFFF;
+      color: #475467;
+      font-size: 11px;
+      font-weight: 800;
+      border: 1px solid var(--line);
+    }
+    .engagement {
+      height: 8px;
+      background: #E2E8F0;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .engagement span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--cyan), var(--lime));
+    }
+    .builder-layout {
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      gap: 0;
+    }
+    .builder-tools {
+      padding: 16px;
+      border-right: 1px solid var(--line);
+      background: #FBFCFE;
+      display: grid;
+      gap: 12px;
+      align-content: start;
+    }
+    .tool-block {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #FFFFFF;
+      display: grid;
+      gap: 8px;
+    }
+    .tool-block strong {
+      font-size: 13px;
+    }
+    .tool-block span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .palette {
+      display: flex;
+      gap: 8px;
+    }
+    .swatch {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      border: 2px solid #FFFFFF;
+      box-shadow: 0 0 0 1px var(--line);
+    }
+    .preview-area {
+      padding: 20px;
+      background: linear-gradient(135deg, #F8FAFC, #EEF2FF);
+    }
+    .email-preview {
+      max-width: 560px;
+      margin: 0 auto;
+      background: #FFFFFF;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 16px 45px rgba(25, 33, 43, 0.13);
+      border: 1px solid #D8DEE9;
+    }
+    .email-hero {
+      padding: 28px;
+      color: #FFFFFF;
+      background:
+        linear-gradient(135deg, rgba(79, 70, 229, 0.96), rgba(6, 182, 212, 0.88)),
+        radial-gradient(circle at top right, rgba(163, 230, 53, 0.8), transparent 38%);
+    }
+    .email-hero h3 {
+      font-size: 30px;
+      line-height: 1.05;
+      max-width: 390px;
+    }
+    .email-hero p {
+      margin: 12px 0 0;
+      line-height: 1.6;
+      color: rgba(255, 255, 255, 0.88);
+    }
+    .email-body {
+      padding: 24px 28px 28px;
+      display: grid;
+      gap: 14px;
+    }
+    .email-feature {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+    .feature-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: #ECFEFF;
+      color: #0891B2;
+    }
+    .email-feature strong {
+      display: block;
+      font-size: 15px;
+    }
+    .email-feature span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      line-height: 1.5;
+      font-size: 13px;
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      border-top: 1px solid var(--line);
+      border-left: 1px solid var(--line);
+    }
+    .day-name,
+    .calendar-day {
+      min-height: 78px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      padding: 8px;
+      background: #FFFFFF;
+    }
+    .day-name {
+      min-height: auto;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 900;
+      text-align: center;
+      text-transform: uppercase;
+      background: #FBFCFE;
+    }
+    .calendar-day {
+      display: grid;
+      align-content: start;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .calendar-day.muted {
+      color: #B0B8C5;
+      background: #F9FAFB;
+    }
+    .event {
+      border-radius: 8px;
+      padding: 6px;
+      color: #FFFFFF;
+      font-size: 11px;
+      line-height: 1.25;
+      background: var(--indigo);
+    }
+    .event.cyan {
+      background: var(--cyan);
+    }
+    .event.coral {
+      background: var(--coral);
+    }
+    .event.lime {
+      color: #365314;
+      background: var(--lime);
+    }
+    .analytics-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 18px;
+    }
+    .chart-card {
+      padding: 16px;
+      background: #FFFFFF;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      min-height: 310px;
+    }
+    .chart-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+    .chart-title h3 {
+      font-size: 18px;
+    }
+    .bar-chart {
+      height: 230px;
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      align-items: end;
+      gap: 10px;
+      padding-top: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    .bar-group {
+      display: grid;
+      gap: 8px;
+      justify-items: center;
+      align-items: end;
+      height: 100%;
+    }
+    .bar {
+      width: 100%;
+      max-width: 38px;
+      border-radius: 8px 8px 0 0;
+      background: linear-gradient(180deg, var(--cyan), var(--indigo));
+      min-height: 26px;
+    }
+    .bar-label {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      padding-bottom: 8px;
+    }
+    .donut-wrap {
+      display: grid;
+      grid-template-columns: 180px 1fr;
+      gap: 18px;
+      align-items: center;
+      min-height: 230px;
+    }
+    .donut {
+      width: 176px;
+      height: 176px;
+      border-radius: 50%;
+      background: conic-gradient(var(--indigo) 0 44%, var(--cyan) 44% 70%, var(--lime) 70% 88%, var(--coral) 88% 100%);
+      position: relative;
+    }
+    .donut::after {
+      content: "";
+      position: absolute;
+      inset: 38px;
+      border-radius: 50%;
+      background: #FFFFFF;
+      box-shadow: inset 0 0 0 1px var(--line);
+    }
+    .donut-center {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      z-index: 1;
+      text-align: center;
+      font-weight: 900;
+    }
+    .legend {
+      display: grid;
+      gap: 10px;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: #475467;
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .legend-key {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+    }
+    .footer {
+      margin-top: 22px;
+      border-top: 1px solid var(--line);
+      background: #FFFFFF;
+    }
+    .footer-inner {
+      max-width: 1220px;
+      margin: 0 auto;
+      padding: 28px 24px;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 14px;
+    }
+    .footer-links {
+      display: flex;
+      gap: 14px;
+      color: var(--ink);
+    }
+    @media (max-width: 1020px) {
+      .nav-links,
+      .search-box {
+        display: none;
+      }
+      .hamburger {
+        display: inline-flex;
+      }
+      .nav-inner {
+        grid-template-columns: auto 1fr auto;
+      }
+      .hero {
+        grid-template-columns: 1fr;
+      }
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .work-grid,
+      .analytics-grid,
+      .builder-layout {
+        grid-template-columns: 1fr;
+      }
+      .builder-tools {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    @media (max-width: 680px) {
+      .nav-inner,
+      .hero,
+      .section,
+      .footer-inner {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+      .nav-actions .primary-btn {
+        display: none;
+      }
+      h1 {
+        font-size: 40px;
+      }
+      .hero-copy {
+        font-size: 16px;
+      }
+      .section-head,
+      .footer-inner,
+      .send-card {
+        align-items: stretch;
+        flex-direction: column;
+      }
+      .kpi-grid,
+      .subscriber-grid,
+      .builder-tools,
+      .analytics-grid,
+      .donut-wrap {
+        grid-template-columns: 1fr;
+      }
+      .calendar-grid {
+        min-width: 760px;
+      }
+      .scheduler-shell {
+        overflow-x: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <div class="nav-inner">
+        <a class="brand" href="#">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+              <path d="M4 7h16v10H4z"></path>
+              <path d="m4 7 8 6 8-6"></path>
+            </svg>
+          </span>
+          <span>Echo</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="#campaigns">Campaigns</a>
+          <a href="#subscribers">Subscribers</a>
+          <a href="#analytics">Analytics</a>
+          <a href="#templates">Templates</a>
+        </nav>
+        <div class="nav-actions">
+          <label class="search-box" aria-label="Search workspace">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <circle cx="11" cy="11" r="7"></circle>
+              <path d="m20 20-3.5-3.5"></path>
+            </svg>
+            <input type="search" placeholder="Search campaigns">
+          </label>
+          <button class="primary-btn" type="button">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+              <path d="M12 5v14"></path>
+              <path d="M5 12h14"></path>
+            </svg>
+            New Campaign
+          </button>
+          <button class="icon-btn hamburger" type="button" aria-label="Open menu" id="openDrawer">
+            <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+              <path d="M4 7h16"></path>
+              <path d="M4 12h16"></path>
+              <path d="M4 17h16"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+    <aside class="drawer" id="drawer" aria-label="Mobile menu">
+      <div class="drawer-head">
+        <a class="brand" href="#">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+              <path d="M4 7h16v10H4z"></path>
+              <path d="m4 7 8 6 8-6"></path>
+            </svg>
+          </span>
+          <span>Echo</span>
+        </a>
+        <button class="icon-btn" type="button" aria-label="Close menu" id="closeDrawer">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+            <path d="M18 6 6 18"></path>
+            <path d="m6 6 12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <nav class="drawer-links">
+        <a href="#campaigns">Campaigns</a>
+        <a href="#subscribers">Subscribers</a>
+        <a href="#analytics">Analytics</a>
+        <a href="#templates">Templates</a>
+      </nav>
+      <button class="primary-btn" type="button">New Campaign</button>
+    </aside>
+    <div class="drawer-backdrop" id="drawerBackdrop"></div>
+    <main>
+      <section class="hero-band">
+        <div class="hero">
+          <div>
+            <span class="eyebrow">
+              <span class="dot"></span>
+              Newsletter operations workspace
+            </span>
+            <h1>Publish every campaign from one calm command center.</h1>
+            <p class="hero-copy">Echo brings audience growth, visual editing, delivery timing, and performance analytics into a focused dashboard for editorial and lifecycle teams.</p>
+            <div class="hero-actions">
+              <button class="primary-btn" type="button">Build newsletter</button>
+              <button class="secondary-btn" type="button">Import subscribers</button>
+            </div>
+          </div>
+          <div class="hero-panel" aria-label="Live campaign summary">
+            <div class="mini-compose">
+              <div class="mini-compose-top">
+                <strong>Friday Product Brief</strong>
+                <span class="status-pill"><span class="dot"></span>Ready</span>
+              </div>
+              <div class="mini-compose-body">
+                <div class="subject-line"></div>
+                <div class="content-line"></div>
+                <div class="content-line"></div>
+                <div class="content-line"></div>
+              </div>
+            </div>
+            <div class="send-card">
+              <span class="send-icon">
+                <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                  <path d="m22 2-7 20-4-9-9-4Z"></path>
+                  <path d="M22 2 11 13"></path>
+                </svg>
+              </span>
+              <div>
+                <strong>Next send: 08:30 tomorrow</strong>
+                <span>Segment: high-intent readers</span>
+              </div>
+              <button class="secondary-btn" type="button">Review</button>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section" aria-label="Key metrics">
+        <div class="kpi-grid">
+          <article class="kpi-card">
+            <div class="kpi-top">
+              <span>Subscribers</span>
+              <span class="kpi-icon">↗</span>
+            </div>
+            <div>
+              <div class="kpi-value">128.4K</div>
+              <div class="kpi-change">+8.2% this month</div>
+            </div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-top">
+              <span>Open rate</span>
+              <span class="kpi-icon">◎</span>
+            </div>
+            <div>
+              <div class="kpi-value">47.6%</div>
+              <div class="kpi-change">+3.4 pts</div>
+            </div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-top">
+              <span>Click rate</span>
+              <span class="kpi-icon">⌁</span>
+            </div>
+            <div>
+              <div class="kpi-value">12.9%</div>
+              <div class="kpi-change">+1.8 pts</div>
+            </div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-top">
+              <span>Campaigns sent</span>
+              <span class="kpi-icon">✓</span>
+            </div>
+            <div>
+              <div class="kpi-value">342</div>
+              <div class="kpi-change">24 scheduled</div>
+            </div>
+          </article>
+        </div>
+      </section>
+      <section class="section" id="campaigns">
+        <div class="section-head">
+          <div class="section-title">
+            <h2>Campaign list</h2>
+            <p>Track drafts, scheduled editions, and recent sends with the numbers that matter.</p>
+          </div>
+          <div class="toolbar">
+            <button class="chip active" type="button">All</button>
+            <button class="chip" type="button">Scheduled</button>
+            <button class="chip" type="button">Drafts</button>
+          </div>
+        </div>
+        <div class="work-grid">
+          <div class="table-shell">
+            <div class="shell-head">
+              <h3>Recent campaigns</h3>
+              <button class="secondary-btn" type="button">Export</button>
+            </div>
+            <div class="table-wrap">
+              <table class="campaign-table">
+                <thead>
+                  <tr>
+                    <th>Campaign</th>
+                    <th>Status</th>
+                    <th>Audience</th>
+                    <th>Open</th>
+                    <th>Click</th>
+                    <th>Send time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><span class="campaign-name"><strong>Launch Notes 04</strong><span>Product digest</span></span></td>
+                    <td><span class="status scheduled">Scheduled</span></td>
+                    <td>42,800</td>
+                    <td>Projected 49%</td>
+                    <td>Projected 13%</td>
+                    <td>Tomorrow 08:30</td>
+                  </tr>
+                  <tr>
+                    <td><span class="campaign-name"><strong>Creator Roundup</strong><span>Community stories</span></span></td>
+                    <td><span class="status sent">Sent</span></td>
+                    <td>31,400</td>
+                    <td>52.1%</td>
+                    <td>15.4%</td>
+                    <td>May 25 09:00</td>
+                  </tr>
+                  <tr>
+                    <td><span class="campaign-name"><strong>Winback Sequence B</strong><span>Lifecycle automation</span></span></td>
+                    <td><span class="status draft">Draft</span></td>
+                    <td>8,920</td>
+                    <td>Estimate 37%</td>
+                    <td>Estimate 8%</td>
+                    <td>Needs approval</td>
+                  </tr>
+                  <tr>
+                    <td><span class="campaign-name"><strong>Weekly Signals</strong><span>Editorial briefing</span></span></td>
+                    <td><span class="status sent">Sent</span></td>
+                    <td>118,200</td>
+                    <td>45.8%</td>
+                    <td>11.7%</td>
+                    <td>May 22 07:45</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-shell" id="subscribers">
+            <div class="shell-head">
+              <h3>Subscriber cards</h3>
+              <button class="secondary-btn" type="button">Segment</button>
+            </div>
+            <div class="subscriber-grid">
+              <article class="subscriber-card">
+                <div class="person-row">
+                  <span class="avatar">AR</span>
+                  <div><strong>Ana Ribeiro</strong><span>Opened 9 of 10</span></div>
+                </div>
+                <div class="tag-row"><span class="tag">Founder</span><span class="tag">High intent</span></div>
+                <div class="engagement"><span style="width:92%"></span></div>
+              </article>
+              <article class="subscriber-card">
+                <div class="person-row">
+                  <span class="avatar cyan">MK</span>
+                  <div><strong>Max Keller</strong><span>Clicked pricing</span></div>
+                </div>
+                <div class="tag-row"><span class="tag">Trial</span><span class="tag">Product</span></div>
+                <div class="engagement"><span style="width:78%"></span></div>
+              </article>
+              <article class="subscriber-card">
+                <div class="person-row">
+                  <span class="avatar coral">JS</span>
+                  <div><strong>June Stone</strong><span>Reactivated</span></div>
+                </div>
+                <div class="tag-row"><span class="tag">Winback</span><span class="tag">Design</span></div>
+                <div class="engagement"><span style="width:64%"></span></div>
+              </article>
+              <article class="subscriber-card">
+                <div class="person-row">
+                  <span class="avatar ink">PL</span>
+                  <div><strong>Priya Lee</strong><span>New subscriber</span></div>
+                </div>
+                <div class="tag-row"><span class="tag">Newsletter</span><span class="tag">New</span></div>
+                <div class="engagement"><span style="width:51%"></span></div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="templates">
+        <div class="section-head">
+          <div class="section-title">
+            <h2>Email builder preview</h2>
+            <p>Compose branded issues with reusable sections, palette controls, and responsive preview.</p>
+          </div>
+          <button class="primary-btn" type="button">Save Template</button>
+        </div>
+        <div class="builder-shell">
+          <div class="builder-layout">
+            <aside class="builder-tools">
+              <div class="tool-block">
+                <strong>Content blocks</strong>
+                <span>Hero, feature row, quote, CTA banner, product update, and footer modules.</span>
+              </div>
+              <div class="tool-block">
+                <strong>Audience tokens</strong>
+                <span>Personalize headline, plan, city, last activity, and saved preferences.</span>
+              </div>
+              <div class="tool-block">
+                <strong>Brand palette</strong>
+                <div class="palette">
+                  <span class="swatch" style="background:#4F46E5"></span>
+                  <span class="swatch" style="background:#06B6D4"></span>
+                  <span class="swatch" style="background:#A3E635"></span>
+                  <span class="swatch" style="background:#FB7185"></span>
+                </div>
+              </div>
+            </aside>
+            <div class="preview-area">
+              <article class="email-preview">
+                <div class="email-hero">
+                  <h3>Your weekly growth brief is ready.</h3>
+                  <p>Three product lessons, one benchmark report, and a tactical checklist for the next campaign cycle.</p>
+                </div>
+                <div class="email-body">
+                  <div class="email-feature">
+                    <span class="feature-icon">1</span>
+                    <div><strong>Segment momentum</strong><span>High-intent readers clicked twice as often after the revised onboarding sequence.</span></div>
+                  </div>
+                  <div class="email-feature">
+                    <span class="feature-icon">2</span>
+                    <div><strong>Template lift</strong><span>The compact product card drove stronger mobile engagement without hurting desktop scans.</span></div>
+                  </div>
+                  <div class="email-feature">
+                    <span class="feature-icon">3</span>
+                    <div><strong>Next experiment</strong><span>Schedule a subject line test against the reactivation segment before Friday morning.</span></div>
+                  </div>
+                  <button class="primary-btn" type="button">Read the full brief</button>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section">
+        <div class="section-head">
+          <div class="section-title">
+            <h2>Campaign scheduler calendar</h2>
+            <p>Plan send windows, team reviews, and channel follow-ups in one editorial calendar.</p>
+          </div>
+          <div class="toolbar">
+            <button class="chip active" type="button">Month</button>
+            <button class="chip" type="button">Week</button>
+          </div>
+        </div>
+        <div class="scheduler-shell">
+          <div class="shell-head">
+            <h3>May 2026</h3>
+            <button class="secondary-btn" type="button">Add slot</button>
+          </div>
+          <div class="calendar-grid">
+            <div class="day-name">Mon</div>
+            <div class="day-name">Tue</div>
+            <div class="day-name">Wed</div>
+            <div class="day-name">Thu</div>
+            <div class="day-name">Fri</div>
+            <div class="day-name">Sat</div>
+            <div class="day-name">Sun</div>
+            <div class="calendar-day muted">27</div>
+            <div class="calendar-day muted">28</div>
+            <div class="calendar-day muted">29</div>
+            <div class="calendar-day muted">30</div>
+            <div class="calendar-day">1<span class="event cyan">Welcome flow</span></div>
+            <div class="calendar-day">2</div>
+            <div class="calendar-day">3</div>
+            <div class="calendar-day">4<span class="event lime">A/B subject test</span></div>
+            <div class="calendar-day">5</div>
+            <div class="calendar-day">6<span class="event">Weekly Signals</span></div>
+            <div class="calendar-day">7</div>
+            <div class="calendar-day">8<span class="event coral">Winback review</span></div>
+            <div class="calendar-day">9</div>
+            <div class="calendar-day">10</div>
+            <div class="calendar-day">11</div>
+            <div class="calendar-day">12<span class="event cyan">Creator Roundup</span></div>
+            <div class="calendar-day">13</div>
+            <div class="calendar-day">14</div>
+            <div class="calendar-day">15<span class="event">Launch Notes</span></div>
+            <div class="calendar-day">16</div>
+            <div class="calendar-day">17</div>
+            <div class="calendar-day">18</div>
+            <div class="calendar-day">19<span class="event lime">Trial nurture</span></div>
+            <div class="calendar-day">20</div>
+            <div class="calendar-day">21</div>
+            <div class="calendar-day">22<span class="event">Weekly Signals</span></div>
+            <div class="calendar-day">23</div>
+            <div class="calendar-day">24</div>
+            <div class="calendar-day">25<span class="event cyan">Community digest</span></div>
+            <div class="calendar-day">26</div>
+            <div class="calendar-day">27<span class="event coral">Reactivation B</span></div>
+            <div class="calendar-day">28</div>
+            <div class="calendar-day">29<span class="event">Product brief</span></div>
+            <div class="calendar-day">30</div>
+            <div class="calendar-day">31</div>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="analytics">
+        <div class="section-head">
+          <div class="section-title">
+            <h2>Analytics charts</h2>
+            <p>Compare engagement trends and audience composition before scheduling the next send.</p>
+          </div>
+          <button class="secondary-btn" type="button">Download report</button>
+        </div>
+        <div class="analytics-grid">
+          <article class="chart-card analytics-shell">
+            <div class="chart-title">
+              <h3>Engagement by day</h3>
+              <span class="chip active">Last 7 sends</span>
+            </div>
+            <div class="bar-chart" aria-label="Engagement bar chart">
+              <div class="bar-group"><div class="bar" style="height:54%"></div><span class="bar-label">Mon</span></div>
+              <div class="bar-group"><div class="bar" style="height:72%"></div><span class="bar-label">Tue</span></div>
+              <div class="bar-group"><div class="bar" style="height:64%"></div><span class="bar-label">Wed</span></div>
+              <div class="bar-group"><div class="bar" style="height:88%"></div><span class="bar-label">Thu</span></div>
+              <div class="bar-group"><div class="bar" style="height:79%"></div><span class="bar-label">Fri</span></div>
+              <div class="bar-group"><div class="bar" style="height:42%"></div><span class="bar-label">Sat</span></div>
+              <div class="bar-group"><div class="bar" style="height:50%"></div><span class="bar-label">Sun</span></div>
+            </div>
+          </article>
+          <article class="chart-card analytics-shell">
+            <div class="chart-title">
+              <h3>Audience mix</h3>
+              <span class="chip">Segments</span>
+            </div>
+            <div class="donut-wrap">
+              <div class="donut" aria-label="Audience mix chart">
+                <div class="donut-center">128K<br>total</div>
+              </div>
+              <div class="legend">
+                <span class="legend-item"><span class="legend-key" style="background:#4F46E5"></span>Product readers 44%</span>
+                <span class="legend-item"><span class="legend-key" style="background:#06B6D4"></span>Founders 26%</span>
+                <span class="legend-item"><span class="legend-key" style="background:#A3E635"></span>Trial users 18%</span>
+                <span class="legend-item"><span class="legend-key" style="background:#FB7185"></span>Winback 12%</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      <div class="footer-inner">
+        <span>Echo Newsletter Platform — designed by Studio</span>
+        <div class="footer-links">
+          <a href="#campaigns">Campaigns</a>
+          <a href="#subscribers">Subscribers</a>
+          <a href="#analytics">Analytics</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+  <script>
+    const drawer = document.getElementById("drawer");
+    const backdrop = document.getElementById("drawerBackdrop");
+    const openDrawer = document.getElementById("openDrawer");
+    const closeDrawer = document.getElementById("closeDrawer");
+    const drawerLinks = document.querySelectorAll(".drawer-links a");
+    function setDrawer(open) {
+      drawer.classList.toggle("open", open);
+      backdrop.classList.toggle("visible", open);
+      document.body.style.overflow = open ? "hidden" : "";
+    }
+    openDrawer.addEventListener("click", () => setDrawer(true));
+    closeDrawer.addEventListener("click", () => setDrawer(false));
+    backdrop.addEventListener("click", () => setDrawer(false));
+    drawerLinks.forEach((link) => link.addEventListener("click", () => setDrawer(false)));
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        setDrawer(false);
+      }
+    });
+  </script>
+</body>
+</html>
