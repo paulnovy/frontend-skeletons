@@ -1,0 +1,1066 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Haven Smart Home</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --cloud: #F6F8FC;
+    --ink: #19212B;
+    --indigo: #4F46E5;
+    --cyan: #06B6D4;
+    --lime: #A3E635;
+    --coral: #FB7185;
+    --bg: #F0F2F5;
+    --card: #FFFFFF;
+    --border: #E5E7EB;
+    --text-primary: #111827;
+    --text-secondary: #6B7280;
+    --text-muted: #9CA3AF;
+    --green: #10B981;
+    --orange: #F59E0B;
+    --warm: #F59E0B;
+    --cool: #3B82F6;
+    --auto: #8B5CF6;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.5;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+  }
+
+  a {
+    color: var(--indigo);
+    text-decoration: none;
+  }
+
+  button {
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--indigo);
+    color: #fff;
+    padding: 8px 16px;
+    z-index: 100;
+  }
+
+  .skip-link:focus {
+    top: 0;
+  }
+
+  /* ── Nav ── */
+  .top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 24px;
+    height: 60px;
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-brand {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--indigo);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-brand svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 4px;
+    margin-left: 24px;
+  }
+
+  .nav-links a {
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+  }
+
+  .nav-links a:hover,
+  .nav-links a[aria-current="page"] {
+    background: var(--cloud);
+    color: var(--indigo);
+  }
+
+  .nav-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .nav-time {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+  }
+
+  .nav-profile {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--indigo);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 0.875rem;
+  }
+
+  .hamburger {
+    display: none;
+    background: none;
+    border: none;
+    padding: 8px;
+  }
+
+  .hamburger svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  @media (max-width: 768px) {
+    .nav-links {
+      display: none;
+    }
+    .hamburger {
+      display: block;
+    }
+    .top-nav {
+      padding: 0 16px;
+    }
+  }
+
+  /* ── Main ── */
+  .main {
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .section-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .badge {
+    background: var(--cloud);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  /* ── Home Status ── */
+  .home-status {
+    background: linear-gradient(135deg, var(--indigo), #7C3AED);
+    border-radius: 16px;
+    padding: 28px 32px;
+    color: #fff;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .home-status-info h1 {
+    font-size: 1.5rem;
+    margin-bottom: 4px;
+  }
+
+  .home-status-info p {
+    opacity: 0.8;
+    font-size: 0.9375rem;
+  }
+
+  .home-status-stats {
+    margin-left: auto;
+    display: flex;
+    gap: 24px;
+  }
+
+  .home-stat {
+    text-align: center;
+  }
+
+  .home-stat .val {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+  }
+
+  .home-stat .lbl {
+    font-size: 0.75rem;
+    opacity: 0.7;
+  }
+
+  /* ── Quick Actions ── */
+  .quick-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .quick-action {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .quick-action:hover {
+    border-color: var(--indigo);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.1);
+  }
+
+  .quick-action .icon {
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+  }
+
+  .quick-action .label {
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  .quick-action .status {
+    font-size: 0.6875rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .quick-action .status.active {
+    color: var(--green);
+  }
+
+  /* ── Rooms ── */
+  .rooms-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .room-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 20px;
+    border: 1px solid var(--border);
+  }
+
+  .room-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .room-header h3 {
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .room-header .temp {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 1.125rem;
+    color: var(--indigo);
+  }
+
+  .room-devices {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .device-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: var(--cloud);
+    border-radius: 8px;
+  }
+
+  .device-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .device-icon.on {
+    background: rgba(79, 70, 229, 0.1);
+  }
+
+  .device-icon.off {
+    background: var(--border);
+  }
+
+  .device-info {
+    flex: 1;
+  }
+
+  .device-info .name {
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  .device-info .detail {
+    font-size: 0.6875rem;
+    color: var(--text-muted);
+  }
+
+  .device-toggle {
+    width: 40px;
+    height: 22px;
+    border-radius: 11px;
+    border: none;
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .device-toggle.on {
+    background: var(--indigo);
+  }
+
+  .device-toggle.off {
+    background: var(--border);
+  }
+
+  .device-toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    transition: left 0.15s;
+  }
+
+  .device-toggle.on::after {
+    left: 20px;
+  }
+
+  .device-toggle.off::after {
+    left: 2px;
+  }
+
+  /* ── Thermostat ── */
+  .thermostat-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 24px;
+    border: 1px solid var(--border);
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .thermostat-ring {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: conic-gradient(var(--indigo) 0deg, var(--indigo) 200deg, var(--border) 200deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 16px;
+    position: relative;
+  }
+
+  .thermostat-inner {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: var(--card);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .thermostat-temp {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 2rem;
+    color: var(--indigo);
+  }
+
+  .thermostat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .thermostat-controls {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 12px;
+  }
+
+  .thermostat-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--card);
+    font-size: 1.125rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+  }
+
+  .thermostat-btn:hover {
+    border-color: var(--indigo);
+    color: var(--indigo);
+  }
+
+  .thermostat-modes {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 12px;
+  }
+
+  .mode-btn {
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+  }
+
+  .mode-btn.active {
+    background: var(--indigo);
+    color: #fff;
+    border-color: var(--indigo);
+  }
+
+  /* ── Energy ── */
+  .energy-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 24px;
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+
+  .energy-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .energy-header h3 {
+    font-size: 1rem;
+  }
+
+  .energy-tabs {
+    display: flex;
+    gap: 4px;
+  }
+
+  .energy-tab {
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    background: none;
+    border: none;
+    color: var(--text-muted);
+  }
+
+  .energy-tab:hover,
+  .energy-tab.active {
+    background: var(--cloud);
+    color: var(--indigo);
+  }
+
+  .energy-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    height: 160px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .energy-bar-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+  }
+
+  .energy-bar {
+    width: 100%;
+    max-width: 32px;
+    border-radius: 4px 4px 0 0;
+    min-height: 4px;
+  }
+
+  .energy-bar-lbl {
+    font-size: 0.6875rem;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+
+  .energy-legend {
+    display: flex;
+    gap: 16px;
+    margin-top: 12px;
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+  }
+
+  .energy-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .energy-legend-dot {
+    width: 10px;
+    height: 1px;
+    border-top: 3px solid;
+  }
+
+  .energy-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .energy-stat {
+    text-align: center;
+    padding: 12px;
+    background: var(--cloud);
+    border-radius: 8px;
+  }
+
+  .energy-stat .val {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+  }
+
+  .energy-stat .lbl {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  /* ── Automations ── */
+  .automations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+
+  .automation-item {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 14px 16px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .automation-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .automation-info {
+    flex: 1;
+  }
+
+  .automation-info .name {
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+
+  .automation-info .desc {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .automation-toggle {
+    width: 40px;
+    height: 22px;
+    border-radius: 11px;
+    border: none;
+    position: relative;
+  }
+
+  .automation-toggle.on {
+    background: var(--green);
+  }
+
+  .automation-toggle.off {
+    background:var(--border);
+  }
+
+  .automation-toggle::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    transition: left 0.15s;
+  }
+
+  .automation-toggle.on::after {
+    left: 20px;
+  }
+
+  .automation-toggle.off::after {
+    left: 2px;
+  }
+
+  /* ── Security ── */
+  .security-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+
+  .security-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+
+  .security-header h3 {
+    font-size: 1rem;
+  }
+
+  .security-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+
+  .security-status .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  .security-status.armed .dot {
+    background: var(--green);
+  }
+
+  .security-status.armed {
+    color: var(--green);
+  }
+
+  .security-cameras {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .camera-feed {
+    background: #1a1a2e;
+    border-radius: 10px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .camera-feed .label {
+    position: absolute;
+    bottom: 6px;
+    left: 8px;
+    font-size: 0.6875rem;
+    color: rgba(255, 255, 255, 0.7);
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2px 6px;
+    border-radius: 4px;
+  }
+
+  .camera-feed .live {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    font-size: 0.625rem;
+    color: #fff;
+    background: var(--coral);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+
+  .camera-feed .rec-icon {
+    position: absolute;
+    top: 6px;
+    left: 8px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--coral);
+    animation: blink 1.5s infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+     weather: 0; opacity: 0; }
+  }
+
+  /* ── Activity ── */
+  .activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+
+  .activity-item {
+    background: var(--card);
+    border-radius: 8px;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.875rem;
+  }
+
+  .activity-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .activity-time {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  /* ── Footer ── */
+  .site-footer {
+    padding: 32px 24px;
+    text-align: center;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--indigo);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header class="top-nav">
+  <button class="hamburger" aria-label="Open menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+  </button>
+  <a href="#" class="nav-brand">
+    <svg viewBox="0 0 28 28" fill="none"><path d="M14 3L3 12h3v11h6v-7h4v7h6V12h3L14 3z" fill="#4F46E5"/></svg>
+    Haven
+  </a>
+  <nav class="nav-links" aria-label="Main">
+    <a href="#" aria-current="page">Dashboard</a>
+    <a href="#rooms">Rooms</a>
+    <a href="#energy">Energy</a>
+    <a href="#automations">Automations</a>
+    <a href="#security">Security</a>
+  </nav>
+  <div class="nav-right">
+    <span class="nav-time">Thu, May 28 · 7:45 PM</span>
+    <div class="nav-profile">PL</div>
+  </div>
+</header>
+
+<main class="main" id="main">
+  <!-- Home Status -->
+  <div class="home-status">
+    <div class="home-status-info">
+      <h1>Welcome Home</h1>
+      <p>Everything is running smoothly. 23 devices online.</p>
+    </div>
+    <div class="home-status-stats">
+      <div class="home-stat"><div class="val">72°F</div><div class="lbl">Inside</div></div>
+      <div class="home-stat"><div class="val">58°F</div><div class="lbl">Outside</div></div>
+      <div class="home-stat"><div class="val">45%</div><div class="lbl">Humidity</div></div>
+      <div class="home-stat"><div class="val">$2.4K</div><div class="lbl">Energy Bill</div></div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="section-header">
+    <h2>Quick Actions</h2>
+  </div>
+  <div class="quick-actions">
+    <div class="quick-action"><div class="icon">💡</div><div class="label">All Lights</div><div class="status active">12 on</div></div>
+    <div class="quick-action"><div class="icon">🔒</div><div class="label">Lock Doors</div><div class="status active">All locked</div></div>
+    <div class="quick-action"><div class="icon">🌡️</div><div class="label">Thermostat</div><div class="status">72°F</div></div>
+    <div class="quick-action"><div class="icon">📹</div><div class="label">Cameras</div><div class="status active">4 recording</div></div>
+    <div class="quick-action"><div class="icon">🔊</div><div class="label">Speaker</div><div class="status">Living Room</div></div>
+    <div class="quick-action"><div class="icon">🌙</div><div class="label">Goodnight</div><div class="status">Scene</div></div>
+    <div class="quick-action"><div class="icon">🌅</div><div class="label">Good Morning</div><div class="status">Scene</div></div>
+    <div class="quick-action"><div class="icon">🚪</div><div class="label">Away Mode</div><div class="status">Scene</div></div>
+  </div>
+
+  <!-- Rooms -->
+  <section id="rooms">
+    <div class="section-header">
+      <h2>Rooms</h2>
+      <span class="badge">6 Rooms</span>
+    </div>
+    <div class="rooms-grid">
+      <div class="room-card">
+        <div class="room-header"><h3>🛋️ Living Room</h3><span class="temp">72°F</span></div>
+        <div class="room-devices">
+          <div class="device-row"><div class="device-icon on">💡</div><div class="device-info"><div class="name">Ceiling Light</div><div class="detail">80% brightness</div></div><button class="device-toggle on" aria-label="Toggle ceiling light"></button></div>
+          <div class="device-row"><div class="device-icon on">📺</div><div class="device-info"><div class="name">Smart TV</div><div class="detail">Netflix — Playing</div></div><button class="device-toggle on" aria-label="Toggle smart TV"></button></div>
+          <div class="device-row"><div class="device-icon off">🔊</div><div class="device-info"><div class="name">Sonos Speaker</div><div class="detail">Off</div></div><button class="device-toggle off" aria-label="Toggle speaker"></button></div>
+        </div>
+      </div>
+      <div class="room-card">
+        <div class="room-header"><h3>🍳 Kitchen</h3><span class="temp">70°F</span></div>
+        <div class="room-devices">
+          <div class="device-row"><div class="device-icon on">💡</div><div class="device-info"><div class="name">Counter Lights</div><div class="detail">100% brightness</div></div><button class="device-toggle on" aria-label="Toggle counter lights"></button></div>
+          <div class="device-row"><div class="device-icon on">☕</div><div class="device-info"><div class="name">Coffee Maker</div><div class="detail">Scheduled 6:30 AM</div></div><button class="device-toggle on" aria-label="Toggle coffee maker"></button></div>
+          <div class="device-row"><div class="device-icon off">🧊</div><div class="device-info"><div class="name">Smart Fridge</div><div class="detail">37°F — Normal</div></div><button class="device-toggle off" aria-label="Toggle fridge"></button></div>
+        </div>
+      </div>
+      <div class="room-card">
+        <div class="room-header"><h3>🛏️ Bedroom</h3><span class="temp">68°F</span></div>
+        <div class="room-devices">
+          <div class="device-row"><div class="device-icon off">💡</div><div class="device-info"><div class="name">Bedside Lamp</div><div class="detail">Off</div></div><button class="device-toggle off" aria-label="Toggle bedside lamp"></button></div>
+          <div class="device-row"><div class="device-icon on">🌀</div><div class="device-info"><div class="name">Fan</div><div class="detail">Speed 2</div></div><button class="device-toggle on" aria-label="Toggle fan"></button></div>
+          <div class="device-row"><div class="device-icon off">🪟</div><div class="device-info"><div class="name">Smart Blinds</div><div class="detail">Closed</div></div><button class="device-toggle off" aria-label="Toggle blinds"></button></div>
+        </div>
+      </div>
+      <div class="room-card">
+        <div class="room-header"><h3>🚿 Bathroom</h3><span class="temp">74°F</span></div>
+        <div class="room-devices">
+          <div class="device-row"><div class="device-icon on">💡</div><div class="device-info"><div class="name">Mirror Light</div><div class="detail">100%</div></div><button class="device-toggle on" aria-label="Toggle mirror light"></button></div>
+          <div class="device-row"><div class="device-icon on">♨️</div><div class="device-info"><div class="name">Water Heater</div><div class="detail">120°F</div></div><button class="device-toggle on" aria-label="Toggle water heater"></button></div>
+        </div>
+      </div>
+      <div class="room-card">
+        <div class="room-header"><h3>🏡 Garage</h3><span class="temp">55°F</span></div>
+        <div class="room-devices">
+          <div class="device-row"><div class="device-icon off">💡</div><div class="device-info"><div class="name">Garage Light</div><div class="detail">Off</div></div><button class="device-toggle off" aria-label="Toggle garage light"></button></div>
+          <div class="device-row"><div class="device-icon off">🚗</div><div class="device-info"><div class="name">Garage Door</div><div class="detail">Closed</div></div><button class="device-toggle off" aria-label="Toggle garage door"></button></div>
+        </div>
+      </div>
+      <div class="room-card">
+        <div class="room-header"><h3>🌿 Garden</h3><span class="temp">58°F</span></div>
+        <div class="room-devices">
+          <div class="device-row"><div class="device-icon off">💡</div><div class="device-info"><div class="name">Path Lights</div><div class="detail">Off — Auto sunset</div></div><button class="device-toggle off" aria-label="Toggle path lights"></button></div>
+          <div class="device-row"><div class="device-icon on">💧</div><div class="device-info"><div class="name">Sprinkler</div><div class="detail">Scheduled 6 AM</div></div><button class="device-toggle on" aria-label="Toggle sprinkler"></button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Thermostat -->
+  <div class="thermostat-card">
+    <h3 style="margin-bottom:16px">Thermostat</h3>
+    <div class="thermostat-ring">
+      <div class="thermostat-inner">
+        <div class="thermostat-temp">72°</div>
+        <div class="thermostat-label">Set to 72°F</div>
+      </div>
+    </div>
+    <div class="thermostat-controls">
+      <button class="thermostat-btn" aria-label="Decrease temperature">−</button>
+      <button class="thermostat-btn" aria-label="Increase temperature">+</button>
+    </div>
+    <div class="thermostat-modes">
+      <button class="mode-btn">❄️ Cool</button>
+      <button class="mode-btn active">🔄 Auto</button>
+      <button class="mode-btn">🔥 Heat</button>
+      <button class="mode-btn">🌀 Fan</button>
+    </div>
+  </div>
+
+  <!-- Energy -->
+  <section id="energy">
+    <div class="energy-card">
+      <div class="energy-header">
+        <h3>Energy Usage</h3>
+        <div class="energy-tabs">
+          <button class="energy-tab active">Day</button>
+          <button class="energy-tab">Week</button>
+          <button class="energy-tab">Month</button>
+        </div>
+      </div>
+      <div class="energy-chart">
+        <div class="energy-bar-group"><div class="energy-bar" style="height:30px;background:var(--indigo)"></div><span class="energy-bar-lbl">12a</span></div>
+        <div class="energy-bar-group"><div class="energy-bar" style="height:20px;background:var(--indigo)"></div><span class="energy-bar-lbl">3a</span></div>
+        <div class="energy-bar-group"><div class="energy-bar" style="height:15px;background:var(--indigo)"></div><span class="energy-bar-lbl">6a</span></div>
+        <div class="energy-bar-group"><div class="energy-bar" style="height:60px;background:var(--cyan)"></div><span class="energy-bar-lbl">9a</span></div>
+        <div class="energy-bar-group"><div class="energy-bar" style="height:80px;background:var(--cyan)"></div><span class="energy-bar-lbl">12p</span></div>
+        <div class="energy-bar-group"><div class="energy-bar" style="height:70px;background:var(--cyan)"></div><span class="energy-bar-lbl">3p</span></div>
+        <div class="energy-bar-group"><div class="energy-bar" style="height:90px;background:var(--lime)"></div><span class="energy-bar-lbl">6p</span></div>
+        <div class="energy-bar-group"><div class="energy-bar" style="height:100px;background:var(--lime)"></div><span class="energy-bar-lbl">9p</span></div>
+      </div>
+      <div class="energy-legend">
+        <div class="energy-legend-item"><span class="energy-legend-dot" style="border-color:var(--indigo)"></span> Overnight</div>
+        <div class="energy-legend-item"><span class="energy-legend-dot" style="border-color:var(--cyan)"></span> Daytime</div>
+        <div class="energy-legend-item"><span class="energy-legend-dot" style="border-color:var(--lime)"></span> Evening</div>
+      </div>
+      <div class="energy-stats">
+        <div class="energy-stat"><div class="val" style="color:var(--indigo)">14.2 kWh</div><div class="lbl">Today</div></div>
+        <div class="energy-stat"><div class="val" style="color:var(--cyan)">89.5 kWh</div><div class="lbl">This Week</div></div>
+        <div class="energy-stat"><div class="val" style="color:var(--lime)">342 kWh</div><div class="lbl">This Month</div></div>
+        <div class="energy-stat"><div class="val" style="color:var(--green)">$2.4K</div><div class="lbl">Est. Bill</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Automations -->
+  <section id="automations">
+    <div class="section-header">
+      <h2>Automations</h2>
+      <span class="badge">8 Active</span>
+    </div>
+    <div class="automations-list">
+      <div class="automation-item"><div class="automation-icon" style="background:rgba(79,70,229,0.1)">🌅</div><div class="automation-info"><div class="name">Good Morning</div><div class="desc">Weekdays 6:30 AM — Lights on, coffee maker, blinds open</div></div><button class="automation-toggle on" aria-label="Toggle automation"></button></div>
+      <div class="automation-item"><div class="automation-icon" style="background:rgba(79,70,229,0.1)">🌙</div><div class="automation-info"><div class="name">Goodnight</div><div class="desc">Daily 11:00 PM — All lights off, doors locked, thermostat 68°F</div></div><button class="automation-toggle on" aria-label="Toggle automation"></button></div>
+      <div class="automation-item"><div class="automation-icon" style="background:rgba(16,185,129,0.1)">🚪</div><div class="automation-info"><div class="name">Away Mode</div><div class="desc">When nobody home — Lights random, cameras on, thermostat eco</div></div><button class="automation-toggle on" aria-label="Toggle automation"></button></div>
+      <div class="automation-item"><div class="automation-icon" style="background:rgba(6,182,212,0.1)">💧</div><div class="automation-info"><div class="name">Garden Sprinkler</div><div class="desc">Mon/Wed/Fri 6:00 AM — 20 min per zone</div></div><button class="automation-toggle on" aria-label="Toggle automation"></button></div>
+      <div class="automation-item"><div class="automation-icon" style="background:rgba(245,158,11,0.1)">☀️</div><div class="automation-info"><div class="name">Path Lights</div><div class="desc">Sunset to sunrise — 40% brightness</div></div><button class="automation-toggle on" aria-label="Toggle automation"></button></div>
+      <div class="automation-item"><div class="automation-icon" style="background:rgba(251,113,133,0.1)">🔔</div><div class="automation-info"><div class="name">Door Bell Alert</div><div class="desc">On motion — Send notification, porch light on</div></div><button class="automation-toggle on" aria-label="Toggle automation"></button></div>
+      <div class="automation-item"><div class="automation-icon" style="background:rgba(139,92,246,0.1)">🌡️</div><div class="automation-info"><div class="name">Eco Mode</div><div class="desc">When away > 2h — Thermostat 65°F, lights off</div></div><button class="automation-toggle on" aria-label="Toggle automation"></button></div>
+      <div class="automation-item"><div class="automation-icon" style="background:rgba(255,255,255,0.05)">☕</div><div class="automation-info"><div class="name">Coffee Timer</div><div class="desc">Weekdays 6:15 AM — Start coffee maker</div></div><button class="automation-toggle off" aria-label="Toggle automation"></button></div>
+    </div>
+  </section>
+
+  <!-- Security -->
+  <section id="security">
+    <div class="security-card">
+      <div class="security-header">
+        <h3>Security</h3>
+        <div class="security-status armed"><span class="dot"></span> Armed — Home</div>
+      </div>
+      <div class="security-cameras">
+        <div class="camera-feed"><span class="rec-icon"></span><span class="label">Front Door</span><span class="live">LIVE</span></div>
+        <div class="camera-feed"><span class="rec-icon"></span><span class="label">Backyard</span><span class="live">LIVE</span></div>
+        <div class="camera-feed"><span class="rec-icon"></span><span class="label">Garage</span><span class="live">LIVE</span></div>
+        <div class="camera-feed"><span class="rec-icon"></span><span class="label">Driveway</span><span class="live">LIVE</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Activity -->
+  <div class="section-header">
+    <h2>Recent Activity</h2>
+  </div>
+  <div class="activity-list">
+    <div class="activity-item"><span class="activity-dot" style="background:var(--green)"></span><span><strong>Front door</strong> locked automatically</span><span class="activity-time">5 min ago</span></div>
+    <div class="activity-item"><span class="activity-dot" style="background:var(--indigo)"></span><span><strong>Living Room</strong> light turned on</span><span class="activity-time">12 min ago</span></div>
+    <div class="activity-item"><span class="activity-dot" style="background:var(--cyan)"></span><span><strong>Thermostat</strong> adjusted to 72°F</span><span class="activity-time">30 min ago</span></div>
+    <div class="activity-item"><span class="activity-dot" style="background:var(--orange)"></span><span><strong>Motion detected</strong> — Front door camera</span><span class="activity-time">1 hour ago</span></div>
+    <div class="activity-item"><span class="activity-dot" style="background:var(--green)"></span><span><strong>Goodnight scene</strong> executed</span><span class="activity-time">Last night 11:00 PM</span></div>
+    <div class="activity-item"><span class="activity-dot" style="background:var(--indigo)"></span><span><strong>Coffee maker</strong> started</span><span class="activity-time">Today 6:15 AM</span></div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  Haven Smart Home — designed by Studio · Standalone prototype · Not affiliated with any smart home platform
+</footer>
+</body>
+</html>
