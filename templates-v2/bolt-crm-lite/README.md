@@ -1,16 +1,13 @@
 # Bolt CRM Lite
-Lightweight CRM skeleton with contact management, deal pipeline, activity timeline, quick actions, and responsive mobile navigation.
+
+Standalone CRM dashboard skeleton with contact management, deal pipeline Kanban, activity timeline, KPI strip, quick actions, and mobile drawer navigation.
+
 ## Files
-- `index.html` — standalone single-file HTML with inline CSS and JavaScript.
-- `DESIGN_BOOK.md` — design system, layout, interaction, and accessibility notes.
-- `README.md` — project overview.
-## Features
-- Sticky navigation with search and Add Contact call to action.
-- Mobile hamburger and drawer menu.
-- KPI strip for total contacts, active deals, pipeline value, and win rate.
-- Contact table with company, email, phone, last activity, and status badges.
-- Kanban pipeline with five stages and probability bars.
-- Activity timeline with call, email, meeting, and note events.
-- Quick actions for call, email, meeting, and note workflows.
+
+- `index.html` - Single-file HTML with inline CSS and JavaScript.
+- `DESIGN_BOOK.md` - Design rationale, palette, typography, and layout notes.
+- `README.md` - Template summary.
+
 ## Usage
-Open `index.html` in a browser. The page is standalone and only loads Google Fonts from the CDN.
+
+Open `index.html` in a browser. The page has no build step and only loads Google Fonts from a CDN.

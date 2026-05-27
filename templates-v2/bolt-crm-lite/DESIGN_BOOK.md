@@ -1,25 +1,35 @@
 # Bolt CRM Lite Design Book
-Bolt CRM Lite is a compact operations interface for small sales teams that need contact management, pipeline visibility, activity history, and fast follow-up actions on one screen.
-## Visual System
-- Headings use Manrope for a confident, modern editorial rhythm.
-- Interface text uses Inter for dense CRM data, tables, and controls.
-- Cloud `#F6F8FC` keeps the workspace quiet.
-- Ink `#19212B` anchors navigation, hero copy, and high-contrast labels.
-- Indigo `#4F46E5` is the primary action and brand color.
-- Cyan `#06B6D4`, lime `#A3E635`, and coral `#FB7185` identify deal states, activity types, and emphasis.
+
+## Concept
+
+Bolt CRM Lite is a compact sales operations screen for small teams. The layout focuses on scanning: KPI strip first, customer table next, then a Kanban pipeline and quick actions.
+
+## Typography
+
+- Headings: Manrope, 600-800 weights.
+- Interface: Inter, 400-800 weights.
+- Letter spacing stays neutral for crisp dashboard readability.
+
+## Palette
+
+- Cloud: `#F6F8FC`
+- Ink: `#19212B`
+- Indigo: `#4F46E5`
+- Cyan: `#06B6D4`
+- Lime: `#A3E635`
+- Coral: `#FB7185`
+
 ## Layout
-- Sticky top navigation includes brand, section links, search, and a primary Add Contact action.
-- Mobile uses a hamburger button and slide-in drawer with the same core navigation and action.
-- The KPI strip uses four compact metric cards for contacts, active deals, pipeline value, and win rate.
-- Contacts use a scan-friendly table with status badges.
-- Deals use five horizontal Kanban columns: Lead, Qualified, Proposal, Closed Won, and Closed Lost.
-- Activities use a vertical timeline with call, email, meeting, and note icons.
-- Quick actions group call, email, meeting, and note buttons for immediate follow-through.
-## Interaction Notes
-- Navigation links scroll to the relevant workspace sections.
-- The mobile drawer closes from the close icon, backdrop, Escape key, or drawer links.
-- Segmented controls and action buttons are visual UI states ready for product wiring.
-## Accessibility
-- Semantic landmarks, labels, and section headings are used throughout.
-- Icon-only controls include accessible names.
-- Color is supported by text labels for statuses, activities, and pipeline stages.
+
+- Sticky top nav with desktop links and mobile hamburger drawer.
+- KPI strip uses four equal cards on desktop and collapses to two columns, then one.
+- Contact table scrolls horizontally on narrow screens.
+- Pipeline uses fixed-width lanes on mobile for predictable Kanban behavior.
+- Quick actions use icon-forward buttons with concise operational copy.
+
+## Interaction
+
+- Contact search filters by contact, company, segment, and owner.
+- Segment and owner selects filter rows without navigation.
+- Quick actions show lightweight toast feedback.
+- Drawer closes on backdrop, Escape, or navigation selection.
