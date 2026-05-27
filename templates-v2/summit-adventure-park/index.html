@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Summit Adventure Park</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --cloud: #F6F8FC;
+    --ink: #19212B;
+    --indigo: #4F46E5;
+    --cyan: #06B6D4;
+    --lime: #A3E635;
+    --coral: #FB7185;
+    --card: #FFFFFF;
+    --border: #E5E7EB;
+    --green: #10B981;
+    --orange: #F59E0B;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cloud);
+    color: #111827;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+  }
+
+  a { color: var(--indigo); text-decoration: none; }
+  button { cursor: pointer; font-family: inherit; }
+
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--indigo);
+    color: #fff;
+    padding: 8px 16px;
+    z-index: 100;
+    font-size: 0.875rem;
+  }
+  .skip-link:focus { top: 0; }
+
+  .top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 24px;
+    height: 60px;
+    background: var(--ink);
+    color: #fff;
+  }
+  .nav-brand {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--lime);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-links { display: flex; gap: 4px; margin-left: 24px; }
+  .nav-links a {
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.7);
+  }
+  .nav-links a:hover,
+  .nav-links a[aria-current="page"] {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+  .nav-search { margin-left: auto; position: relative; }
+  .nav-search input {
+    width: 200px; padding: 8px 12px 8px 36px;
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;
+    font-size: 0.875rem; background: rgba(255,255,255,0.1); color: #fff;
+  }
+  .nav-search svg {
+    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    width: 16px; height: 16px; color: rgba(255,255,255,0.5);
+  }
+  .nav-cta {
+    margin-left: 12px; padding: 8px 18px;
+    background: var(--lime); color: var(--ink); border: none; border-radius: 8px;
+    font-size: 0.875rem; font-weight: 700;
+  }
+  .hamburger { display: none; background: none; border: none; padding: 8px; color: #fff; }
+  .hamburger svg { width: 24px; height: 24px; }
+
+  .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 60; }
+  .drawer-overlay.open { display: block; }
+  .drawer {
+    position: fixed; top: 0; left: 0; width: 280px; height: 100%;
+    background: #fff; z-index: 70; transform: translateX(-100%);
+    transition: transform 0.25s ease; padding: 24px; overflow-y: auto;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-close { background: none; border: none; font-size: 1.5rem; position: absolute; top: 16px; right: 16px; color: #111827; }
+  .drawer nav { display: flex; flex-direction: column; gap: 4px; margin-top: 24px; }
+  .drawer nav a { padding: 10px 14px; border-radius: 8px; font-size: 0.9375rem; color: #111827; }
+  .drawer nav a:hover { background: var(--cloud); }
+
+  @media (max-width: 768px) {
+    .nav-links, .nav-search, .nav-cta { display: none; }
+    .hamburger { display: block; }
+    .top-nav { padding: 0 16px; }
+  }
+
+  .kpi-strip {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px; padding: 24px;
+  }
+  .kpi-card {
+    background: var(--card); border-radius: 12px; padding: 20px;
+    border: 1px solid var(--border); display: flex; align-items: center; gap: 14px;
+  }
+  .kpi-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0;
+  }
+  .kpi-label { font-size: 0.8125rem; color: #6B7280; margin-bottom: 2px; }
+  .kpi-value { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 1.5rem; }
+  .kpi-trend { font-size: 0.75rem; margin-top: 2px; color: var(--green); }
+
+  .main-content { padding: 0 24px 48px; }
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
+  }
+  .section-header h2 { font-size: 1.25rem; }
+  .badge {
+    background: var(--cloud); padding: 4px 12px; border-radius: 20px;
+    font-size: 0.8125rem; font-weight: 600; color: #6B7280;
+  }
+
+  /* Activity Cards */
+  .activity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .activity-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .activity-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+  .activity-card h4 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .activity-card .desc { font-size: 0.8125rem; color: #6B7280; margin-bottom: 8px; }
+  .activity-card .meta-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #9CA3AF;
+  }
+  .difficulty {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+  }
+  .diff-easy { background: #D1FAE5; color: #065F46; }
+  .diff-medium { background: #FEF3C7; color: #92400E; }
+  .diff-hard { background: #FEE2E2; color: #991B1B; }
+  .diff-expert { background: #EEF2FF; color: #4F46E5; }
+
+  /* Booking Table */
+  .data-tbl {
+    width: 100%; border-collapse: collapse; background: var(--card);
+    border-radius: 12px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 32px;
+  }
+  .data-tbl th {
+    text-align: left; padding: 12px 16px; font-size: 0.8125rem;
+    color: #6B7280; font-weight: 600; border-bottom: 1px solid var(--border); background: var(--cloud);
+  }
+  .data-tbl td { padding: 12px 16px; font-size: 0.875rem; border-bottom: 1px solid #F3F4F6; }
+  .data-tbl tr:last-child td { border-bottom: none; }
+  .data-tbl tr:hover { background: var(--cloud); }
+  .badge-status {
+    display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
+  }
+  .st-available { background: #D1FAE5; color: #065F46; }
+  .st-limited { background: #FEF3C7; color: #92400E; }
+  .st-full { background: #FEE2E2; color: #991B1B; }
+
+  /* Trail Map */
+  .trail-list {
+    display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px;
+  }
+  .trail-item {
+    background: var(--card); border-radius: 10px; padding: 14px 18px;
+    border: 1px solid var(--border); display: flex; align-items: center; gap: 14px;
+  }
+  .trail-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;
+  }
+  .trail-info { flex: 1; }
+  .trail-info h4 { font-size: 0.9375rem; margin-bottom: 2px; }
+  .trail-info .meta { font-size: 0.8125rem; color: #6B7280; }
+  .trail-stats {
+    display: flex; gap: 16px; font-size: 0.8125rem; color: #6B7280;
+  }
+
+  /* Safety */
+  .safety-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px; margin-bottom: 32px;
+  }
+  .safety-card {
+    background: var(--card); border-radius: 12px; padding: 20px;
+    border: 1px solid var(--border); text-align: center;
+  }
+  .safety-card .icon { font-size: 2rem; margin-bottom: 8px; }
+  .safety-card h4 { font-size: 0.9375rem; margin-bottom: 6px; }
+  .safety-card p { font-size: 0.8125rem; color: #6B7280; }
+
+  /* Events */
+  .event-list {
+    display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px;
+  }
+  .event-item {
+    background: var(--card); border-radius: 10px; padding: 16px 20px;
+    border: 1px solid var(--border); display: flex; align-items: center; gap: 16px;
+  }
+  .event-date {
+    background: var(--indigo); color: #fff; border-radius: 8px; padding: 8px 12px;
+    text-align: center; min-width: 60px; flex-shrink: 0;
+  }
+  .event-date .month { font-size: 0.6875rem; text-transform: uppercase; opacity: 0.8; }
+  .event-date .day { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 1.25rem; }
+  .event-info { flex: 1; }
+  .event-info h4 { font-size: 0.9375rem; margin-bottom: 2px; }
+  .event-info .meta { font-size: 0.8125rem; color: #6B7280; }
+
+  .site-footer {
+    padding: 32px 24px; text-align: center; font-size: 0.8125rem;
+    color: #9CA3AF; border-top: 1px solid var(--border); margin-top: 48px;
+  }
+
+  :focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  @media (max-width: 768px) {
+    .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    .activity-grid { grid-template-columns: 1fr; }
+    .data-tbl { display: block; overflow-x: auto; }
+    .trail-item { flex-direction: column; align-items: flex-start; }
+    .event-item { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header class="top-nav">
+  <button class="hamburger" aria-label="Open menu" aria-expanded="false"
+    onclick="document.getElementById('drawer').classList.toggle('open');document.getElementById('overlay').classList.toggle('open');this.setAttribute('aria-expanded',document.getElementById('drawer').classList.contains('open'))">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+  </button>
+  <a href="#" class="nav-brand">⛰️ Summit Adventure Park</a>
+  <nav class="nav-links" aria-label="Main">
+    <a href="#" aria-current="page">Activities</a>
+    <a href="#trails">Trails</a>
+    <a href="#booking">Booking</a>
+    <a href="#safety">Safety</a>
+    <a href="#events">Events</a>
+  </nav>
+  <div class="nav-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" aria-label="Search activities">
+  </div>
+  <button class="nav-cta">Book Now</button>
+</header>
+
+<div class="drawer-overlay" id="overlay" onclick="document.getElementById('drawer').classList.remove('open');this.classList.remove('open')"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-label="Navigation">
+  <button class="drawer-close" aria-label="Close menu"
+    onclick="document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open')">&times;</button>
+  <nav>
+    <a href="#">Activities</a>
+    <a href="#trails">Trails</a>
+    <a href="#booking">Booking</a>
+    <a href="#safety">Safety</a>
+    <a href="#events">Events</a>
+  </nav>
+</aside>
+
+<main id="main">
+  <div class="kpi-strip" role="region" aria-label="Park overview">
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#D1FAE5">🧗</div>
+      <div>
+        <div class="kpi-label">Activities Open</div>
+        <div class="kpi-value" style="color:#10B981">18</div>
+        <div class="kpi-trend">All zones operational</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#ECFEFF">👥</div>
+      <div>
+        <div class="kpi-label">Visitors Today</div>
+        <div class="kpi-value" style="color:#06B6D4">342</div>
+        <div class="kpi-trend">Peak expected at 14:00</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#FEF3C7">🌡️</div>
+      <div>
+        <div class="kpi-label">Weather</div>
+        <div class="kpi-value" style="color:#F59E0B">22°C</div>
+        <div class="kpi-trend">Sunny — perfect conditions</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#EEF2FF">⭐</div>
+      <div>
+        <div class="kpi-label">Guest Rating</div>
+        <div class="kpi-value" style="color:#4F46E5">4.8</div>
+        <div class="kpi-trend">Based on 1,247 reviews</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <!-- Activities -->
+    <section>
+      <div class="section-header">
+        <h2>Activities</h2>
+        <span class="badge">18 available</span>
+      </div>
+      <div class="activity-grid">
+        <div class="activity-card" style="border-top:4px solid #4F46E5">
+          <h4>🧗 Rock Climbing Wall</h4>
+          <div class="desc">Indoor and outdoor climbing walls with routes from beginner to expert. Harness and belay provided.</div>
+          <div class="meta-row">
+            <span class="difficulty diff-medium">Medium</span>
+            <span>Ages 8+ · 60 min</span>
+          </div>
+        </div>
+        <div class="activity-card" style="border-top:4px solid #06B6D4">
+          <h4>🪂 Zip Line Tour</h4>
+          <div class="desc">Soar above the canopy on 6 connected zip lines spanning 2.4 km with stunning valley views.</div>
+          <div class="meta-row">
+            <span class="difficulty diff-easy">Easy</span>
+            <span>Ages 10+ · 90 min</span>
+          </div>
+        </div>
+        <div class="activity-card" style="border-top:4px solid #A3E635">
+          <h4>🚵 Mountain Biking</h4>
+          <div class="desc">12 km trail network with loops for all skill levels. Bike rental and helmets included.</div>
+          <div class="meta-row">
+            <span class="difficulty diff-medium">Medium</span>
+            <span>Ages 12+ · 120 min</span>
+          </div>
+        </div>
+        <div class="activity-card" style="border-top:4px solid #FB7185">
+          <h4>🚣 White Water Rafting</h4>
+          <div class="desc">Class III–IV rapids on the Summit River. Professional guide in every raft. Wetsuit provided.</div>
+          <div class="meta-row">
+            <span class="difficulty diff-hard">Hard</span>
+            <span>Ages 16+ · 150 min</span>
+          </div>
+        </div>
+        <div class="activity-card" style="border-top:4px solid #F59E0B">
+          <h4>🏹 Archery Range</h4>
+          <div class="desc">20-lane outdoor range with compound and recurve bows. Instructor-led sessions available.</div>
+          <div class="meta-row">
+            <span class="difficulty diff-easy">Easy</span>
+            <span>Ages 8+ · 45 min</span>
+          </div>
+        </div>
+        <div class="activity-card" style="border-top:4px solid #4F46E5">
+          <h4>🌲 High Ropes Course</h4>
+          <div class="desc">30 obstacles at 12m height. Safety harness continuous. Great for team building.</div>
+          <div class="meta-row">
+            <span class="difficulty diff-hard">Hard</span>
+            <span>Ages 14+ · 90 min</span>
+          </div>
+        </div>
+        <div class="activity-card" style="border-top:4px solid #06B6D4">
+          <h4>🏕️ overnight Camping</h4>
+          <div class="desc">Guided overnight wilderness experience with campfire cooking and stargazing session.</div>
+          <div class="meta-row">
+            <span class="difficulty diff-medium">Medium</span>
+            <span>Ages 10+ · 16 hours</span>
+          </div>
+        </div>
+        <div class="activity-card" style="border-top:4px solid #FB7185">
+          <h4>🎿 Via Ferrata</h4>
+          <div class="desc">Iron path climbing route along the ridge. Steel cables and rungs secured to rock face.</div>
+          <div class="meta-row">
+            <span class="difficulty diff-expert">Expert</span>
+            <span>Ages 18+ · 180 min</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trails -->
+    <section id="trails">
+      <div class="section-header">
+        <h2>Trail Network</h2>
+        <span class="badge">8 trails</span>
+      </div>
+      <div class="trail-list" role="list">
+        <div class="trail-item" role="listitem">
+          <div class="trail-icon" style="background:#D1FAE5">🌿</div>
+          <div class="trail-info">
+            <h4>Meadow Loop</h4>
+            <div class="meta">Gentle walk through wildflower meadows</div>
+          </div>
+          <div class="trail-stats"><span>3.2 km</span><span>45 min</span><span class="difficulty diff-easy">Easy</span></div>
+        </div>
+        <div class="trail-item" role="listitem">
+          <div class="trail-icon" style="background:#ECFEFF">💧</div>
+          <div class="trail-info">
+            <h4>Waterfall Trail</h4>
+            <div class="meta">Scenic route to the 40m Summit Falls</div>
+          </div>
+          <div class="trail-stats"><span>5.8 km</span><span>2h</span><span class="difficulty diff-medium">Medium</span></div>
+        </div>
+        <div class="trail-item" role="listitem">
+          <div class="trail-icon" style="background:#FEF3C7">⛰️</div>
+          <div class="trail-info">
+            <h4>Ridge Traverse</h4>
+            <div class="meta">Panoramic ridge walk with steep sections</div>
+          </div>
+          <div class="trail-stats"><span>8.4 km</span><span>4h</span><span class="difficulty diff-hard">Hard</span></div>
+        </div>
+        <div class="trail-item" role="listitem">
+          <div class="trail-icon" style="background:#FEE2E2">🏔️</div>
+          <div class="trail-info">
+            <h4>Summit Peak</h4>
+            <div class="meta">Full ascent to the highest point at 2,847m</div>
+          </div>
+          <div class="trail-stats"><span>12.6 km</span><span>7h</span><span class="difficulty diff-expert">Expert</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Booking -->
+    <section id="booking">
+      <div class="section-header">
+        <h2>Available Time Slots</h2>
+        <span class="badge">Today</span>
+      </div>
+      <table class="data-tbl" aria-label="Booking availability">
+        <thead>
+          <tr>
+            <th>Activity</th>
+            <th>Time</th>
+            <th>Spots Left</th>
+            <th>Price</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Rock Climbing Wall</td>
+            <td>10:00</td>
+            <td>8 / 12</td>
+            <td>$45</td>
+            <td><span class="badge-status st-available">Available</span></td>
+          </tr>
+          <tr>
+            <td>Zip Line Tour</td>
+            <td>11:00</td>
+            <td>3 / 10</td>
+            <td>$65</td>
+            <td><span class="badge-status st-limited">Limited</span></td>
+          </tr>
+          <tr>
+            <td>White Water Rafting</td>
+            <td>13:00</td>
+            <td>0 / 8</td>
+            <td>$85</td>
+            <td><span class="badge-status st-full">Full</span></td>
+          </tr>
+          <tr>
+            <td>Mountain Biking</td>
+            <td>09:00</td>
+            <td>5 / 8</td>
+            <td>$55</td>
+            <td><span class="badge-status st-available">Available</span></td>
+          </tr>
+          <tr>
+            <td>High Ropes Course</td>
+            <td>14:00</td>
+            <td>2 / 10</td>
+            <td>$50</td>
+            <td><span class="badge-status st-limited">Limited</span></td>
+          </tr>
+          <tr>
+            <td>Archery Range</td>
+            <td>10:30</td>
+            <td>10 / 20</td>
+            <td>$30</td>
+            <td><span class="badge-status st-available">Available</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Safety -->
+    <section id="safety">
+      <div class="section-header">
+        <h2>Safety Information</h2>
+        <span class="badge">Your safety first</span>
+      </div>
+      <div class="safety-grid">
+        <div class="safety-card">
+          <div class="icon">🪢</div>
+          <h4>Equipment Checked Daily</h4>
+          <p>All harnesses, ropes, and carabiners inspected before each use. Certified to EN standards.</p>
+        </div>
+        <div class="safety-card">
+          <div class="icon">👨‍🏫</div>
+          <h4>Certified Instructors</h4>
+          <p>Every activity supervised by qualified instructors with first aid training.</p>
+        </div>
+        <div class="safety-card">
+          <div class="icon">🏥</div>
+          <h4>On-Site Medical Team</h4>
+          <p>Paramedic team on standby during all operating hours. AED stations at every zone.</p>
+        </div>
+        <div class="safety-card">
+          <div class="icon">📋</div>
+          <h4>Waiver & Briefing</h4>
+          <p>All guests receive a safety briefing and sign a waiver before participating.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Events -->
+    <section id="events">
+      <div class="section-header">
+        <h2>Upcoming Events</h2>
+        <span class="badge">This month</span>
+      </div>
+      <div class="event-list" role="list">
+        <div class="event-item" role="listitem">
+          <div class="event-date"><div class="month">Jun</div><div class="day">08</div></div>
+          <div class="event-info">
+            <h4>Sunset Climb — Evening Rock Climbing</h4>
+            <div class="meta">18:00–21:00 · All levels · $60</div>
+          </div>
+          <span class="badge-status st-available">Open</span>
+        </div>
+        <div class="event-item" role="listitem">
+          <div class="event-date"><div class="month">Jun</div><div class="day">15</div></div>
+          <div class="event-info">
+            <h4>Trail Run Championship — 15K</h4>
+            <div class="meta">07:00 start · Advanced · $40 entry</div>
+          </div>
+          <span class="badge-status st-limited">Few Spots</span>
+        </div>
+        <div class="event-item" role="listitem">
+          <div class="event-date"><div class="month">Jun</div><div class="day">22</div></div>
+          <div class="event-info">
+            <h4>Family Adventure Day</h4>
+            <div class="meta">10:00–16:00 · All ages · $120/family</div>
+          </div>
+          <span class="badge-status st-available">Open</span>
+        </div>
+        <div class="event-item" role="listitem">
+          <div class="event-date"><div class="month">Jul</div><div class="day">06</div></div>
+          <div class="event-info">
+            <h4>Night Zip — Glow-in-the-dark Zip Line</h4>
+            <div class="meta">21:00–23:00 · Ages 12+ · $75</div>
+          </div>
+          <span class="badge-status st-available">Open</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p>Summit Adventure Park — designed by Studio · Standalone prototype · Not affiliated with any outdoor recreation company</p>
+</footer>
+
+<script>
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.getElementById('drawer').classList.remove('open');
+      document.getElementById('overlay').classList.remove('open');
+    }
+  });
+</script>
+</body>
+</html>
