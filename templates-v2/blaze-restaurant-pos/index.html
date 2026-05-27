@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blaze Restaurant POS</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --cloud: #F6F8FC;
+    --ink: #19212B;
+    --indigo: #4F46E5;
+    --cyan: #06B6D4;
+    --lime: #A3E635;
+    --coral: #FB7185;
+    --bg: #F0F2F5;
+    --card: #FFFFFF;
+    --border: #E5E7EB;
+    --text-primary: #111827;
+    --text-secondary: #6B7280;
+    --text-muted: #9CA3AF;
+    --green: #10B981;
+    --orange: #F59E0B;
+    --red: #EF4444;
+    --blue: #3B82F6;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    line-height: 1.5;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+  }
+
+  a { color: var(--indigo); text-decoration: none; }
+  button { cursor: pointer; font-family: inherit; }
+
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--indigo);
+    color: #fff;
+    padding: 8px 16px;
+    z-index: 100;
+  }
+
+  .skip-link:focus { top: 0; }
+
+  /* ── Top Bar ── */
+  .top-bar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    height: 56px;
+    background: var(--ink);
+    color: #fff;
+    gap: 16px;
+  }
+
+  .top-bar .brand {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.125rem;
+    color: var(--coral);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .top-bar .brand svg { width: 24px; height: 24px; }
+
+  .top-tabs {
+    display: flex;
+    gap: 4px;
+    margin-left: 24px;
+  }
+
+  .top-tab {
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
+  }
+
+  .top-tab:hover { color: #fff; background: rgba(255, 255, 255, 0.1); }
+  .top-tab.active { color: #fff; background: rgba(255, 255, 255, 0.15); }
+
+  .top-right {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .top-right .time {
+    font-size: 0.875rem;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .top-right .server {
+    font-size: 0.8125rem;
+    background: rgba(255, 255, 255, 0.1);
+    padding: 4px 10px;
+    border-radius: 6px;
+  }
+
+  /* ── Layout ── */
+  .app-layout {
+    display: grid;
+    grid-template-columns: 1fr 360px;
+    height: calc(100vh - 56px);
+    overflow: hidden;
+  }
+
+  /* ── Menu Grid ── */
+  .menu-area {
+    padding: 16px;
+    overflow-y: auto;
+  }
+
+  .menu-categories {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .cat-btn {
+    padding: 8px 16px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    white-space: nowrap;
+    color: var(--text-secondary);
+  }
+
+  .cat-btn:hover { border-color: var(--indigo); color: var(--indigo); }
+  .cat-btn.active { background: var(--indigo); color: #fff; border-color: var(--indigo); }
+
+  .menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 10px;
+  }
+
+  .menu-item {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    cursor: pointer;
+    transition: all 0.1s;
+    text-align: center;
+  }
+
+  .menu-item:hover { border-color: var(--indigo); transform: scale(1.02); }
+  .menu-item:active { transform: scale(0.98); }
+
+  .menu-item .emoji { font-size: 2rem; margin-bottom: 6px; }
+  .menu-item .name { font-size: 0.8125rem; font-weight: 600; margin-bottom: 2px; }
+  .menu-item .price { font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 0.9375rem; color: var(--indigo); }
+  .menu-item .mod { font-size: 0.6875rem; color: var(--text-muted); margin-top: 2px; }
+
+  /* ── Order Panel ── */
+  .order-panel {
+    background: var(--card);
+    border-left: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .order-header {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .order-header h3 { font-size: 1rem; }
+
+  .order-header .table-select {
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    font-size: 0.8125rem;
+    background: var(--cloud);
+  }
+
+  .order-items {
+    flex: 1;
+    overflow-y: auto;
+    padding: 8px 16px;
+  }
+
+  .order-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .order-item:last-child { border-bottom: none; }
+
+  .order-item .qty {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    background: var(--indigo);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .order-item .details { flex: 1; }
+  .order-item .details .name { font-size: 0.875rem; font-weight: 500; }
+  .order-item .details .note { font-size: 0.75rem; color: var(--text-muted); }
+  .order-item .price { font-family: 'Manrope', sans-serif; font-weight: 600; font-size: 0.875rem; }
+
+  .order-item .remove {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    padding: 2px;
+  }
+
+  .order-item .remove:hover { color: var(--red); }
+
+  .order-mods {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+
+  .order-mod {
+    font-size: 0.6875rem;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: var(--cloud);
+    color: var(--text-secondary);
+  }
+
+  /* ── Order Summary ── */
+  .order-summary {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.875rem;
+    margin-bottom: 6px;
+  }
+
+  .summary-row.total {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 1.125rem;
+    padding-top: 8px;
+    border-top: 1px solid var(--border);
+    margin-top: 8px;
+  }
+
+  .order-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 12px;
+  }
+
+  .order-actions .btn {
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .btn-hold { background: var(--orange); color: #fff; }
+  .btn-print { background: var(--cloud); color: var(--text-primary); border: 1px solid var(--border) !important; }
+  .btn-pay { background: var(--green); color: #fff; grid-column: 1 / -1; font-size: 1rem; padding: 14px; }
+
+  /* ── Table Map ── */
+  .table-map {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    padding: 16px;
+    margin-bottom: 16px;
+  }
+
+  .table-cell {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 14px;
+    border: 2px solid var(--border);
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.1s;
+  }
+
+  .table-cell:hover { border-color: var(--indigo); }
+
+  .table-cell.available { border-color: var(--green); }
+  .table-cell.occupied { border-color: var(--coral); }
+  .table-cell.reserved { border-color: var(--orange); }
+
+  .table-cell .num {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+  }
+
+  .table-cell .info {
+    font-size: 0.6875rem;
+    color: var(--text-muted);
+    margin-top: 2px;
+  }
+
+  .table-cell .status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin: 6px auto 0;
+  }
+
+  .table-cell.available .status-dot { background: var(--green); }
+  .table-cell.occupied .status-dot { background: var(--coral); }
+  .table-cell.reserved .status-dot { background: var(--orange); }
+
+  /* ── KPIs ── */
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 10px;
+    padding: 0 16px 16px;
+  }
+
+  .kpi-card {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .kpi-card .val {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+  }
+
+  .kpi-card .lbl {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  /* ── Kitchen Orders ── */
+  .kitchen-section {
+    padding: 0 16px 16px;
+  }
+
+  .kitchen-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 10px;
+  }
+
+  .kitchen-order {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--orange);
+  }
+
+  .kitchen-order.urgent { border-left-color: var(--red); }
+  .kitchen-order.ready { border-left-color: var(--green); }
+
+  .kitchen-order .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+
+  .kitchen-order .header .id {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+  }
+
+  .kitchen-order .header .time {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+  .kitchen-order .items {
+    font-size: 0.8125rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+  }
+
+  .kitchen-order .actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .kitchen-order .actions button {
+    flex: 1;
+    padding: 6px;
+    border-radius: 6px;
+    border: none;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .kitchen-order .actions .btn-start { background: var(--blue); color: #fff; }
+  .kitchen-order .actions .btn-ready { background: var(--green); color: #fff; }
+
+  /* ── Footer ── */
+  .site-footer {
+    padding: 32px 24px;
+    text-align: center;
+    font-size: 0.8125rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--indigo);
+    outline-offset: 2px;
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<div class="top-bar">
+  <div class="brand">
+    <svg viewBox="0 0 24 24" fill="none"><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2z" stroke="#FB7185" stroke-width="2"/><path d="M8 14s1.5 2 4 2 4-2 4-2" stroke="#FB7185" stroke-width="2"/></svg>
+    Blaze POS
+  </div>
+  <div class="top-tabs">
+    <button class="top-tab active">Orders</button>
+    <button class="top-tab">Tables</button>
+    <button class="top-tab">Kitchen</button>
+    <button class="top-tab">Menu</button>
+    <button class="top-tab">Reports</button>
+  </div>
+  <div class="top-right">
+    <span class="time">7:45 PM</span>
+    <span class="server">Server: Alex M.</span>
+  </div>
+</div>
+
+<div class="app-layout" id="main">
+  <!-- Menu Area -->
+  <div class="menu-area">
+    <div class="menu-categories">
+      <button class="cat-btn active">All</button>
+      <button class="cat-btn">Appetizers</button>
+      <button class="cat-btn">Mains</button>
+      <button class="cat-btn">Pizza</button>
+      <button class="cat-btn">Burgers</button>
+      <button class="cat-btn">Salads</button>
+      <button class="cat-btn">Desserts</button>
+      <button class="cat-btn">Drinks</button>
+      <button class="cat-btn">Sides</button>
+    </div>
+
+    <!-- Table Map (toggle view) -->
+    <div class="section-header" style="margin-bottom:12px">
+      <h2 style="font-size:1rem">Floor Plan</h2>
+      <span style="font-size:0.8125rem;color:var(--text-muted)">12 tables · 8 occupied</span>
+    </div>
+    <div class="table-map">
+      <div class="table-cell available"><div class="num">T1</div><div class="info">2 seats</div><div class="status-dot"></div></div>
+      <div class="table-cell occupied"><div class="num">T2</div><div class="info">4 seats · $42</div><div class="status-dot"></div></div>
+      <div class="table-cell occupied"><div class="num">T3</div><div class="info">4 seats · $67</div><div class="status-dot"></div></div>
+      <div class="table-cell available"><div class="num">T4</div><div class="info">2 seats</div><div class="status-dot"></div></div>
+      <div class="table-cell reserved"><div class="num">T5</div><div class="info">6 seats · 8 PM</div><div class="status-dot"></div></div>
+      <div class="table-cell occupied"><div class="num">T6</div><div class="info">2 seats · $28</div><div class="status-dot"></div></div>
+      <div class="table-cell occupied"><div class="num">T7</div><div class="info">8 seats · $156</div><div class="status-dot"></div></div>
+      <div class="table-cell available"><div class="num">T8</div><div class="info">4 seats</div><div class="status-dot"></div></div>
+      <div class="table-cell occupied"><div class="num">T9</div><div class="info">2 seats · $35</div><div class="status-dot"></div></div>
+      <div class="table-cell occupied"><div class="num">T10</div><div class="info">4 seats · $89</div><div class="status-dot"></div></div>
+      <div class="table-cell occupied"><div class="num">T11</div><div class="info">6 seats · $124</div><div class="status-dot"></div></div>
+      <div class="table-cell occupied"><div class="num">T12</div><div class="info">4 seats · $53</div><div class="status-dot"></div></div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpi-strip">
+      <div class="kpi-card"><div class="val" style="color:var(--green)">$2,847</div><div class="lbl">Today's Sales</div></div>
+      <div class="kpi-card"><div class="val" style="color:var(--indigo)">142</div><div class="lbl">Orders</div></div>
+      <div class="kpi-card"><div class="val" style="color:var(--orange)">$20.05</div><div class="lbl">Avg. Ticket</div></div>
+      <div class="kpi-card"><div class="val" style="color:var(--coral)">8</div><div class="lbl">Open Tables</div></div>
+    </div>
+
+    <!-- Menu Grid -->
+    <div class="section-header" style="margin-bottom:12px">
+      <h2 style="font-size:1rem">Menu</h2>
+    </div>
+    <div class="menu-grid">
+      <div class="menu-item"><div class="emoji">🍔</div><div class="name">Classic Burger</div><div class="price">$14.99</div><div class="mod">Fries included</div></div>
+      <div class="menu-item"><div class="emoji">🍕</div><div class="name">Margherita Pizza</div><div class="price">$16.99</div><div class="mod">12 inch</div></div>
+      <div class="menu-item"><div class="emoji">🥗</div><div class="name">Caesar Salad</div><div class="price">$11.99</div><div class="mod">Add chicken +$4</div></div>
+      <div class="menu-item"><div class="emoji">🥩</div><div class="name">Ribeye Steak</div><div class="price">$32.99</div><div class="mod">12oz</div></div>
+      <div class="menu-item"><div class="emoji">🍝</div><div class="name">Pasta Carbonara</div><div class="price">$17.99</div><div class="mod">Guanciale</div></div>
+      <div class="menu-item"><div class="emoji">🌮</div><div class="name">Fish Tacos</div><div class="price">$13.99</div><div class="mod">3 pieces</div></div>
+      <div class="menu-item"><div class="emoji">🍣</div><div class="name">Salmon Roll</div><div class="price">$15.99</div><div class="mod">8 pieces</div></div>
+      <div class="menu-item"><div class="emoji">🍗</div><div class="name">Fried Chicken</div><div class="price">$12.99</div><div class="mod">Half bird</div></div>
+      <div class="menu-item"><div class="emoji">🧀</div><div class="name">Mac & Cheese</div><div class="price">$9.99</div><div class="mod">Truffle oil</div></div>
+      <div class="menu-item"><div class="emoji">🍟</div><div class="name">Loaded Fries</div><div class="price">$8.99</div><div class="mod">Bacon + cheese</div></div>
+      <div class="menu-item"><div class="emoji">🍰</div><div class="name">Cheesecake</div><div class="price">$8.99</div><div class="mod">Berry compote</div></div>
+      <div class="menu-item"><div class="emoji">🍨</div><div class="name">Gelato</div><div class="price">$6.99</div><div class="mod">3 scoops</div></div>
+      <div class="menu-item"><div class="emoji">🍺</div><div class="name">Craft Beer</div><div class="price">$7.99</div><div class="mod">IPA / Lager</div></div>
+      <div class="menu-item"><div class="emoji">🍷</div><div class="house Wine>House Wine</div><div class="price">$9.99</div><div class="mod">Glass</div></div>
+      <div class="menu-item"><div class="emoji">🥤</div><div class="name">Fresh Juice</div><div class="price">$5.99</div><div class="mod">OJ / Apple / Cran</div></div>
+      <div class="menu-item"><div class="emoji">☕</div><div class="name">Espresso</div><div class="price">$3.99</div><div class="mod">Single / Double</div></div>
+      <div class="menu-item"><div class="emoji">🧅</div><div class="name">Onion Rings</div><div class="price">$7.99</div><div class="mod">Beer battered</div></div>
+      <div class="menu-item"><div class="emoji">🥪</div><div class="name">Club Sandwich</div><div class="price">$12.99</div><div class="mod">Turkey + bacon</div></div>
+      <div class="menu-item"><div class="emoji">🦐</div><div class="name">Shrimp Scampi</div><div class="price">$19.99</div><div class="mod">Garlic butter</div></div>
+    </div>
+
+    <!-- Kitchen Display -->
+    <div class="section-header" style="margin:24px 0 12px">
+      <h2 style="font-size:1rem">Kitchen Display</h2>
+      <span style="font-size:0.8125rem;color:var(--text-muted)">6 active orders</span>
+    </div>
+    <div class="kitchen-grid">
+      <div class="kitchen-order urgent">
+        <div class="header"><span class="id">#142 — T7</span><span class="time" style="color:var(--red)">18 min</span></div>
+        <div class="items">2x Ribeye Steak (med-rare)<br>1x Caesar Salad<br>1x Pasta Carbonara</div>
+        <div class="actions"><button class="btn-ready">Mark Ready</button></div>
+      </div>
+      <div class="kitchen-order">
+        <div class="header"><span class="id">#143 — T2</span><span class="time">8 min</span></div>
+        <div class="items">1x Classic Burger<br>1x Loaded Fries</div>
+        <div class="actions"><button class="btn-start">Start</button><button class="btn-ready">Ready</button></div>
+      </div>
+      <div class="kitchen-order">
+        <div class="header"><span class="id">#144 — T3</span><span class="time">5 min</span></div>
+        <div class="items">2x Margherita Pizza<br>1x Fried Chicken</div>
+        <div class="actions"><button class="btn-start">Start</button><button class="btn-ready">Ready</button></div>
+      </div>
+      <div class="kitchen-order ready">
+        <div class="header"><span class="id">#145 — T6</span><span class="time" style="color:var(--green)">Ready</span></div>
+        <div class="items">1x Salmon Roll<br>1x Miso Soup</div>
+        <div class="actions"><button class="btn-ready">Serve</button></div>
+      </div>
+      <div class="kitchen-order">
+        <div class="header"><span class="id">#146 — T10</span><span class="time">3 min</span></div>
+        <div class="items">1x Fish Tacos<br>1x Mac & Cheese<br>2x Craft Beer</div>
+        <div class="actions"><button class="btn-start">Start</button><button class="btn-ready">Ready</button></div>
+      </div>
+      <div class="kitchen-order">
+        <div class="header"><span class="id">#147 — T11</span><span class="time">1 min</span></div>
+        <div class="items">3x Club Sandwich<br>1x Onion Rings<br>2x Fresh Juice</div>
+        <div class="actions"><button class="btn-start">Start</button><button class="btn-ready">Ready</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Panel -->
+  <div class="order-panel">
+    <div class="order-header">
+      <h3>Current Order</h3>
+      <select class="table-select" aria-label="Select table">
+        <option>Table 3</option>
+        <option>Table 1</option>
+        <option>Table 2</option>
+        <option>Table 4</option>
+        <option>Table 5</option>
+        <option>Takeout</option>
+      </select>
+    </div>
+    <div class="order-items">
+      <div class="order-item">
+        <div class="qty">2</div>
+        <div class="details">
+          <div class="name">Classic Burger</div>
+          <div class="order-mods"><span class="order-mod">No onions</span><span class="order-mod">Extra cheese</span></div>
+        </div>
+        <div class="price">$29.98</div>
+        <button class="remove" aria-label="Remove">×</button>
+      </div>
+      <div class="order-item">
+        <div class="qty">1</div>
+        <div class="details">
+          <div class="name">Caesar Salad</div>
+          <div class="order-mods"><span class="order-mod">Add chicken</span></div>
+        </div>
+        <div class="price">$15.99</div>
+        <button class="remove" aria-label="Remove">×</button>
+      </div>
+      <div class="order-item">
+        <div class="qty">2</div>
+        <div class="details">
+          <div class="name">Craft Beer</div>
+          <div class="order-mods"><span class="order-mod">IPA</span></div>
+        </div>
+        <div class="price">$15.98</div>
+        <button class="remove" aria-label="Remove">×</button>
+      </div>
+      <div class="order-item">
+        <div class="qty">1</div>
+        <div class="details">
+          <div class="name">Cheesecake</div>
+        </div>
+        <div class="price">$8.99</div>
+        <button class="remove" aria-label="Remove">×</button>
+      </div>
+    </div>
+    <div class="order-summary">
+      <div class="summary-row"><span>Subtotal</span><span>$70.94</span></div>
+      <div class="summary-row"><span>Tax (8%)</span><span>$5.68</span></div>
+      <div class="summary-row total"><span>Total</span><span>$76.62</span></div>
+      <div class="order-actions">
+        <button class="btn btn-hold">Hold Order</button>
+        <button class="btn btn-print">Print</button>
+        <button class="btn btn-pay">💳 Charge $76.62</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer">
+  Blaze Restaurant POS — designed by Studio · Standalone prototype · Not affiliated with any POS system
+</footer>
+</body>
+</html>
