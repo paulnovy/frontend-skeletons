@@ -1,0 +1,1194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bolt Scheduler Pro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --indigo: #4F46E5;
+      --cyan: #06B6D4;
+      --lime: #A3E635;
+      --coral: #FB7185;
+      --white: rgba(255, 255, 255, 0.92);
+      --ink-06: rgba(25, 33, 43, 0.06);
+      --ink-08: rgba(25, 33, 43, 0.08);
+      --ink-12: rgba(25, 33, 43, 0.12);
+      --ink-18: rgba(25, 33, 43, 0.18);
+      --ink-60: rgba(25, 33, 43, 0.60);
+      --ink-72: rgba(25, 33, 43, 0.72);
+      --indigo-08: rgba(79, 70, 229, 0.08);
+      --indigo-12: rgba(79, 70, 229, 0.12);
+      --indigo-18: rgba(79, 70, 229, 0.18);
+      --cyan-10: rgba(6, 182, 212, 0.10);
+      --cyan-18: rgba(6, 182, 212, 0.18);
+      --lime-18: rgba(163, 230, 53, 0.18);
+      --coral-12: rgba(251, 113, 133, 0.12);
+      --coral-18: rgba(251, 113, 133, 0.18);
+      --radius: 8px;
+      --shadow: 0 18px 44px rgba(25, 33, 43, 0.10);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--cloud);
+      color: var(--ink);
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.5;
+    }
+
+    body.drawer-open {
+      overflow: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 3px;
+    }
+
+    .shell {
+      min-height: 100vh;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(246, 248, 252, 0.88);
+      border-bottom: 1px solid var(--ink-08);
+      backdrop-filter: blur(16px);
+    }
+
+    .nav-wrap {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 14px 28px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 20px;
+      align-items: center;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Manrope", sans-serif;
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: var(--radius);
+      color: var(--cloud);
+      background: var(--ink);
+      box-shadow: inset 0 -8px 0 rgba(79, 70, 229, 0.45);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+
+    .nav-links a {
+      padding: 9px 11px;
+      border-radius: var(--radius);
+      color: var(--ink-72);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .nav-links a:hover {
+      background: var(--ink-06);
+      color: var(--ink);
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .search {
+      width: min(28vw, 300px);
+      min-width: 190px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 12px;
+      border: 1px solid var(--ink-12);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--ink-60);
+    }
+
+    .search input {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      color: var(--ink);
+      outline: 0;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 9px 14px;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      font-weight: 800;
+      color: var(--ink);
+      background: var(--white);
+      box-shadow: 0 1px 0 var(--ink-06);
+    }
+
+    .btn.primary {
+      color: var(--cloud);
+      background: var(--indigo);
+      box-shadow: 0 12px 24px rgba(79, 70, 229, 0.24);
+    }
+
+    .btn.dark {
+      color: var(--cloud);
+      background: var(--ink);
+    }
+
+    .btn.ghost {
+      border-color: var(--ink-12);
+      background: rgba(255, 255, 255, 0.58);
+    }
+
+    .icon-btn {
+      width: 42px;
+      height: 42px;
+      display: none;
+      place-items: center;
+      border: 1px solid var(--ink-12);
+      border-radius: var(--radius);
+      background: var(--white);
+      color: var(--ink);
+    }
+
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      background: rgba(25, 33, 43, 0.42);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 180ms ease;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 50;
+      width: min(88vw, 360px);
+      height: 100vh;
+      padding: 20px;
+      background: var(--cloud);
+      box-shadow: var(--shadow);
+      transform: translateX(104%);
+      transition: transform 220ms ease;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    body.drawer-open .drawer-backdrop {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    body.drawer-open .drawer {
+      transform: translateX(0);
+    }
+
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .drawer-nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    .drawer-nav a {
+      padding: 14px;
+      border: 1px solid var(--ink-08);
+      border-radius: var(--radius);
+      background: var(--white);
+      font-weight: 800;
+    }
+
+    .main {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 26px 28px 44px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      gap: 20px;
+      align-items: stretch;
+      margin-bottom: 22px;
+    }
+
+    .hero-panel {
+      border: 1px solid var(--ink-08);
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--cloud);
+      padding: clamp(24px, 4vw, 42px);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-panel::after {
+      content: "";
+      position: absolute;
+      right: -80px;
+      top: -110px;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: rgba(6, 182, 212, 0.24);
+    }
+
+    .eyebrow {
+      margin: 0 0 12px;
+      color: var(--lime);
+      font-size: 0.8rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      font-family: "Manrope", sans-serif;
+      letter-spacing: 0;
+      line-height: 1.08;
+    }
+
+    h1 {
+      max-width: 820px;
+      font-size: clamp(2.35rem, 5vw, 5.8rem);
+    }
+
+    h2 {
+      font-size: clamp(1.45rem, 2.4vw, 2.3rem);
+    }
+
+    h3 {
+      font-size: 1.02rem;
+    }
+
+    .hero-copy {
+      max-width: 760px;
+      margin: 18px 0 24px;
+      color: rgba(246, 248, 252, 0.78);
+      font-size: 1.02rem;
+    }
+
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 28px;
+    }
+
+    .metric {
+      padding: 14px;
+      border: 1px solid rgba(246, 248, 252, 0.14);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.06);
+    }
+
+    .metric strong {
+      display: block;
+      font-size: 1.6rem;
+      font-family: "Manrope", sans-serif;
+    }
+
+    .metric span {
+      color: rgba(246, 248, 252, 0.66);
+      font-size: 0.84rem;
+    }
+
+    .command-panel {
+      border: 1px solid var(--ink-08);
+      border-radius: var(--radius);
+      background: var(--white);
+      padding: 18px;
+      box-shadow: var(--shadow);
+      display: grid;
+      gap: 14px;
+    }
+
+    .sync-card {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 14px;
+      border-radius: var(--radius);
+      background: var(--cloud);
+      border: 1px solid var(--ink-08);
+    }
+
+    .sync-dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: var(--cyan);
+      box-shadow: 0 0 0 6px var(--cyan-18);
+    }
+
+    .sync-dot.lime {
+      background: var(--lime);
+      box-shadow: 0 0 0 6px var(--lime-18);
+    }
+
+    .sync-dot.coral {
+      background: var(--coral);
+      box-shadow: 0 0 0 6px var(--coral-18);
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 28px;
+      padding: 5px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--ink-08);
+      background: var(--white);
+      font-size: 0.78rem;
+      font-weight: 900;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    .tag.indigo {
+      color: var(--indigo);
+      background: var(--indigo-08);
+      border-color: var(--indigo-18);
+    }
+
+    .tag.cyan {
+      color: var(--cyan);
+      background: var(--cyan-10);
+      border-color: var(--cyan-18);
+    }
+
+    .tag.lime {
+      color: var(--ink);
+      background: var(--lime-18);
+      border-color: rgba(163, 230, 53, 0.36);
+    }
+
+    .tag.coral {
+      color: var(--coral);
+      background: var(--coral-12);
+      border-color: var(--coral-18);
+    }
+
+    .section {
+      margin-top: 24px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .section-head p {
+      margin: 7px 0 0;
+      color: var(--ink-60);
+    }
+
+    .layout-two {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(320px, 0.65fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      border: 1px solid var(--ink-08);
+      border-radius: var(--radius);
+      background: var(--white);
+      box-shadow: 0 8px 24px rgba(25, 33, 43, 0.05);
+    }
+
+    .panel-pad {
+      padding: 16px;
+    }
+
+    .calendar-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--ink-08);
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: 74px repeat(5, minmax(130px, 1fr));
+      overflow-x: auto;
+    }
+
+    .cal-cell {
+      min-height: 72px;
+      border-right: 1px solid var(--ink-08);
+      border-bottom: 1px solid var(--ink-08);
+      padding: 8px;
+      position: relative;
+      background: rgba(255, 255, 255, 0.52);
+    }
+
+    .cal-cell.time {
+      color: var(--ink-60);
+      font-weight: 800;
+      font-size: 0.78rem;
+      background: rgba(246, 248, 252, 0.78);
+    }
+
+    .cal-cell.day {
+      min-height: 52px;
+      font-weight: 900;
+      background: var(--cloud);
+    }
+
+    .event {
+      border-radius: var(--radius);
+      padding: 9px;
+      border: 1px solid transparent;
+      color: var(--ink);
+      font-size: 0.78rem;
+      font-weight: 800;
+      min-height: 56px;
+      display: grid;
+      align-content: start;
+      gap: 2px;
+    }
+
+    .event strong {
+      font-size: 0.86rem;
+    }
+
+    .event span {
+      color: var(--ink-60);
+      font-weight: 700;
+    }
+
+    .event.discovery {
+      background: var(--indigo-12);
+      border-color: var(--indigo-18);
+    }
+
+    .event.sync {
+      background: var(--cyan-10);
+      border-color: var(--cyan-18);
+    }
+
+    .event.focus {
+      background: var(--lime-18);
+      border-color: rgba(163, 230, 53, 0.42);
+    }
+
+    .event.risk {
+      background: var(--coral-12);
+      border-color: var(--coral-18);
+    }
+
+    .meeting-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .meeting-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      padding: 14px;
+      border-radius: var(--radius);
+      border: 1px solid var(--ink-08);
+      background: var(--cloud);
+    }
+
+    .meeting-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+      color: var(--ink-60);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .avatars {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      min-width: 86px;
+    }
+
+    .avatar {
+      width: 30px;
+      height: 30px;
+      margin-left: -8px;
+      border: 2px solid var(--cloud);
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: var(--ink);
+      color: var(--cloud);
+      font-size: 0.72rem;
+      font-weight: 900;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      border: 1px solid var(--ink-08);
+      border-radius: var(--radius);
+      background: var(--white);
+      padding: 16px;
+      box-shadow: 0 8px 24px rgba(25, 33, 43, 0.05);
+    }
+
+    .poll-options {
+      display: grid;
+      gap: 9px;
+      margin: 14px 0;
+    }
+
+    .poll-option {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 10px;
+      border-radius: var(--radius);
+      border: 1px solid var(--ink-08);
+      background: var(--cloud);
+      font-weight: 800;
+    }
+
+    .vote-bar {
+      grid-column: 1 / -1;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--ink-08);
+      overflow: hidden;
+    }
+
+    .vote-bar i {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: var(--indigo);
+    }
+
+    .availability-wrap {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 18px;
+    }
+
+    .availability-grid {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(92px, 1fr));
+      gap: 8px;
+      overflow-x: auto;
+    }
+
+    .day-column {
+      display: grid;
+      gap: 8px;
+      min-width: 92px;
+    }
+
+    .day-label {
+      padding: 8px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--cloud);
+      text-align: center;
+      font-weight: 900;
+      font-size: 0.78rem;
+    }
+
+    .slot-toggle {
+      min-height: 38px;
+      border: 1px solid var(--ink-08);
+      border-radius: var(--radius);
+      background: var(--white);
+      color: var(--ink-60);
+      font-size: 0.77rem;
+      font-weight: 800;
+    }
+
+    .slot-toggle.active {
+      background: var(--lime-18);
+      border-color: rgba(163, 230, 53, 0.44);
+      color: var(--ink);
+    }
+
+    .slot-toggle.blocked {
+      background: var(--coral-12);
+      border-color: var(--coral-18);
+      color: var(--coral);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+
+    .field.full {
+      grid-column: 1 / -1;
+    }
+
+    .field label {
+      font-size: 0.78rem;
+      font-weight: 900;
+      color: var(--ink-72);
+    }
+
+    .field input,
+    .field select {
+      width: 100%;
+      min-height: 42px;
+      border: 1px solid var(--ink-12);
+      border-radius: var(--radius);
+      background: var(--cloud);
+      color: var(--ink);
+      padding: 0 11px;
+    }
+
+    .slot-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .slot-pill {
+      border: 1px solid var(--indigo-18);
+      border-radius: 999px;
+      background: var(--indigo-08);
+      color: var(--indigo);
+      padding: 8px 10px;
+      font-weight: 900;
+    }
+
+    .integration-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .integration-card {
+      display: grid;
+      gap: 14px;
+      border: 1px solid var(--ink-08);
+      border-radius: var(--radius);
+      background: var(--white);
+      padding: 16px;
+    }
+
+    .integration-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .platform {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 900;
+    }
+
+    .platform-icon {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--cloud);
+      font-weight: 900;
+    }
+
+    .sync-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--ink-60);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .footer {
+      margin-top: 30px;
+      padding: 22px 28px 34px;
+      border-top: 1px solid var(--ink-08);
+      color: var(--ink-60);
+      text-align: center;
+      font-weight: 700;
+    }
+
+    @media (max-width: 1080px) {
+      .hero,
+      .layout-two,
+      .availability-wrap {
+        grid-template-columns: 1fr;
+      }
+      .cards,
+      .integration-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .nav-links {
+        display: none;
+      }
+      .icon-btn {
+        display: grid;
+      }
+      .nav-wrap {
+        grid-template-columns: auto 1fr auto;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .nav-wrap,
+      .main {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+      .search {
+        display: none;
+      }
+      .nav-actions .primary {
+        display: none;
+      }
+      .hero-panel {
+        padding: 22px;
+      }
+      .metric-row,
+      .cards,
+      .integration-grid,
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .calendar-grid {
+        grid-template-columns: 62px repeat(5, 126px);
+      }
+      .section-head {
+        align-items: start;
+        flex-direction: column;
+      }
+      .field.full {
+        grid-column: auto;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="nav-wrap">
+        <a class="brand" href="#calendar" aria-label="Bolt Scheduler Pro home">
+          <span class="brand-mark">B</span>
+          <span>Bolt Scheduler Pro</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="#calendar">Calendar</a>
+          <a href="#meetings">Meetings</a>
+          <a href="#polls">Polls</a>
+          <a href="#availability">Availability</a>
+          <a href="#settings">Settings</a>
+        </nav>
+        <div class="nav-actions">
+          <label class="search" aria-label="Search schedule">
+            <span aria-hidden="true">⌕</span>
+            <input type="search" value="" aria-label="Search meetings and contacts">
+          </label>
+          <a class="btn primary" href="#booking">New Meeting</a>
+          <button class="icon-btn" id="menuOpen" type="button" aria-label="Open menu" aria-controls="mobileDrawer" aria-expanded="false">
+            <span aria-hidden="true">☰</span>
+          </button>
+        </div>
+      </div>
+    </header>
+    <div class="drawer-backdrop" id="drawerBackdrop" tabindex="-1" aria-hidden="true"></div>
+    <aside class="drawer" id="mobileDrawer" aria-label="Mobile navigation" aria-hidden="true">
+      <div class="drawer-head">
+        <span class="brand"><span class="brand-mark">B</span><span>Bolt Scheduler Pro</span></span>
+        <button class="icon-btn" id="menuClose" type="button" aria-label="Close menu">
+          <span aria-hidden="true">×</span>
+        </button>
+      </div>
+      <nav class="drawer-nav" aria-label="Mobile links">
+        <a href="#calendar">Calendar</a>
+        <a href="#meetings">Meetings</a>
+        <a href="#polls">Polls</a>
+        <a href="#availability">Availability</a>
+        <a href="#settings">Settings</a>
+        <a href="#booking">New Meeting</a>
+      </nav>
+    </aside>
+    <main class="main">
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-panel">
+          <p class="eyebrow">Live scheduling command center</p>
+          <h1 id="hero-title">Multi-calendar planning that finds the best time before the thread gets messy.</h1>
+          <p class="hero-copy">Coordinate internal calendars, external invitees, smart polls, shared availability, and booking links from one fast workspace.</p>
+          <div class="metric-row" aria-label="Scheduling metrics">
+            <div class="metric"><strong>94%</strong><span>conflict-free bookings</span></div>
+            <div class="metric"><strong>18k</strong><span>synced events this month</span></div>
+            <div class="metric"><strong>11m</strong><span>median booking time saved</span></div>
+          </div>
+        </div>
+        <aside class="command-panel" aria-label="Sync status">
+          <div class="sync-card"><span class="sync-dot"></span><div><strong>Google Calendar</strong><br><span>Two-way sync active</span></div><span class="tag cyan">Live</span></div>
+          <div class="sync-card"><span class="sync-dot lime"></span><div><strong>Outlook Work</strong><br><span>Availability merged</span></div><span class="tag lime">Healthy</span></div>
+          <div class="sync-card"><span class="sync-dot coral"></span><div><strong>Zoom Rooms</strong><br><span>Room capacity review needed</span></div><span class="tag coral">Action</span></div>
+          <a class="btn dark" href="#integrations">Review integrations</a>
+        </aside>
+      </section>
+      <section class="section" id="calendar" aria-labelledby="calendar-title">
+        <div class="section-head">
+          <div>
+            <h2 id="calendar-title">Weekly Calendar</h2>
+            <p>Scan booked blocks, protected focus windows, and meeting holds across the work week.</p>
+          </div>
+          <div>
+            <button class="btn ghost" type="button">This Week</button>
+            <button class="btn primary" type="button">Sync Now</button>
+          </div>
+        </div>
+        <div class="layout-two">
+          <div class="panel" role="region" aria-label="Weekly calendar grid">
+            <div class="calendar-toolbar"><strong>May 25–29, 2026</strong><span class="tag cyan">UTC+02 Warsaw</span></div>
+            <div class="calendar-grid">
+              <div class="cal-cell day"></div>
+              <div class="cal-cell day">Mon 25</div>
+              <div class="cal-cell day">Tue 26</div>
+              <div class="cal-cell day">Wed 27</div>
+              <div class="cal-cell day">Thu 28</div>
+              <div class="cal-cell day">Fri 29</div>
+              <div class="cal-cell time">09:00</div>
+              <div class="cal-cell"><div class="event discovery"><strong>Pipeline standup</strong><span>09:00 • 8 attendees</span></div></div>
+              <div class="cal-cell"></div>
+              <div class="cal-cell"><div class="event sync"><strong>Calendar QA</strong><span>09:15 • 4 attendees</span></div></div>
+              <div class="cal-cell"></div>
+              <div class="cal-cell"><div class="event focus"><strong>Focus reserve</strong><span>09:00 • solo</span></div></div>
+              <div class="cal-cell time">10:00</div>
+              <div class="cal-cell"></div>
+              <div class="cal-cell"><div class="event discovery"><strong>Enterprise discovery</strong><span>10:30 • 6 attendees</span></div></div>
+              <div class="cal-cell"></div>
+              <div class="cal-cell"><div class="event risk"><strong>Exec review</strong><span>10:00 • 12 attendees</span></div></div>
+              <div class="cal-cell"></div>
+              <div class="cal-cell time">11:00</div>
+              <div class="cal-cell"><div class="event sync"><strong>Partner sync</strong><span>11:00 • 5 attendees</span></div></div>
+              <div class="cal-cell"></div>
+              <div class="cal-cell"><div class="event discovery"><strong>Vendor briefing</strong><span>11:30 • 7 attendees</span></div></div>
+              <div class="cal-cell"></div>
+              <div class="cal-cell"><div class="event sync"><strong>Hiring loop</strong><span>11:00 • 3 attendees</span></div></div>
+              <div class="cal-cell time">12:00</div>
+              <div class="cal-cell"></div>
+              <div class="cal-cell"><div class="event focus"><strong>Protected lunch</strong><span>12:00 • unavailable</span></div></div>
+              <div class="cal-cell"></div>
+              <div class="cal-cell"><div class="event focus"><strong>Deep work</strong><span>12:30 • solo</span></div></div>
+              <div class="cal-cell"></div>
+              <div class="cal-cell time">13:00</div>
+              <div class="cal-cell"><div class="event risk"><strong>Renewal rescue</strong><span>13:00 • 9 attendees</span></div></div>
+              <div class="cal-cell"></div>
+              <div class="cal-cell"><div class="event sync"><strong>Product sync</strong><span>13:45 • 10 attendees</span></div></div>
+              <div class="cal-cell"></div>
+              <div class="cal-cell"><div class="event discovery"><strong>Founder intro</strong><span>13:15 • 2 attendees</span></div></div>
+              <div class="cal-cell time">14:00</div>
+              <div class="cal-cell"></div>
+              <div class="cal-cell"><div class="event sync"><strong>Design review</strong><span>14:00 • 6 attendees</span></div></div>
+              <div class="cal-cell"></div>
+              <div class="cal-cell"><div class="event discovery"><strong>Account planning</strong><span>14:30 • 5 attendees</span></div></div>
+              <div class="cal-cell"></div>
+              <div class="cal-cell time">15:00</div>
+              <div class="cal-cell"><div class="event focus"><strong>Proposal block</strong><span>15:00 • solo</span></div></div>
+              <div class="cal-cell"></div>
+              <div class="cal-cell"><div class="event risk"><strong>Launch readiness</strong><span>15:00 • 14 attendees</span></div></div>
+              <div class="cal-cell"></div>
+              <div class="cal-cell"><div class="event sync"><strong>Weekly closeout</strong><span>15:30 • 8 attendees</span></div></div>
+              <div class="cal-cell time">16:00</div>
+              <div class="cal-cell"></div>
+              <div class="cal-cell"><div class="event discovery"><strong>Customer demo</strong><span>16:00 • 4 attendees</span></div></div>
+              <div class="cal-cell"></div>
+              <div class="cal-cell"><div class="event focus"><strong>Inbox clear</strong><span>16:15 • solo</span></div></div>
+              <div class="cal-cell"></div>
+            </div>
+          </div>
+          <aside class="panel panel-pad" id="meetings" aria-labelledby="meetings-title">
+            <div class="section-head">
+              <div>
+                <h2 id="meetings-title">Upcoming Meetings</h2>
+                <p>Confirmed and pending sessions queued from synced calendars.</p>
+              </div>
+            </div>
+            <div class="meeting-list">
+              <article class="meeting-item">
+                <div><h3>Enterprise discovery</h3><div class="meeting-meta"><span>Tue, 10:30</span><span>45 min</span><span>Zoom</span><span class="tag lime">Confirmed</span></div></div>
+                <div class="avatars" aria-label="6 attendees"><span class="avatar">AM</span><span class="avatar">KL</span><span class="avatar">+4</span></div>
+              </article>
+              <article class="meeting-item">
+                <div><h3>Exec review</h3><div class="meeting-meta"><span>Thu, 10:00</span><span>60 min</span><span>Boardroom</span><span class="tag coral">Pending</span></div></div>
+                <div class="avatars" aria-label="12 attendees"><span class="avatar">NS</span><span class="avatar">JR</span><span class="avatar">+10</span></div>
+              </article>
+              <article class="meeting-item">
+                <div><h3>Product sync</h3><div class="meeting-meta"><span>Wed, 13:45</span><span>30 min</span><span>Meet</span><span class="tag lime">Confirmed</span></div></div>
+                <div class="avatars" aria-label="10 attendees"><span class="avatar">DV</span><span class="avatar">MO</span><span class="avatar">+8</span></div>
+              </article>
+              <article class="meeting-item">
+                <div><h3>Founder intro</h3><div class="meeting-meta"><span>Fri, 13:15</span><span>25 min</span><span>Phone</span><span class="tag indigo">Confirmed</span></div></div>
+                <div class="avatars" aria-label="2 attendees"><span class="avatar">TB</span><span class="avatar">LS</span></div>
+              </article>
+            </div>
+          </aside>
+        </div>
+      </section>
+      <section class="section" id="polls" aria-labelledby="polls-title">
+        <div class="section-head">
+          <div><h2 id="polls-title">Meeting Polls</h2><p>Let attendees vote across proposed times while deadlines and conflicts stay visible.</p></div>
+          <button class="btn primary" type="button">Create Poll</button>
+        </div>
+        <div class="cards">
+          <article class="card">
+            <span class="tag indigo">7 voters</span>
+            <h3>When should the Q3 roadmap session run?</h3>
+            <div class="poll-options">
+              <div class="poll-option"><span>Wed 14:00</span><strong>5 votes</strong><div class="vote-bar"><i style="width:72%"></i></div></div>
+              <div class="poll-option"><span>Thu 11:00</span><strong>3 votes</strong><div class="vote-bar"><i style="width:43%"></i></div></div>
+              <div class="poll-option"><span>Fri 09:30</span><strong>6 votes</strong><div class="vote-bar"><i style="width:86%"></i></div></div>
+            </div>
+            <span class="tag coral">Deadline today 18:00</span>
+          </article>
+          <article class="card">
+            <span class="tag cyan">4 voters</span>
+            <h3>Best slot for onboarding handoff?</h3>
+            <div class="poll-options">
+              <div class="poll-option"><span>Mon 15:00</span><strong>2 votes</strong><div class="vote-bar"><i style="width:50%"></i></div></div>
+              <div class="poll-option"><span>Tue 09:00</span><strong>4 votes</strong><div class="vote-bar"><i style="width:100%"></i></div></div>
+              <div class="poll-option"><span>Wed 16:00</span><strong>1 vote</strong><div class="vote-bar"><i style="width:25%"></i></div></div>
+            </div>
+            <span class="tag lime">Deadline May 29</span>
+          </article>
+          <article class="card">
+            <span class="tag coral">12 voters</span>
+            <h3>Regional partner workshop window?</h3>
+            <div class="poll-options">
+              <div class="poll-option"><span>Thu 08:30</span><strong>8 votes</strong><div class="vote-bar"><i style="width:67%"></i></div></div>
+              <div class="poll-option"><span>Thu 13:00</span><strong>9 votes</strong><div class="vote-bar"><i style="width:75%"></i></div></div>
+              <div class="poll-option"><span>Fri 12:00</span><strong>5 votes</strong><div class="vote-bar"><i style="width:42%"></i></div></div>
+            </div>
+            <span class="tag coral">Deadline tomorrow 10:00</span>
+          </article>
+        </div>
+      </section>
+      <section class="section" id="availability" aria-labelledby="availability-title">
+        <div class="section-head">
+          <div><h2 id="availability-title">Availability Manager</h2><p>Toggle working windows, blocked hours, and public booking openings by timezone.</p></div>
+          <button class="btn primary" type="button">Share Link</button>
+        </div>
+        <div class="availability-wrap">
+          <aside class="panel panel-pad">
+            <div class="field">
+              <label for="timezone">Timezone</label>
+              <select id="timezone"><option>Europe/Warsaw UTC+02</option><option>UTC</option><option>America/New York UTC-04</option><option>Asia/Singapore UTC+08</option></select>
+            </div>
+            <p><span class="tag lime">Available</span> <span class="tag coral">Blocked</span></p>
+            <button class="btn dark" type="button">Copy Booking Link</button>
+          </aside>
+          <div class="panel panel-pad">
+            <div class="availability-grid" aria-label="Weekly availability grid">
+              <div class="day-column"><div class="day-label">Mon</div><button class="slot-toggle active">09:00</button><button class="slot-toggle active">10:00</button><button class="slot-toggle">11:00</button><button class="slot-toggle blocked">12:00</button><button class="slot-toggle active">14:00</button><button class="slot-toggle active">15:00</button></div>
+              <div class="day-column"><div class="day-label">Tue</div><button class="slot-toggle active">09:00</button><button class="slot-toggle">10:00</button><button class="slot-toggle active">11:00</button><button class="slot-toggle blocked">12:00</button><button class="slot-toggle active">14:00</button><button class="slot-toggle">15:00</button></div>
+              <div class="day-column"><div class="day-label">Wed</div><button class="slot-toggle">09:00</button><button class="slot-toggle active">10:00</button><button class="slot-toggle active">11:00</button><button class="slot-toggle blocked">12:00</button><button class="slot-toggle active">14:00</button><button class="slot-toggle active">15:00</button></div>
+              <div class="day-column"><div class="day-label">Thu</div><button class="slot-toggle active">09:00</button><button class="slot-toggle active">10:00</button><button class="slot-toggle">11:00</button><button class="slot-toggle blocked">12:00</button><button class="slot-toggle">14:00</button><button class="slot-toggle active">15:00</button></div>
+              <div class="day-column"><div class="day-label">Fri</div><button class="slot-toggle active">09:00</button><button class="slot-toggle active">10:00</button><button class="slot-toggle active">11:00</button><button class="slot-toggle blocked">12:00</button><button class="slot-toggle">14:00</button><button class="slot-toggle">15:00</button></div>
+              <div class="day-column"><div class="day-label">Sat</div><button class="slot-toggle">09:00</button><button class="slot-toggle">10:00</button><button class="slot-toggle">11:00</button><button class="slot-toggle blocked">12:00</button><button class="slot-toggle">14:00</button><button class="slot-toggle">15:00</button></div>
+              <div class="day-column"><div class="day-label">Sun</div><button class="slot-toggle">09:00</button><button class="slot-toggle">10:00</button><button class="slot-toggle">11:00</button><button class="slot-toggle blocked">12:00</button><button class="slot-toggle">14:00</button><button class="slot-toggle">15:00</button></div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="section" id="booking" aria-labelledby="booking-title">
+        <div class="section-head">
+          <div><h2 id="booking-title">Booking Page</h2><p>Collect the right details while recommended openings reflect live availability.</p></div>
+        </div>
+        <div class="panel panel-pad">
+          <form class="form-grid">
+            <div class="field"><label for="meetingType">Meeting type</label><select id="meetingType"><option>Discovery call</option><option>Product demo</option><option>Support review</option><option>Leadership briefing</option></select></div>
+            <div class="field"><label for="duration">Duration</label><select id="duration"><option>25 minutes</option><option>45 minutes</option><option>60 minutes</option><option>90 minutes</option></select></div>
+            <div class="field full"><label>Available slots</label><div class="slot-pills"><button class="slot-pill" type="button">Tue 09:00</button><button class="slot-pill" type="button">Wed 14:00</button><button class="slot-pill" type="button">Thu 15:00</button><button class="slot-pill" type="button">Fri 10:00</button></div></div>
+            <div class="field"><label for="attendeeName">Attendee name</label><input id="attendeeName" type="text" value="Maya Chen"></div>
+            <div class="field"><label for="attendeeEmail">Attendee email</label><input id="attendeeEmail" type="email" value="maya@example.com"></div>
+            <div class="field full"><label for="meetingNotes">Context</label><input id="meetingNotes" type="text" value="Discuss timeline, stakeholders, and launch criteria"></div>
+            <div class="field full"><button class="btn primary" type="button">Book Selected Slot</button></div>
+          </form>
+        </div>
+      </section>
+      <section class="section" id="integrations" aria-labelledby="integrations-title">
+        <div class="section-head">
+          <div><h2 id="integrations-title">Integrations</h2><p>Monitor connected calendars, conferencing providers, and the health of each sync pipeline.</p></div>
+        </div>
+        <div class="integration-grid" id="settings">
+          <article class="integration-card">
+            <div class="integration-top"><div class="platform"><span class="platform-icon">G</span><span>Google Calendar</span></div><span class="tag lime">Connected</span></div>
+            <div class="sync-line"><span>Last sync</span><strong>1 min ago</strong></div>
+            <div class="sync-line"><span>Status</span><strong>Two-way active</strong></div>
+            <button class="btn ghost" type="button">Settings</button>
+          </article>
+          <article class="integration-card">
+            <div class="integration-top"><div class="platform"><span class="platform-icon">O</span><span>Outlook</span></div><span class="tag lime">Connected</span></div>
+            <div class="sync-line"><span>Last sync</span><strong>4 min ago</strong></div>
+            <div class="sync-line"><span>Status</span><strong>Availability merged</strong></div>
+            <button class="btn ghost" type="button">Settings</button>
+          </article>
+          <article class="integration-card">
+            <div class="integration-top"><div class="platform"><span class="platform-icon">Z</span><span>Zoom</span></div><span class="tag coral">Review</span></div>
+            <div class="sync-line"><span>Last sync</span><strong>18 min ago</strong></div>
+            <div class="sync-line"><span>Status</span><strong>Room check needed</strong></div>
+            <button class="btn ghost" type="button">Settings</button>
+          </article>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      Bolt Scheduler Pro — designed by Northstar Studio
+    </footer>
+  </div>
+  <script>
+    const body = document.body;
+    const openButton = document.getElementById("menuOpen");
+    const closeButton = document.getElementById("menuClose");
+    const drawer = document.getElementById("mobileDrawer");
+    const backdrop = document.getElementById("drawerBackdrop");
+    const drawerLinks = Array.from(drawer.querySelectorAll("a"));
+    const availabilityButtons = Array.from(document.querySelectorAll(".slot-toggle"));
+
+    function openDrawer() {
+      body.classList.add("drawer-open");
+      drawer.setAttribute("aria-hidden", "false");
+      openButton.setAttribute("aria-expanded", "true");
+      closeButton.focus();
+    }
+
+    function closeDrawer() {
+      body.classList.remove("drawer-open");
+      drawer.setAttribute("aria-hidden", "true");
+      openButton.setAttribute("aria-expanded", "false");
+      openButton.focus();
+    }
+
+    openButton.addEventListener("click", openDrawer);
+    closeButton.addEventListener("click", closeDrawer);
+    backdrop.addEventListener("click", closeDrawer);
+    drawerLinks.forEach((link) => link.addEventListener("click", closeDrawer));
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && body.classList.contains("drawer-open")) {
+        closeDrawer();
+      }
+    });
+
+    availabilityButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        if (button.classList.contains("blocked")) {
+          button.classList.remove("blocked");
+          button.classList.add("active");
+          return;
+        }
+        button.classList.toggle("active");
+      });
+    });
+  </script>
+</body>
+</html>
