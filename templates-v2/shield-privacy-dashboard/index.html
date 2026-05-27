@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shield Privacy Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --indigo: #4F46E5;
+      --cyan: #06B6D4;
+      --lime: #A3E635;
+      --coral: #FB7185;
+      --white: #FFFFFF;
+      --ink-90: rgba(25, 33, 43, 0.9);
+      --ink-76: rgba(25, 33, 43, 0.76);
+      --ink-62: rgba(25, 33, 43, 0.62);
+      --ink-48: rgba(25, 33, 43, 0.48);
+      --ink-18: rgba(25, 33, 43, 0.18);
+      --ink-10: rgba(25, 33, 43, 0.10);
+      --ink-06: rgba(25, 33, 43, 0.06);
+      --indigo-14: rgba(79, 70, 229, 0.14);
+      --indigo-22: rgba(79, 70, 229, 0.22);
+      --cyan-12: rgba(6, 182, 212, 0.12);
+      --cyan-20: rgba(6, 182, 212, 0.20);
+      --lime-14: rgba(163, 230, 53, 0.14);
+      --lime-28: rgba(163, 230, 53, 0.28);
+      --coral-12: rgba(251, 113, 133, 0.12);
+      --coral-22: rgba(251, 113, 133, 0.22);
+      --shadow: 0 24px 60px rgba(25, 33, 43, 0.10);
+      --soft-shadow: 0 14px 34px rgba(25, 33, 43, 0.08);
+      --radius: 8px;
+      --sidebar: 282px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--cloud);
+      color: var(--ink);
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+    }
+
+    body.drawer-open {
+      overflow: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 3px;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(246, 248, 252, 0.92);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--ink-10);
+    }
+
+    .topbar-inner {
+      width: min(1440px, calc(100% - 40px));
+      margin: 0 auto;
+      min-height: 76px;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      font-family: "Manrope", sans-serif;
+      font-weight: 800;
+      letter-spacing: 0;
+      color: var(--ink);
+      white-space: nowrap;
+    }
+
+    .brand-mark {
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      color: var(--white);
+      background: var(--ink);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.14);
+    }
+
+    .brand-mark svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .desktop-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .nav-link {
+      padding: 10px 12px;
+      border-radius: var(--radius);
+      color: var(--ink-62);
+      font-weight: 700;
+      font-size: 0.92rem;
+      transition: background 180ms ease, color 180ms ease;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      background: var(--indigo-14);
+      color: var(--indigo);
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .search {
+      width: min(320px, 28vw);
+      height: 42px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 12px;
+      border: 1px solid var(--ink-10);
+      border-radius: var(--radius);
+      background: var(--white);
+      box-shadow: 0 8px 18px rgba(25, 33, 43, 0.04);
+    }
+
+    .search svg {
+      width: 18px;
+      height: 18px;
+      color: var(--ink-48);
+      flex: 0 0 auto;
+    }
+
+    .search input {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+      min-width: 0;
+    }
+
+    .icon-button {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--ink-10);
+      border-radius: var(--radius);
+      background: var(--white);
+      color: var(--ink);
+      display: grid;
+      place-items: center;
+      position: relative;
+      box-shadow: 0 8px 18px rgba(25, 33, 43, 0.04);
+    }
+
+    .icon-button svg {
+      width: 19px;
+      height: 19px;
+    }
+
+    .badge-dot {
+      position: absolute;
+      top: -7px;
+      right: -7px;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 6px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: var(--coral);
+      color: var(--white);
+      font-size: 0.72rem;
+      font-weight: 800;
+      border: 2px solid var(--cloud);
+    }
+
+    .hamburger {
+      display: none;
+    }
+
+    .drawer-scrim {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      background: rgba(25, 33, 43, 0.36);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 200ms ease;
+    }
+
+    .drawer {
+      position: fixed;
+      z-index: 90;
+      top: 0;
+      right: 0;
+      width: min(86vw, 360px);
+      height: 100vh;
+      background: var(--white);
+      border-left: 1px solid var(--ink-10);
+      box-shadow: var(--shadow);
+      transform: translateX(100%);
+      transition: transform 240ms ease;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+    }
+
+    .drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-scrim.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .drawer-head {
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      border-bottom: 1px solid var(--ink-10);
+    }
+
+    .drawer-nav {
+      display: grid;
+      align-content: start;
+      gap: 8px;
+      padding: 22px 18px;
+    }
+
+    .drawer-nav a {
+      min-height: 46px;
+      display: flex;
+      align-items: center;
+      padding: 0 12px;
+      border-radius: var(--radius);
+      color: var(--ink-76);
+      font-weight: 800;
+    }
+
+    .drawer-nav a:hover {
+      background: var(--indigo-14);
+      color: var(--indigo);
+    }
+
+    .drawer-foot {
+      padding: 18px;
+      border-top: 1px solid var(--ink-10);
+      display: grid;
+      gap: 12px;
+    }
+
+    .drawer-search {
+      width: 100%;
+    }
+
+    .main {
+      width: min(1440px, calc(100% - 40px));
+      margin: 0 auto;
+      padding: 30px 0 48px;
+      display: grid;
+      gap: 24px;
+    }
+
+    .dashboard-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .hero-panel {
+      min-height: 246px;
+      border-radius: var(--radius);
+      padding: 28px;
+      background: var(--ink);
+      color: var(--white);
+      overflow: hidden;
+      position: relative;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-panel::after {
+      content: "";
+      position: absolute;
+      inset: auto -90px -150px auto;
+      width: 330px;
+      height: 330px;
+      border-radius: 50%;
+      background: radial-gradient(circle, var(--cyan-20), transparent 68%);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: rgba(246, 248, 252, 0.12);
+      color: rgba(246, 248, 252, 0.82);
+      font-weight: 800;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+    }
+
+    .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: var(--cyan);
+      box-shadow: 0 0 0 7px rgba(6, 182, 212, 0.15);
+    }
+
+    h1,
+    h2,
+    h3 {
+      font-family: "Manrope", sans-serif;
+      letter-spacing: 0;
+      margin: 0;
+      color: inherit;
+    }
+
+    h1 {
+      max-width: 760px;
+      margin-top: 22px;
+      font-size: clamp(2.15rem, 4vw, 4.45rem);
+      line-height: 0.98;
+      font-weight: 800;
+    }
+
+    .hero-copy {
+      max-width: 710px;
+      margin: 18px 0 0;
+      color: rgba(246, 248, 252, 0.76);
+      font-size: 1.02rem;
+      line-height: 1.7;
+    }
+
+    .hero-actions {
+      margin-top: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .button {
+      min-height: 42px;
+      border: 0;
+      border-radius: var(--radius);
+      padding: 0 15px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      font-weight: 800;
+      white-space: nowrap;
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+    }
+
+    .button svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .button-primary {
+      color: var(--white);
+      background: var(--indigo);
+      box-shadow: 0 14px 24px rgba(79, 70, 229, 0.22);
+    }
+
+    .button-secondary {
+      color: var(--ink);
+      background: var(--lime);
+    }
+
+    .button-ghost {
+      color: var(--ink);
+      background: var(--white);
+      border: 1px solid var(--ink-10);
+    }
+
+    .button-dark {
+      color: var(--white);
+      background: var(--ink);
+    }
+
+    .activity-panel {
+      background: var(--white);
+      border: 1px solid var(--ink-10);
+      border-radius: var(--radius);
+      padding: 22px;
+      box-shadow: var(--soft-shadow);
+      display: grid;
+      gap: 18px;
+    }
+
+    .panel-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .panel-title h2 {
+      font-size: 1.1rem;
+      color: var(--ink);
+    }
+
+    .live-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--cyan);
+      font-weight: 800;
+      font-size: 0.82rem;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 14px;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .timeline-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      background: var(--indigo-14);
+      color: var(--indigo);
+    }
+
+    .timeline-icon svg {
+      width: 17px;
+      height: 17px;
+    }
+
+    .timeline-item strong {
+      display: block;
+      font-size: 0.94rem;
+      color: var(--ink);
+    }
+
+    .timeline-item span {
+      display: block;
+      margin-top: 4px;
+      color: var(--ink-62);
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .kpi-card {
+      min-height: 148px;
+      padding: 20px;
+      border-radius: var(--radius);
+      background: var(--white);
+      border: 1px solid var(--ink-10);
+      box-shadow: var(--soft-shadow);
+      display: grid;
+      align-content: space-between;
+      gap: 18px;
+    }
+
+    .kpi-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .kpi-label {
+      color: var(--ink-62);
+      font-weight: 800;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+    }
+
+    .kpi-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      background: var(--cyan-12);
+      color: var(--cyan);
+    }
+
+    .kpi-icon svg {
+      width: 19px;
+      height: 19px;
+    }
+
+    .kpi-value {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-family: "Manrope", sans-serif;
+      font-size: 2.3rem;
+      line-height: 1;
+      font-weight: 800;
+      color: var(--ink);
+    }
+
+    .kpi-note {
+      color: var(--ink-62);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .section {
+      display: grid;
+      gap: 16px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .section-kicker {
+      color: var(--indigo);
+      font-weight: 900;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .section h2 {
+      font-size: clamp(1.35rem, 2vw, 2rem);
+      color: var(--ink);
+    }
+
+    .section-subtitle {
+      margin: 8px 0 0;
+      color: var(--ink-62);
+      line-height: 1.55;
+      max-width: 680px;
+    }
+
+    .panel {
+      background: var(--white);
+      border: 1px solid var(--ink-10);
+      border-radius: var(--radius);
+      box-shadow: var(--soft-shadow);
+      overflow: hidden;
+    }
+
+    .table-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+    }
+
+    th,
+    td {
+      padding: 16px 18px;
+      text-align: left;
+      border-bottom: 1px solid var(--ink-06);
+      vertical-align: middle;
+    }
+
+    th {
+      color: var(--ink-62);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0;
+      background: rgba(246, 248, 252, 0.68);
+    }
+
+    td {
+      color: var(--ink-76);
+      font-weight: 650;
+    }
+
+    tbody tr:last-child td {
+      border-bottom: 0;
+    }
+
+    .badge {
+      min-height: 28px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 10px;
+      border-radius: 999px;
+      font-weight: 900;
+      font-size: 0.76rem;
+      white-space: nowrap;
+    }
+
+    .badge-active,
+    .badge-completed,
+    .badge-low {
+      background: var(--lime-14);
+      color: var(--ink);
+      box-shadow: inset 0 0 0 1px var(--lime-28);
+    }
+
+    .badge-expired,
+    .badge-overdue,
+    .badge-high {
+      background: var(--coral-12);
+      color: var(--coral);
+      box-shadow: inset 0 0 0 1px var(--coral-22);
+    }
+
+    .badge-new,
+    .badge-medium {
+      background: var(--indigo-14);
+      color: var(--indigo);
+      box-shadow: inset 0 0 0 1px var(--indigo-22);
+    }
+
+    .badge-progress {
+      background: var(--cyan-12);
+      color: var(--cyan);
+      box-shadow: inset 0 0 0 1px var(--cyan-20);
+    }
+
+    .metric-cell {
+      color: var(--ink);
+      font-weight: 900;
+    }
+
+    .flow-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .flow-card,
+    .report-card,
+    .risk-card {
+      background: var(--white);
+      border: 1px solid var(--ink-10);
+      border-radius: var(--radius);
+      box-shadow: var(--soft-shadow);
+      padding: 18px;
+      display: grid;
+      gap: 16px;
+      min-width: 0;
+    }
+
+    .card-head {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .card-title {
+      display: grid;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .card-title h3 {
+      font-size: 1.05rem;
+      color: var(--ink);
+      overflow-wrap: anywhere;
+    }
+
+    .card-title span {
+      color: var(--ink-62);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .card-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      background: var(--ink);
+      color: var(--white);
+      flex: 0 0 auto;
+    }
+
+    .card-icon svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .detail-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+    }
+
+    .detail-row {
+      display: grid;
+      grid-template-columns: 126px 1fr;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .detail-row dt {
+      color: var(--ink-48);
+      font-weight: 800;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+    }
+
+    .detail-row dd {
+      margin: 0;
+      color: var(--ink-76);
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .share-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 900;
+    }
+
+    .share-indicator::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--cyan);
+      box-shadow: 0 0 0 5px var(--cyan-12);
+    }
+
+    .reports-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .report-score {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .score-ring {
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: conic-gradient(var(--indigo) calc(var(--score) * 1%), var(--ink-10) 0);
+      position: relative;
+      color: var(--ink);
+      font-family: "Manrope", sans-serif;
+      font-weight: 800;
+    }
+
+    .score-ring::after {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      background: var(--white);
+    }
+
+    .score-ring span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .report-meta {
+      display: grid;
+      gap: 4px;
+      color: var(--ink-62);
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .report-meta strong {
+      color: var(--ink);
+    }
+
+    .risk-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .risk-card {
+      align-content: start;
+    }
+
+    .risk-description {
+      margin: 0;
+      color: var(--ink-62);
+      line-height: 1.55;
+      font-weight: 650;
+    }
+
+    .risk-footer {
+      display: grid;
+      gap: 8px;
+      padding-top: 4px;
+    }
+
+    .owner {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink-76);
+      font-weight: 800;
+    }
+
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: var(--indigo-14);
+      color: var(--indigo);
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+
+    .footer {
+      border-top: 1px solid var(--ink-10);
+      background: var(--white);
+    }
+
+    .footer-inner {
+      width: min(1440px, calc(100% - 40px));
+      margin: 0 auto;
+      min-height: 76px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      color: var(--ink-62);
+      font-weight: 700;
+    }
+
+    .footer strong {
+      color: var(--ink);
+      font-family: "Manrope", sans-serif;
+    }
+
+    @media (max-width: 1180px) {
+      .desktop-nav {
+        display: none;
+      }
+
+      .hamburger {
+        display: grid;
+      }
+
+      .topbar-inner {
+        grid-template-columns: auto 1fr auto;
+      }
+
+      .top-actions {
+        justify-self: end;
+      }
+
+      .search {
+        width: min(300px, 36vw);
+      }
+
+      .dashboard-hero {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-strip,
+      .risk-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .flow-grid,
+      .reports-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar-inner,
+      .main,
+      .footer-inner {
+        width: min(100% - 28px, 1440px);
+      }
+
+      .topbar-inner {
+        gap: 12px;
+      }
+
+      .top-actions .search {
+        display: none;
+      }
+
+      .brand span {
+        max-width: 154px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .main {
+        padding-top: 18px;
+      }
+
+      .hero-panel {
+        padding: 22px;
+      }
+
+      .hero-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .kpi-strip,
+      .flow-grid,
+      .reports-grid,
+      .risk-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .detail-row {
+        grid-template-columns: 1fr;
+        gap: 4px;
+      }
+
+      .footer-inner {
+        padding: 18px 0;
+        min-height: auto;
+        display: grid;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="brand" href="#dashboard" aria-label="Shield Privacy Dashboard home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 3L19 6V11C19 15.7 16.2 19.3 12 21C7.8 19.3 5 15.7 5 11V6L12 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M9 12L11 14L15.5 9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span>Shield Privacy</span>
+        </a>
+        <nav class="desktop-nav" aria-label="Primary navigation">
+          <a class="nav-link active" href="#dashboard">Dashboard</a>
+          <a class="nav-link" href="#consent">Consent</a>
+          <a class="nav-link" href="#data-map">Data Map</a>
+          <a class="nav-link" href="#requests">Requests</a>
+          <a class="nav-link" href="#reports">Reports</a>
+          <a class="nav-link" href="#settings">Settings</a>
+        </nav>
+        <div class="top-actions">
+          <label class="search" aria-label="Search privacy records">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M11 19A8 8 0 1 0 11 3A8 8 0 0 0 11 19Z" stroke="currentColor" stroke-width="2"/>
+              <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <input type="search" aria-label="Search privacy records" value="">
+          </label>
+          <button class="icon-button" type="button" aria-label="Notifications">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M18 8A6 6 0 0 0 6 8C6 15 3 16 3 16H21C21 16 18 15 18 8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M10.3 20A2 2 0 0 0 13.7 20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <span class="badge-dot">6</span>
+          </button>
+          <button class="icon-button hamburger" type="button" aria-label="Open menu" aria-controls="mobile-drawer" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <div class="drawer-scrim" data-close-drawer></div>
+    <aside class="drawer" id="mobile-drawer" aria-label="Mobile navigation" aria-hidden="true">
+      <div class="drawer-head">
+        <a class="brand" href="#dashboard">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 3L19 6V11C19 15.7 16.2 19.3 12 21C7.8 19.3 5 15.7 5 11V6L12 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M9 12L11 14L15.5 9.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span>Shield Privacy</span>
+        </a>
+        <button class="icon-button" type="button" aria-label="Close menu" data-close-drawer>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+      <nav class="drawer-nav" aria-label="Mobile primary navigation">
+        <a href="#dashboard">Dashboard</a>
+        <a href="#consent">Consent</a>
+        <a href="#data-map">Data Map</a>
+        <a href="#requests">Requests</a>
+        <a href="#reports">Reports</a>
+        <a href="#settings">Settings</a>
+      </nav>
+      <div class="drawer-foot">
+        <label class="search drawer-search" aria-label="Search privacy records in mobile menu">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M11 19A8 8 0 1 0 11 3A8 8 0 0 0 11 19Z" stroke="currentColor" stroke-width="2"/>
+            <path d="M21 21L16.65 16.65" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <input type="search" aria-label="Search privacy records in mobile menu" value="">
+        </label>
+      </div>
+    </aside>
+
+    <main class="main" id="dashboard">
+      <section class="dashboard-hero" aria-labelledby="hero-title">
+        <div class="hero-panel">
+          <span class="eyebrow"><span class="pulse"></span>Live privacy command center</span>
+          <h1 id="hero-title">Privacy operations with evidence built in.</h1>
+          <p class="hero-copy">
+            Track consent, map processing activities, monitor subject requests, and prepare audit-ready reports from one focused compliance workspace.
+          </p>
+          <div class="hero-actions">
+            <button class="button button-primary" type="button">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M12 5V19M5 12H19" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              New request
+            </button>
+            <button class="button button-secondary" type="button">
+              <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M4 19H20M6 17V11M12 17V5M18 17V8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              </svg>
+              Generate audit pack
+            </button>
+          </div>
+        </div>
+        <aside class="activity-panel" aria-labelledby="activity-title">
+          <div class="panel-title">
+            <h2 id="activity-title">Evidence feed</h2>
+            <span class="live-chip"><span class="pulse"></span>Live</span>
+          </div>
+          <div class="timeline">
+            <article class="timeline-item">
+              <span class="timeline-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M20 6L9 17L4 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+              <div><strong>Retail analytics DPIA approved</strong><span>Mitigation notes signed by Data Protection Officer.</span></div>
+            </article>
+            <article class="timeline-item">
+              <span class="timeline-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 8V12L15 15M21 12A9 9 0 1 1 3 12A9 9 0 0 1 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </span>
+              <div><strong>Deletion request reaches day 23</strong><span>Fulfillment queue assigned to Privacy Ops.</span></div>
+            </article>
+            <article class="timeline-item">
+              <span class="timeline-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M8 12H16M12 8V16M21 12A9 9 0 1 1 3 12A9 9 0 0 1 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              </span>
+              <div><strong>Three new consent withdrawals</strong><span>Marketing audience sync paused for affected profiles.</span></div>
+            </article>
+          </div>
+        </aside>
+      </section>
+
+      <section class="kpi-strip" aria-label="Privacy KPI summary">
+        <article class="kpi-card">
+          <div class="kpi-top"><span class="kpi-label">Consent rate</span><span class="kpi-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M9 12L11 14L15 10M21 12A9 9 0 1 1 3 12A9 9 0 0 1 21 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+          <div><div class="kpi-value">87%</div><div class="kpi-note">Up 4.2% from last month</div></div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-top"><span class="kpi-label">Open requests</span><span class="kpi-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M8 7H16M8 12H14M8 17H12M5 3H19V21H5V3Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+          <div><div class="kpi-value">18</div><div class="kpi-note">4 require action today</div></div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-top"><span class="kpi-label">Processing activities</span><span class="kpi-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 7H20M4 12H20M4 17H20" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></div>
+          <div><div class="kpi-value">146</div><div class="kpi-note">12 updated this week</div></div>
+        </article>
+        <article class="kpi-card">
+          <div class="kpi-top"><span class="kpi-label">Compliance score</span><span class="kpi-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3L19 6V11C19 15.7 16.2 19.3 12 21C7.8 19.3 5 15.7 5 11V6L12 3Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span></div>
+          <div><div class="kpi-value">94</div><div class="kpi-note">Healthy across active regions</div></div>
+        </article>
+      </section>
+
+      <section class="section" id="consent" aria-labelledby="consent-title">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Consent tracking</div>
+            <h2 id="consent-title">Legal basis and preference health</h2>
+            <p class="section-subtitle">Monitor each purpose against consent volume, withdrawal trends, and policy expiry signals.</p>
+          </div>
+          <button class="button button-ghost" type="button">Export consent log</button>
+        </div>
+        <div class="panel table-wrap">
+          <table>
+            <thead>
+              <tr><th>Purpose</th><th>Legal basis</th><th>Consent count</th><th>Withdrawal rate</th><th>Status</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Product updates</td><td>Consent</td><td class="metric-cell">128,440</td><td>1.8%</td><td><span class="badge badge-active">Active</span></td></tr>
+              <tr><td>Personalized offers</td><td>Consent</td><td class="metric-cell">74,912</td><td>3.4%</td><td><span class="badge badge-active">Active</span></td></tr>
+              <tr><td>Fraud monitoring</td><td>Legitimate interest</td><td class="metric-cell">219,084</td><td>0.2%</td><td><span class="badge badge-active">Active</span></td></tr>
+              <tr><td>Partner measurement</td><td>Consent</td><td class="metric-cell">18,537</td><td>8.9%</td><td><span class="badge badge-expired">Expired</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section" id="data-map" aria-labelledby="data-map-title">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Data mapping</div>
+            <h2 id="data-map-title">Processing flows and sharing posture</h2>
+            <p class="section-subtitle">Understand where personal data originates, what it contains, how long it stays, and whether it leaves the organization.</p>
+          </div>
+          <button class="button button-dark" type="button">Add flow</button>
+        </div>
+        <div class="flow-grid">
+          <article class="flow-card">
+            <div class="card-head"><div class="card-title"><h3>Commerce platform</h3><span>Order lifecycle</span></div><span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M6 6H21L19 14H8L6 6ZM6 6L5 3H3M8 21A1 1 0 1 0 8 19A1 1 0 0 0 8 21ZM18 21A1 1 0 1 0 18 19A1 1 0 0 0 18 21Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <dl class="detail-list"><div class="detail-row"><dt>Data types</dt><dd>Name, email, address, payment token</dd></div><div class="detail-row"><dt>Purpose</dt><dd>Order fulfillment and invoice reconciliation</dd></div><div class="detail-row"><dt>Retention</dt><dd>7 years after final invoice</dd></div><div class="detail-row"><dt>Sharing</dt><dd><span class="share-indicator">Processors engaged</span></dd></div></dl>
+          </article>
+          <article class="flow-card">
+            <div class="card-head"><div class="card-title"><h3>Support desk</h3><span>Customer care</span></div><span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 12A8 8 0 0 1 20 12V17A3 3 0 0 1 17 20H14M4 12V16H8V11H4V12ZM20 12V16H16V11H20V12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
+            <dl class="detail-list"><div class="detail-row"><dt>Data types</dt><dd>Contact details, ticket notes, device metadata</dd></div><div class="detail-row"><dt>Purpose</dt><dd>Issue resolution and service quality review</dd></div><div class="detail-row"><dt>Retention</dt><dd>30 months after closure</dd></div><div class="detail-row"><dt>Sharing</dt><dd><span class="share-indicator">No onward transfer</span></dd></div></dl>
+          </article>
+          <article class="flow-card">
+            <div class="card-head"><div class="card-title"><h3>Growth warehouse</h3><span>Campaign analytics</span></div><span class="card-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 19H20M6 17V11M12 17V5M18 17V8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span></div>
+            <dl class="detail-list"><div class="detail-row"><dt>Data types</dt><dd>Pseudonymous IDs, consent state, campaign events</dd></div><div class="detail-row"><dt>Purpose</dt><dd>Attribution, funnel reporting, channel planning</dd></div><div class="detail-row"><dt>Retention</dt><dd>18 months rolling window</dd></div><div class="detail-row"><dt>Sharing</dt><dd><span class="share-indicator">Analytics partner</span></dd></div></dl>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="requests" aria-labelledby="requests-title">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Subject requests</div>
+            <h2 id="requests-title">Rights workflow queue</h2>
+            <p class="section-subtitle">Prioritize access, deletion, and portability requests before statutory service windows close.</p>
+          </div>
+          <button class="button button-primary" type="button">Intake request</button>
+        </div>
+        <div class="panel table-wrap">
+          <table>
+            <thead>
+              <tr><th>Type</th><th>Requester</th><th>Date</th><th>Status</th><th>Days remaining</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Access</td><td>Marina Kostas</td><td>May 27, 2026</td><td><span class="badge badge-new">New</span></td><td class="metric-cell">30</td></tr>
+              <tr><td>Delete</td><td>Jon Bell</td><td>May 12, 2026</td><td><span class="badge badge-progress">InProgress</span></td><td class="metric-cell">15</td></tr>
+              <tr><td>Port</td><td>Aisha Rahman</td><td>Apr 29, 2026</td><td><span class="badge badge-completed">Completed</span></td><td class="metric-cell">Closed</td></tr>
+              <tr><td>Delete</td><td>Nico Alvarez</td><td>Apr 23, 2026</td><td><span class="badge badge-overdue">Overdue</span></td><td class="metric-cell">-4</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="section" id="reports" aria-labelledby="reports-title">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Compliance reports</div>
+            <h2 id="reports-title">Regulation scorecards</h2>
+            <p class="section-subtitle">Generate board-ready evidence packs for active regulatory programs and remediation plans.</p>
+          </div>
+        </div>
+        <div class="reports-grid">
+          <article class="report-card">
+            <div class="card-head"><div class="card-title"><h3>GDPR</h3><span>European Union</span></div><span class="badge badge-active">Ready</span></div>
+            <div class="report-score"><div class="score-ring" style="--score: 96"><span>96</span></div><div class="report-meta"><span>Last audit <strong>May 8, 2026</strong></span><span>Gaps count <strong>2</strong></span></div></div>
+            <button class="button button-primary" type="button">Generate</button>
+          </article>
+          <article class="report-card">
+            <div class="card-head"><div class="card-title"><h3>CCPA</h3><span>California</span></div><span class="badge badge-progress">Review</span></div>
+            <div class="report-score"><div class="score-ring" style="--score: 91"><span>91</span></div><div class="report-meta"><span>Last audit <strong>Apr 18, 2026</strong></span><span>Gaps count <strong>4</strong></span></div></div>
+            <button class="button button-primary" type="button">Generate</button>
+          </article>
+          <article class="report-card">
+            <div class="card-head"><div class="card-title"><h3>LGPD</h3><span>Brazil</span></div><span class="badge badge-new">Draft</span></div>
+            <div class="report-score"><div class="score-ring" style="--score: 88"><span>88</span></div><div class="report-meta"><span>Last audit <strong>Mar 26, 2026</strong></span><span>Gaps count <strong>6</strong></span></div></div>
+            <button class="button button-primary" type="button">Generate</button>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="settings" aria-labelledby="risk-title">
+        <div class="section-head">
+          <div>
+            <div class="section-kicker">Risk assessment</div>
+            <h2 id="risk-title">Open privacy risks</h2>
+            <p class="section-subtitle">Surface high-impact exposure across retention, vendors, data minimization, and evidence readiness.</p>
+          </div>
+          <button class="button button-ghost" type="button">Review register</button>
+        </div>
+        <div class="risk-grid">
+          <article class="risk-card"><div class="card-head"><div class="card-title"><h3>Vendor transfer</h3><span>Third-party sharing</span></div><span class="badge badge-high">High</span></div><p class="risk-description">Processor addendum awaiting signature for event enrichment provider.</p><div class="risk-footer"><span class="badge badge-progress">Mitigation active</span><div class="owner"><span class="avatar">LS</span>Leah Stein</div></div></article>
+          <article class="risk-card"><div class="card-head"><div class="card-title"><h3>Retention drift</h3><span>Storage controls</span></div><span class="badge badge-medium">Medium</span></div><p class="risk-description">Legacy support export exceeds approved retention window by 42 days.</p><div class="risk-footer"><span class="badge badge-new">Scheduled</span><div class="owner"><span class="avatar">MK</span>Marta Kline</div></div></article>
+          <article class="risk-card"><div class="card-head"><div class="card-title"><h3>Consent mismatch</h3><span>Marketing sync</span></div><span class="badge badge-medium">Medium</span></div><p class="risk-description">Preference center state is delayed for two regional campaign segments.</p><div class="risk-footer"><span class="badge badge-progress">Mitigation active</span><div class="owner"><span class="avatar">AR</span>Ari Reed</div></div></article>
+          <article class="risk-card"><div class="card-head"><div class="card-title"><h3>Audit evidence</h3><span>Controls library</span></div><span class="badge badge-low">Low</span></div><p class="risk-description">Annual training attestation needs renewed owner confirmation.</p><div class="risk-footer"><span class="badge badge-completed">Controlled</span><div class="owner"><span class="avatar">TN</span>Tessa Ng</div></div></article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        <strong>Shield Privacy Dashboard — designed by Northstar Studio</strong>
+        <span>Evidence-first privacy compliance for modern security teams.</span>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const body = document.body;
+    const drawer = document.querySelector(".drawer");
+    const scrim = document.querySelector(".drawer-scrim");
+    const menuButton = document.querySelector(".hamburger");
+    const closeButtons = document.querySelectorAll("[data-close-drawer]");
+    const drawerLinks = document.querySelectorAll(".drawer-nav a");
+    let lastFocus = null;
+
+    function openDrawer() {
+      lastFocus = document.activeElement;
+      drawer.classList.add("open");
+      scrim.classList.add("open");
+      body.classList.add("drawer-open");
+      drawer.setAttribute("aria-hidden", "false");
+      menuButton.setAttribute("aria-expanded", "true");
+      const firstLink = drawer.querySelector("a");
+      if (firstLink) {
+        firstLink.focus();
+      }
+    }
+
+    function closeDrawer() {
+      drawer.classList.remove("open");
+      scrim.classList.remove("open");
+      body.classList.remove("drawer-open");
+      drawer.setAttribute("aria-hidden", "true");
+      menuButton.setAttribute("aria-expanded", "false");
+      if (lastFocus) {
+        lastFocus.focus();
+      }
+    }
+
+    menuButton.addEventListener("click", openDrawer);
+
+    closeButtons.forEach((button) => {
+      button.addEventListener("click", closeDrawer);
+    });
+
+    drawerLinks.forEach((link) => {
+      link.addEventListener("click", closeDrawer);
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && drawer.classList.contains("open")) {
+        closeDrawer();
+      }
+    });
+  </script>
+</body>
+</html>
