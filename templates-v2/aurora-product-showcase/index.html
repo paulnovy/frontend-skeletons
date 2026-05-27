@@ -1,0 +1,1402 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Aurora One premium product showcase with feature tours, technical specifications, verified reviews, and a streamlined purchase flow.">
+  <title>Aurora One Product Showcase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --indigo: #4F46E5;
+      --cyan: #06B6D4;
+      --lime: #A3E635;
+      --coral: #FB7185;
+      --cloud-soft: rgba(246, 248, 252, 0.78);
+      --ink-soft: rgba(25, 33, 43, 0.76);
+      --ink-faint: rgba(25, 33, 43, 0.12);
+      --ink-panel: rgba(25, 33, 43, 0.96);
+      --indigo-soft: rgba(79, 70, 229, 0.12);
+      --cyan-soft: rgba(6, 182, 212, 0.14);
+      --lime-soft: rgba(163, 230, 53, 0.18);
+      --coral-soft: rgba(251, 113, 133, 0.14);
+      --white-glass: rgba(246, 248, 252, 0.92);
+      --shadow-soft: 0 24px 70px rgba(25, 33, 43, 0.12);
+      --shadow-card: 0 14px 34px rgba(25, 33, 43, 0.10);
+      --radius: 8px;
+      --radius-lg: 12px;
+      --max-width: 1180px;
+      --nav-height: 76px;
+      color-scheme: light;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 10% 0%, rgba(6, 182, 212, 0.11), transparent 34rem),
+        radial-gradient(circle at 90% 12%, rgba(79, 70, 229, 0.12), transparent 30rem),
+        var(--cloud);
+      color: var(--ink);
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+      letter-spacing: 0;
+    }
+    body.drawer-open {
+      overflow: hidden;
+    }
+    img,
+    svg {
+      display: block;
+      max-width: 100%;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+    button {
+      cursor: pointer;
+    }
+    :focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 3px;
+    }
+    .skip-link {
+      position: fixed;
+      left: 1rem;
+      top: 1rem;
+      z-index: 200;
+      transform: translateY(-150%);
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--cloud);
+      padding: 0.75rem 1rem;
+      font-weight: 800;
+      transition: transform 180ms ease;
+    }
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid var(--ink-faint);
+      background: rgba(246, 248, 252, 0.86);
+      backdrop-filter: blur(22px);
+    }
+    .nav-shell {
+      width: min(100% - 2rem, var(--max-width));
+      height: var(--nav-height);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.7rem;
+      font-family: "Manrope", sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: 0;
+      white-space: nowrap;
+    }
+    .brand-mark {
+      width: 2.35rem;
+      height: 2.35rem;
+      border-radius: var(--radius);
+      background:
+        linear-gradient(145deg, rgba(79, 70, 229, 0.98), rgba(6, 182, 212, 0.92)),
+        var(--indigo);
+      display: grid;
+      place-items: center;
+      box-shadow: 0 12px 28px rgba(79, 70, 229, 0.25);
+    }
+    .brand-mark svg {
+      width: 1.35rem;
+      height: 1.35rem;
+      color: var(--cloud);
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 0.2rem;
+      padding: 0.25rem;
+      border: 1px solid rgba(25, 33, 43, 0.08);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.68);
+    }
+    .nav-links a {
+      border-radius: 7px;
+      padding: 0.62rem 0.9rem;
+      color: var(--ink-soft);
+      font-size: 0.93rem;
+      font-weight: 700;
+      transition: background 180ms ease, color 180ms ease;
+    }
+    .nav-links a:hover {
+      background: var(--indigo-soft);
+      color: var(--ink);
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .button {
+      min-height: 2.75rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.45rem;
+      border: 1px solid transparent;
+      border-radius: var(--radius);
+      padding: 0.78rem 1.05rem;
+      font-weight: 800;
+      letter-spacing: 0;
+      transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease, border-color 180ms ease;
+    }
+    .button:hover {
+      transform: translateY(-1px);
+    }
+    .button-primary {
+      background: var(--indigo);
+      color: var(--cloud);
+      box-shadow: 0 16px 30px rgba(79, 70, 229, 0.24);
+    }
+    .button-secondary {
+      border-color: rgba(25, 33, 43, 0.15);
+      background: rgba(246, 248, 252, 0.82);
+      color: var(--ink);
+    }
+    .button-dark {
+      background: var(--ink);
+      color: var(--cloud);
+      box-shadow: 0 16px 30px rgba(25, 33, 43, 0.20);
+    }
+    .button svg {
+      width: 1.05rem;
+      height: 1.05rem;
+      flex: 0 0 auto;
+    }
+    .menu-toggle {
+      width: 2.75rem;
+      height: 2.75rem;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid rgba(25, 33, 43, 0.14);
+      border-radius: var(--radius);
+      background: var(--cloud);
+      color: var(--ink);
+    }
+    .menu-toggle svg {
+      width: 1.35rem;
+      height: 1.35rem;
+    }
+    .mobile-shade {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      background: rgba(25, 33, 43, 0.42);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms ease;
+    }
+    .mobile-shade.is-open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .mobile-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 130;
+      width: min(86vw, 360px);
+      height: 100vh;
+      padding: 1rem;
+      background: var(--cloud);
+      border-left: 1px solid var(--ink-faint);
+      box-shadow: -28px 0 70px rgba(25, 33, 43, 0.22);
+      transform: translateX(105%);
+      transition: transform 240ms ease;
+    }
+    .mobile-drawer.is-open {
+      transform: translateX(0);
+    }
+    .drawer-head {
+      height: 3.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .drawer-close {
+      width: 2.7rem;
+      height: 2.7rem;
+      display: inline-grid;
+      place-items: center;
+      border: 1px solid rgba(25, 33, 43, 0.14);
+      border-radius: var(--radius);
+      background: var(--cloud);
+      color: var(--ink);
+    }
+    .drawer-close svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+    .drawer-links {
+      margin-top: 1.5rem;
+      display: grid;
+      gap: 0.45rem;
+    }
+    .drawer-links a,
+    .drawer-links .button {
+      width: 100%;
+      justify-content: flex-start;
+    }
+    .drawer-links a {
+      border-radius: var(--radius);
+      padding: 0.92rem 0.95rem;
+      background: rgba(25, 33, 43, 0.04);
+      color: var(--ink);
+      font-weight: 800;
+    }
+    main {
+      overflow: hidden;
+    }
+    section {
+      padding: 5.4rem 0;
+    }
+    .container {
+      width: min(100% - 2rem, var(--max-width));
+      margin: 0 auto;
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      color: var(--indigo);
+      font-size: 0.8rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .pulse-dot {
+      width: 0.62rem;
+      height: 0.62rem;
+      border-radius: 999px;
+      background: var(--cyan);
+      box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.38);
+      animation: pulse 1.8s ease-out infinite;
+    }
+    .hero {
+      padding-top: 4.6rem;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(360px, 0.9fr);
+      gap: 3rem;
+      align-items: center;
+    }
+    h1,
+    h2,
+    h3,
+    h4 {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Manrope", sans-serif;
+      line-height: 1.04;
+      letter-spacing: 0;
+    }
+    h1 {
+      margin-top: 1rem;
+      max-width: 12ch;
+      font-size: clamp(3.1rem, 8vw, 6.8rem);
+      font-weight: 800;
+    }
+    .hero-copy {
+      margin: 1.35rem 0 0;
+      max-width: 39rem;
+      color: var(--ink-soft);
+      font-size: clamp(1.08rem, 2vw, 1.32rem);
+    }
+    .hero-price {
+      margin-top: 1.65rem;
+      display: flex;
+      align-items: baseline;
+      gap: 0.7rem;
+    }
+    .hero-price strong {
+      font-family: "Manrope", sans-serif;
+      font-size: clamp(2rem, 4vw, 3.15rem);
+      line-height: 1;
+    }
+    .hero-price span {
+      color: var(--ink-soft);
+      font-weight: 700;
+    }
+    .hero-actions {
+      margin-top: 1.8rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+    .hero-badges {
+      margin-top: 1.8rem;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+      max-width: 42rem;
+    }
+    .hero-badge {
+      min-height: 5.8rem;
+      border: 1px solid rgba(25, 33, 43, 0.10);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.72);
+      padding: 0.9rem;
+    }
+    .hero-badge strong {
+      display: block;
+      font-size: 1.08rem;
+      font-weight: 900;
+    }
+    .hero-badge span {
+      display: block;
+      margin-top: 0.2rem;
+      color: var(--ink-soft);
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+    .product-stage {
+      position: relative;
+      min-height: 620px;
+      border: 1px solid rgba(25, 33, 43, 0.10);
+      border-radius: var(--radius-lg);
+      background:
+        linear-gradient(145deg, rgba(246, 248, 252, 0.95), rgba(79, 70, 229, 0.08)),
+        radial-gradient(circle at 18% 24%, rgba(6, 182, 212, 0.35), transparent 14rem),
+        radial-gradient(circle at 76% 72%, rgba(163, 230, 53, 0.28), transparent 12rem);
+      box-shadow: var(--shadow-soft);
+      overflow: hidden;
+    }
+    .device {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: min(70%, 360px);
+      aspect-ratio: 0.66;
+      transform: translate(-50%, -48%) rotate(-7deg);
+      border-radius: 34px;
+      background:
+        linear-gradient(145deg, rgba(25, 33, 43, 0.98), rgba(25, 33, 43, 0.82)),
+        var(--ink);
+      box-shadow: 0 40px 80px rgba(25, 33, 43, 0.34);
+      padding: 0.7rem;
+    }
+    .device-screen {
+      width: 100%;
+      height: 100%;
+      border-radius: 26px;
+      background:
+        linear-gradient(150deg, rgba(79, 70, 229, 0.94), rgba(6, 182, 212, 0.88) 54%, rgba(163, 230, 53, 0.72)),
+        var(--indigo);
+      position: relative;
+      overflow: hidden;
+    }
+    .device-screen::before,
+    .device-screen::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+      background: rgba(246, 248, 252, 0.32);
+    }
+    .device-screen::before {
+      width: 68%;
+      height: 18%;
+      left: 16%;
+      top: 15%;
+    }
+    .device-screen::after {
+      width: 44%;
+      height: 44%;
+      right: -12%;
+      bottom: 10%;
+    }
+    .stage-card {
+      position: absolute;
+      border: 1px solid rgba(246, 248, 252, 0.35);
+      border-radius: var(--radius);
+      background: rgba(25, 33, 43, 0.86);
+      color: var(--cloud);
+      box-shadow: 0 18px 50px rgba(25, 33, 43, 0.18);
+      backdrop-filter: blur(16px);
+      padding: 1rem;
+    }
+    .stage-card strong {
+      display: block;
+      font-size: 0.9rem;
+    }
+    .stage-card span {
+      display: block;
+      margin-top: 0.2rem;
+      color: rgba(246, 248, 252, 0.72);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+    .stage-card.status {
+      left: 1.2rem;
+      top: 1.2rem;
+      width: 11.5rem;
+    }
+    .stage-card.metric {
+      right: 1.2rem;
+      bottom: 1.2rem;
+      width: 12.2rem;
+    }
+    .mini-meter {
+      margin-top: 0.75rem;
+      height: 0.5rem;
+      border-radius: 999px;
+      background: rgba(246, 248, 252, 0.16);
+      overflow: hidden;
+    }
+    .mini-meter span {
+      display: block;
+      height: 100%;
+      width: 74%;
+      margin: 0;
+      background: var(--lime);
+      border-radius: inherit;
+    }
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(260px, 0.55fr);
+      gap: 2rem;
+      align-items: end;
+      margin-bottom: 2.2rem;
+    }
+    .section-head h2 {
+      margin-top: 0.85rem;
+      font-size: clamp(2rem, 4vw, 3.55rem);
+    }
+    .section-head p {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .deep-dives {
+      display: grid;
+      gap: 1.2rem;
+    }
+    .feature-row {
+      min-height: 430px;
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(320px, 1.05fr);
+      align-items: stretch;
+      gap: 1.2rem;
+    }
+    .feature-row:nth-child(even) {
+      grid-template-columns: minmax(320px, 1.05fr) minmax(0, 0.95fr);
+    }
+    .feature-row:nth-child(even) .feature-copy {
+      order: 2;
+    }
+    .feature-copy {
+      border: 1px solid rgba(25, 33, 43, 0.10);
+      border-radius: var(--radius-lg);
+      background: rgba(246, 248, 252, 0.72);
+      padding: clamp(1.3rem, 3vw, 2.2rem);
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .feature-copy h3 {
+      margin-top: 0.85rem;
+      font-size: clamp(1.65rem, 3vw, 2.6rem);
+    }
+    .feature-copy p {
+      margin: 1rem 0 0;
+      color: var(--ink-soft);
+      font-size: 1rem;
+      font-weight: 600;
+    }
+    .feature-list {
+      margin: 1.35rem 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.65rem;
+    }
+    .feature-list li {
+      display: flex;
+      gap: 0.6rem;
+      align-items: flex-start;
+      color: var(--ink);
+      font-weight: 800;
+    }
+    .feature-list li::before {
+      content: "";
+      width: 0.62rem;
+      height: 0.62rem;
+      margin-top: 0.48rem;
+      flex: 0 0 auto;
+      border-radius: 999px;
+      background: var(--cyan);
+      box-shadow: 0 0 0 5px var(--cyan-soft);
+    }
+    .feature-art {
+      position: relative;
+      min-height: 100%;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      background: var(--ink);
+    }
+    .feature-art::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(135deg, rgba(79, 70, 229, 0.78), rgba(6, 182, 212, 0.55)),
+        radial-gradient(circle at 25% 28%, rgba(246, 248, 252, 0.36), transparent 13rem),
+        radial-gradient(circle at 70% 78%, rgba(163, 230, 53, 0.32), transparent 12rem);
+      transition: transform 360ms ease;
+    }
+    .feature-art:hover::before {
+      transform: scale(1.05);
+    }
+    .feature-art-inner {
+      position: absolute;
+      inset: 1rem;
+      display: grid;
+      align-content: end;
+      border: 1px solid rgba(246, 248, 252, 0.22);
+      border-radius: var(--radius);
+      padding: 1.1rem;
+      color: var(--cloud);
+    }
+    .feature-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+    .feature-chip {
+      border: 1px solid rgba(246, 248, 252, 0.24);
+      border-radius: 999px;
+      background: rgba(25, 33, 43, 0.25);
+      padding: 0.45rem 0.65rem;
+      color: var(--cloud);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+    .specs {
+      background: var(--ink);
+      color: var(--cloud);
+    }
+    .specs .section-head h2,
+    .specs h3 {
+      color: var(--cloud);
+    }
+    .specs .section-head p {
+      color: rgba(246, 248, 252, 0.72);
+    }
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1px;
+      border: 1px solid rgba(246, 248, 252, 0.12);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: rgba(246, 248, 252, 0.12);
+    }
+    .spec-card {
+      min-height: 11.2rem;
+      padding: 1.1rem;
+      background: var(--ink-panel);
+    }
+    .spec-card small {
+      color: var(--cyan);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .spec-card h3 {
+      margin-top: 0.7rem;
+      font-size: 1.15rem;
+    }
+    .spec-card p {
+      margin: 0.65rem 0 0;
+      color: rgba(246, 248, 252, 0.76);
+      font-weight: 700;
+    }
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 1rem;
+    }
+    .gallery-item {
+      position: relative;
+      min-height: 280px;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      background: var(--ink);
+      isolation: isolate;
+    }
+    .gallery-item.large {
+      grid-column: span 7;
+      min-height: 430px;
+    }
+    .gallery-item.medium {
+      grid-column: span 5;
+      min-height: 430px;
+    }
+    .gallery-item.small {
+      grid-column: span 4;
+    }
+    .gallery-item::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      background:
+        linear-gradient(145deg, rgba(79, 70, 229, 0.86), rgba(6, 182, 212, 0.68)),
+        radial-gradient(circle at 22% 28%, rgba(246, 248, 252, 0.44), transparent 12rem),
+        radial-gradient(circle at 78% 78%, rgba(251, 113, 133, 0.22), transparent 10rem);
+      transition: transform 360ms ease;
+    }
+    .gallery-item:hover::before {
+      transform: scale(1.08);
+    }
+    .gallery-caption {
+      position: absolute;
+      left: 1rem;
+      right: 1rem;
+      bottom: 1rem;
+      border: 1px solid rgba(246, 248, 252, 0.24);
+      border-radius: var(--radius);
+      background: rgba(25, 33, 43, 0.68);
+      color: var(--cloud);
+      backdrop-filter: blur(14px);
+      padding: 0.9rem;
+    }
+    .gallery-caption strong,
+    .gallery-caption span {
+      display: block;
+    }
+    .gallery-caption span {
+      color: rgba(246, 248, 252, 0.72);
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+    .reviews {
+      background:
+        linear-gradient(180deg, rgba(79, 70, 229, 0.07), rgba(246, 248, 252, 0)),
+        var(--cloud);
+    }
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .review-card {
+      min-height: 270px;
+      border: 1px solid rgba(25, 33, 43, 0.10);
+      border-radius: var(--radius-lg);
+      background: rgba(246, 248, 252, 0.82);
+      box-shadow: var(--shadow-card);
+      padding: 1.2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .stars {
+      color: var(--indigo);
+      font-size: 1.04rem;
+      letter-spacing: 0.08em;
+    }
+    .review-card p {
+      margin: 1rem 0;
+      color: var(--ink-soft);
+      font-weight: 650;
+    }
+    .review-author {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .review-author strong,
+    .review-author span {
+      display: block;
+    }
+    .review-author span {
+      color: var(--ink-soft);
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+    .verified {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      border-radius: 999px;
+      background: var(--lime-soft);
+      color: var(--ink);
+      padding: 0.38rem 0.55rem;
+      font-size: 0.74rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .verified::before {
+      content: "";
+      width: 0.48rem;
+      height: 0.48rem;
+      border-radius: 999px;
+      background: var(--lime);
+    }
+    .purchase-wrap {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(340px, 0.75fr);
+      gap: 1rem;
+      align-items: start;
+    }
+    .purchase-panel {
+      border: 1px solid rgba(25, 33, 43, 0.10);
+      border-radius: var(--radius-lg);
+      background: rgba(246, 248, 252, 0.86);
+      box-shadow: var(--shadow-card);
+      padding: clamp(1.2rem, 3vw, 2rem);
+    }
+    .purchase-panel h2 {
+      font-size: clamp(2rem, 4vw, 3.3rem);
+    }
+    .purchase-panel p {
+      color: var(--ink-soft);
+      font-weight: 650;
+    }
+    .order-card {
+      position: sticky;
+      top: calc(var(--nav-height) + 1rem);
+      border-radius: var(--radius-lg);
+      background: var(--ink);
+      color: var(--cloud);
+      padding: 1.2rem;
+      box-shadow: var(--shadow-soft);
+    }
+    .order-card h3 {
+      color: var(--cloud);
+      font-size: 1.5rem;
+    }
+    .form-block {
+      margin-top: 1.25rem;
+      display: grid;
+      gap: 0.7rem;
+    }
+    .form-label {
+      color: rgba(246, 248, 252, 0.82);
+      font-size: 0.84rem;
+      font-weight: 900;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .variant-group,
+    .warranty-group {
+      display: grid;
+      gap: 0.55rem;
+    }
+    .variant-option,
+    .warranty-option {
+      position: relative;
+    }
+    .variant-option input,
+    .warranty-option input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+    .variant-option span,
+    .warranty-option span {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      border: 1px solid rgba(246, 248, 252, 0.18);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.06);
+      color: var(--cloud);
+      padding: 0.85rem;
+      font-weight: 800;
+      transition: border-color 180ms ease, background 180ms ease;
+    }
+    .variant-option input:checked + span,
+    .warranty-option input:checked + span {
+      border-color: var(--cyan);
+      background: rgba(6, 182, 212, 0.14);
+    }
+    .variant-swatch {
+      width: 1.25rem;
+      height: 1.25rem;
+      border: 2px solid rgba(246, 248, 252, 0.7);
+      border-radius: 999px;
+      box-shadow: 0 0 0 3px rgba(246, 248, 252, 0.12);
+    }
+    .swatch-indigo {
+      background: var(--indigo);
+    }
+    .swatch-cyan {
+      background: var(--cyan);
+    }
+    .swatch-ink {
+      background: var(--ink);
+    }
+    .quantity-row {
+      display: grid;
+      grid-template-columns: 2.8rem 1fr 2.8rem;
+      border: 1px solid rgba(246, 248, 252, 0.18);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .quantity-row button,
+    .quantity-row input {
+      height: 2.9rem;
+      border: 0;
+      background: rgba(246, 248, 252, 0.06);
+      color: var(--cloud);
+      text-align: center;
+      font-weight: 900;
+    }
+    .quantity-row input {
+      border-left: 1px solid rgba(246, 248, 252, 0.12);
+      border-right: 1px solid rgba(246, 248, 252, 0.12);
+    }
+    .cart-total {
+      margin-top: 1.2rem;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1rem;
+      color: rgba(246, 248, 252, 0.72);
+      font-weight: 800;
+    }
+    .cart-total strong {
+      color: var(--cloud);
+      font-family: "Manrope", sans-serif;
+      font-size: 2rem;
+    }
+    .add-cart {
+      width: 100%;
+      margin-top: 1rem;
+    }
+    .support-row {
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+    .support-card {
+      border: 1px solid rgba(25, 33, 43, 0.10);
+      border-radius: var(--radius);
+      background: rgba(246, 248, 252, 0.72);
+      padding: 1rem;
+    }
+    .support-card strong,
+    .support-card span {
+      display: block;
+    }
+    .support-card strong {
+      font-size: 1.02rem;
+      font-weight: 900;
+    }
+    .support-card span {
+      margin-top: 0.25rem;
+      color: var(--ink-soft);
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+    .site-footer {
+      border-top: 1px solid rgba(25, 33, 43, 0.10);
+      padding: 2rem 0;
+      background: var(--ink);
+      color: var(--cloud);
+    }
+    .footer-grid {
+      width: min(100% - 2rem, var(--max-width));
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .footer-grid p {
+      margin: 0;
+      color: rgba(246, 248, 252, 0.72);
+      font-weight: 700;
+    }
+    .footer-credit {
+      color: var(--cloud);
+      font-weight: 900;
+    }
+    .footer-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      color: rgba(246, 248, 252, 0.72);
+      font-weight: 800;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.38); }
+      70% { box-shadow: 0 0 0 12px rgba(6, 182, 212, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+    }
+    @media (max-width: 980px) {
+      .nav-links,
+      .nav-actions .button-primary {
+        display: none;
+      }
+      .menu-toggle {
+        display: inline-flex;
+      }
+      .hero-grid,
+      .section-head,
+      .feature-row,
+      .feature-row:nth-child(even),
+      .purchase-wrap {
+        grid-template-columns: 1fr;
+      }
+      .feature-row:nth-child(even) .feature-copy {
+        order: initial;
+      }
+      .product-stage {
+        min-height: 520px;
+      }
+      .spec-grid,
+      .reviews-grid,
+      .support-row {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .gallery-item.large,
+      .gallery-item.medium,
+      .gallery-item.small {
+        grid-column: span 6;
+      }
+      .order-card {
+        position: static;
+      }
+    }
+    @media (max-width: 640px) {
+      section {
+        padding: 4rem 0;
+      }
+      .nav-shell {
+        width: min(100% - 1rem, var(--max-width));
+      }
+      .brand span {
+        max-width: 10rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .hero {
+        padding-top: 3rem;
+      }
+      .hero-actions,
+      .hero-badges,
+      .spec-grid,
+      .reviews-grid,
+      .support-row {
+        grid-template-columns: 1fr;
+      }
+      .hero-actions .button {
+        width: 100%;
+      }
+      .product-stage {
+        min-height: 430px;
+      }
+      .stage-card.status,
+      .stage-card.metric {
+        width: calc(100% - 2rem);
+      }
+      .stage-card.metric {
+        right: 1rem;
+      }
+      .feature-art {
+        min-height: 330px;
+      }
+      .gallery-grid {
+        grid-template-columns: 1fr;
+      }
+      .gallery-item.large,
+      .gallery-item.medium,
+      .gallery-item.small {
+        grid-column: span 1;
+        min-height: 320px;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  <header class="site-header" aria-label="Primary navigation">
+    <div class="nav-shell">
+      <a class="brand" href="#top" aria-label="Aurora One home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" focusable="false">
+            <path d="M12 3L21 20H3L12 3Z" fill="currentColor" opacity="0.92"/>
+            <path d="M12 8L16.5 18H7.5L12 8Z" fill="#19212B" opacity="0.46"/>
+          </svg>
+        </span>
+        <span>Aurora One</span>
+      </a>
+      <nav class="nav-links" aria-label="Main links">
+        <a href="#features">Features</a>
+        <a href="#specs">Specs</a>
+        <a href="#reviews">Reviews</a>
+        <a href="#support">Support</a>
+      </nav>
+      <div class="nav-actions">
+        <a class="button button-primary" href="#purchase">Buy Now</a>
+        <button class="menu-toggle" type="button" aria-label="Open menu" aria-controls="mobile-drawer" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+  <div class="mobile-shade" data-drawer-shade hidden></div>
+  <aside class="mobile-drawer" id="mobile-drawer" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="drawer-head">
+      <span class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" focusable="false">
+            <path d="M12 3L21 20H3L12 3Z" fill="currentColor"/>
+          </svg>
+        </span>
+        <span>Aurora One</span>
+      </span>
+      <button class="drawer-close" type="button" aria-label="Close menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18"/>
+        </svg>
+      </button>
+    </div>
+    <nav class="drawer-links" aria-label="Mobile links">
+      <a href="#features">Features</a>
+      <a href="#specs">Specs</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#support">Support</a>
+      <a class="button button-primary" href="#purchase">Buy Now</a>
+    </nav>
+  </aside>
+  <main id="main-content">
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="container hero-grid">
+        <div>
+          <span class="eyebrow"><span class="pulse-dot" aria-hidden="true"></span>Live product intelligence</span>
+          <h1 id="hero-title">Aurora One</h1>
+          <p class="hero-copy">A precision desktop companion for creators, analysts, and teams that need luminous performance, health telemetry, and clean purchase confidence in one refined product experience.</p>
+          <div class="hero-price" aria-label="Starting price">
+            <strong>$849</strong>
+            <span>starting price, ships in 48 hours</span>
+          </div>
+          <div class="hero-actions" aria-label="Hero actions">
+            <a class="button button-primary" href="#purchase">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 6h15l-1.5 9h-12z"/><path d="M6 6L5 3H2"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+              Buy Now
+            </a>
+            <a class="button button-secondary" href="#features">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="M13 6l6 6-6 6"/></svg>
+              Explore Features
+            </a>
+          </div>
+          <div class="hero-badges" aria-label="Product highlights">
+            <div class="hero-badge"><strong>42 hr</strong><span>adaptive battery reserve</span></div>
+            <div class="hero-badge"><strong>0.8 kg</strong><span>balanced compact build</span></div>
+            <div class="hero-badge"><strong>98%</strong><span>recycled alloy shell</span></div>
+          </div>
+        </div>
+        <div class="product-stage" aria-label="Stylized Aurora One product visual">
+          <div class="device" aria-hidden="true"><div class="device-screen"></div></div>
+          <div class="stage-card status">
+            <strong>System health</strong>
+            <span>All sensors operating within healthy range</span>
+            <div class="mini-meter"><span></span></div>
+          </div>
+          <div class="stage-card metric">
+            <strong>Focus mode active</strong>
+            <span>Indigo core balances display, audio, and alerts</span>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section id="features" aria-labelledby="features-title">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow"><span class="pulse-dot" aria-hidden="true"></span>Feature deep-dives</span>
+            <h2 id="features-title">Built for quiet power and visible control.</h2>
+          </div>
+          <p>Each Aurora One module is designed to make product marketing feel specific: measurable performance, tactile hardware, and a purchase story that stays grounded.</p>
+        </div>
+        <div class="deep-dives">
+          <article class="feature-row">
+            <div class="feature-copy">
+              <span class="eyebrow">Adaptive display</span>
+              <h3>Color that follows the room.</h3>
+              <p>The Aurora panel samples ambient light and workload context, then tunes brightness and contrast so dashboards, creative previews, and support flows stay readable.</p>
+              <ul class="feature-list">
+                <li>True-tone calibration for long work sessions</li>
+                <li>Low-glare glass with precise edge illumination</li>
+                <li>Cyan live indicator when adaptive tuning is active</li>
+              </ul>
+            </div>
+            <div class="feature-art" aria-label="Adaptive display visual">
+              <div class="feature-art-inner"><div class="feature-chip-row"><span class="feature-chip">620 nits</span><span class="feature-chip">Delta E &lt; 1.2</span><span class="feature-chip">Live tune</span></div></div>
+            </div>
+          </article>
+          <article class="feature-row">
+            <div class="feature-copy">
+              <span class="eyebrow">Thermal core</span>
+              <h3>Performance without the roar.</h3>
+              <p>A vapor-guided thermal path keeps compute bursts stable while the fan curve stays restrained during calls, design reviews, and late-night production pushes.</p>
+              <ul class="feature-list">
+                <li>Ink-panel heat spreader with tuned vent geometry</li>
+                <li>Lime health state when temperatures are nominal</li>
+                <li>Coral alert state for immediate service attention</li>
+              </ul>
+            </div>
+            <div class="feature-art" aria-label="Thermal core visual">
+              <div class="feature-art-inner"><div class="feature-chip-row"><span class="feature-chip">28 dB</span><span class="feature-chip">12-core ready</span><span class="feature-chip">Smart vents</span></div></div>
+            </div>
+          </article>
+          <article class="feature-row">
+            <div class="feature-copy">
+              <span class="eyebrow">Control surface</span>
+              <h3>Every signal within reach.</h3>
+              <p>A low-profile command strip turns meeting states, warranty status, device health, and workflow modes into tactile controls instead of buried settings.</p>
+              <ul class="feature-list">
+                <li>Three configurable action zones with haptic response</li>
+                <li>Privacy shutter tied to visible status lighting</li>
+                <li>One-touch support handoff with device diagnostics</li>
+              </ul>
+            </div>
+            <div class="feature-art" aria-label="Control surface visual">
+              <div class="feature-art-inner"><div class="feature-chip-row"><span class="feature-chip">Haptic</span><span class="feature-chip">Private</span><span class="feature-chip">Assist ready</span></div></div>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="specs" id="specs" aria-labelledby="specs-title">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow"><span class="pulse-dot" aria-hidden="true"></span>Specifications</span>
+            <h2 id="specs-title">Premium details, organized for fast comparison.</h2>
+          </div>
+          <p>Use this grid to communicate technical credibility without making buyers dig through a document.</p>
+        </div>
+        <div class="spec-grid" role="list" aria-label="Aurora One specifications">
+          <article class="spec-card" role="listitem"><small>Display</small><h3>Panel</h3><p>14.6 inch adaptive AuroraView with 120 Hz refresh.</p></article>
+          <article class="spec-card" role="listitem"><small>Display</small><h3>Glass</h3><p>Low-glare treated surface with edge-to-edge lamination.</p></article>
+          <article class="spec-card" role="listitem"><small>Compute</small><h3>Processor</h3><p>12-core mobile workstation class silicon.</p></article>
+          <article class="spec-card" role="listitem"><small>Memory</small><h3>Unified RAM</h3><p>32 GB standard with high-bandwidth task switching.</p></article>
+          <article class="spec-card" role="listitem"><small>Storage</small><h3>Drive</h3><p>1 TB encrypted solid-state storage with rapid wake.</p></article>
+          <article class="spec-card" role="listitem"><small>Battery</small><h3>Reserve</h3><p>42 hours mixed productivity with fast charge support.</p></article>
+          <article class="spec-card" role="listitem"><small>Audio</small><h3>Array</h3><p>Four-speaker chamber with beamformed voice capture.</p></article>
+          <article class="spec-card" role="listitem"><small>Build</small><h3>Shell</h3><p>Recycled alloy body in indigo, cyan, or ink finish.</p></article>
+          <article class="spec-card" role="listitem"><small>Support</small><h3>Coverage</h3><p>Two-year service plan with optional premium warranty.</p></article>
+        </div>
+      </div>
+    </section>
+    <section id="gallery" aria-labelledby="gallery-title">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow"><span class="pulse-dot" aria-hidden="true"></span>Gallery</span>
+            <h2 id="gallery-title">A visual system ready for product storytelling.</h2>
+          </div>
+          <p>Gradient panels provide polished image zones while the skeleton stays lightweight and dependency-free.</p>
+        </div>
+        <div class="gallery-grid">
+          <figure class="gallery-item large"><figcaption class="gallery-caption"><strong>Desk setup</strong><span>Hero-scale view for launch campaigns</span></figcaption></figure>
+          <figure class="gallery-item medium"><figcaption class="gallery-caption"><strong>Control strip</strong><span>Close detail for feature callouts</span></figcaption></figure>
+          <figure class="gallery-item small"><figcaption class="gallery-caption"><strong>Indigo finish</strong><span>Premium colorway focus</span></figcaption></figure>
+          <figure class="gallery-item small"><figcaption class="gallery-caption"><strong>Cyan status</strong><span>Live signal state</span></figcaption></figure>
+          <figure class="gallery-item small"><figcaption class="gallery-caption"><strong>Travel profile</strong><span>Compact side silhouette</span></figcaption></figure>
+        </div>
+      </div>
+    </section>
+    <section class="reviews" id="reviews" aria-labelledby="reviews-title">
+      <div class="container">
+        <div class="section-head">
+          <div>
+            <span class="eyebrow"><span class="pulse-dot" aria-hidden="true"></span>Customer reviews</span>
+            <h2 id="reviews-title">Trusted by teams that notice the details.</h2>
+          </div>
+          <p>Verified reviews pair social proof with concrete outcomes, keeping the purchase path confident and human.</p>
+        </div>
+        <div class="reviews-grid">
+          <article class="review-card">
+            <div><div class="stars" aria-label="Five out of five stars">★★★★★</div><p>“Aurora One made our product demos smoother immediately. The adaptive display and quiet thermal profile are the first things clients mention.”</p></div>
+            <footer class="review-author"><div><strong>Mira Patel</strong><span>Creative Director</span></div><span class="verified">Verified</span></footer>
+          </article>
+          <article class="review-card">
+            <div><div class="stars" aria-label="Five out of five stars">★★★★★</div><p>“The command strip is the rare hardware detail that changed our daily routine. Support handoff and status controls are fast and clear.”</p></div>
+            <footer class="review-author"><div><strong>Noah Reed</strong><span>Operations Lead</span></div><span class="verified">Verified</span></footer>
+          </article>
+          <article class="review-card">
+            <div><div class="stars" aria-label="Five out of five stars">★★★★★</div><p>“It feels premium without becoming precious. Battery life, display tuning, and warranty options made the buying decision easy for our team.”</p></div>
+            <footer class="review-author"><div><strong>Elena Cruz</strong><span>Product Manager</span></div><span class="verified">Verified</span></footer>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section id="purchase" aria-labelledby="purchase-title">
+      <div class="container purchase-wrap">
+        <div class="purchase-panel">
+          <span class="eyebrow"><span class="pulse-dot" aria-hidden="true"></span>Purchase flow</span>
+          <h2 id="purchase-title">Configure Aurora One for your workspace.</h2>
+          <p>Choose a finish, set quantity, and select warranty coverage. The flow is intentionally compact so the final conversion moment feels focused rather than crowded.</p>
+          <div class="support-row" id="support" aria-label="Support highlights">
+            <div class="support-card"><strong>48-hour shipping</strong><span>Fast dispatch from regional hubs.</span></div>
+            <div class="support-card"><strong>30-day trial</strong><span>Evaluate the device with full return support.</span></div>
+            <div class="support-card"><strong>Live setup</strong><span>Expert onboarding included with every order.</span></div>
+          </div>
+        </div>
+        <form class="order-card" aria-label="Aurora One order form">
+          <h3>Your Aurora One</h3>
+          <div class="form-block">
+            <span class="form-label">Finish</span>
+            <div class="variant-group" role="radiogroup" aria-label="Color variant">
+              <label class="variant-option"><input type="radio" name="finish" value="indigo" checked><span>Indigo Signal <i class="variant-swatch swatch-indigo" aria-hidden="true"></i></span></label>
+              <label class="variant-option"><input type="radio" name="finish" value="cyan"><span>Cyan Pulse <i class="variant-swatch swatch-cyan" aria-hidden="true"></i></span></label>
+              <label class="variant-option"><input type="radio" name="finish" value="ink"><span>Ink Graphite <i class="variant-swatch swatch-ink" aria-hidden="true"></i></span></label>
+            </div>
+          </div>
+          <div class="form-block">
+            <label class="form-label" for="quantity">Quantity</label>
+            <div class="quantity-row">
+              <button type="button" data-qty="down" aria-label="Decrease quantity">−</button>
+              <input id="quantity" name="quantity" type="number" min="1" max="9" value="1" inputmode="numeric">
+              <button type="button" data-qty="up" aria-label="Increase quantity">+</button>
+            </div>
+          </div>
+          <div class="form-block">
+            <span class="form-label">Warranty</span>
+            <div class="warranty-group" role="radiogroup" aria-label="Warranty options">
+              <label class="warranty-option"><input type="radio" name="warranty" value="0" checked><span>Standard two-year coverage <strong>$0</strong></span></label>
+              <label class="warranty-option"><input type="radio" name="warranty" value="149"><span>Premium care extension <strong>$149</strong></span></label>
+              <label class="warranty-option"><input type="radio" name="warranty" value="249"><span>Premium care with accidental cover <strong>$249</strong></span></label>
+            </div>
+          </div>
+          <div class="cart-total" aria-live="polite"><span>Estimated total</span><strong id="cart-total">$849</strong></div>
+          <button class="button button-primary add-cart" type="submit">Add to Cart</button>
+        </form>
+      </div>
+    </section>
+  </main>
+  <footer class="site-footer">
+    <div class="footer-grid">
+      <p class="footer-credit">Aurora Product Showcase — designed by Northline Studio.</p>
+      <div class="footer-links" aria-label="Footer links">
+        <a href="#features">Features</a>
+        <a href="#specs">Specs</a>
+        <a href="#purchase">Buy Now</a>
+      </div>
+    </div>
+  </footer>
+  <script>
+    const menuButton = document.querySelector('.menu-toggle');
+    const drawer = document.querySelector('#mobile-drawer');
+    const shade = document.querySelector('[data-drawer-shade]');
+    const closeButton = document.querySelector('.drawer-close');
+    const drawerLinks = drawer.querySelectorAll('a');
+    const quantityInput = document.querySelector('#quantity');
+    const totalOutput = document.querySelector('#cart-total');
+    const warrantyInputs = document.querySelectorAll('input[name="warranty"]');
+    const basePrice = 849;
+    function openDrawer() {
+      drawer.classList.add('is-open');
+      shade.hidden = false;
+      requestAnimationFrame(() => shade.classList.add('is-open'));
+      drawer.setAttribute('aria-hidden', 'false');
+      menuButton.setAttribute('aria-expanded', 'true');
+      document.body.classList.add('drawer-open');
+      closeButton.focus();
+    }
+    function closeDrawer() {
+      drawer.classList.remove('is-open');
+      shade.classList.remove('is-open');
+      drawer.setAttribute('aria-hidden', 'true');
+      menuButton.setAttribute('aria-expanded', 'false');
+      document.body.classList.remove('drawer-open');
+      window.setTimeout(() => { shade.hidden = true; }, 220);
+      menuButton.focus();
+    }
+    function updateTotal() {
+      const quantity = Math.max(1, Math.min(9, Number(quantityInput.value) || 1));
+      quantityInput.value = quantity;
+      const warranty = Number(document.querySelector('input[name="warranty"]:checked').value);
+      const total = (basePrice * quantity) + warranty;
+      totalOutput.textContent = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 }).format(total);
+    }
+    menuButton.addEventListener('click', openDrawer);
+    closeButton.addEventListener('click', closeDrawer);
+    shade.addEventListener('click', closeDrawer);
+    drawerLinks.forEach(link => link.addEventListener('click', closeDrawer));
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && drawer.classList.contains('is-open')) {
+        closeDrawer();
+      }
+    });
+    document.querySelectorAll('[data-qty]').forEach(button => {
+      button.addEventListener('click', () => {
+        const direction = button.dataset.qty === 'up' ? 1 : -1;
+        quantityInput.value = Math.max(1, Math.min(9, Number(quantityInput.value) + direction));
+        updateTotal();
+      });
+    });
+    quantityInput.addEventListener('input', updateTotal);
+    warrantyInputs.forEach(input => input.addEventListener('change', updateTotal));
+    document.querySelector('.order-card').addEventListener('submit', event => {
+      event.preventDefault();
+      totalOutput.textContent = totalOutput.textContent + ' reserved';
+      window.setTimeout(updateTotal, 1400);
+    });
+    updateTotal();
+  </script>
+</body>
+</html>
