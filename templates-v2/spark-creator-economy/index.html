@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Spark Creator Economy</title>
+  <meta name="description" content="Premium creator monetization platform skeleton with audience analytics, content scheduling, sponsorship workflow, and revenue tracking.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--cloud:#F6F8FC;--ink:#19212B;--indigo:#4F46E5;--cyan:#06B6D4;--lime:#A3E635;--coral:#FB7185;--ink-88:rgba(25,33,43,0.88);--ink-72:rgba(25,33,43,0.72);--ink-58:rgba(25,33,43,0.58);--ink-42:rgba(25,33,43,0.42);--ink-18:rgba(25,33,43,0.18);--ink-10:rgba(25,33,43,0.10);--cloud-96:rgba(246,248,252,0.96);--cloud-86:rgba(246,248,252,0.86);--cloud-70:rgba(246,248,252,0.70);--indigo-16:rgba(79,70,229,0.16);--indigo-24:rgba(79,70,229,0.24);--cyan-16:rgba(6,182,212,0.16);--cyan-24:rgba(6,182,212,0.24);--lime-22:rgba(163,230,53,0.22);--coral-16:rgba(251,113,133,0.16);--coral-24:rgba(251,113,133,0.24);--radius:8px;--max:1220px;--shadow:0 26px 64px rgba(25,33,43,0.12)}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;color:var(--ink);background:linear-gradient(135deg,rgba(79,70,229,0.08),rgba(6,182,212,0.08) 40%,rgba(246,248,252,0) 68%),var(--cloud);font-family:"Inter",sans-serif;line-height:1.5}
+    body.drawer-open{overflow:hidden}
+    a{color:inherit;text-decoration:none}
+    button{border:0;cursor:pointer;font:inherit}
+    h1,h2,h3{margin:0;color:var(--ink);font-family:"Manrope",sans-serif;letter-spacing:0;line-height:1.05}
+    p{margin:0}
+    table{width:100%;border-collapse:collapse}
+    th{text-align:left;color:var(--ink-58);font-size:0.78rem;font-weight:800;letter-spacing:0;text-transform:uppercase}
+    td{color:var(--ink-72);font-weight:700}
+    th,td{padding:0.95rem 0.8rem;border-bottom:1px solid var(--ink-10);white-space:nowrap}
+    button:focus-visible,a:focus-visible{outline:3px solid var(--cyan-24);outline-offset:3px}
+    .page-shell{min-height:100vh;overflow:hidden}
+    .site-header{position:sticky;top:0;z-index:20;background:rgba(246,248,252,0.9);border-bottom:1px solid var(--ink-10);backdrop-filter:blur(18px)}
+    .nav-wrap{width:min(var(--max),calc(100% - 2rem));min-height:76px;margin:0 auto;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1.2rem}
+    .brand{display:inline-flex;align-items:center;gap:0.72rem;font-family:"Manrope",sans-serif;font-weight:800}
+    .brand-mark{width:40px;height:40px;display:grid;place-items:center;border-radius:var(--radius);color:var(--cloud);background:linear-gradient(135deg,var(--indigo),var(--cyan));box-shadow:0 14px 28px var(--indigo-24)}
+    .brand-name{display:grid;gap:0.02rem}
+    .brand-name strong{color:var(--ink);font-size:1.03rem;line-height:1.05}
+    .brand-name span{color:var(--ink-58);font-family:"Inter",sans-serif;font-size:0.74rem;font-weight:800;line-height:1.1}
+    .nav-links{display:flex;justify-content:center;gap:1.25rem;color:var(--ink-72);font-size:0.92rem;font-weight:800}
+    .nav-links a{padding:0.35rem 0;border-bottom:2px solid transparent}
+    .nav-links a:hover,.nav-links a:focus-visible{color:var(--indigo);border-bottom-color:var(--indigo)}
+    .nav-actions{display:flex;justify-content:flex-end;align-items:center;gap:0.65rem}
+    .notification{position:relative;width:42px;height:42px;display:grid;place-items:center;border:1px solid var(--ink-10);border-radius:var(--radius);background:var(--cloud-96);color:var(--ink);font-weight:900}
+    .notification-badge{position:absolute;top:-6px;right:-5px;min-width:20px;height:20px;display:grid;place-items:center;border:2px solid var(--cloud);border-radius:99px;background:var(--coral);color:var(--cloud);font-size:0.68rem;font-weight:900}
+    .avatar{width:42px;height:42px;display:grid;place-items:center;border-radius:var(--radius);background:var(--ink);color:var(--cloud);font-weight:900}
+    .hamburger{width:44px;height:44px;display:none;place-items:center;border-radius:var(--radius);background:var(--ink);color:var(--cloud)}
+    .hamburger-lines{width:18px;display:grid;gap:4px}
+    .hamburger-lines span{height:2px;border-radius:99px;background:currentColor}
+    .drawer-backdrop{position:fixed;inset:0;z-index:30;opacity:0;pointer-events:none;background:rgba(25,33,43,0.48);transition:opacity 180ms ease}
+    .drawer-backdrop.open{opacity:1;pointer-events:auto}
+    .mobile-drawer{position:fixed;inset:0 0 0 auto;z-index:40;width:min(88vw,360px);padding:1rem;transform:translateX(100%);transition:transform 220ms ease;border-left:1px solid var(--ink-10);background:var(--cloud);box-shadow:-28px 0 70px rgba(25,33,43,0.18)}
+    .mobile-drawer.open{transform:translateX(0)}
+    .drawer-head{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-bottom:1rem;border-bottom:1px solid var(--ink-10)}
+    .drawer-close{width:42px;height:42px;border-radius:var(--radius);background:var(--ink);color:var(--cloud);font-size:1.05rem;font-weight:900}
+    .drawer-nav{display:grid;gap:0.35rem;padding-top:1rem}
+    .drawer-nav a{padding:0.92rem 0.8rem;border-radius:var(--radius);color:var(--ink-72);font-weight:850}
+    .drawer-nav a:hover,.drawer-nav a:focus-visible{background:var(--indigo-16);color:var(--indigo)}
+    main{width:min(var(--max),calc(100% - 2rem));margin:0 auto;padding:2rem 0 4rem;display:grid;gap:1.35rem}
+    main > *{min-width:0}
+    .hero-panel{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(300px,0.95fr);gap:1rem;align-items:stretch}
+    .hero-copy{min-height:380px;position:relative;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;border-radius:var(--radius);padding:clamp(1.5rem,4vw,3rem);background:linear-gradient(135deg,rgba(25,33,43,0.98),rgba(25,33,43,0.9)),linear-gradient(120deg,var(--indigo),var(--cyan));box-shadow:var(--shadow)}
+    .hero-copy::after{content:"";position:absolute;inset:auto -12% -32% 34%;height:60%;transform:rotate(-8deg);border-radius:var(--radius);background:linear-gradient(135deg,rgba(79,70,229,0.82),rgba(6,182,212,0.62)),linear-gradient(45deg,rgba(163,230,53,0.26),rgba(251,113,133,0.18))}
+    .hero-content{position:relative;z-index:1;max-width:660px}
+    .eyebrow{display:inline-flex;align-items:center;gap:0.52rem;margin-bottom:1rem;color:var(--cloud-70);font-size:0.78rem;font-weight:900;letter-spacing:0;text-transform:uppercase}
+    .live-dot{width:0.62rem;height:0.62rem;border-radius:99px;background:var(--cyan);box-shadow:0 0 0 7px var(--cyan-16)}
+    h1{max-width:12ch;color:var(--cloud);font-size:clamp(2.3rem,5.4vw,5.2rem)}
+    .hero-copy p{max-width:610px;margin-top:1.05rem;color:var(--cloud-70);font-size:1.02rem;font-weight:600}
+    .hero-actions{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:0.75rem;margin-top:2rem}
+    .primary-button,.soft-button{min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:0.55rem;border-radius:var(--radius);padding:0.78rem 1rem;font-weight:900}
+    .primary-button{background:var(--indigo);color:var(--cloud);box-shadow:0 16px 34px var(--indigo-24)}
+    .soft-button{border:1px solid rgba(246,248,252,0.18);background:rgba(246,248,252,0.1);color:var(--cloud)}
+    .command-panel{display:grid;gap:1rem;border:1px solid var(--ink-10);border-radius:var(--radius);padding:1rem;background:var(--cloud-96);box-shadow:var(--shadow)}
+    .panel-top{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+    .panel-top h2{font-size:1.22rem}
+    .health-pill{display:inline-flex;align-items:center;gap:0.42rem;border-radius:99px;padding:0.42rem 0.65rem;background:var(--lime-22);color:var(--ink);font-size:0.78rem;font-weight:900}
+    .mini-feed{display:grid;gap:0.7rem}
+    .mini-item{display:grid;grid-template-columns:auto 1fr auto;gap:0.75rem;align-items:center;padding:0.85rem;border:1px solid var(--ink-10);border-radius:var(--radius);background:rgba(246,248,252,0.76)}
+    .mini-icon{width:38px;height:38px;display:grid;place-items:center;border-radius:var(--radius);background:var(--indigo-16);color:var(--indigo);font-weight:900}
+    .mini-item strong{display:block;color:var(--ink);font-weight:900}
+    .mini-item span{color:var(--ink-58);font-size:0.84rem;font-weight:700}
+    .mini-value{color:var(--cyan);font-weight:900}
+    .section-heading{display:flex;align-items:end;justify-content:space-between;gap:1rem;margin-bottom:1rem}
+    .section-heading h2{font-size:clamp(1.45rem,3vw,2.35rem)}
+    .section-heading p{max-width:620px;margin-top:0.35rem;color:var(--ink-58);font-weight:650}
+    .time-chip{flex:0 0 auto;display:inline-flex;align-items:center;gap:0.45rem;border:1px solid var(--ink-10);border-radius:99px;padding:0.52rem 0.75rem;background:var(--cloud-96);color:var(--ink-72);font-size:0.82rem;font-weight:900}
+    .kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+    .kpi-card{min-height:136px;display:grid;align-content:space-between;gap:0.9rem;border:1px solid var(--ink-10);border-radius:var(--radius);padding:1rem;background:var(--cloud-96);box-shadow:0 14px 34px rgba(25,33,43,0.07)}
+    .kpi-label{display:flex;align-items:center;justify-content:space-between;gap:0.8rem;color:var(--ink-58);font-size:0.82rem;font-weight:850}
+    .kpi-icon{width:32px;height:32px;display:grid;place-items:center;border-radius:var(--radius);background:var(--indigo-16);color:var(--indigo);font-weight:900}
+    .kpi-value{display:flex;align-items:end;gap:0.55rem;color:var(--ink);font-family:"Manrope",sans-serif;font-size:2rem;font-weight:800;line-height:1}
+    .kpi-change{color:var(--cyan);font-family:"Inter",sans-serif;font-size:0.82rem;font-weight:900}
+    .board{border:1px solid var(--ink-10);border-radius:var(--radius);background:var(--cloud-96);box-shadow:var(--shadow);overflow:hidden}
+    .calendar-grid{display:grid;grid-template-columns:repeat(7,minmax(130px,1fr));min-width:920px}
+    .day-column{min-height:280px;padding:0.9rem;border-right:1px solid var(--ink-10);background:rgba(246,248,252,0.72)}
+    .day-column:last-child{border-right:0}
+    .day-title{display:flex;justify-content:space-between;align-items:center;gap:0.6rem;margin-bottom:0.8rem;color:var(--ink-58);font-size:0.78rem;font-weight:900;text-transform:uppercase}
+    .day-date{color:var(--ink)}
+    .post-card{display:grid;gap:0.6rem;margin-bottom:0.75rem;border:1px solid var(--ink-10);border-radius:var(--radius);padding:0.78rem;background:var(--cloud)}
+    .post-head{display:flex;align-items:center;gap:0.55rem}
+    .platform-icon{width:30px;height:30px;display:grid;place-items:center;flex:0 0 auto;border-radius:var(--radius);background:var(--ink);color:var(--cloud);font-size:0.72rem;font-weight:950}
+    .platform-icon.ig{background:var(--indigo)}
+    .platform-icon.tk{background:var(--cyan)}
+    .platform-icon.tw{background:var(--coral)}
+    .post-title{color:var(--ink);font-size:0.86rem;font-weight:900;line-height:1.25}
+    .post-meta{display:flex;align-items:center;justify-content:space-between;gap:0.55rem;color:var(--ink-58);font-size:0.78rem;font-weight:800}
+    .status{display:inline-flex;align-items:center;justify-content:center;min-height:24px;border-radius:99px;padding:0.22rem 0.52rem;font-size:0.7rem;font-weight:900}
+    .status.ready{background:var(--lime-22);color:var(--ink)}
+    .status.live{background:var(--cyan-16);color:var(--ink)}
+    .status.review{background:var(--indigo-16);color:var(--indigo)}
+    .status.urgent{background:var(--coral-16);color:var(--ink)}
+    .status.sent{background:rgba(25,33,43,0.08);color:var(--ink-72)}
+    .calendar-scroll{overflow:auto}
+    .analytics-grid{display:grid;grid-template-columns:minmax(300px,0.85fr) minmax(0,1.15fr);gap:1rem}
+    .card{border:1px solid var(--ink-10);border-radius:var(--radius);padding:1rem;background:var(--cloud-96);box-shadow:0 14px 34px rgba(25,33,43,0.07)}
+    .card-title{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin-bottom:1rem}
+    .card-title h3{font-size:1.08rem}
+    .card-title span{color:var(--ink-58);font-size:0.8rem;font-weight:850}
+    .donut-wrap{display:grid;grid-template-columns:180px 1fr;gap:1rem;align-items:center}
+    .donut{width:180px;aspect-ratio:1;display:grid;place-items:center;border-radius:50%;background:conic-gradient(var(--indigo) 0 39%,var(--cyan) 39% 67%,var(--lime) 67% 84%,var(--coral) 84% 100%);box-shadow:inset 0 0 0 18px rgba(246,248,252,0.36)}
+    .donut-center{width:112px;height:112px;display:grid;place-items:center;border-radius:50%;background:var(--cloud);text-align:center;box-shadow:0 0 0 1px var(--ink-10)}
+    .donut-center strong{display:block;color:var(--ink);font-family:"Manrope",sans-serif;font-size:1.65rem;line-height:1}
+    .donut-center span{color:var(--ink-58);font-size:0.72rem;font-weight:850}
+    .legend{display:grid;gap:0.68rem}
+    .legend-item{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:0.55rem;color:var(--ink-72);font-size:0.88rem;font-weight:850}
+    .legend-dot{width:0.72rem;height:0.72rem;border-radius:99px;background:var(--indigo)}
+    .legend-dot.cyan{background:var(--cyan)}
+    .legend-dot.lime{background:var(--lime)}
+    .legend-dot.coral{background:var(--coral)}
+    .trend-bars{height:230px;display:grid;grid-template-columns:repeat(12,1fr);gap:0.7rem;align-items:end;padding-top:1rem}
+    .trend-bar{position:relative;min-height:42px;border-radius:var(--radius) var(--radius) 0 0;background:linear-gradient(180deg,var(--cyan),var(--indigo))}
+    .trend-bar::after{content:attr(data-month);position:absolute;left:50%;bottom:-1.65rem;transform:translateX(-50%);color:var(--ink-58);font-size:0.72rem;font-weight:900}
+    .revenue-grid{display:grid;grid-template-columns:1.05fr 0.95fr;gap:1rem}
+    .source-list{display:grid;gap:1rem}
+    .source-row{display:grid;grid-template-columns:minmax(140px,0.6fr) minmax(160px,1fr) auto;gap:0.9rem;align-items:center}
+    .source-name{color:var(--ink);font-weight:900}
+    .source-value{color:var(--ink);font-weight:950}
+    .bar-track{height:12px;overflow:hidden;border-radius:99px;background:var(--ink-10)}
+    .bar-fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,var(--indigo),var(--cyan))}
+    .revenue-total{display:grid;align-content:space-between;gap:1rem;min-height:260px;border-radius:var(--radius);padding:1.2rem;background:var(--ink);color:var(--cloud)}
+    .revenue-total h3{color:var(--cloud);font-size:1rem}
+    .revenue-total strong{color:var(--cloud);font-family:"Manrope",sans-serif;font-size:clamp(2.3rem,5vw,4.2rem);line-height:1}
+    .revenue-total p{color:var(--cloud-70);font-weight:700}
+    .total-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:0.7rem}
+    .total-mini{border:1px solid rgba(246,248,252,0.14);border-radius:var(--radius);padding:0.85rem;background:rgba(246,248,252,0.08)}
+    .total-mini span{display:block;color:var(--cloud-70);font-size:0.75rem;font-weight:800}
+    .total-mini b{color:var(--cloud);font-family:"Manrope",sans-serif;font-size:1.25rem}
+    .table-card{overflow:auto;border:1px solid var(--ink-10);border-radius:var(--radius);background:var(--cloud-96);box-shadow:0 14px 34px rgba(25,33,43,0.07)}
+    .title-cell{min-width:260px;color:var(--ink);font-weight:950}
+    .platform-cell{display:inline-flex;align-items:center;gap:0.45rem;font-weight:900}
+    .small-platform{width:24px;height:24px;display:inline-grid;place-items:center;border-radius:var(--radius);background:var(--indigo-16);color:var(--indigo);font-size:0.66rem;font-weight:950}
+    .money{color:var(--indigo);font-weight:950}
+    .deal-list{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem}
+    .deal-card{display:grid;gap:1rem;border:1px solid var(--ink-10);border-radius:var(--radius);padding:1rem;background:var(--cloud-96);box-shadow:0 14px 34px rgba(25,33,43,0.07)}
+    .deal-head{display:flex;justify-content:space-between;gap:1rem;align-items:flex-start}
+    .brand-lockup{display:flex;align-items:center;gap:0.75rem}
+    .brand-logo{width:42px;height:42px;display:grid;place-items:center;flex:0 0 auto;border-radius:var(--radius);background:var(--ink);color:var(--cloud);font-weight:950}
+    .brand-lockup strong{display:block;color:var(--ink);font-weight:950}
+    .brand-lockup span{color:var(--ink-58);font-size:0.82rem;font-weight:800}
+    .deal-meta{display:grid;grid-template-columns:repeat(2,1fr);gap:0.7rem}
+    .deal-stat{border:1px solid var(--ink-10);border-radius:var(--radius);padding:0.72rem;background:rgba(246,248,252,0.72)}
+    .deal-stat span{display:block;color:var(--ink-58);font-size:0.74rem;font-weight:850}
+    .deal-stat b{color:var(--ink);font-family:"Manrope",sans-serif;font-size:1.1rem}
+    .footer{width:min(var(--max),calc(100% - 2rem));margin:0 auto;padding:1.5rem 0 2.2rem;border-top:1px solid var(--ink-10);color:var(--ink-58);font-weight:800;text-align:center}
+    @media (max-width:1020px){.nav-wrap{grid-template-columns:auto 1fr auto}
+    .nav-links{display:none}
+    .hamburger{display:grid}
+    .hero-panel,.analytics-grid,.revenue-grid{grid-template-columns:1fr}
+    .kpi-grid{grid-template-columns:repeat(2,1fr)}
+    .deal-list{grid-template-columns:1fr}
+    }
+    @media (max-width:680px){main{width:min(100% - 1rem,var(--max));padding-top:1rem}
+    .nav-wrap{width:min(100% - 1rem,var(--max))}
+    .brand-name span{display:none}
+    .hero-copy{min-height:500px;padding:1.15rem}
+    .command-panel,.card,.deal-card{padding:0.85rem}
+    .section-heading{display:grid;gap:0.65rem}
+    .kpi-grid{grid-template-columns:1fr}
+    .donut-wrap{grid-template-columns:1fr;justify-items:center}
+    .source-row{grid-template-columns:1fr;gap:0.45rem}
+    .total-grid,.deal-meta{grid-template-columns:1fr}
+    th,td{padding:0.82rem 0.65rem}
+    }
+    @media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto !important;transition-duration:0.01ms !important;animation-duration:0.01ms !important;animation-iteration-count:1 !important}
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <div class="nav-wrap" aria-label="Primary navigation">
+        <a class="brand" href="#dashboard" aria-label="Spark Creator Economy home">
+          <span class="brand-mark" aria-hidden="true">S</span>
+          <span class="brand-name">
+            <strong>Spark</strong>
+            <span>Creator Economy</span>
+          </span>
+        </a>
+        <nav class="nav-links" aria-label="Desktop navigation">
+          <a href="#dashboard">Dashboard</a>
+          <a href="#content">Content</a>
+          <a href="#audience">Audience</a>
+          <a href="#revenue">Revenue</a>
+          <a href="#settings">Settings</a>
+        </nav>
+        <div class="nav-actions">
+          <button class="notification" type="button" aria-label="Open notifications">
+            <span aria-hidden="true">!</span>
+            <span class="notification-badge">6</span>
+          </button>
+          <span class="avatar" aria-label="Creator profile">AL</span>
+          <button class="hamburger" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-drawer">
+            <span class="hamburger-lines" aria-hidden="true">
+              <span></span>
+              <span></span>
+              <span></span>
+            </span>
+          </button>
+        </div>
+      </div>
+    </header>
+    <div class="drawer-backdrop" data-drawer-backdrop></div>
+    <aside class="mobile-drawer" id="mobile-drawer" aria-label="Mobile navigation" aria-hidden="true">
+      <div class="drawer-head">
+        <a class="brand" href="#dashboard">
+          <span class="brand-mark" aria-hidden="true">S</span>
+          <span class="brand-name">
+            <strong>Spark</strong>
+            <span>Creator Economy</span>
+          </span>
+        </a>
+        <button class="drawer-close" type="button" aria-label="Close menu">×</button>
+      </div>
+      <nav class="drawer-nav" aria-label="Mobile menu links">
+        <a href="#dashboard">Dashboard</a>
+        <a href="#content">Content</a>
+        <a href="#audience">Audience</a>
+        <a href="#revenue">Revenue</a>
+        <a href="#settings">Settings</a>
+      </nav>
+    </aside>
+    <main id="dashboard">
+      <section class="hero-panel" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <div class="hero-content">
+            <span class="eyebrow"><span class="live-dot"></span>Live creator operating system</span>
+            <h1 id="hero-title">Monetize the audience behind every post</h1>
+            <p>Track content, sponsorships, community growth, and revenue in one calm command center built for creators with real business momentum.</p>
+          </div>
+          <div class="hero-actions">
+            <a class="primary-button" href="#content">Plan next drop</a>
+            <a class="soft-button" href="#revenue">Review revenue</a>
+          </div>
+        </div>
+        <div class="command-panel" aria-label="Today at a glance">
+          <div class="panel-top">
+            <h2>Today’s pulse</h2>
+            <span class="health-pill"><span class="live-dot"></span>Healthy</span>
+          </div>
+          <div class="mini-feed">
+            <article class="mini-item">
+              <span class="mini-icon">YT</span>
+              <div>
+                <strong>Long-form premiere</strong>
+                <span>Kitchen studio teardown at 18:00</span>
+              </div>
+              <b class="mini-value">+$2.8k</b>
+            </article>
+            <article class="mini-item">
+              <span class="mini-icon">IG</span>
+              <div>
+                <strong>Reel collaboration</strong>
+                <span>Shot list approved by Nova Goods</span>
+              </div>
+              <b class="mini-value">92%</b>
+            </article>
+            <article class="mini-item">
+              <span class="mini-icon">TK</span>
+              <div>
+                <strong>Audience spike</strong>
+                <span>Mobile editing clip lifting discovery</span>
+              </div>
+              <b class="mini-value">+18k</b>
+            </article>
+            <article class="mini-item">
+              <span class="mini-icon">TW</span>
+              <div>
+                <strong>Community thread</strong>
+                <span>Creator pricing advice keeps trending</span>
+              </div>
+              <b class="mini-value">4.7%</b>
+            </article>
+          </div>
+        </div>
+      </section>
+      <section aria-labelledby="kpi-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="kpi-title">Business KPIs</h2>
+            <p>Audience reach, demand, engagement, and revenue signals update as campaigns and scheduled posts move through the pipeline.</p>
+          </div>
+          <span class="time-chip">May 2026</span>
+        </div>
+        <div class="kpi-grid">
+          <article class="kpi-card">
+            <div class="kpi-label"><span>Total followers</span><span class="kpi-icon">F</span></div>
+            <div class="kpi-value">1.42M <span class="kpi-change">+6.8%</span></div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-label"><span>Monthly views</span><span class="kpi-icon">V</span></div>
+            <div class="kpi-value">28.6M <span class="kpi-change">+12.4%</span></div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-label"><span>Engagement rate</span><span class="kpi-icon">E</span></div>
+            <div class="kpi-value">7.9% <span class="kpi-change">+1.1</span></div>
+          </article>
+          <article class="kpi-card">
+            <div class="kpi-label"><span>Monthly revenue</span><span class="kpi-icon">$</span></div>
+            <div class="kpi-value">$84.2k <span class="kpi-change">+18%</span></div>
+          </article>
+        </div>
+      </section>
+      <section id="content" aria-labelledby="calendar-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="calendar-title">Content calendar</h2>
+            <p>A focused week view for scheduled posts, review status, campaign timing, and platform mix.</p>
+          </div>
+          <span class="time-chip">Week 22</span>
+        </div>
+        <div class="board calendar-scroll" role="region" aria-label="Scheduled content week view">
+          <div class="calendar-grid">
+            <div class="day-column">
+              <div class="day-title"><span>Mon</span><span class="day-date">27</span></div>
+              <article class="post-card">
+                <div class="post-head"><span class="platform-icon">YT</span><div class="post-title">Studio reset walkthrough</div></div>
+                <div class="post-meta"><span>09:30</span><span class="status ready">Ready</span></div>
+              </article>
+              <article class="post-card">
+                <div class="post-head"><span class="platform-icon ig">IG</span><div class="post-title">Morning setup reel</div></div>
+                <div class="post-meta"><span>16:15</span><span class="status live">Live</span></div>
+              </article>
+            </div>
+            <div class="day-column">
+              <div class="day-title"><span>Tue</span><span class="day-date">28</span></div>
+              <article class="post-card">
+                <div class="post-head"><span class="platform-icon tk">TK</span><div class="post-title">Three edits under ten minutes</div></div>
+                <div class="post-meta"><span>12:00</span><span class="status review">Review</span></div>
+              </article>
+            </div>
+            <div class="day-column">
+              <div class="day-title"><span>Wed</span><span class="day-date">29</span></div>
+              <article class="post-card">
+                <div class="post-head"><span class="platform-icon tw">TW</span><div class="post-title">Pricing lessons thread</div></div>
+                <div class="post-meta"><span>10:45</span><span class="status ready">Ready</span></div>
+              </article>
+              <article class="post-card">
+                <div class="post-head"><span class="platform-icon">YT</span><div class="post-title">Sponsor integration cut</div></div>
+                <div class="post-meta"><span>18:00</span><span class="status urgent">Needs edit</span></div>
+              </article>
+            </div>
+            <div class="day-column">
+              <div class="day-title"><span>Thu</span><span class="day-date">30</span></div>
+              <article class="post-card">
+                <div class="post-head"><span class="platform-icon ig">IG</span><div class="post-title">Behind the drop carousel</div></div>
+                <div class="post-meta"><span>14:30</span><span class="status ready">Ready</span></div>
+              </article>
+            </div>
+            <div class="day-column">
+              <div class="day-title"><span>Fri</span><span class="day-date">31</span></div>
+              <article class="post-card">
+                <div class="post-head"><span class="platform-icon tk">TK</span><div class="post-title">Gear bag speed run</div></div>
+                <div class="post-meta"><span>11:20</span><span class="status sent">Queued</span></div>
+              </article>
+              <article class="post-card">
+                <div class="post-head"><span class="platform-icon">YT</span><div class="post-title">Members-only Q and A</div></div>
+                <div class="post-meta"><span>19:30</span><span class="status ready">Ready</span></div>
+              </article>
+            </div>
+            <div class="day-column">
+              <div class="day-title"><span>Sat</span><span class="day-date">01</span></div>
+              <article class="post-card">
+                <div class="post-head"><span class="platform-icon ig">IG</span><div class="post-title">Merch lookbook launch</div></div>
+                <div class="post-meta"><span>13:00</span><span class="status review">Review</span></div>
+              </article>
+            </div>
+            <div class="day-column">
+              <div class="day-title"><span>Sun</span><span class="day-date">02</span></div>
+              <article class="post-card">
+                <div class="post-head"><span class="platform-icon tw">TW</span><div class="post-title">Weekly creator recap</div></div>
+                <div class="post-meta"><span>17:00</span><span class="status sent">Drafted</span></div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="audience" aria-labelledby="audience-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="audience-title">Audience analytics</h2>
+            <p>Platform concentration and growth trend reporting for deciding where the next campaign deserves attention.</p>
+          </div>
+          <span class="time-chip">Live blend</span>
+        </div>
+        <div class="analytics-grid">
+          <article class="card">
+            <div class="card-title">
+              <h3>Platform breakdown</h3>
+              <span>Followers</span>
+            </div>
+            <div class="donut-wrap">
+              <div class="donut" role="img" aria-label="YouTube 39 percent, Instagram 28 percent, TikTok 17 percent, Twitter 16 percent">
+                <div class="donut-center"><div><strong>1.42M</strong><span>total fans</span></div></div>
+              </div>
+              <div class="legend">
+                <div class="legend-item"><span class="legend-dot"></span><span>YouTube</span><b>39%</b></div>
+                <div class="legend-item"><span class="legend-dot cyan"></span><span>Instagram</span><b>28%</b></div>
+                <div class="legend-item"><span class="legend-dot lime"></span><span>TikTok</span><b>17%</b></div>
+                <div class="legend-item"><span class="legend-dot coral"></span><span>Twitter</span><b>16%</b></div>
+              </div>
+            </div>
+          </article>
+          <article class="card">
+            <div class="card-title">
+              <h3>Growth trend</h3>
+              <span>Net new followers</span>
+            </div>
+            <div class="trend-bars" aria-label="Monthly follower growth bar chart">
+              <div class="trend-bar" data-month="Jun" style="height:42%;"></div>
+              <div class="trend-bar" data-month="Jul" style="height:48%;"></div>
+              <div class="trend-bar" data-month="Aug" style="height:44%;"></div>
+              <div class="trend-bar" data-month="Sep" style="height:52%;"></div>
+              <div class="trend-bar" data-month="Oct" style="height:61%;"></div>
+              <div class="trend-bar" data-month="Nov" style="height:58%;"></div>
+              <div class="trend-bar" data-month="Dec" style="height:67%;"></div>
+              <div class="trend-bar" data-month="Jan" style="height:72%;"></div>
+              <div class="trend-bar" data-month="Feb" style="height:64%;"></div>
+              <div class="trend-bar" data-month="Mar" style="height:79%;"></div>
+              <div class="trend-bar" data-month="Apr" style="height:86%;"></div>
+              <div class="trend-bar" data-month="May" style="height:94%;"></div>
+            </div>
+          </article>
+        </div>
+      </section>
+      <section id="revenue" aria-labelledby="revenue-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="revenue-title">Revenue tracker</h2>
+            <p>Revenue source visibility for creators balancing sponsorships, subscriptions, tips, and merch without losing margin discipline.</p>
+          </div>
+          <span class="time-chip">Monthly close</span>
+        </div>
+        <div class="revenue-grid">
+          <article class="card">
+            <div class="card-title">
+              <h3>Revenue by source</h3>
+              <span>$84.2k total</span>
+            </div>
+            <div class="source-list">
+              <div class="source-row"><span class="source-name">Sponsorships</span><span class="bar-track"><span class="bar-fill" style="width:78%;"></span></span><span class="source-value">$43.8k</span></div>
+              <div class="source-row"><span class="source-name">Subscriptions</span><span class="bar-track"><span class="bar-fill" style="width:54%;"></span></span><span class="source-value">$22.4k</span></div>
+              <div class="source-row"><span class="source-name">Tips</span><span class="bar-track"><span class="bar-fill" style="width:31%;"></span></span><span class="source-value">$7.9k</span></div>
+              <div class="source-row"><span class="source-name">Merch</span><span class="bar-track"><span class="bar-fill" style="width:42%;"></span></span><span class="source-value">$10.1k</span></div>
+            </div>
+          </article>
+          <article class="revenue-total">
+            <div>
+              <h3>Creator cash flow</h3>
+              <strong>$84.2k</strong>
+              <p>Projected net after platform fees and active fulfillment costs is tracking 14% above the spring baseline.</p>
+            </div>
+            <div class="total-grid">
+              <div class="total-mini"><span>Open invoices</span><b>$18.6k</b></div>
+              <div class="total-mini"><span>Runway</span><b>11.4 mo</b></div>
+            </div>
+          </article>
+        </div>
+      </section>
+      <section aria-labelledby="top-content-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="top-content-title">Top content</h2>
+            <p>Best-performing posts ranked by reach, engagement quality, and attributed creator revenue.</p>
+          </div>
+          <span class="time-chip">Top 5</span>
+        </div>
+        <div class="table-card">
+          <table aria-label="Best-performing posts">
+            <thead>
+              <tr>
+                <th>Title</th>
+                <th>Platform</th>
+                <th>Views</th>
+                <th>Likes</th>
+                <th>Revenue</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="title-cell">The $500 studio upgrade that changed my workflow</td>
+                <td><span class="platform-cell"><span class="small-platform">YT</span>YouTube</span></td>
+                <td>4.8M</td>
+                <td>312k</td>
+                <td class="money">$18,420</td>
+              </tr>
+              <tr>
+                <td class="title-cell">Edit a campaign reel with me</td>
+                <td><span class="platform-cell"><span class="small-platform">IG</span>Instagram</span></td>
+                <td>2.1M</td>
+                <td>196k</td>
+                <td class="money">$9,880</td>
+              </tr>
+              <tr>
+                <td class="title-cell">Creator pricing rules nobody told me</td>
+                <td><span class="platform-cell"><span class="small-platform">TW</span>Twitter</span></td>
+                <td>860k</td>
+                <td>48k</td>
+                <td class="money">$4,120</td>
+              </tr>
+              <tr>
+                <td class="title-cell">Three mobile shots brands keep buying</td>
+                <td><span class="platform-cell"><span class="small-platform">TK</span>TikTok</span></td>
+                <td>3.2M</td>
+                <td>278k</td>
+                <td class="money">$7,360</td>
+              </tr>
+              <tr>
+                <td class="title-cell">Monthly business review for solo creators</td>
+                <td><span class="platform-cell"><span class="small-platform">YT</span>YouTube</span></td>
+                <td>1.4M</td>
+                <td>91k</td>
+                <td class="money">$6,740</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+      <section id="settings" aria-labelledby="sponsor-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="sponsor-title">Sponsorship inbox</h2>
+            <p>Brand deals organized by budget, deadline, and negotiation state so creator teams can prioritize the right conversations.</p>
+          </div>
+          <span class="time-chip">8 active offers</span>
+        </div>
+        <div class="deal-list">
+          <article class="deal-card">
+            <div class="deal-head">
+              <div class="brand-lockup">
+                <span class="brand-logo">NG</span>
+                <div><strong>Nova Goods</strong><span>Home tech series</span></div>
+              </div>
+              <span class="status live">Negotiating</span>
+            </div>
+            <div class="deal-meta">
+              <div class="deal-stat"><span>Budget</span><b>$32k</b></div>
+              <div class="deal-stat"><span>Deadline</span><b>May 30</b></div>
+            </div>
+          </article>
+          <article class="deal-card">
+            <div class="deal-head">
+              <div class="brand-lockup">
+                <span class="brand-logo">KL</span>
+                <div><strong>Kite Labs</strong><span>Creator workflow launch</span></div>
+              </div>
+              <span class="status ready">Approved</span>
+            </div>
+            <div class="deal-meta">
+              <div class="deal-stat"><span>Budget</span><b>$18k</b></div>
+              <div class="deal-stat"><span>Deadline</span><b>Jun 04</b></div>
+            </div>
+          </article>
+          <article class="deal-card">
+            <div class="deal-head">
+              <div class="brand-lockup">
+                <span class="brand-logo">MF</span>
+                <div><strong>ModeFit</strong><span>Travel gear bundle</span></div>
+              </div>
+              <span class="status urgent">Terms due</span>
+            </div>
+            <div class="deal-meta">
+              <div class="deal-stat"><span>Budget</span><b>$24k</b></div>
+              <div class="deal-stat"><span>Deadline</span><b>May 28</b></div>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      Spark Creator Economy — designed by Northstar Interface Studio
+    </footer>
+  </div>
+  <script>
+    const body = document.body;
+    const drawer = document.querySelector('.mobile-drawer');
+    const backdrop = document.querySelector('[data-drawer-backdrop]');
+    const openButton = document.querySelector('.hamburger');
+    const closeButton = document.querySelector('.drawer-close');
+    const drawerLinks = Array.from(document.querySelectorAll('.drawer-nav a'));
+    const setDrawer = (open) => {
+      drawer.classList.toggle('open', open);
+      backdrop.classList.toggle('open', open);
+      body.classList.toggle('drawer-open', open);
+      drawer.setAttribute('aria-hidden', String(!open));
+      openButton.setAttribute('aria-expanded', String(open));
+      if(open){
+        closeButton.focus();
+      }else{
+        openButton.focus();
+      }
+    };
+    openButton.addEventListener('click', () => setDrawer(true));
+    closeButton.addEventListener('click', () => setDrawer(false));
+    backdrop.addEventListener('click', () => setDrawer(false));
+    drawerLinks.forEach((link) => link.addEventListener('click', () => setDrawer(false)));
+    document.addEventListener('keydown', (event) => {
+      if(event.key === 'Escape' && drawer.classList.contains('open')){
+        setDrawer(false);
+      }
+      if(event.key === 'Tab' && drawer.classList.contains('open')){
+        const focusable = [closeButton, ...drawerLinks];
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if(event.shiftKey && document.activeElement === first){
+          event.preventDefault();
+          last.focus();
+        }else if(!event.shiftKey && document.activeElement === last){
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    });
+  </script>
+</body>
+</html>
