@@ -1,63 +1,59 @@
-# Design Book: Orbit Cloud Observability
+# Orbit Cloud Observability — Design Book
 
 ## Product Intent
 
-Orbit is a cloud observability dashboard for on-call operators. The interface answers three operational questions in order: what changed, what broke, and what should happen next. The layout avoids marketing composition and keeps the first screen as a practical incident command surface.
+Orbit Cloud Observability is a cloud infrastructure dashboard for SREs who need one fast answer during an incident: what is broken, what is about to break, and what action should happen next. The screen is designed as an operating surface, not a landing page.
 
-## Layout System
+## Visual System
 
-- App shell: sticky topbar, main dashboard grid, footer credit
-- Top row: full-width service map for dependency context
-- Middle row: incident queue left, latency and probable cause center, logs right
-- Bottom row: deployment timeline under the main analysis area
-- Mobile: service map collapses into triage mode with priority incident, affected services, and action buttons
+- Background cloud: `#F6F8FC`
+- Ink text and dark command panels: `#19212B`
+- Primary action indigo: `#4F46E5`
+- Live signal cyan: `#06B6D4`
+- Healthy lime: `#A3E635`
+- Critical coral: `#FB7185`
 
-CSS Grid is used for the macro dashboard layout. Flexbox is used for navigation, toolbar controls, chips, and action groups.
+The palette is intentionally light and clear. Dark ink panels are reserved for high-attention dependency context and current incident status, while coral appears only on risk and failure states.
 
 ## Typography
 
-- Interface font: Inter from Google Fonts CDN
-- Log font: JetBrains Mono from Google Fonts CDN
-- Type is intentionally compact: operators scan labels, metrics, traces, and IDs repeatedly
-- Letter spacing remains normal for readability and to avoid compressed technical text
+- Headings: Manrope from Google Fonts CDN
+- UI text: Inter from Google Fonts CDN
+- Letter spacing remains normal for dense operational readability.
 
-## Color Tokens
+## Layout
 
-- Midnight: `#080C16`
-- Cloud navy: `#111C2E`
-- Violet: `#8B5CF6`
-- Cyan: `#22D3EE`
-- Green: `#34D399`
-- Rose: `#FB7185`
+- Sticky top navigation with brand, search, environment switcher, alert badge, and mobile hamburger.
+- KPI strip for uptime, p99 latency, error rate, and active incidents.
+- Three-column desktop dashboard with alert triage, service health, latency heatmap, dependency map, incident timeline, and capacity gauges.
+- Tablet collapses to two columns.
+- Mobile prioritizes alerts, incident progression, service health, and then deeper telemetry.
 
-Cyan marks live system affordances and selected controls. Green marks healthy signals. Rose marks customer-impacting failure. Violet is used sparingly for deployment and correlation context.
+## Operational Components
 
-## Interaction Model
-
-- Hamburger menu controls mobile navigation
-- Escape closes the mobile menu
-- Incident cards support ArrowUp and ArrowDown focus movement
-- Latency tabs support ArrowLeft and ArrowRight switching
-- `/` focuses the log filter when the filter is not already active
-- All controls have visible focus states
+- Service health grid uses traffic-light status for API Gateway, Auth, Billing, Search, Events, and Database.
+- Alert feed includes severity, service source, age, assignee, and a keyboard-friendly filter.
+- Latency heatmap shows service by time with p50, p95, and p99 intensity states.
+- Dependency map uses a simple node-link diagram with degraded hot-path highlighting.
+- Incident timeline follows detected, investigating, mitigated, and resolved states.
+- Capacity gauges use CSS conic gradients for CPU, memory, and network saturation.
 
 ## Accessibility
 
-- Semantic `header`, `main`, `section`, `article`, `aside`, and `footer` landmarks
-- Skip link targets the dashboard
-- Buttons and tabs use labels, `aria-selected`, and explicit control names
-- Log stream uses `aria-live="polite"`
-- Reduced-motion media query disables scan and pulse animation
-- Contrast is tuned for a dark operations environment
+- Semantic `header`, `nav`, `main`, `section`, `article`, `aside`, and `footer` landmarks.
+- Skip link targets the dashboard.
+- Hamburger drawer exposes `aria-expanded` and `aria-hidden`, supports Escape to close, and is keyboard reachable.
+- Alert filters are native search inputs with visible labels for assistive tech.
+- Focus-visible states use cyan outlines.
+- Reduced-motion media query disables pulse and link animations.
 
-## Content Model
+## Verification
 
-The sample data is realistic and specific: incident IDs, service names, p95 values, queue lag, deployment hashes, release markers, trace IDs, and log lines. This gives implementers a credible starting structure instead of generic filler.
-
-## Responsive Behavior
-
-Desktop preserves the full command surface. Tablet stacks logs below the incident and latency panels. Mobile switches to incident triage mode so the operator sees priority, affected services, and immediate actions before deeper telemetry.
-
-## Integration Notes
-
-Replace static service cards with topology data, incident cards with alert manager data, latency bars with charting primitives, and logs with a virtualized streaming list for production scale. Keep the probable cause cards close to the latency chart; the value of the product is correlation, not raw metric volume.
+- HTMLParser: OK
+- Lines: 601
+- Required fonts: Manrope and Inter present
+- Required palette colors present: `#F6F8FC`, `#19212B`, `#4F46E5`, `#06B6D4`, `#A3E635`, `#FB7185`
+- Banned filler terms absent
+- Playwright desktop 1440: OK, no horizontal overflow
+- Playwright tablet 768: OK, no horizontal overflow
+- Playwright mobile 390: OK, hamburger drawer opens and closes with Escape, no horizontal overflow
