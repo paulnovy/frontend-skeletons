@@ -1,0 +1,1334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lumen Crypto Exchange</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --indigo: #4F46E5;
+      --cyan: #06B6D4;
+      --lime: #A3E635;
+      --coral: #FB7185;
+      --cloud-soft: rgba(246, 248, 252, 0.76);
+      --cloud-solid: rgba(246, 248, 252, 0.96);
+      --ink-soft: rgba(25, 33, 43, 0.72);
+      --ink-muted: rgba(25, 33, 43, 0.52);
+      --ink-faint: rgba(25, 33, 43, 0.12);
+      --ink-line: rgba(25, 33, 43, 0.08);
+      --panel: rgba(246, 248, 252, 0.88);
+      --panel-dark: rgba(25, 33, 43, 0.96);
+      --indigo-soft: rgba(79, 70, 229, 0.12);
+      --cyan-soft: rgba(6, 182, 212, 0.14);
+      --lime-soft: rgba(163, 230, 53, 0.17);
+      --coral-soft: rgba(251, 113, 133, 0.15);
+      --shadow: 0 24px 70px rgba(25, 33, 43, 0.11);
+      --radius: 8px;
+      --radius-small: 6px;
+      --max: 1440px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 15% 0%, rgba(6, 182, 212, 0.12), transparent 28%),
+        radial-gradient(circle at 88% 14%, rgba(79, 70, 229, 0.13), transparent 30%),
+        var(--cloud);
+      color: var(--ink);
+      font-family: "Inter", system-ui, sans-serif;
+      letter-spacing: 0;
+    }
+
+    body.drawer-open {
+      overflow: hidden;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border: 0;
+    }
+
+    :focus-visible {
+      outline: 3px solid rgba(6, 182, 212, 0.55);
+      outline-offset: 3px;
+    }
+
+    .shell {
+      width: min(100% - 32px, var(--max));
+      margin: 0 auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      border-bottom: 1px solid var(--ink-line);
+      background: rgba(246, 248, 252, 0.82);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav {
+      height: 76px;
+      display: flex;
+      align-items: center;
+      gap: 22px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      flex: 0 0 auto;
+      font-family: "Manrope", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 1.08rem;
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: var(--ink);
+      color: var(--cloud);
+      box-shadow: 0 14px 30px rgba(25, 33, 43, 0.18);
+    }
+
+    .brand-mark span {
+      width: 16px;
+      height: 16px;
+      border-radius: 5px;
+      background:
+        linear-gradient(135deg, var(--cyan) 0 48%, var(--lime) 48% 100%);
+      transform: rotate(45deg);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-left: 10px;
+    }
+
+    .nav-links a {
+      padding: 10px 12px;
+      border-radius: var(--radius-small);
+      color: var(--ink-soft);
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .nav-links a:hover,
+    .nav-links a[aria-current="page"] {
+      color: var(--ink);
+      background: var(--indigo-soft);
+    }
+
+    .nav-tools {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search {
+      position: relative;
+      width: 260px;
+    }
+
+    .search input,
+    .pair-search input {
+      width: 100%;
+      min-height: 42px;
+      border-radius: var(--radius);
+      border: 1px solid var(--ink-line);
+      background: var(--cloud-solid);
+      color: var(--ink);
+      padding: 0 14px 0 38px;
+      font-weight: 600;
+    }
+
+    .search svg,
+    .pair-search svg {
+      position: absolute;
+      left: 13px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--ink-muted);
+    }
+
+    .icon-btn {
+      position: relative;
+      width: 42px;
+      height: 42px;
+      border-radius: var(--radius);
+      display: grid;
+      place-items: center;
+      background: var(--cloud-solid);
+      color: var(--ink);
+      border: 1px solid var(--ink-line);
+    }
+
+    .icon-btn:hover {
+      background: var(--cyan-soft);
+    }
+
+    .badge {
+      position: absolute;
+      top: 7px;
+      right: 7px;
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--coral);
+      box-shadow: 0 0 0 3px var(--cloud-solid);
+    }
+
+    .hamburger {
+      display: none;
+    }
+
+    .drawer {
+      position: fixed;
+      inset: 0 0 0 auto;
+      width: min(340px, 86vw);
+      z-index: 50;
+      transform: translateX(105%);
+      transition: transform 220ms ease;
+      background: var(--ink);
+      color: var(--cloud);
+      padding: 24px;
+      box-shadow: -30px 0 70px rgba(25, 33, 43, 0.28);
+    }
+
+    .drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+
+    .drawer nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    .drawer a {
+      padding: 14px 12px;
+      border-radius: var(--radius);
+      color: var(--cloud);
+      font-weight: 800;
+      background: rgba(246, 248, 252, 0.07);
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+      background: rgba(25, 33, 43, 0.46);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms ease;
+    }
+
+    .overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .main {
+      padding: 22px 0 36px;
+    }
+
+    .market-strip {
+      display: grid;
+      grid-template-columns: 1.4fr repeat(4, 1fr) 1.2fr;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .metric,
+    .pair-card,
+    .panel {
+      border: 1px solid var(--ink-line);
+      border-radius: var(--radius);
+      background: var(--panel);
+      box-shadow: 0 12px 34px rgba(25, 33, 43, 0.06);
+    }
+
+    .pair-card {
+      padding: 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .coin-stack {
+      position: relative;
+      width: 44px;
+      height: 44px;
+      flex: 0 0 auto;
+    }
+
+    .coin {
+      position: absolute;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-weight: 900;
+      font-size: 0.78rem;
+    }
+
+    .coin.btc {
+      left: 0;
+      top: 0;
+      background: var(--lime);
+      color: var(--ink);
+      border: 3px solid var(--cloud);
+    }
+
+    .coin.usdt {
+      right: 0;
+      bottom: 0;
+      background: var(--cyan);
+      color: var(--cloud);
+      border: 3px solid var(--cloud);
+    }
+
+    .pair-title {
+      margin: 0;
+      font-family: "Manrope", system-ui, sans-serif;
+      font-size: 1.55rem;
+      line-height: 1;
+    }
+
+    .pair-sub {
+      margin-top: 6px;
+      color: var(--ink-muted);
+      font-weight: 700;
+      font-size: 0.86rem;
+    }
+
+    .metric {
+      padding: 16px;
+      min-width: 0;
+    }
+
+    .metric-label {
+      color: var(--ink-muted);
+      font-size: 0.76rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+
+    .metric-value {
+      margin-top: 8px;
+      font-family: "Manrope", system-ui, sans-serif;
+      font-weight: 800;
+      font-size: 1.04rem;
+    }
+
+    .positive {
+      color: color-mix(in srgb, var(--lime), var(--ink) 38%);
+    }
+
+    .negative {
+      color: var(--coral);
+    }
+
+    .pair-search {
+      position: relative;
+      align-self: stretch;
+      display: flex;
+      align-items: center;
+    }
+
+    .pair-search input {
+      height: 100%;
+      min-height: 72px;
+    }
+
+    .dashboard {
+      display: grid;
+      grid-template-columns: minmax(0, 1.52fr) minmax(320px, 0.72fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .left-grid {
+      display: grid;
+      gap: 18px;
+      min-width: 0;
+    }
+
+    .right-grid {
+      display: grid;
+      gap: 18px;
+      min-width: 0;
+    }
+
+    .panel {
+      overflow: hidden;
+    }
+
+    .panel-head {
+      min-height: 58px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      border-bottom: 1px solid var(--ink-line);
+    }
+
+    .panel-title {
+      margin: 0;
+      font-family: "Manrope", system-ui, sans-serif;
+      font-size: 1rem;
+    }
+
+    .panel-note {
+      color: var(--ink-muted);
+      font-weight: 700;
+      font-size: 0.82rem;
+    }
+
+    .segmented {
+      display: inline-flex;
+      padding: 3px;
+      gap: 3px;
+      border-radius: var(--radius);
+      background: rgba(25, 33, 43, 0.06);
+    }
+
+    .segmented button {
+      min-width: 46px;
+      height: 32px;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--ink-muted);
+      font-weight: 900;
+      font-size: 0.78rem;
+    }
+
+    .segmented button.active {
+      background: var(--ink);
+      color: var(--cloud);
+    }
+
+    .chart-panel {
+      min-height: 455px;
+    }
+
+    .chart-body {
+      position: relative;
+      min-height: 394px;
+      padding: 22px 18px 18px 58px;
+      background:
+        linear-gradient(to right, rgba(25, 33, 43, 0.06) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(25, 33, 43, 0.06) 1px, transparent 1px);
+      background-size: 72px 100%, 100% 64px;
+    }
+
+    .chart-price {
+      position: absolute;
+      left: 16px;
+      color: var(--ink-muted);
+      font-size: 0.72rem;
+      font-weight: 800;
+    }
+
+    .p1 { top: 28px; }
+    .p2 { top: 95px; }
+    .p3 { top: 162px; }
+    .p4 { top: 229px; }
+    .p5 { top: 296px; }
+
+    .live-line {
+      position: absolute;
+      left: 58px;
+      right: 18px;
+      top: 148px;
+      height: 1px;
+      background: var(--cyan);
+    }
+
+    .live-tag {
+      position: absolute;
+      right: 18px;
+      top: 132px;
+      padding: 5px 8px;
+      border-radius: 6px;
+      background: var(--cyan);
+      color: var(--cloud);
+      font-size: 0.72rem;
+      font-weight: 900;
+    }
+
+    .candles {
+      height: 318px;
+      display: grid;
+      grid-template-columns: repeat(32, 1fr);
+      align-items: end;
+      gap: clamp(4px, 0.6vw, 10px);
+      padding-top: 26px;
+      padding-right: 38px;
+    }
+
+    .candle {
+      --body: 120px;
+      --wick: 180px;
+      --lift: 0px;
+      position: relative;
+      height: var(--wick);
+      transform: translateY(var(--lift));
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .candle::before {
+      content: "";
+      position: absolute;
+      width: 2px;
+      height: 100%;
+      border-radius: 2px;
+      background: currentColor;
+      opacity: 0.75;
+    }
+
+    .candle::after {
+      content: "";
+      position: absolute;
+      width: min(15px, 70%);
+      height: var(--body);
+      border-radius: 4px;
+      background: currentColor;
+      box-shadow: 0 0 0 1px rgba(25, 33, 43, 0.04);
+    }
+
+    .rise {
+      color: color-mix(in srgb, var(--lime), var(--ink) 22%);
+    }
+
+    .fall {
+      color: var(--coral);
+    }
+
+    .volume-bars {
+      position: absolute;
+      left: 58px;
+      right: 56px;
+      bottom: 20px;
+      height: 54px;
+      display: grid;
+      grid-template-columns: repeat(32, 1fr);
+      gap: clamp(4px, 0.6vw, 10px);
+      align-items: end;
+      opacity: 0.46;
+    }
+
+    .volume-bars span {
+      display: block;
+      height: var(--v);
+      border-radius: 4px 4px 0 0;
+      background: var(--indigo);
+    }
+
+    .book-table,
+    .data-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .book-table th,
+    .book-table td,
+    .data-table th,
+    .data-table td {
+      padding: 10px 12px;
+      text-align: right;
+      font-size: 0.82rem;
+      white-space: nowrap;
+    }
+
+    .book-table th:first-child,
+    .book-table td:first-child,
+    .data-table th:first-child,
+    .data-table td:first-child {
+      text-align: left;
+    }
+
+    th {
+      color: var(--ink-muted);
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    tbody tr {
+      border-top: 1px solid var(--ink-line);
+    }
+
+    .ask-row,
+    .bid-row {
+      position: relative;
+    }
+
+    .ask-row td,
+    .bid-row td {
+      position: relative;
+      z-index: 1;
+    }
+
+    .ask-row::after,
+    .bid-row::after {
+      content: "";
+      position: absolute;
+      inset: 2px 0 2px auto;
+      width: var(--depth);
+      border-radius: 5px 0 0 5px;
+    }
+
+    .ask-row::after {
+      background: var(--coral-soft);
+    }
+
+    .bid-row::after {
+      background: var(--lime-soft);
+    }
+
+    .spread {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border-top: 1px solid var(--ink-line);
+      border-bottom: 1px solid var(--ink-line);
+      background: rgba(6, 182, 212, 0.08);
+      font-weight: 900;
+    }
+
+    .spread strong {
+      color: var(--cyan);
+      font-family: "Manrope", system-ui, sans-serif;
+    }
+
+    .trade-form {
+      padding: 16px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .trade-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .trade-tabs button {
+      height: 42px;
+      border-radius: var(--radius);
+      font-weight: 900;
+      background: rgba(25, 33, 43, 0.06);
+      color: var(--ink-soft);
+    }
+
+    .trade-tabs button.active.buy {
+      background: var(--lime);
+      color: var(--ink);
+    }
+
+    .trade-tabs button.sell {
+      color: var(--coral);
+    }
+
+    .field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .field label {
+      color: var(--ink-muted);
+      font-size: 0.76rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .field-control {
+      display: flex;
+      align-items: center;
+      min-height: 46px;
+      border-radius: var(--radius);
+      border: 1px solid var(--ink-line);
+      background: var(--cloud-solid);
+      overflow: hidden;
+    }
+
+    .field-control input,
+    .field-control select {
+      width: 100%;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+      padding: 0 12px;
+      font-weight: 800;
+    }
+
+    .field-control span {
+      padding: 0 12px;
+      color: var(--ink-muted);
+      font-weight: 900;
+      font-size: 0.78rem;
+    }
+
+    .total-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 13px 14px;
+      border-radius: var(--radius);
+      background: var(--ink);
+      color: var(--cloud);
+      font-weight: 800;
+    }
+
+    .total-box strong {
+      color: var(--lime);
+      font-family: "Manrope", system-ui, sans-serif;
+    }
+
+    .submit {
+      min-height: 48px;
+      border-radius: var(--radius);
+      background: var(--indigo);
+      color: var(--cloud);
+      font-weight: 900;
+      box-shadow: 0 18px 32px rgba(79, 70, 229, 0.28);
+    }
+
+    .submit:hover {
+      background: color-mix(in srgb, var(--indigo), var(--ink) 14%);
+    }
+
+    .orders-panel {
+      overflow-x: auto;
+    }
+
+    .cancel-btn {
+      min-width: 72px;
+      min-height: 30px;
+      border-radius: 6px;
+      background: var(--coral-soft);
+      color: var(--coral);
+      font-weight: 900;
+    }
+
+    .side-buy {
+      color: color-mix(in srgb, var(--lime), var(--ink) 36%);
+      font-weight: 900;
+    }
+
+    .side-sell {
+      color: var(--coral);
+      font-weight: 900;
+    }
+
+    .fill-wrap {
+      display: grid;
+      gap: 5px;
+      min-width: 92px;
+    }
+
+    .fill-track,
+    .allocation-track {
+      height: 7px;
+      border-radius: 999px;
+      background: rgba(25, 33, 43, 0.08);
+      overflow: hidden;
+    }
+
+    .fill-track span,
+    .allocation-track span {
+      display: block;
+      width: var(--w);
+      height: 100%;
+      border-radius: inherit;
+      background: var(--cyan);
+    }
+
+    .portfolio-panel {
+      margin-top: 18px;
+      overflow-x: auto;
+    }
+
+    .asset-cell {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 900;
+    }
+
+    .asset-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--ink);
+      color: var(--cloud);
+      font-size: 0.7rem;
+      font-weight: 900;
+    }
+
+    .allocation-track {
+      width: 130px;
+      margin-left: auto;
+    }
+
+    .footer {
+      border-top: 1px solid var(--ink-line);
+      padding: 28px 0 34px;
+      color: var(--ink-muted);
+      font-weight: 800;
+      text-align: center;
+    }
+
+    @media (max-width: 1120px) {
+      .market-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .pair-card {
+        grid-column: 1 / -1;
+      }
+
+      .pair-search {
+        grid-column: 1 / -1;
+      }
+
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 860px) {
+      .nav-links,
+      .search {
+        display: none;
+      }
+
+      .hamburger {
+        display: grid;
+      }
+
+      .nav {
+        height: 66px;
+      }
+
+      .chart-body {
+        padding-left: 46px;
+      }
+
+      .live-line,
+      .volume-bars {
+        left: 46px;
+      }
+
+      .candles {
+        grid-template-columns: repeat(20, 1fr);
+      }
+
+      .candle:nth-child(n + 21),
+      .volume-bars span:nth-child(n + 21) {
+        display: none;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .shell {
+        width: min(100% - 20px, var(--max));
+      }
+
+      .market-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .pair-card {
+        align-items: flex-start;
+      }
+
+      .panel-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .segmented {
+        width: 100%;
+      }
+
+      .segmented button {
+        flex: 1;
+      }
+
+      .chart-panel {
+        min-height: 420px;
+      }
+
+      .chart-body {
+        min-height: 350px;
+      }
+
+      .book-table th,
+      .book-table td,
+      .data-table th,
+      .data-table td {
+        padding: 9px 10px;
+        font-size: 0.78rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="shell nav" aria-label="Primary">
+      <a class="brand" href="#trade" aria-label="Lumen Crypto Exchange home">
+        <span class="brand-mark" aria-hidden="true"><span></span></span>
+        <span>Lumen</span>
+      </a>
+      <nav class="nav-links" aria-label="Main navigation">
+        <a href="#trade" aria-current="page">Trade</a>
+        <a href="#markets">Markets</a>
+        <a href="#portfolio">Portfolio</a>
+        <a href="#orders">Orders</a>
+        <a href="#wallet">Wallet</a>
+      </nav>
+      <div class="nav-tools">
+        <label class="search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="m21 21-4.3-4.3M10.8 18a7.2 7.2 0 1 1 0-14.4 7.2 7.2 0 0 1 0 14.4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          <span class="sr-only">Search markets</span>
+          <input type="search" aria-label="Search markets" value="BTC, ETH, SOL">
+        </label>
+        <button class="icon-btn" aria-label="Notifications">
+          <span class="badge" aria-hidden="true"></span>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M18 8a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9ZM13.7 21a2 2 0 0 1-3.4 0" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <button class="icon-btn hamburger" id="menuButton" aria-label="Open menu" aria-controls="mobileDrawer" aria-expanded="false">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="overlay" id="drawerOverlay" tabindex="-1"></div>
+  <aside class="drawer" id="mobileDrawer" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="drawer-head">
+      <a class="brand" href="#trade">
+        <span class="brand-mark" aria-hidden="true"><span></span></span>
+        <span>Lumen</span>
+      </a>
+      <button class="icon-btn" id="closeDrawer" aria-label="Close menu">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </div>
+    <nav>
+      <a href="#trade">Trade</a>
+      <a href="#markets">Markets</a>
+      <a href="#portfolio">Portfolio</a>
+      <a href="#orders">Orders</a>
+      <a href="#wallet">Wallet</a>
+    </nav>
+  </aside>
+
+  <main class="main shell" id="trade">
+    <section class="market-strip" id="markets" aria-label="Trading pair selector">
+      <article class="pair-card">
+        <div class="coin-stack" aria-hidden="true">
+          <span class="coin btc">B</span>
+          <span class="coin usdt">T</span>
+        </div>
+        <div>
+          <h1 class="pair-title">BTC/USDT</h1>
+          <div class="pair-sub">Bitcoin tether perpetual desk</div>
+        </div>
+      </article>
+      <article class="metric">
+        <div class="metric-label">24h change</div>
+        <div class="metric-value positive">+4.28%</div>
+      </article>
+      <article class="metric">
+        <div class="metric-label">24h high</div>
+        <div class="metric-value">$72,844.20</div>
+      </article>
+      <article class="metric">
+        <div class="metric-label">24h low</div>
+        <div class="metric-value">$68,412.60</div>
+      </article>
+      <article class="metric">
+        <div class="metric-label">Volume</div>
+        <div class="metric-value">18.42K BTC</div>
+      </article>
+      <label class="pair-search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="m21 21-4.3-4.3M10.8 18a7.2 7.2 0 1 1 0-14.4 7.2 7.2 0 0 1 0 14.4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <span class="sr-only">Find a trading pair</span>
+        <input type="search" aria-label="Find a trading pair" value="BTC/USDT">
+      </label>
+    </section>
+
+    <div class="dashboard">
+      <div class="left-grid">
+        <section class="panel chart-panel" aria-labelledby="chartTitle">
+          <div class="panel-head">
+            <div>
+              <h2 class="panel-title" id="chartTitle">Live Price Chart</h2>
+              <div class="panel-note">Last traded price $71,284.50</div>
+            </div>
+            <div class="segmented" role="tablist" aria-label="Timeframe">
+              <button class="active" type="button" role="tab" aria-selected="true">1H</button>
+              <button type="button" role="tab" aria-selected="false">1D</button>
+              <button type="button" role="tab" aria-selected="false">1W</button>
+              <button type="button" role="tab" aria-selected="false">1M</button>
+            </div>
+          </div>
+          <div class="chart-body" aria-label="Candlestick chart visualization">
+            <span class="chart-price p1">$73K</span>
+            <span class="chart-price p2">$72K</span>
+            <span class="chart-price p3">$71K</span>
+            <span class="chart-price p4">$70K</span>
+            <span class="chart-price p5">$69K</span>
+            <span class="live-line" aria-hidden="true"></span>
+            <span class="live-tag">$71,284.50</span>
+            <div class="candles" aria-hidden="true">
+              <span class="candle rise" style="--body: 76px; --wick: 132px; --lift: -18px;"></span>
+              <span class="candle fall" style="--body: 94px; --wick: 150px; --lift: 4px;"></span>
+              <span class="candle rise" style="--body: 52px; --wick: 112px; --lift: -30px;"></span>
+              <span class="candle rise" style="--body: 118px; --wick: 184px; --lift: -10px;"></span>
+              <span class="candle fall" style="--body: 70px; --wick: 144px; --lift: 18px;"></span>
+              <span class="candle rise" style="--body: 128px; --wick: 202px; --lift: -32px;"></span>
+              <span class="candle rise" style="--body: 84px; --wick: 156px; --lift: -42px;"></span>
+              <span class="candle fall" style="--body: 110px; --wick: 176px; --lift: 0px;"></span>
+              <span class="candle rise" style="--body: 64px; --wick: 118px; --lift: -20px;"></span>
+              <span class="candle fall" style="--body: 88px; --wick: 160px; --lift: 20px;"></span>
+              <span class="candle fall" style="--body: 72px; --wick: 142px; --lift: 32px;"></span>
+              <span class="candle rise" style="--body: 136px; --wick: 210px; --lift: -24px;"></span>
+              <span class="candle rise" style="--body: 92px; --wick: 170px; --lift: -38px;"></span>
+              <span class="candle fall" style="--body: 54px; --wick: 122px; --lift: -8px;"></span>
+              <span class="candle rise" style="--body: 116px; --wick: 196px; --lift: -52px;"></span>
+              <span class="candle fall" style="--body: 82px; --wick: 152px; --lift: -14px;"></span>
+              <span class="candle rise" style="--body: 70px; --wick: 130px; --lift: -44px;"></span>
+              <span class="candle rise" style="--body: 146px; --wick: 218px; --lift: -60px;"></span>
+              <span class="candle fall" style="--body: 78px; --wick: 156px; --lift: -22px;"></span>
+              <span class="candle rise" style="--body: 106px; --wick: 180px; --lift: -48px;"></span>
+              <span class="candle fall" style="--body: 118px; --wick: 204px; --lift: -12px;"></span>
+              <span class="candle rise" style="--body: 58px; --wick: 126px; --lift: -34px;"></span>
+              <span class="candle rise" style="--body: 122px; --wick: 198px; --lift: -66px;"></span>
+              <span class="candle fall" style="--body: 84px; --wick: 156px; --lift: -28px;"></span>
+              <span class="candle rise" style="--body: 96px; --wick: 172px; --lift: -54px;"></span>
+              <span class="candle fall" style="--body: 66px; --wick: 136px; --lift: -18px;"></span>
+              <span class="candle rise" style="--body: 134px; --wick: 212px; --lift: -74px;"></span>
+              <span class="candle rise" style="--body: 82px; --wick: 154px; --lift: -68px;"></span>
+              <span class="candle fall" style="--body: 108px; --wick: 188px; --lift: -36px;"></span>
+              <span class="candle rise" style="--body: 74px; --wick: 148px; --lift: -58px;"></span>
+              <span class="candle rise" style="--body: 116px; --wick: 196px; --lift: -82px;"></span>
+              <span class="candle fall" style="--body: 72px; --wick: 150px; --lift: -46px;"></span>
+            </div>
+            <div class="volume-bars" aria-hidden="true">
+              <span style="--v: 32%;"></span><span style="--v: 48%;"></span><span style="--v: 26%;"></span><span style="--v: 72%;"></span>
+              <span style="--v: 40%;"></span><span style="--v: 82%;"></span><span style="--v: 54%;"></span><span style="--v: 66%;"></span>
+              <span style="--v: 36%;"></span><span style="--v: 58%;"></span><span style="--v: 44%;"></span><span style="--v: 92%;"></span>
+              <span style="--v: 64%;"></span><span style="--v: 30%;"></span><span style="--v: 86%;"></span><span style="--v: 50%;"></span>
+              <span style="--v: 42%;"></span><span style="--v: 96%;"></span><span style="--v: 46%;"></span><span style="--v: 70%;"></span>
+              <span style="--v: 78%;"></span><span style="--v: 38%;"></span><span style="--v: 88%;"></span><span style="--v: 52%;"></span>
+              <span style="--v: 68%;"></span><span style="--v: 34%;"></span><span style="--v: 94%;"></span><span style="--v: 62%;"></span>
+              <span style="--v: 74%;"></span><span style="--v: 56%;"></span><span style="--v: 90%;"></span><span style="--v: 60%;"></span>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel orders-panel" id="orders" aria-labelledby="ordersTitle">
+          <div class="panel-head">
+            <div>
+              <h2 class="panel-title" id="ordersTitle">Open Orders</h2>
+              <div class="panel-note">Active orders across spot and perpetual markets</div>
+            </div>
+          </div>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Pair</th>
+                <th>Type</th>
+                <th>Side</th>
+                <th>Amount</th>
+                <th>Filled</th>
+                <th>Price</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>BTC/USDT</td>
+                <td>Limit</td>
+                <td class="side-buy">Buy</td>
+                <td>0.284 BTC</td>
+                <td><span class="fill-wrap">62%<span class="fill-track"><span style="--w: 62%;"></span></span></span></td>
+                <td>$70,900.00</td>
+                <td><button class="cancel-btn" type="button">Cancel</button></td>
+              </tr>
+              <tr>
+                <td>ETH/USDT</td>
+                <td>Limit</td>
+                <td class="side-sell">Sell</td>
+                <td>4.80 ETH</td>
+                <td><span class="fill-wrap">18%<span class="fill-track"><span style="--w: 18%;"></span></span></span></td>
+                <td>$3,985.50</td>
+                <td><button class="cancel-btn" type="button">Cancel</button></td>
+              </tr>
+              <tr>
+                <td>SOL/USDT</td>
+                <td>Market</td>
+                <td class="side-buy">Buy</td>
+                <td>72.00 SOL</td>
+                <td><span class="fill-wrap">41%<span class="fill-track"><span style="--w: 41%;"></span></span></span></td>
+                <td>$178.24</td>
+                <td><button class="cancel-btn" type="button">Cancel</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+      </div>
+
+      <aside class="right-grid" aria-label="Trading controls">
+        <section class="panel" aria-labelledby="bookTitle">
+          <div class="panel-head">
+            <div>
+              <h2 class="panel-title" id="bookTitle">Order Book</h2>
+              <div class="panel-note">Depth aggregated at 0.5 USDT</div>
+            </div>
+          </div>
+          <table class="book-table">
+            <thead>
+              <tr><th>Price</th><th>Amount</th><th>Total</th></tr>
+            </thead>
+            <tbody>
+              <tr class="ask-row" style="--depth: 86%;"><td class="negative">71,322.0</td><td>0.842</td><td>60,051</td></tr>
+              <tr class="ask-row" style="--depth: 72%;"><td class="negative">71,318.5</td><td>0.536</td><td>38,224</td></tr>
+              <tr class="ask-row" style="--depth: 58%;"><td class="negative">71,314.0</td><td>0.421</td><td>30,029</td></tr>
+              <tr class="ask-row" style="--depth: 44%;"><td class="negative">71,309.5</td><td>0.318</td><td>22,681</td></tr>
+              <tr class="ask-row" style="--depth: 32%;"><td class="negative">71,302.0</td><td>0.204</td><td>14,545</td></tr>
+            </tbody>
+          </table>
+          <div class="spread"><span>Spread 7.5</span><strong>$71,284.50</strong></div>
+          <table class="book-table">
+            <tbody>
+              <tr class="bid-row" style="--depth: 39%;"><td class="positive">71,280.0</td><td>0.268</td><td>19,101</td></tr>
+              <tr class="bid-row" style="--depth: 48%;"><td class="positive">71,276.5</td><td>0.336</td><td>23,949</td></tr>
+              <tr class="bid-row" style="--depth: 61%;"><td class="positive">71,270.0</td><td>0.482</td><td>34,357</td></tr>
+              <tr class="bid-row" style="--depth: 76%;"><td class="positive">71,264.5</td><td>0.618</td><td>44,048</td></tr>
+              <tr class="bid-row" style="--depth: 91%;"><td class="positive">71,258.0</td><td>0.804</td><td>57,305</td></tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="panel" aria-labelledby="tradeTitle">
+          <div class="panel-head">
+            <div>
+              <h2 class="panel-title" id="tradeTitle">Trade BTC</h2>
+              <div class="panel-note">Available balance 24,920.80 USDT</div>
+            </div>
+          </div>
+          <form class="trade-form">
+            <div class="trade-tabs" role="tablist" aria-label="Side">
+              <button class="active buy" type="button" role="tab" aria-selected="true">Buy</button>
+              <button class="sell" type="button" role="tab" aria-selected="false">Sell</button>
+            </div>
+            <div class="field">
+              <label for="orderType">Order type</label>
+              <div class="field-control">
+                <select id="orderType" aria-label="Order type">
+                  <option>Limit</option>
+                  <option>Market</option>
+                </select>
+              </div>
+            </div>
+            <div class="field">
+              <label for="amount">Amount</label>
+              <div class="field-control">
+                <input id="amount" inputmode="decimal" value="0.2500" aria-label="Amount">
+                <span>BTC</span>
+              </div>
+            </div>
+            <div class="field">
+              <label for="price">Price</label>
+              <div class="field-control">
+                <input id="price" inputmode="decimal" value="71284.50" aria-label="Price">
+                <span>USDT</span>
+              </div>
+            </div>
+            <div class="total-box">
+              <span>Estimated total</span>
+              <strong>17,821.13 USDT</strong>
+            </div>
+            <button class="submit" type="submit">Place Buy Order</button>
+          </form>
+        </section>
+      </aside>
+    </div>
+
+    <section class="panel portfolio-panel" id="portfolio" aria-labelledby="portfolioTitle">
+      <div class="panel-head">
+        <div>
+          <h2 class="panel-title" id="portfolioTitle">Portfolio Overview</h2>
+          <div class="panel-note">Total equity $186,420.70 with cross-asset allocation</div>
+        </div>
+      </div>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Asset</th>
+            <th>Balance</th>
+            <th>Value</th>
+            <th>24h change</th>
+            <th>Allocation</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="asset-cell"><span class="asset-dot">B</span>Bitcoin</span></td>
+            <td>1.4820 BTC</td>
+            <td>$105,640.62</td>
+            <td class="positive">+4.28%</td>
+            <td><span class="allocation-track"><span style="--w: 57%;"></span></span></td>
+          </tr>
+          <tr>
+            <td><span class="asset-cell"><span class="asset-dot">E</span>Ethereum</span></td>
+            <td>12.940 ETH</td>
+            <td>$51,236.52</td>
+            <td class="positive">+2.11%</td>
+            <td><span class="allocation-track"><span style="--w: 28%;"></span></span></td>
+          </tr>
+          <tr>
+            <td><span class="asset-cell"><span class="asset-dot">S</span>Solana</span></td>
+            <td>124.80 SOL</td>
+            <td>$22,244.35</td>
+            <td class="negative">-1.46%</td>
+            <td><span class="allocation-track"><span style="--w: 12%;"></span></span></td>
+          </tr>
+          <tr id="wallet">
+            <td><span class="asset-cell"><span class="asset-dot">U</span>Tether</span></td>
+            <td>7,299.21 USDT</td>
+            <td>$7,299.21</td>
+            <td class="positive">+0.01%</td>
+            <td><span class="allocation-track"><span style="--w: 4%;"></span></span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell">Lumen Crypto Exchange — designed by Meridian Systems Studio</div>
+  </footer>
+
+  <script>
+    const menuButton = document.getElementById("menuButton");
+    const drawer = document.getElementById("mobileDrawer");
+    const closeDrawer = document.getElementById("closeDrawer");
+    const overlay = document.getElementById("drawerOverlay");
+    const drawerLinks = drawer.querySelectorAll("a");
+    const tabs = document.querySelectorAll(".segmented button, .trade-tabs button");
+
+    function setDrawer(open) {
+      drawer.classList.toggle("open", open);
+      overlay.classList.toggle("open", open);
+      document.body.classList.toggle("drawer-open", open);
+      menuButton.setAttribute("aria-expanded", String(open));
+      drawer.setAttribute("aria-hidden", String(!open));
+      if (open) {
+        closeDrawer.focus();
+      } else {
+        menuButton.focus();
+      }
+    }
+
+    menuButton.addEventListener("click", () => setDrawer(true));
+    closeDrawer.addEventListener("click", () => setDrawer(false));
+    overlay.addEventListener("click", () => setDrawer(false));
+
+    drawerLinks.forEach((link) => {
+      link.addEventListener("click", () => setDrawer(false));
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && drawer.classList.contains("open")) {
+        setDrawer(false);
+      }
+    });
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        const group = tab.parentElement.querySelectorAll("button");
+        group.forEach((item) => {
+          item.classList.remove("active");
+          item.setAttribute("aria-selected", "false");
+        });
+        tab.classList.add("active");
+        tab.setAttribute("aria-selected", "true");
+      });
+    });
+  </script>
+</body>
+</html>
