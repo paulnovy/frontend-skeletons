@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Zen Wellness Retreat</title>
+  <meta name="description" content="A premium wellness retreat booking skeleton for programs, practitioners, meditation guides, and guided booking.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{--cloud:#F6F8FC;--ink:#19212B;--indigo:#4F46E5;--cyan:#06B6D4;--lime:#A3E635;--coral:#FB7185;--cloud-80:rgba(246,248,252,0.8);--cloud-92:rgba(246,248,252,0.92);--ink-04:rgba(25,33,43,0.04);--ink-07:rgba(25,33,43,0.07);--ink-10:rgba(25,33,43,0.1);--ink-16:rgba(25,33,43,0.16);--ink-42:rgba(25,33,43,0.42);--ink-64:rgba(25,33,43,0.64);--ink-78:rgba(25,33,43,0.78);--indigo-08:rgba(79,70,229,0.08);--indigo-12:rgba(79,70,229,0.12);--indigo-18:rgba(79,70,229,0.18);--indigo-28:rgba(79,70,229,0.28);--cyan-08:rgba(6,182,212,0.08);--cyan-12:rgba(6,182,212,0.12);--cyan-20:rgba(6,182,212,0.2);--lime-14:rgba(163,230,53,0.14);--lime-28:rgba(163,230,53,0.28);--coral-10:rgba(251,113,133,0.1);--coral-18:rgba(251,113,133,0.18);--white-glass:rgba(246,248,252,0.66);--shadow:0 24px 70px rgba(25,33,43,0.1);--radius:8px;--max:1180px;}
+    *{box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{margin:0;background:var(--cloud);color:var(--ink);font-family:"Inter",system-ui,sans-serif;line-height:1.5;}
+    body.drawer-open{overflow:hidden;}
+    a{color:inherit;text-decoration:none;}
+    button,input,select{font:inherit;}
+    button{cursor:pointer;}
+    h1,h2,h3{font-family:"Manrope",system-ui,sans-serif;margin:0;letter-spacing:0;line-height:1.05;}
+    p{margin:0;}
+    .skip-link{left:16px;position:fixed;top:-80px;z-index:80;background:var(--ink);color:var(--cloud);border-radius:var(--radius);padding:10px 14px;transition:top 180ms ease;}
+    .skip-link:focus{top:16px;}
+    :focus-visible{outline:3px solid var(--cyan);outline-offset:3px;}
+    .page-shell{min-height:100vh;overflow:hidden;}
+    .topbar{position:sticky;top:0;z-index:50;border-bottom:1px solid var(--ink-07);backdrop-filter:blur(18px);background:var(--cloud-92);}
+    .nav{align-items:center;display:flex;gap:28px;justify-content:space-between;margin:0 auto;max-width:var(--max);min-height:76px;padding:0 24px;}
+    .brand{align-items:center;display:inline-flex;gap:12px;font-family:"Manrope",system-ui,sans-serif;font-size:1.08rem;font-weight:800;}
+    .brand-mark{align-items:center;background:linear-gradient(135deg,var(--indigo),var(--cyan));border-radius:var(--radius);color:var(--cloud);display:inline-flex;height:38px;justify-content:center;width:38px;}
+    .nav-links{align-items:center;display:flex;gap:4px;list-style:none;margin:0;padding:0;}
+    .nav-links a{border-radius:var(--radius);color:var(--ink-64);display:inline-flex;font-size:0.92rem;font-weight:700;padding:10px 12px;}
+    .nav-links a:hover{background:var(--ink-04);color:var(--ink);}
+    .button{align-items:center;border:0;border-radius:var(--radius);display:inline-flex;font-weight:800;gap:8px;justify-content:center;min-height:44px;padding:0 16px;transition:transform 180ms ease,box-shadow 180ms ease,background 180ms ease;white-space:nowrap;}
+    .button:hover{transform:translateY(-1px);}
+    .button.primary{background:var(--indigo);box-shadow:0 14px 32px var(--indigo-28);color:var(--cloud);}
+    .button.dark{background:var(--ink);color:var(--cloud);}
+    .button.soft{background:var(--cloud);color:var(--ink);border:1px solid var(--ink-10);}
+    .menu-toggle{align-items:center;background:var(--cloud);border:1px solid var(--ink-10);border-radius:var(--radius);color:var(--ink);display:none;height:44px;justify-content:center;width:44px;}
+    .menu-icon,.menu-icon::before,.menu-icon::after{background:var(--ink);border-radius:999px;display:block;height:2px;width:18px;}
+    .menu-icon{position:relative;}
+    .menu-icon::before,.menu-icon::after{content:"";left:0;position:absolute;}
+    .menu-icon::before{top:-6px;}
+    .menu-icon::after{top:6px;}
+    .drawer-scrim{background:rgba(25,33,43,0.42);inset:0;opacity:0;pointer-events:none;position:fixed;transition:opacity 220ms ease;z-index:60;}
+    .drawer{background:var(--cloud);border-left:1px solid var(--ink-10);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:20px;height:100vh;max-width:360px;padding:22px;position:fixed;right:0;top:0;transform:translateX(105%);transition:transform 240ms ease;width:calc(100vw - 38px);z-index:70;}
+    .drawer.open,.drawer-scrim.open{pointer-events:auto;}
+    .drawer.open{transform:translateX(0);}
+    .drawer-scrim.open{opacity:1;}
+    .drawer-head{align-items:center;display:flex;justify-content:space-between;}
+    .drawer-close{align-items:center;background:var(--ink);border:0;border-radius:var(--radius);color:var(--cloud);display:inline-flex;font-size:1.25rem;height:42px;justify-content:center;width:42px;}
+    .drawer nav{display:grid;gap:8px;}
+    .drawer nav a{border:1px solid var(--ink-07);border-radius:var(--radius);color:var(--ink);font-weight:800;padding:14px 12px;}
+    main{display:grid;gap:72px;}
+    .section{margin:0 auto;max-width:var(--max);padding:0 24px;width:100%;}
+    .section-heading{align-items:end;display:flex;gap:24px;justify-content:space-between;margin-bottom:28px;}
+    .eyebrow{color:var(--indigo);font-size:0.78rem;font-weight:900;letter-spacing:0.12em;text-transform:uppercase;}
+    .section-heading h2{font-size:clamp(2rem,4vw,3.25rem);max-width:720px;}
+    .section-heading p{color:var(--ink-64);max-width:420px;}
+    .hero{background:radial-gradient(circle at 20% 12%,var(--cyan-20),transparent 28%),radial-gradient(circle at 88% 18%,var(--lime-28),transparent 30%),linear-gradient(135deg,var(--cloud) 0%,rgba(79,70,229,0.12) 55%,rgba(6,182,212,0.12) 100%);border-bottom:1px solid var(--ink-07);padding:72px 0 52px;}
+    .hero-grid{align-items:center;display:grid;gap:34px;grid-template-columns:minmax(0,1.05fr) minmax(320px,0.72fr);margin:0 auto;max-width:var(--max);padding:0 24px;}
+    .badge{align-items:center;background:var(--cloud-80);border:1px solid var(--ink-10);border-radius:999px;color:var(--ink);display:inline-flex;font-weight:800;gap:8px;padding:8px 12px;}
+    .pulse{background:var(--cyan);border-radius:999px;box-shadow:0 0 0 8px var(--cyan-12);height:10px;width:10px;}
+    .hero h1{font-size:clamp(3rem,7vw,6.7rem);margin-top:22px;max-width:850px;}
+    .hero-copy{color:var(--ink-64);font-size:1.14rem;margin-top:22px;max-width:630px;}
+    .search-panel{background:var(--cloud-92);border:1px solid var(--ink-10);border-radius:var(--radius);box-shadow:var(--shadow);display:grid;gap:14px;margin-top:28px;max-width:730px;padding:16px;}
+    .search-fields{display:grid;gap:12px;grid-template-columns:1fr 1fr auto;}
+    .field{display:grid;gap:7px;}
+    .field span,label{color:var(--ink-64);font-size:0.78rem;font-weight:800;text-transform:uppercase;}
+    input,select{background:var(--cloud);border:1px solid var(--ink-10);border-radius:var(--radius);color:var(--ink);min-height:46px;padding:0 12px;width:100%;}
+    .hero-card{background:var(--ink);border-radius:var(--radius);box-shadow:var(--shadow);color:var(--cloud);overflow:hidden;}
+    .hero-card-top{background:linear-gradient(135deg,rgba(79,70,229,0.48),rgba(6,182,212,0.3)),var(--ink);min-height:280px;padding:24px;position:relative;}
+    .sun{background:var(--lime);border-radius:999px;height:86px;position:absolute;right:28px;top:26px;width:86px;}
+    .terrace{border:1px solid rgba(246,248,252,0.36);border-radius:var(--radius);bottom:24px;display:grid;gap:10px;left:24px;padding:18px;position:absolute;right:24px;}
+    .wave{background:rgba(246,248,252,0.34);border-radius:999px;height:10px;}
+    .hero-card-body{display:grid;gap:16px;padding:22px;}
+    .stats{display:grid;gap:10px;grid-template-columns:repeat(3,1fr);}
+    .stat{background:rgba(246,248,252,0.08);border:1px solid rgba(246,248,252,0.12);border-radius:var(--radius);padding:12px;}
+    .stat strong{display:block;font-family:"Manrope",system-ui,sans-serif;font-size:1.35rem;}
+    .stat span{color:rgba(246,248,252,0.7);font-size:0.78rem;font-weight:700;}
+    .program-grid{display:grid;gap:18px;grid-template-columns:repeat(4,1fr);}
+    .card{background:var(--cloud);border:1px solid var(--ink-10);border-radius:var(--radius);box-shadow:0 18px 50px var(--ink-04);}
+    .program-card{display:grid;gap:18px;min-height:286px;padding:20px;}
+    .program-icon{align-items:center;background:var(--indigo-08);border-radius:var(--radius);color:var(--indigo);display:inline-flex;font-weight:900;height:48px;justify-content:center;width:48px;}
+    .program-card:nth-child(2) .program-icon,.program-card:nth-child(4) .program-icon{background:var(--cyan-08);color:var(--cyan);}
+    .program-card h3{font-size:1.45rem;}
+    .program-card p{color:var(--ink-64);font-size:0.95rem;}
+    .meta-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:auto;}
+    .pill{align-items:center;background:var(--ink-04);border:1px solid var(--ink-07);border-radius:999px;color:var(--ink-78);display:inline-flex;font-size:0.8rem;font-weight:800;gap:6px;padding:7px 10px;}
+    .pill.good{background:var(--lime-14);border-color:var(--lime-28);color:var(--ink);}
+    .pill.live{background:var(--cyan-08);border-color:var(--cyan-20);color:var(--ink);}
+    .price{color:var(--indigo);font-family:"Manrope",system-ui,sans-serif;font-size:1.7rem;font-weight:800;}
+    .practitioner-grid{display:grid;gap:18px;grid-template-columns:repeat(3,1fr);}
+    .practitioner-card{display:grid;gap:16px;padding:18px;}
+    .avatar{align-items:center;background:linear-gradient(135deg,var(--indigo-18),var(--cyan-12));border-radius:var(--radius);color:var(--indigo);display:inline-flex;font-family:"Manrope",system-ui,sans-serif;font-size:1.4rem;font-weight:800;height:64px;justify-content:center;width:64px;}
+    .profile-head{align-items:center;display:flex;gap:14px;}
+    .rating{color:var(--indigo);font-size:0.95rem;font-weight:900;}
+    .profile-title{color:var(--ink-64);font-size:0.92rem;font-weight:700;margin-top:4px;}
+    .bio{color:var(--ink-64);font-size:0.95rem;}
+    .meditation-band{background:var(--ink);color:var(--cloud);padding:70px 0;}
+    .meditation-band .section-heading p,.meditation-band .eyebrow{color:rgba(246,248,252,0.72);}
+    .guide-list{display:grid;gap:12px;}
+    .guide-item{align-items:center;background:rgba(246,248,252,0.06);border:1px solid rgba(246,248,252,0.1);border-radius:var(--radius);display:grid;gap:18px;grid-template-columns:auto 1fr auto;padding:14px;}
+    .play-button{align-items:center;background:var(--cyan);border:0;border-radius:999px;color:var(--ink);display:inline-flex;font-weight:900;height:48px;justify-content:center;width:48px;}
+    .guide-title{font-family:"Manrope",system-ui,sans-serif;font-size:1.15rem;font-weight:800;}
+    .guide-meta{color:rgba(246,248,252,0.66);font-size:0.9rem;margin-top:4px;}
+    .difficulty{background:rgba(163,230,53,0.14);border:1px solid rgba(163,230,53,0.28);border-radius:999px;color:var(--cloud);font-weight:800;padding:8px 10px;}
+    .booking-layout{align-items:start;display:grid;gap:22px;grid-template-columns:0.86fr 1.14fr;}
+    .progress-panel{background:var(--ink);color:var(--cloud);padding:22px;}
+    .progress-list{display:grid;gap:14px;list-style:none;margin:22px 0 0;padding:0;}
+    .progress-step{align-items:center;border:1px solid rgba(246,248,252,0.12);border-radius:var(--radius);display:flex;gap:12px;padding:14px;}
+    .progress-step.active{background:rgba(79,70,229,0.28);border-color:rgba(246,248,252,0.28);}
+    .step-number{align-items:center;background:var(--cloud);border-radius:999px;color:var(--ink);display:inline-flex;font-weight:900;height:34px;justify-content:center;width:34px;}
+    .booking-form{display:grid;gap:18px;padding:22px;}
+    .form-grid{display:grid;gap:14px;grid-template-columns:repeat(2,1fr);}
+    .confirm-box{background:var(--indigo-08);border:1px solid var(--indigo-18);border-radius:var(--radius);color:var(--ink-78);padding:16px;}
+    .confirm-box strong{color:var(--ink);display:block;margin-bottom:4px;}
+    .testimonial-grid{display:grid;gap:18px;grid-template-columns:repeat(3,1fr);}
+    .quote-card{display:grid;gap:16px;padding:20px;}
+    .quote-mark{color:var(--coral);font-family:"Manrope",system-ui,sans-serif;font-size:3rem;line-height:0.8;}
+    .quote-card blockquote{color:var(--ink-78);font-size:1rem;margin:0;}
+    .guest{border-top:1px solid var(--ink-07);padding-top:14px;}
+    .guest strong{display:block;font-family:"Manrope",system-ui,sans-serif;}
+    .guest span{color:var(--ink-64);font-size:0.9rem;}
+    .about-band{background:linear-gradient(135deg,var(--indigo-08),var(--cyan-08)),var(--cloud);border-bottom:1px solid var(--ink-07);border-top:1px solid var(--ink-07);padding:64px 0;}
+    .about-grid{align-items:center;display:grid;gap:26px;grid-template-columns:1fr 1fr;}
+    .about-copy{display:grid;gap:16px;}
+    .about-copy p{color:var(--ink-64);}
+    .wellness-map{background:var(--cloud-80);border:1px solid var(--ink-10);border-radius:var(--radius);display:grid;gap:12px;padding:18px;}
+    .map-row{align-items:center;display:grid;gap:12px;grid-template-columns:92px 1fr auto;}
+    .bar{background:var(--ink-07);border-radius:999px;height:10px;overflow:hidden;}
+    .bar span{background:linear-gradient(90deg,var(--indigo),var(--cyan));border-radius:inherit;display:block;height:100%;}
+    footer{background:var(--ink);color:var(--cloud);margin-top:10px;padding:42px 24px;}
+    .footer-inner{align-items:center;display:flex;gap:18px;justify-content:space-between;margin:0 auto;max-width:var(--max);}
+    .footer-links{display:flex;flex-wrap:wrap;gap:14px;}
+    .footer-links a{color:rgba(246,248,252,0.72);font-weight:700;}
+    @media (max-width:980px){.nav-links,.topbar .button.primary{display:none;}
+    .menu-toggle{display:inline-flex;}
+    .hero-grid,.booking-layout,.about-grid{grid-template-columns:1fr;}
+    .program-grid,.practitioner-grid,.testimonial-grid{grid-template-columns:repeat(2,1fr);}
+    }
+    @media (max-width:640px){main{gap:54px;}
+    .nav{min-height:66px;padding:0 16px;}
+    .hero{padding:42px 0 38px;}
+    .hero-grid,.section{padding:0 16px;}
+    .hero h1{font-size:3.15rem;}
+    .section-heading{align-items:start;flex-direction:column;}
+    .search-fields,.program-grid,.practitioner-grid,.testimonial-grid,.form-grid{grid-template-columns:1fr;}
+    .stats{grid-template-columns:1fr;}
+    .guide-item{align-items:start;grid-template-columns:auto 1fr;}
+    .difficulty{grid-column:2;justify-self:start;}
+    .footer-inner{align-items:start;flex-direction:column;}
+    }
+    @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:0.01ms !important;scroll-behavior:auto !important;transition-duration:0.01ms !important;}
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="page-shell">
+    <header class="topbar">
+      <div class="nav" aria-label="Main navigation">
+        <a class="brand" href="#top" aria-label="Zen Wellness Retreat home">
+          <span class="brand-mark">Z</span>
+          <span>Zen Wellness Retreat</span>
+        </a>
+        <nav aria-label="Primary">
+          <ul class="nav-links">
+            <li><a href="#programs">Programs</a></li>
+            <li><a href="#practitioners">Practitioners</a></li>
+            <li><a href="#meditation">Meditation</a></li>
+            <li><a href="#booking">Booking</a></li>
+            <li><a href="#about">About</a></li>
+          </ul>
+        </nav>
+        <a class="button primary" href="#booking">Book Now</a>
+        <button class="menu-toggle" type="button" aria-label="Open menu" aria-controls="mobileDrawer" aria-expanded="false">
+          <span class="menu-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+    </header>
+
+    <div class="drawer-scrim" data-close-drawer></div>
+    <aside class="drawer" id="mobileDrawer" aria-label="Mobile menu" aria-hidden="true">
+      <div class="drawer-head">
+        <a class="brand" href="#top">
+          <span class="brand-mark">Z</span>
+          <span>Zen</span>
+        </a>
+        <button class="drawer-close" type="button" aria-label="Close menu" data-close-drawer>×</button>
+      </div>
+      <nav>
+        <a href="#programs">Programs</a>
+        <a href="#practitioners">Practitioners</a>
+        <a href="#meditation">Meditation</a>
+        <a href="#booking">Booking</a>
+        <a href="#about">About</a>
+      </nav>
+      <a class="button primary" href="#booking">Book Now</a>
+    </aside>
+
+    <main id="main">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero-grid">
+          <div>
+            <span class="badge">
+              <span class="pulse" aria-hidden="true"></span>
+              Big Sur coast, California
+            </span>
+            <h1 id="hero-title">Find stillness in a retreat shaped around you.</h1>
+            <p class="hero-copy">
+              Explore restorative programs, trusted practitioners, and guided meditation tracks before reserving a stay at our oceanfront wellness sanctuary.
+            </p>
+            <form class="search-panel" aria-label="Retreat search">
+              <div class="search-fields">
+                <label class="field">
+                  <span>Arrival</span>
+                  <input type="date" value="2026-06-18" aria-label="Arrival date">
+                </label>
+                <label class="field">
+                  <span>Program</span>
+                  <select aria-label="Program type">
+                    <option>Yoga Reset</option>
+                    <option>Meditation Immersion</option>
+                    <option>Detox Renewal</option>
+                    <option>Sound Healing</option>
+                  </select>
+                </label>
+                <button class="button dark" type="submit">Search</button>
+              </div>
+            </form>
+          </div>
+          <div class="hero-card" aria-label="Retreat availability overview">
+            <div class="hero-card-top">
+              <span class="sun" aria-hidden="true"></span>
+              <div class="terrace" aria-hidden="true">
+                <span class="wave" style="width: 86%;"></span>
+                <span class="wave" style="width: 68%;"></span>
+                <span class="wave" style="width: 78%;"></span>
+              </div>
+            </div>
+            <div class="hero-card-body">
+              <div>
+                <p class="eyebrow">June retreats now open</p>
+                <h2>18 quiet rooms, 6 ocean decks, 4 daily guide circles.</h2>
+              </div>
+              <div class="stats">
+                <div class="stat">
+                  <strong>4.9</strong>
+                  <span>guest rating</span>
+                </div>
+                <div class="stat">
+                  <strong>12</strong>
+                  <span>practitioners</span>
+                </div>
+                <div class="stat">
+                  <strong>7</strong>
+                  <span>night stays</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="programs" aria-labelledby="programs-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Program exploration</p>
+            <h2 id="programs-title">Choose the rhythm your body is asking for.</h2>
+          </div>
+          <p>Each retreat combines daily practice, chef-led meals, guided reflection, and free time for ocean walks.</p>
+        </div>
+        <div class="program-grid">
+          <article class="card program-card">
+            <span class="program-icon">Y</span>
+            <div>
+              <h3>Yoga Reset</h3>
+              <p>Morning vinyasa, evening yin, posture coaching, and breathwork for grounded energy.</p>
+            </div>
+            <div class="meta-row">
+              <span class="pill">5 days</span>
+              <span class="pill good">Gentle</span>
+            </div>
+            <p class="price">$1,840</p>
+          </article>
+          <article class="card program-card">
+            <span class="program-icon">M</span>
+            <div>
+              <h3>Meditation Immersion</h3>
+              <p>Silent mornings, mindful movement, journaling prompts, and personal integration sessions.</p>
+            </div>
+            <div class="meta-row">
+              <span class="pill">7 days</span>
+              <span class="pill live">Deep focus</span>
+            </div>
+            <p class="price">$2,320</p>
+          </article>
+          <article class="card program-card">
+            <span class="program-icon">D</span>
+            <div>
+              <h3>Detox Renewal</h3>
+              <p>Plant-forward nutrition, infrared sauna, lymphatic movement, and sleep recovery planning.</p>
+            </div>
+            <div class="meta-row">
+              <span class="pill">6 days</span>
+              <span class="pill good">Moderate</span>
+            </div>
+            <p class="price">$2,080</p>
+          </article>
+          <article class="card program-card">
+            <span class="program-icon">S</span>
+            <div>
+              <h3>Sound Healing</h3>
+              <p>Crystal bowls, nervous system education, ocean listening walks, and restorative rest blocks.</p>
+            </div>
+            <div class="meta-row">
+              <span class="pill">4 days</span>
+              <span class="pill live">Restorative</span>
+            </div>
+            <p class="price">$1,560</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="practitioners" aria-labelledby="practitioners-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Practitioner profiles</p>
+            <h2 id="practitioners-title">Meet the guides holding the experience.</h2>
+          </div>
+          <p>Browse specialists across movement, meditation, nutrition, and therapeutic sound.</p>
+        </div>
+        <div class="practitioner-grid">
+          <article class="card practitioner-card">
+            <div class="profile-head">
+              <span class="avatar">AV</span>
+              <div>
+                <h3>Ana Vale</h3>
+                <p class="profile-title">Somatic yoga lead</p>
+                <p class="rating" aria-label="Rated five stars">★★★★★ 5.0</p>
+              </div>
+            </div>
+            <p class="bio">Ana blends trauma-informed sequencing with gentle strength work for guests rebuilding trust in movement.</p>
+            <span class="pill good">Available Jun 18</span>
+          </article>
+          <article class="card practitioner-card">
+            <div class="profile-head">
+              <span class="avatar">RK</span>
+              <div>
+                <h3>Ravi Kaur</h3>
+                <p class="profile-title">Meditation teacher</p>
+                <p class="rating" aria-label="Rated four point nine stars">★★★★★ 4.9</p>
+              </div>
+            </div>
+            <p class="bio">Ravi teaches steady attention practices, compassion training, and practical tools for city life re-entry.</p>
+            <span class="pill live">2 seats this week</span>
+          </article>
+          <article class="card practitioner-card">
+            <div class="profile-head">
+              <span class="avatar">MS</span>
+              <div>
+                <h3>Mira Sol</h3>
+                <p class="profile-title">Nutrition therapist</p>
+                <p class="rating" aria-label="Rated four point eight stars">★★★★★ 4.8</p>
+              </div>
+            </div>
+            <p class="bio">Mira designs seasonal menus and guest plans that support digestion, energy, and sustainable habits.</p>
+            <span class="pill good">Open consults</span>
+          </article>
+        </div>
+      </section>
+
+      <section class="meditation-band" id="meditation" aria-labelledby="meditation-title">
+        <div class="section">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Meditation guides</p>
+              <h2 id="meditation-title">Sample the quiet before you arrive.</h2>
+            </div>
+            <p>Short guided practices help guests prepare, settle in, and keep the benefits alive after departure.</p>
+          </div>
+          <div class="guide-list">
+            <article class="guide-item">
+              <button class="play-button" type="button" aria-label="Play sunrise breath meditation">▶</button>
+              <div>
+                <h3 class="guide-title">Sunrise Breath Reset</h3>
+                <p class="guide-meta">12 minutes · breathwork · Ana Vale</p>
+              </div>
+              <span class="difficulty">Beginner</span>
+            </article>
+            <article class="guide-item">
+              <button class="play-button" type="button" aria-label="Play ocean body scan">▶</button>
+              <div>
+                <h3 class="guide-title">Ocean Body Scan</h3>
+                <p class="guide-meta">18 minutes · relaxation · Ravi Kaur</p>
+              </div>
+              <span class="difficulty">All levels</span>
+            </article>
+            <article class="guide-item">
+              <button class="play-button" type="button" aria-label="Play evening release sound meditation">▶</button>
+              <div>
+                <h3 class="guide-title">Evening Release</h3>
+                <p class="guide-meta">24 minutes · sound bath · Mira Sol</p>
+              </div>
+              <span class="difficulty">Deep rest</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="booking" aria-labelledby="booking-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Booking flow</p>
+            <h2 id="booking-title">Reserve in three clear steps.</h2>
+          </div>
+          <p>The skeleton includes a calm checkout path for program choice, travel dates, and confirmation details.</p>
+        </div>
+        <div class="booking-layout">
+          <aside class="card progress-panel" aria-label="Booking progress">
+            <p class="eyebrow">Progress</p>
+            <h3>Select Program → Choose Dates → Confirm</h3>
+            <ol class="progress-list">
+              <li class="progress-step active">
+                <span class="step-number">1</span>
+                <span>Select Program</span>
+              </li>
+              <li class="progress-step">
+                <span class="step-number">2</span>
+                <span>Choose Dates</span>
+              </li>
+              <li class="progress-step">
+                <span class="step-number">3</span>
+                <span>Confirm</span>
+              </li>
+            </ol>
+          </aside>
+          <form class="card booking-form">
+            <div class="form-grid">
+              <label class="field">
+                <span>Program</span>
+                <select>
+                  <option>Meditation Immersion</option>
+                  <option>Yoga Reset</option>
+                  <option>Detox Renewal</option>
+                  <option>Sound Healing</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Room</span>
+                <select>
+                  <option>Ocean View Suite</option>
+                  <option>Garden Studio</option>
+                  <option>Shared Loft</option>
+                </select>
+              </label>
+              <label class="field">
+                <span>Arrival</span>
+                <input type="date" value="2026-06-18">
+              </label>
+              <label class="field">
+                <span>Departure</span>
+                <input type="date" value="2026-06-25">
+              </label>
+              <label class="field">
+                <span>Guest name</span>
+                <input type="text" value="Jordan Lee">
+              </label>
+              <label class="field">
+                <span>Email</span>
+                <input type="email" value="jordan@example.com">
+              </label>
+            </div>
+            <div class="confirm-box">
+              <strong>Ready to confirm</strong>
+              Meditation Immersion · Ocean View Suite · seven nights · estimated total $2,320 before travel extras.
+            </div>
+            <button class="button primary" type="submit">Confirm Stay</button>
+          </form>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="testimonials-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Testimonials</p>
+            <h2 id="testimonials-title">Guests leave with practices they actually keep.</h2>
+          </div>
+          <p>Every story highlights a specific stay, outcome, and post-retreat ritual.</p>
+        </div>
+        <div class="testimonial-grid">
+          <article class="card quote-card">
+            <span class="quote-mark" aria-hidden="true">“</span>
+            <blockquote>The meditation immersion gave me a daily practice that survived my inbox and commute.</blockquote>
+            <div class="guest">
+              <strong>Nadia Chen</strong>
+              <span>Meditation Immersion · ★★★★★</span>
+            </div>
+          </article>
+          <article class="card quote-card">
+            <span class="quote-mark" aria-hidden="true">“</span>
+            <blockquote>I arrived depleted and left with food, sleep, and movement routines that felt realistic.</blockquote>
+            <div class="guest">
+              <strong>Marco Silva</strong>
+              <span>Detox Renewal · ★★★★★</span>
+            </div>
+          </article>
+          <article class="card quote-card">
+            <span class="quote-mark" aria-hidden="true">“</span>
+            <blockquote>The sound sessions unlocked a kind of rest I had not felt in years.</blockquote>
+            <div class="guest">
+              <strong>Ellis Grant</strong>
+              <span>Sound Healing · ★★★★★</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="about-band" id="about" aria-labelledby="about-title">
+        <div class="section about-grid">
+          <div class="about-copy">
+            <p class="eyebrow">About the retreat</p>
+            <h2 id="about-title">A coastal sanctuary tuned for measurable restoration.</h2>
+            <p>
+              Zen Wellness Retreat pairs hospitality operations with clinical-grade calm: clear program capacity, practitioner availability, guest readiness, and follow-up care all live in one polished interface.
+            </p>
+            <div class="meta-row">
+              <span class="pill good">Chef-led meals</span>
+              <span class="pill live">Live guide roster</span>
+              <span class="pill">Ocean trails</span>
+            </div>
+          </div>
+          <div class="wellness-map" aria-label="Retreat focus mix">
+            <div class="map-row">
+              <strong>Rest</strong>
+              <span class="bar"><span style="width: 92%;"></span></span>
+              <span>92%</span>
+            </div>
+            <div class="map-row">
+              <strong>Practice</strong>
+              <span class="bar"><span style="width: 78%;"></span></span>
+              <span>78%</span>
+            </div>
+            <div class="map-row">
+              <strong>Nutrition</strong>
+              <span class="bar"><span style="width: 84%;"></span></span>
+              <span>84%</span>
+            </div>
+            <div class="map-row">
+              <strong>Support</strong>
+              <span class="bar"><span style="width: 88%;"></span></span>
+              <span>88%</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <div class="footer-inner">
+        <p>Zen Wellness Retreat — designed by Stillpoint Studio</p>
+        <nav class="footer-links" aria-label="Footer">
+          <a href="#programs">Programs</a>
+          <a href="#practitioners">Practitioners</a>
+          <a href="#meditation">Meditation</a>
+          <a href="#booking">Booking</a>
+        </nav>
+      </div>
+    </footer>
+  </div>
+
+  <script>
+    const menuButton = document.querySelector(".menu-toggle");
+    const drawer = document.querySelector("#mobileDrawer");
+    const scrim = document.querySelector(".drawer-scrim");
+    const closeControls = document.querySelectorAll("[data-close-drawer]");
+    const drawerLinks = drawer.querySelectorAll("a");
+    let lastFocus = null;
+
+    function setDrawer(open) {
+      lastFocus = open ? document.activeElement : lastFocus;
+      drawer.classList.toggle("open", open);
+      scrim.classList.toggle("open", open);
+      document.body.classList.toggle("drawer-open", open);
+      drawer.setAttribute("aria-hidden", String(!open));
+      menuButton.setAttribute("aria-expanded", String(open));
+      if (open) {
+        drawer.querySelector(".drawer-close").focus();
+      } else if (lastFocus) {
+        lastFocus.focus();
+      }
+    }
+
+    menuButton.addEventListener("click", () => setDrawer(true));
+
+    closeControls.forEach((control) => {
+      control.addEventListener("click", () => setDrawer(false));
+    });
+
+    drawerLinks.forEach((link) => {
+      link.addEventListener("click", () => setDrawer(false));
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && drawer.classList.contains("open")) {
+        setDrawer(false);
+      }
+      if (event.key !== "Tab" || !drawer.classList.contains("open")) {
+        return;
+      }
+      const focusable = drawer.querySelectorAll("a, button");
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
+
+    document.querySelectorAll("form").forEach((form) => {
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+      });
+    });
+  </script>
+</body>
+</html>
