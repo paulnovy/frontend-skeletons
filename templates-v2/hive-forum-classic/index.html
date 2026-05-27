@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hive Forum Classic</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --ink: #19212B;
+      --indigo: #4F46E5;
+      --cyan: #06B6D4;
+      --lime: #A3E635;
+      --coral: #FB7185;
+      --cloud-deep: color-mix(in srgb, var(--cloud), var(--ink) 7%);
+      --cloud-strong: color-mix(in srgb, var(--cloud), var(--ink) 13%);
+      --ink-soft: color-mix(in srgb, var(--ink), var(--cloud) 34%);
+      --ink-muted: color-mix(in srgb, var(--ink), var(--cloud) 48%);
+      --indigo-soft: color-mix(in srgb, var(--indigo), var(--cloud) 86%);
+      --cyan-soft: color-mix(in srgb, var(--cyan), var(--cloud) 84%);
+      --lime-soft: color-mix(in srgb, var(--lime), var(--cloud) 78%);
+      --coral-soft: color-mix(in srgb, var(--coral), var(--cloud) 84%);
+      --panel: color-mix(in srgb, var(--cloud), var(--ink) 2%);
+      --shadow: 0 24px 70px rgba(25, 33, 43, .12);
+      --line: rgba(25, 33, 43, .13);
+      --radius: 8px;
+      --max: 1180px;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      background:
+        linear-gradient(180deg, rgba(79, 70, 229, .05), rgba(246, 248, 252, 0) 320px),
+        var(--cloud);
+      color: var(--ink);
+      font-family: "Inter", system-ui, sans-serif;
+      line-height: 1.5;
+    }
+    body.drawer-open {
+      overflow: hidden;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+    button {
+      cursor: pointer;
+    }
+    img {
+      display: block;
+      max-width: 100%;
+    }
+    :focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 3px;
+    }
+    .page-shell {
+      min-height: 100vh;
+    }
+    .container {
+      width: min(var(--max), calc(100% - 32px));
+      margin: 0 auto;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      border-bottom: 1px solid var(--line);
+      background: rgba(246, 248, 252, .92);
+      backdrop-filter: blur(18px);
+    }
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      min-height: 74px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: max-content;
+      font-family: "Manrope", system-ui, sans-serif;
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 8px;
+      background: var(--ink);
+      color: var(--lime);
+      box-shadow: 0 12px 28px rgba(25, 33, 43, .18);
+    }
+    .brand-mark svg {
+      width: 22px;
+      height: 22px;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+    }
+    .nav-links a {
+      padding: 9px 13px;
+      border-radius: 7px;
+      color: var(--ink-soft);
+      font-size: .93rem;
+      font-weight: 700;
+    }
+    .nav-links a:hover,
+    .nav-links a[aria-current="page"] {
+      background: var(--indigo-soft);
+      color: var(--indigo);
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 40px;
+      padding: 0 15px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--ink);
+      font-weight: 800;
+      line-height: 1;
+      transition: transform .18s ease, border-color .18s ease, background .18s ease;
+    }
+    .btn:hover {
+      transform: translateY(-1px);
+      border-color: rgba(79, 70, 229, .4);
+    }
+    .btn.primary {
+      border-color: var(--indigo);
+      background: var(--indigo);
+      color: var(--cloud);
+      box-shadow: 0 12px 24px rgba(79, 70, 229, .24);
+    }
+    .btn.ghost {
+      background: rgba(246, 248, 252, .72);
+    }
+    .icon-button {
+      display: none;
+      place-items: center;
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--ink);
+    }
+    .icon-button svg {
+      width: 22px;
+      height: 22px;
+    }
+    .mobile-scrim {
+      position: fixed;
+      inset: 0;
+      z-index: 35;
+      background: rgba(25, 33, 43, .48);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .24s ease;
+    }
+    .drawer-open .mobile-scrim {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .mobile-drawer {
+      position: fixed;
+      inset: 0 0 0 auto;
+      z-index: 40;
+      width: min(360px, 88vw);
+      padding: 20px;
+      border-left: 1px solid var(--line);
+      background: var(--cloud);
+      transform: translateX(100%);
+      transition: transform .26s ease;
+      box-shadow: var(--shadow);
+    }
+    .drawer-open .mobile-drawer {
+      transform: translateX(0);
+    }
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .drawer-links {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .drawer-links a {
+      padding: 14px 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      font-weight: 800;
+    }
+    .drawer-actions {
+      display: grid;
+      gap: 10px;
+    }
+    .hero {
+      padding: 44px 0 22px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(320px, .65fr);
+      gap: 24px;
+      align-items: stretch;
+    }
+    .hero-main {
+      padding: 34px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(79, 70, 229, .12), rgba(6, 182, 212, .08)),
+        var(--panel);
+      box-shadow: var(--shadow);
+    }
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 0 0 16px;
+      color: var(--indigo);
+      font-size: .82rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+    }
+    .live-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 999px;
+      background: var(--cyan);
+      box-shadow: 0 0 0 6px rgba(6, 182, 212, .14);
+    }
+    h1,
+    h2,
+    h3,
+    h4 {
+      margin: 0;
+      font-family: "Manrope", system-ui, sans-serif;
+      letter-spacing: 0;
+      line-height: 1.08;
+    }
+    h1 {
+      max-width: 780px;
+      font-size: clamp(2.2rem, 5vw, 4.8rem);
+    }
+    .hero-copy {
+      max-width: 680px;
+      margin: 18px 0 0;
+      color: var(--ink-soft);
+      font-size: 1.05rem;
+    }
+    .hero-stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 28px;
+    }
+    .stat {
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: rgba(246, 248, 252, .64);
+    }
+    .stat strong {
+      display: block;
+      color: var(--ink);
+      font-family: "Manrope", system-ui, sans-serif;
+      font-size: 1.45rem;
+      line-height: 1;
+    }
+    .stat span {
+      display: block;
+      margin-top: 6px;
+      color: var(--ink-muted);
+      font-size: .83rem;
+      font-weight: 700;
+    }
+    .pulse-board {
+      display: grid;
+      gap: 14px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--ink);
+      color: var(--cloud);
+      box-shadow: var(--shadow);
+    }
+    .pulse-board h2 {
+      font-size: 1.2rem;
+    }
+    .pulse-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid rgba(246, 248, 252, .14);
+      border-radius: 8px;
+      background: rgba(246, 248, 252, .07);
+    }
+    .pulse-icon {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: rgba(6, 182, 212, .18);
+      color: var(--cyan);
+      font-weight: 900;
+    }
+    .pulse-item strong {
+      display: block;
+      font-size: .93rem;
+    }
+    .pulse-item span {
+      color: rgba(246, 248, 252, .72);
+      font-size: .8rem;
+      font-weight: 700;
+    }
+    .pulse-status {
+      color: var(--lime);
+      font-size: .78rem;
+      font-weight: 900;
+    }
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 316px;
+      gap: 24px;
+      padding: 22px 0 46px;
+      align-items: start;
+    }
+    .main-stack,
+    .side-stack {
+      display: grid;
+      gap: 24px;
+    }
+    .section {
+      scroll-margin-top: 96px;
+    }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 14px;
+    }
+    .section-head h2 {
+      font-size: 1.55rem;
+    }
+    .section-head p {
+      margin: 6px 0 0;
+      color: var(--ink-muted);
+      font-weight: 600;
+    }
+    .filter-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 32px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      background: var(--panel);
+      color: var(--ink-soft);
+      font-size: .8rem;
+      font-weight: 900;
+    }
+    .chip.active {
+      border-color: var(--indigo);
+      background: var(--indigo-soft);
+      color: var(--indigo);
+    }
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .category-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 14px;
+      min-height: 154px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 18px 42px rgba(25, 33, 43, .06);
+    }
+    .category-icon {
+      display: grid;
+      place-items: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 8px;
+      background: var(--indigo-soft);
+      color: var(--indigo);
+      font-size: 1.2rem;
+      font-weight: 900;
+    }
+    .category-card h3 {
+      font-size: 1.1rem;
+    }
+    .category-card p {
+      margin: 6px 0 0;
+      color: var(--ink-muted);
+      font-size: .91rem;
+      font-weight: 600;
+    }
+    .category-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .category-meta span {
+      padding: 6px 9px;
+      border-radius: 999px;
+      background: var(--cloud-deep);
+      color: var(--ink-soft);
+      font-size: .78rem;
+      font-weight: 900;
+    }
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 18px 42px rgba(25, 33, 43, .06);
+    }
+    table {
+      width: 100%;
+      min-width: 780px;
+      border-collapse: collapse;
+    }
+    th,
+    td {
+      padding: 15px 16px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      color: var(--ink-muted);
+      font-size: .78rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+    tbody tr:hover {
+      background: rgba(79, 70, 229, .04);
+    }
+    tbody tr:last-child td {
+      border-bottom: 0;
+    }
+    .thread-title {
+      display: grid;
+      gap: 7px;
+      min-width: 270px;
+    }
+    .thread-title a {
+      font-weight: 900;
+    }
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 23px;
+      padding: 0 8px;
+      border-radius: 999px;
+      font-size: .72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: .04em;
+    }
+    .badge.pinned {
+      background: var(--lime-soft);
+      color: color-mix(in srgb, var(--ink), var(--lime) 32%);
+    }
+    .badge.locked {
+      background: var(--coral-soft);
+      color: color-mix(in srgb, var(--ink), var(--coral) 34%);
+    }
+    .badge.hot {
+      background: var(--cyan-soft);
+      color: color-mix(in srgb, var(--ink), var(--cyan) 34%);
+    }
+    .user-line {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      min-width: max-content;
+    }
+    .avatar {
+      display: grid;
+      place-items: center;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: var(--ink);
+      color: var(--cloud);
+      font-size: .8rem;
+      font-weight: 900;
+    }
+    .avatar.cyan {
+      background: var(--cyan);
+      color: var(--ink);
+    }
+    .avatar.indigo {
+      background: var(--indigo);
+      color: var(--cloud);
+    }
+    .avatar.coral {
+      background: var(--coral);
+      color: var(--ink);
+    }
+    .metric {
+      font-weight: 900;
+      color: var(--ink);
+    }
+    .time {
+      color: var(--ink-muted);
+      font-size: .87rem;
+      font-weight: 700;
+    }
+    .thread-view {
+      display: grid;
+      gap: 12px;
+    }
+    .reply-card {
+      display: grid;
+      grid-template-columns: 158px minmax(0, 1fr);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      overflow: hidden;
+    }
+    .reply-card.nested {
+      margin-left: 44px;
+      border-left: 4px solid var(--cyan);
+    }
+    .reply-author {
+      padding: 18px;
+      border-right: 1px solid var(--line);
+      background: var(--cloud-deep);
+    }
+    .reply-author .avatar {
+      width: 52px;
+      height: 52px;
+      margin-bottom: 12px;
+      font-size: 1rem;
+    }
+    .reply-author strong {
+      display: block;
+      font-weight: 900;
+    }
+    .rep-badge {
+      display: inline-flex;
+      margin-top: 8px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: var(--indigo-soft);
+      color: var(--indigo);
+      font-size: .73rem;
+      font-weight: 900;
+    }
+    .reply-body {
+      padding: 18px;
+    }
+    .reply-body p {
+      margin: 0 0 12px;
+      color: var(--ink-soft);
+    }
+    .reply-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 16px;
+    }
+    .vote-box {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--cloud);
+    }
+    .vote-box button,
+    .small-action {
+      min-height: 30px;
+      padding: 0 9px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--panel);
+      color: var(--ink-soft);
+      font-size: .78rem;
+      font-weight: 900;
+    }
+    .vote-box span {
+      min-width: 26px;
+      text-align: center;
+      color: var(--indigo);
+      font-weight: 900;
+    }
+    .side-panel {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 18px 42px rgba(25, 33, 43, .06);
+    }
+    .side-panel h2 {
+      margin-bottom: 14px;
+      font-size: 1.18rem;
+    }
+    .contributor-list {
+      display: grid;
+      gap: 12px;
+    }
+    .contributor {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--cloud);
+    }
+    .contributor strong,
+    .moderation-item strong {
+      display: block;
+      font-size: .9rem;
+    }
+    .contributor span,
+    .moderation-item span {
+      color: var(--ink-muted);
+      font-size: .78rem;
+      font-weight: 700;
+    }
+    .level {
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: var(--lime-soft);
+      color: var(--ink);
+      font-size: .72rem;
+      font-weight: 900;
+    }
+    .level.silver {
+      background: var(--cloud-strong);
+    }
+    .level.gold {
+      background: var(--lime);
+    }
+    .moderation-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .moderation-card,
+    .form-panel {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: 0 18px 42px rgba(25, 33, 43, .06);
+    }
+    .moderation-card h3 {
+      margin-bottom: 12px;
+      font-size: 1.05rem;
+    }
+    .moderation-list {
+      display: grid;
+      gap: 10px;
+    }
+    .moderation-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--cloud);
+    }
+    .severity {
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: var(--coral-soft);
+      color: color-mix(in srgb, var(--ink), var(--coral) 34%);
+      font-size: .72rem;
+      font-weight: 900;
+    }
+    .severity.clear {
+      background: var(--lime-soft);
+      color: color-mix(in srgb, var(--ink), var(--lime) 34%);
+    }
+    .bulk-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 14px;
+    }
+    .form-grid {
+      display: grid;
+      gap: 14px;
+    }
+    .field {
+      display: grid;
+      gap: 7px;
+    }
+    .field label {
+      color: var(--ink-soft);
+      font-size: .85rem;
+      font-weight: 900;
+    }
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--cloud);
+      color: var(--ink);
+      font-weight: 600;
+    }
+    .field input,
+    .field select {
+      min-height: 44px;
+      padding: 0 12px;
+    }
+    .field textarea {
+      min-height: 154px;
+      padding: 12px;
+      resize: vertical;
+    }
+    .editor-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      padding: 8px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--cloud-deep);
+    }
+    .editor-toolbar button {
+      min-width: 34px;
+      min-height: 32px;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--panel);
+      color: var(--ink);
+      font-weight: 900;
+    }
+    .site-footer {
+      border-top: 1px solid var(--line);
+      background: var(--ink);
+      color: var(--cloud);
+    }
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      min-height: 92px;
+      color: rgba(246, 248, 252, .78);
+      font-weight: 700;
+    }
+    .footer-inner a {
+      color: var(--lime);
+      font-weight: 900;
+    }
+    @media (max-width: 980px) {
+      .nav-links,
+      .nav-actions {
+        display: none;
+      }
+      .icon-button {
+        display: grid;
+      }
+      .hero-grid,
+      .layout {
+        grid-template-columns: 1fr;
+      }
+      .side-stack {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    @media (max-width: 720px) {
+      .container {
+        width: min(100% - 24px, var(--max));
+      }
+      .hero {
+        padding-top: 26px;
+      }
+      .hero-main {
+        padding: 22px;
+      }
+      .hero-stats,
+      .category-grid,
+      .moderation-grid,
+      .side-stack {
+        grid-template-columns: 1fr;
+      }
+      .section-head {
+        align-items: start;
+        flex-direction: column;
+      }
+      .reply-card,
+      .reply-card.nested {
+        grid-template-columns: 1fr;
+        margin-left: 0;
+      }
+      .reply-author {
+        border-right: 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
+        justify-content: center;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="page-shell">
+    <header class="topbar">
+      <div class="container nav">
+        <a class="brand" href="#home" aria-label="Hive Forum Classic home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M8 5h8l4 7-4 7H8l-4-7 4-7Z"></path>
+              <path d="M8 5l4 7-4 7"></path>
+              <path d="M16 5l-4 7 4 7"></path>
+            </svg>
+          </span>
+          <span>Hive Forum Classic</span>
+        </a>
+        <nav class="nav-links" aria-label="Primary navigation">
+          <a href="#home" aria-current="page">Home</a>
+          <a href="#categories">Categories</a>
+          <a href="#members">Members</a>
+          <a href="#search">Search</a>
+        </nav>
+        <div class="nav-actions" aria-label="Account actions">
+          <a class="btn ghost" href="#login">Log in</a>
+          <a class="btn primary" href="#new-thread">Register</a>
+        </div>
+        <button class="icon-button" id="openDrawer" aria-label="Open menu" aria-controls="mobileDrawer" aria-expanded="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 7h16"></path>
+            <path d="M4 12h16"></path>
+            <path d="M4 17h16"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+    <div class="mobile-scrim" id="drawerScrim" tabindex="-1"></div>
+    <aside class="mobile-drawer" id="mobileDrawer" aria-label="Mobile navigation" aria-hidden="true">
+      <div class="drawer-head">
+        <span class="brand">
+          <span class="brand-mark" aria-hidden="true">H</span>
+          <span>Hive</span>
+        </span>
+        <button class="icon-button" id="closeDrawer" aria-label="Close menu">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 6l12 12"></path>
+            <path d="M18 6L6 18"></path>
+          </svg>
+        </button>
+      </div>
+      <nav class="drawer-links" aria-label="Mobile links">
+        <a href="#home">Home</a>
+        <a href="#categories">Categories</a>
+        <a href="#members">Members</a>
+        <a href="#search">Search</a>
+      </nav>
+      <div class="drawer-actions">
+        <a class="btn ghost" href="#login">Log in</a>
+        <a class="btn primary" href="#new-thread">Register</a>
+      </div>
+    </aside>
+    <main id="home">
+      <section class="hero container" aria-labelledby="hero-title">
+        <div class="hero-grid">
+          <div class="hero-main">
+            <p class="eyebrow"><span class="live-dot"></span> Community command center</p>
+            <h1 id="hero-title">Threaded discussion space for active knowledge communities.</h1>
+            <p class="hero-copy">Hive Forum Classic brings categories, pinned threads, reputation, moderation, and publishing into a familiar forum layout built for daily member participation.</p>
+            <div class="hero-stats" aria-label="Community statistics">
+              <div class="stat">
+                <strong>18.4k</strong>
+                <span>Members</span>
+              </div>
+              <div class="stat">
+                <strong>96k</strong>
+                <span>Posts</span>
+              </div>
+              <div class="stat">
+                <strong>214</strong>
+                <span>Online now</span>
+              </div>
+            </div>
+          </div>
+          <aside class="pulse-board" aria-label="Forum pulse">
+            <h2>Live forum pulse</h2>
+            <div class="pulse-item">
+              <span class="pulse-icon">Q</span>
+              <div>
+                <strong>Queue review</strong>
+                <span>8 reports need moderator triage</span>
+              </div>
+              <span class="pulse-status">Live</span>
+            </div>
+            <div class="pulse-item">
+              <span class="pulse-icon">R</span>
+              <div>
+                <strong>Reputation wave</strong>
+                <span>42 helpful answers awarded today</span>
+              </div>
+              <span class="pulse-status">OK</span>
+            </div>
+            <div class="pulse-item">
+              <span class="pulse-icon">C</span>
+              <div>
+                <strong>Category health</strong>
+                <span>All boards have recent activity</span>
+              </div>
+              <span class="pulse-status">Fresh</span>
+            </div>
+          </aside>
+        </div>
+      </section>
+      <div class="container layout">
+        <div class="main-stack">
+          <section class="section" id="categories" aria-labelledby="categories-title">
+            <div class="section-head">
+              <div>
+                <h2 id="categories-title">Forum categories</h2>
+                <p>Browse boards by focus, scale, and latest movement.</p>
+              </div>
+              <div class="filter-row" aria-label="Category filters">
+                <span class="chip active">All boards</span>
+                <span class="chip">Product</span>
+                <span class="chip">Support</span>
+                <span class="chip">Research</span>
+              </div>
+            </div>
+            <div class="category-grid">
+              <article class="category-card">
+                <div class="category-icon">P</div>
+                <div>
+                  <h3>Product Lab</h3>
+                  <p>Roadmap proposals, feature voting, and release discussions.</p>
+                  <div class="category-meta">
+                    <span>1,284 topics</span>
+                    <span>12,940 posts</span>
+                    <span>5 min ago</span>
+                  </div>
+                </div>
+              </article>
+              <article class="category-card">
+                <div class="category-icon">S</div>
+                <div>
+                  <h3>Support Desk</h3>
+                  <p>Installation help, account questions, and troubleshooting guides.</p>
+                  <div class="category-meta">
+                    <span>3,402 topics</span>
+                    <span>28,118 posts</span>
+                    <span>12 min ago</span>
+                  </div>
+                </div>
+              </article>
+              <article class="category-card">
+                <div class="category-icon">D</div>
+                <div>
+                  <h3>Developer Notes</h3>
+                  <p>Integration recipes, API examples, and workflow automation.</p>
+                  <div class="category-meta">
+                    <span>892 topics</span>
+                    <span>9,774 posts</span>
+                    <span>31 min ago</span>
+                  </div>
+                </div>
+              </article>
+              <article class="category-card">
+                <div class="category-icon">C</div>
+                <div>
+                  <h3>Community Lounge</h3>
+                  <p>Introductions, show-and-tell threads, and member wins.</p>
+                  <div class="category-meta">
+                    <span>640 topics</span>
+                    <span>6,331 posts</span>
+                    <span>1 hr ago</span>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+          <section class="section" id="search" aria-labelledby="threads-title">
+            <div class="section-head">
+              <div>
+                <h2 id="threads-title">Latest threads</h2>
+                <p>Sortable discussion overview with author and activity signals.</p>
+              </div>
+              <div class="filter-row" aria-label="Thread sorting">
+                <button class="chip active" type="button" data-sort="latest">Latest</button>
+                <button class="chip" type="button" data-sort="replies">Replies</button>
+                <button class="chip" type="button" data-sort="views">Views</button>
+              </div>
+            </div>
+            <div class="table-wrap">
+              <table aria-label="Thread list">
+                <thead>
+                  <tr>
+                    <th scope="col">Thread</th>
+                    <th scope="col">Author</th>
+                    <th scope="col">Replies</th>
+                    <th scope="col">Views</th>
+                    <th scope="col">Last reply</th>
+                  </tr>
+                </thead>
+                <tbody id="threadTable">
+                  <tr data-replies="92" data-views="1840">
+                    <td>
+                      <div class="thread-title">
+                        <a href="#thread-view">Weekly product feedback digest</a>
+                        <div class="badge-row">
+                          <span class="badge pinned">Pinned</span>
+                          <span class="badge hot">Active</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="user-line"><span class="avatar indigo">AM</span> Amina Vale</span></td>
+                    <td class="metric">92</td>
+                    <td class="metric">1,840</td>
+                    <td class="time">4 min ago</td>
+                  </tr>
+                  <tr data-replies="34" data-views="780">
+                    <td>
+                      <div class="thread-title">
+                        <a href="#thread-view">How are you organizing release notes?</a>
+                        <div class="badge-row">
+                          <span class="badge hot">Guide</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="user-line"><span class="avatar cyan">RK</span> Riko Chen</span></td>
+                    <td class="metric">34</td>
+                    <td class="metric">780</td>
+                    <td class="time">18 min ago</td>
+                  </tr>
+                  <tr data-replies="12" data-views="420">
+                    <td>
+                      <div class="thread-title">
+                        <a href="#thread-view">Account recovery policy update</a>
+                        <div class="badge-row">
+                          <span class="badge locked">Locked</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="user-line"><span class="avatar coral">NS</span> Nia Stone</span></td>
+                    <td class="metric">12</td>
+                    <td class="metric">420</td>
+                    <td class="time">44 min ago</td>
+                  </tr>
+                  <tr data-replies="51" data-views="1320">
+                    <td>
+                      <div class="thread-title">
+                        <a href="#thread-view">Best practices for nested replies</a>
+                        <div class="badge-row">
+                          <span class="badge pinned">Pinned</span>
+                        </div>
+                      </div>
+                    </td>
+                    <td><span class="user-line"><span class="avatar">JL</span> Jules Lin</span></td>
+                    <td class="metric">51</td>
+                    <td class="metric">1,320</td>
+                    <td class="time">1 hr ago</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <section class="section" id="thread-view" aria-labelledby="thread-view-title">
+            <div class="section-head">
+              <div>
+                <h2 id="thread-view-title">Thread view</h2>
+                <p>Nested replies with reputation, moderation actions, and voting.</p>
+              </div>
+              <span class="chip active">Open discussion</span>
+            </div>
+            <div class="thread-view">
+              <article class="reply-card">
+                <aside class="reply-author">
+                  <span class="avatar indigo">AM</span>
+                  <strong>Amina Vale</strong>
+                  <span class="rep-badge">Gold · 18,420 rep</span>
+                </aside>
+                <div class="reply-body">
+                  <p>The feedback digest is now grouped by category owner, so each team can answer the threads where members are asking for concrete movement.</p>
+                  <p>For this week, please vote on the three items that would change your daily workflow the most.</p>
+                  <div class="reply-actions">
+                    <div class="vote-box" aria-label="Post score controls">
+                      <button type="button" aria-label="Upvote">↑</button>
+                      <span>128</span>
+                      <button type="button" aria-label="Downvote">↓</button>
+                    </div>
+                    <button class="small-action" type="button">Reply</button>
+                    <button class="small-action" type="button">Quote</button>
+                    <button class="small-action" type="button">Report</button>
+                  </div>
+                </div>
+              </article>
+              <article class="reply-card nested">
+                <aside class="reply-author">
+                  <span class="avatar cyan">RK</span>
+                  <strong>Riko Chen</strong>
+                  <span class="rep-badge">Silver · 7,910 rep</span>
+                </aside>
+                <div class="reply-body">
+                  <p>The owner grouping is already easier to scan. A compact changelog link beside each item would help people understand current status before voting.</p>
+                  <div class="reply-actions">
+                    <div class="vote-box" aria-label="Reply score controls">
+                      <button type="button" aria-label="Upvote">↑</button>
+                      <span>42</span>
+                      <button type="button" aria-label="Downvote">↓</button>
+                    </div>
+                    <button class="small-action" type="button">Reply</button>
+                    <button class="small-action" type="button">Quote</button>
+                    <button class="small-action" type="button">Report</button>
+                  </div>
+                </div>
+              </article>
+              <article class="reply-card nested">
+                <aside class="reply-author">
+                  <span class="avatar">JL</span>
+                  <strong>Jules Lin</strong>
+                  <span class="rep-badge">Bronze · 2,330 rep</span>
+                </aside>
+                <div class="reply-body">
+                  <p>I would add a moderator note when a vote becomes a tracked request. That keeps the thread useful after the first activity spike.</p>
+                  <div class="reply-actions">
+                    <div class="vote-box" aria-label="Reply score controls">
+                      <button type="button" aria-label="Upvote">↑</button>
+                      <span>19</span>
+                      <button type="button" aria-label="Downvote">↓</button>
+                    </div>
+                    <button class="small-action" type="button">Reply</button>
+                    <button class="small-action" type="button">Quote</button>
+                    <button class="small-action" type="button">Report</button>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+          <section class="section" id="moderation" aria-labelledby="moderation-title">
+            <div class="section-head">
+              <div>
+                <h2 id="moderation-title">Moderation tools</h2>
+                <p>Review reports, manage restrictions, and run bulk actions.</p>
+              </div>
+              <span class="chip">Admin panel</span>
+            </div>
+            <div class="moderation-grid">
+              <article class="moderation-card">
+                <h3>Reported posts queue</h3>
+                <div class="moderation-list">
+                  <div class="moderation-item">
+                    <div>
+                      <strong>Off-topic reply in Product Lab</strong>
+                      <span>Reported by 4 members</span>
+                    </div>
+                    <span class="severity">High</span>
+                  </div>
+                  <div class="moderation-item">
+                    <div>
+                      <strong>Duplicate support answer</strong>
+                      <span>Reported by Support Desk lead</span>
+                    </div>
+                    <span class="severity clear">Low</span>
+                  </div>
+                </div>
+                <div class="bulk-row">
+                  <button class="btn primary" type="button">Approve</button>
+                  <button class="btn ghost" type="button">Merge</button>
+                  <button class="btn ghost" type="button">Archive</button>
+                </div>
+              </article>
+              <article class="moderation-card">
+                <h3>User ban list</h3>
+                <div class="moderation-list">
+                  <div class="moderation-item">
+                    <div>
+                      <strong>OrbitGuest42</strong>
+                      <span>Muted for 24 hours</span>
+                    </div>
+                    <span class="severity">Active</span>
+                  </div>
+                  <div class="moderation-item">
+                    <div>
+                      <strong>NorthSignal</strong>
+                      <span>Appeal pending review</span>
+                    </div>
+                    <span class="severity clear">Appeal</span>
+                  </div>
+                </div>
+                <div class="bulk-row">
+                  <button class="btn primary" type="button">Lift ban</button>
+                  <button class="btn ghost" type="button">Extend</button>
+                  <button class="btn ghost" type="button">Message</button>
+                </div>
+              </article>
+            </div>
+          </section>
+          <section class="section" id="new-thread" aria-labelledby="new-thread-title">
+            <div class="section-head">
+              <div>
+                <h2 id="new-thread-title">New thread</h2>
+                <p>Compose a structured post with category, tags, and rich text controls.</p>
+              </div>
+            </div>
+            <form class="form-panel" aria-label="Create new thread">
+              <div class="form-grid">
+                <div class="field">
+                  <label for="threadTitle">Thread title</label>
+                  <input id="threadTitle" name="threadTitle" type="text" value="Share a clear question or discussion title">
+                </div>
+                <div class="field">
+                  <label for="threadCategory">Category</label>
+                  <select id="threadCategory" name="threadCategory">
+                    <option>Product Lab</option>
+                    <option>Support Desk</option>
+                    <option>Developer Notes</option>
+                    <option>Community Lounge</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label>Formatting</label>
+                  <div class="editor-toolbar" aria-label="Rich text controls">
+                    <button type="button" aria-label="Bold">B</button>
+                    <button type="button" aria-label="Italic">I</button>
+                    <button type="button" aria-label="Link">↗</button>
+                    <button type="button" aria-label="List">•</button>
+                    <button type="button" aria-label="Code">{ }</button>
+                  </div>
+                </div>
+                <div class="field">
+                  <label for="threadBody">Post content</label>
+                  <textarea id="threadBody" name="threadBody">Start with context, include what you tried, and end with the exact feedback or answer you need from the community.</textarea>
+                </div>
+                <div class="field">
+                  <label for="threadTags">Tags</label>
+                  <input id="threadTags" name="threadTags" type="text" value="feedback, release, discussion">
+                </div>
+                <button class="btn primary" type="submit">Publish thread</button>
+              </div>
+            </form>
+          </section>
+        </div>
+        <aside class="side-stack" id="members" aria-label="Community sidebar">
+          <section class="side-panel" aria-labelledby="contributors-title">
+            <h2 id="contributors-title">Top contributors</h2>
+            <div class="contributor-list">
+              <article class="contributor">
+                <span class="avatar indigo">AM</span>
+                <div>
+                  <strong>Amina Vale</strong>
+                  <span>18,420 reputation</span>
+                </div>
+                <span class="level gold">Gold</span>
+              </article>
+              <article class="contributor">
+                <span class="avatar cyan">RK</span>
+                <div>
+                  <strong>Riko Chen</strong>
+                  <span>7,910 reputation</span>
+                </div>
+                <span class="level silver">Silver</span>
+              </article>
+              <article class="contributor">
+                <span class="avatar">JL</span>
+                <div>
+                  <strong>Jules Lin</strong>
+                  <span>2,330 reputation</span>
+                </div>
+                <span class="level">Bronze</span>
+              </article>
+              <article class="contributor">
+                <span class="avatar coral">NS</span>
+                <div>
+                  <strong>Nia Stone</strong>
+                  <span>1,880 reputation</span>
+                </div>
+                <span class="level">Bronze</span>
+              </article>
+            </div>
+          </section>
+          <section class="side-panel" aria-labelledby="health-title">
+            <h2 id="health-title">Community health</h2>
+            <div class="contributor-list">
+              <div class="contributor">
+                <span class="avatar cyan">A</span>
+                <div>
+                  <strong>Answer rate</strong>
+                  <span>86% of support threads resolved</span>
+                </div>
+                <span class="level gold">OK</span>
+              </div>
+              <div class="contributor">
+                <span class="avatar indigo">M</span>
+                <div>
+                  <strong>Moderator load</strong>
+                  <span>8 reports in active review</span>
+                </div>
+                <span class="level silver">Busy</span>
+              </div>
+              <div class="contributor">
+                <span class="avatar coral">F</span>
+                <div>
+                  <strong>Flag risk</strong>
+                  <span>One thread trending hot</span>
+                </div>
+                <span class="level">Watch</span>
+              </div>
+            </div>
+          </section>
+        </aside>
+      </div>
+    </main>
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>Hive Forum Classic — designed by Northstar Interface Studio.</p>
+        <a href="#home">Back to top</a>
+      </div>
+    </footer>
+  </div>
+  <script>
+    const body = document.body;
+    const openDrawer = document.getElementById('openDrawer');
+    const closeDrawer = document.getElementById('closeDrawer');
+    const drawer = document.getElementById('mobileDrawer');
+    const scrim = document.getElementById('drawerScrim');
+    const sortButtons = document.querySelectorAll('[data-sort]');
+    const threadTable = document.getElementById('threadTable');
+    function setDrawer(open) {
+      body.classList.toggle('drawer-open', open);
+      drawer.setAttribute('aria-hidden', String(!open));
+      openDrawer.setAttribute('aria-expanded', String(open));
+      if (open) {
+        closeDrawer.focus();
+      } else {
+        openDrawer.focus();
+      }
+    }
+    openDrawer.addEventListener('click', () => setDrawer(true));
+    closeDrawer.addEventListener('click', () => setDrawer(false));
+    scrim.addEventListener('click', () => setDrawer(false));
+    drawer.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => setDrawer(false));
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && body.classList.contains('drawer-open')) {
+        setDrawer(false);
+      }
+    });
+    sortButtons.forEach((button) => {
+      button.addEventListener('click', () => {
+        sortButtons.forEach((item) => item.classList.remove('active'));
+        button.classList.add('active');
+        const key = button.dataset.sort;
+        const rows = Array.from(threadTable.querySelectorAll('tr'));
+        if (key === 'replies' || key === 'views') {
+          rows.sort((a, b) => Number(b.dataset[key]) - Number(a.dataset[key]));
+          rows.forEach((row) => threadTable.appendChild(row));
+        }
+      });
+    });
+  </script>
+</body>
+</html>
