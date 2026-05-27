@@ -1,19 +1,20 @@
 # Flux Marketplace
 
-Premium standalone frontend skeleton for a digital goods marketplace.
+A standalone premium frontend skeleton for a digital goods marketplace with product listings, seller profiles, reviews, category filters, mobile drawer navigation, and cart preview.
 
-## Included
+## Files
+- `index.html` contains the complete HTML, inline CSS, and inline JavaScript.
+- `DESIGN_BOOK.md` documents the visual system and component choices.
 
-- `index.html`: single-file HTML, CSS, and JavaScript implementation.
-- `DESIGN_BOOK.md`: design system and structure notes.
+## Usage
+Open `index.html` in a browser. No build step is required. The only external dependency is Google Fonts for Manrope and Inter.
 
-## Highlights
-
-- Product listings with category filters.
-- Seller profiles with ratings, sales, and specialty tags.
-- Review cards with reviewer metadata.
-- Desktop category sidebar and mobile slide-in drawer.
-- Cart preview drawer with subtotal and checkout action.
-- Google Fonts CDN only; no other external dependencies.
-
-Open `index.html` in a browser to view the skeleton.
+## Included Sections
+- Top navigation with search and cart action
+- Featured collection hero
+- Filterable product grid
+- Category sidebar and mobile drawer
+- Seller profile cards
+- Review system
+- Cart preview drawer
+- Footer credit
