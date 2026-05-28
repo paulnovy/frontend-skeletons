@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Signal IoT Fleet Monitoring Dashboard</title>
+  <meta name="description" content="Dense IoT fleet monitoring dashboard for prioritizing anomalies across live, degraded, offline, and maintenance states.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --industrial-black: #0A0A0A;
+      --steel: #374151;
+      --telemetry-cyan: #06B6D4;
+      --safety-orange: #F97316;
+      --success-green: #22C55E;
+      --white: #F3F4F6;
+      --black-soft: #111111;
+      --panel: #151719;
+      --panel-strong: #1C2024;
+      --line: rgba(243, 244, 246, 0.12);
+      --line-strong: rgba(243, 244, 246, 0.22);
+      --muted: rgba(243, 244, 246, 0.66);
+      --faint: rgba(243, 244, 246, 0.42);
+      --shadow: 0 18px 44px rgba(0, 0, 0, 0.42);
+      --radius: 8px;
+      --mono: "IBM Plex Mono", monospace;
+      --sans: "IBM Plex Sans", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      background: var(--industrial-black);
+      color: var(--white);
+      font-family: var(--sans);
+      font-size: 16px;
+      line-height: 1.45;
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      background:
+        linear-gradient(90deg, rgba(6, 182, 212, 0.05) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(6, 182, 212, 0.04) 1px, transparent 1px),
+        radial-gradient(circle at 18% 12%, rgba(6, 182, 212, 0.18), transparent 34%),
+        radial-gradient(circle at 82% 8%, rgba(249, 115, 22, 0.12), transparent 30%),
+        var(--industrial-black);
+      background-size: 44px 44px, 44px 44px, auto, auto, auto;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app-shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 248px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 18px;
+      border-right: 1px solid var(--line);
+      background: rgba(10, 10, 10, 0.88);
+      backdrop-filter: blur(18px);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 44px;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(6, 182, 212, 0.72);
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: rgba(6, 182, 212, 0.08);
+      box-shadow: inset 0 0 18px rgba(6, 182, 212, 0.18);
+    }
+
+    .brand-mark svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 0.95rem;
+      line-height: 1.1;
+      letter-spacing: 0;
+    }
+
+    .brand span {
+      display: block;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      margin-top: 3px;
+    }
+
+    .nav-group {
+      display: grid;
+      gap: 7px;
+    }
+
+    .nav-label {
+      margin: 8px 0 2px;
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      text-transform: uppercase;
+    }
+
+    .nav-item {
+      border: 1px solid transparent;
+      border-radius: 7px;
+      color: var(--muted);
+      background: transparent;
+      padding: 10px 11px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      text-align: left;
+    }
+
+    .nav-item strong {
+      color: inherit;
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+
+    .nav-item code {
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 0.68rem;
+    }
+
+    .nav-item.active {
+      border-color: rgba(6, 182, 212, 0.38);
+      color: var(--white);
+      background: rgba(6, 182, 212, 0.09);
+    }
+
+    .nav-item.warning {
+      border-color: rgba(249, 115, 22, 0.4);
+      color: var(--white);
+      background: rgba(249, 115, 22, 0.1);
+    }
+
+    .field-card {
+      margin-top: auto;
+      padding: 14px;
+      border: 1px solid rgba(34, 197, 94, 0.32);
+      border-radius: var(--radius);
+      background: rgba(34, 197, 94, 0.08);
+    }
+
+    .field-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .field-card strong {
+      display: block;
+      color: var(--white);
+      margin-bottom: 6px;
+      font-size: 0.9rem;
+    }
+
+    .main {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 18px;
+      min-height: 76px;
+      padding: 14px 22px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(10, 10, 10, 0.82);
+      backdrop-filter: blur(20px);
+    }
+
+    .incident-banner {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .incident-dot {
+      flex: 0 0 auto;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: var(--safety-orange);
+      box-shadow: 0 0 0 6px rgba(249, 115, 22, 0.14), 0 0 24px rgba(249, 115, 22, 0.44);
+    }
+
+    .incident-banner h2 {
+      margin: 0;
+      font-size: 1.02rem;
+      line-height: 1.2;
+    }
+
+    .incident-banner p {
+      margin: 3px 0 0;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .search {
+      width: 230px;
+      border: 1px solid var(--line-strong);
+      border-radius: 7px;
+      background: rgba(55, 65, 81, 0.2);
+      color: var(--white);
+      padding: 9px 11px;
+      outline: none;
+    }
+
+    .search:focus {
+      border-color: var(--telemetry-cyan);
+      box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.18);
+    }
+
+    .control-button {
+      border: 1px solid var(--line-strong);
+      border-radius: 7px;
+      background: rgba(243, 244, 246, 0.04);
+      color: var(--white);
+      padding: 9px 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 39px;
+    }
+
+    .control-button.primary {
+      border-color: rgba(6, 182, 212, 0.58);
+      background: rgba(6, 182, 212, 0.16);
+    }
+
+    .dashboard {
+      padding: 22px;
+      display: grid;
+      grid-template-columns: minmax(0, 1.45fr) minmax(320px, 0.8fr);
+      gap: 18px;
+    }
+
+    .left-stack,
+    .right-stack {
+      display: grid;
+      gap: 18px;
+      align-content: start;
+      min-width: 0;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(17, 17, 17, 0.84);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 15px 16px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 58px;
+    }
+
+    .panel-title {
+      min-width: 0;
+    }
+
+    .panel-title h3 {
+      margin: 0;
+      font-size: 0.98rem;
+      line-height: 1.2;
+    }
+
+    .panel-title p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.72rem;
+    }
+
+    .status-pill {
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      padding: 5px 9px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      white-space: nowrap;
+      background: rgba(243, 244, 246, 0.04);
+    }
+
+    .status-pill.live {
+      border-color: rgba(34, 197, 94, 0.5);
+      color: var(--success-green);
+      background: rgba(34, 197, 94, 0.08);
+    }
+
+    .status-pill.degraded {
+      border-color: rgba(249, 115, 22, 0.52);
+      color: var(--safety-orange);
+      background: rgba(249, 115, 22, 0.1);
+    }
+
+    .status-pill.offline {
+      border-color: rgba(243, 244, 246, 0.24);
+      color: var(--faint);
+    }
+
+    .status-pill.maintenance {
+      border-color: rgba(6, 182, 212, 0.45);
+      color: var(--telemetry-cyan);
+      background: rgba(6, 182, 212, 0.08);
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1px;
+      background: var(--line);
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .summary-card {
+      min-height: 108px;
+      padding: 14px;
+      background: rgba(17, 17, 17, 0.96);
+      display: grid;
+      gap: 8px;
+    }
+
+    .summary-card span {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+    }
+
+    .summary-card strong {
+      font-family: var(--mono);
+      font-size: 1.65rem;
+      line-height: 1;
+    }
+
+    .summary-card p {
+      margin: 0;
+      color: var(--faint);
+      font-size: 0.76rem;
+    }
+
+    .summary-card.good strong {
+      color: var(--success-green);
+    }
+
+    .summary-card.warn strong {
+      color: var(--safety-orange);
+    }
+
+    .summary-card.cyan strong {
+      color: var(--telemetry-cyan);
+    }
+
+    .map-wrap {
+      position: relative;
+      min-height: 384px;
+      padding: 14px;
+      background:
+        linear-gradient(90deg, rgba(243, 244, 246, 0.035) 1px, transparent 1px),
+        linear-gradient(0deg, rgba(243, 244, 246, 0.035) 1px, transparent 1px),
+        rgba(10, 10, 10, 0.74);
+      background-size: 36px 36px;
+    }
+
+    .asset-map {
+      width: 100%;
+      height: 358px;
+      display: block;
+    }
+
+    .route-line {
+      fill: none;
+      stroke: rgba(6, 182, 212, 0.35);
+      stroke-width: 2;
+      stroke-dasharray: 5 7;
+    }
+
+    .zone {
+      fill: rgba(55, 65, 81, 0.38);
+      stroke: rgba(243, 244, 246, 0.1);
+      stroke-width: 1;
+    }
+
+    .node {
+      stroke: var(--industrial-black);
+      stroke-width: 3;
+    }
+
+    .node.live {
+      fill: var(--success-green);
+    }
+
+    .node.degraded {
+      fill: var(--safety-orange);
+    }
+
+    .node.maintenance {
+      fill: var(--telemetry-cyan);
+    }
+
+    .node.offline {
+      fill: var(--steel);
+    }
+
+    .node-ring {
+      fill: transparent;
+      stroke-width: 2;
+      opacity: 0.8;
+    }
+
+    .node-ring.warn {
+      stroke: var(--safety-orange);
+      animation: pulse-ring 1.8s ease-in-out infinite;
+    }
+
+    .node-ring.good {
+      stroke: rgba(34, 197, 94, 0.46);
+    }
+
+    @keyframes pulse-ring {
+      0% {
+        r: 11;
+        opacity: 0.95;
+      }
+      70% {
+        r: 24;
+        opacity: 0;
+      }
+      100% {
+        r: 24;
+        opacity: 0;
+      }
+    }
+
+    .map-legend {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      right: 18px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .legend-item {
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: rgba(10, 10, 10, 0.72);
+      padding: 9px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .legend-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      flex: 0 0 auto;
+    }
+
+    .legend-dot.live {
+      background: var(--success-green);
+    }
+
+    .legend-dot.degraded {
+      background: var(--safety-orange);
+    }
+
+    .legend-dot.maintenance {
+      background: var(--telemetry-cyan);
+    }
+
+    .legend-dot.offline {
+      background: var(--steel);
+    }
+
+    .legend-item span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.68rem;
+    }
+
+    .health-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1px;
+      background: var(--line);
+    }
+
+    .device-card {
+      min-height: 168px;
+      padding: 14px;
+      background: rgba(17, 17, 17, 0.96);
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 12px;
+      position: relative;
+    }
+
+    .device-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 3px;
+      background: var(--steel);
+    }
+
+    .device-card.live::before {
+      background: var(--success-green);
+    }
+
+    .device-card.degraded::before {
+      background: var(--safety-orange);
+    }
+
+    .device-card.maintenance::before {
+      background: var(--telemetry-cyan);
+    }
+
+    .device-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .device-head h4 {
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    .device-head code {
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 0.68rem;
+    }
+
+    .device-meta {
+      display: grid;
+      gap: 7px;
+    }
+
+    .device-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.78rem;
+    }
+
+    .device-row strong {
+      color: var(--white);
+      font-family: var(--mono);
+      font-size: 0.76rem;
+    }
+
+    .meter {
+      height: 7px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(55, 65, 81, 0.56);
+    }
+
+    .meter span {
+      display: block;
+      height: 100%;
+      width: var(--value);
+      border-radius: inherit;
+      background: var(--meter-color, var(--success-green));
+    }
+
+    .alert-list {
+      display: grid;
+      gap: 1px;
+      background: var(--line);
+    }
+
+    .alert-item {
+      border: 0;
+      width: 100%;
+      color: var(--white);
+      background: rgba(17, 17, 17, 0.96);
+      padding: 13px 14px;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      text-align: left;
+    }
+
+    .alert-item.active {
+      background: rgba(249, 115, 22, 0.12);
+      box-shadow: inset 3px 0 0 var(--safety-orange);
+    }
+
+    .severity {
+      width: 34px;
+      height: 34px;
+      border-radius: 7px;
+      display: grid;
+      place-items: center;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .severity.p1 {
+      color: var(--industrial-black);
+      background: var(--safety-orange);
+    }
+
+    .severity.p2 {
+      color: var(--industrial-black);
+      background: var(--telemetry-cyan);
+    }
+
+    .severity.p3 {
+      color: var(--industrial-black);
+      background: var(--success-green);
+    }
+
+    .alert-copy {
+      min-width: 0;
+    }
+
+    .alert-copy strong {
+      display: block;
+      font-size: 0.9rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .alert-copy span {
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .eta {
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      white-space: nowrap;
+    }
+
+    .telemetry-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 1px;
+      background: var(--line);
+    }
+
+    .chart-card {
+      min-height: 204px;
+      padding: 14px;
+      background: rgba(17, 17, 17, 0.96);
+      display: grid;
+      gap: 12px;
+    }
+
+    .chart-top {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .chart-top h4 {
+      margin: 0;
+      font-size: 0.86rem;
+    }
+
+    .chart-top code {
+      color: var(--telemetry-cyan);
+      font-family: var(--mono);
+      font-size: 0.72rem;
+    }
+
+    .bars {
+      height: 112px;
+      display: grid;
+      grid-template-columns: repeat(18, minmax(0, 1fr));
+      align-items: end;
+      gap: 4px;
+      border-bottom: 1px solid var(--line);
+      padding-top: 10px;
+    }
+
+    .bars span {
+      height: var(--h);
+      min-height: 8px;
+      border-radius: 4px 4px 0 0;
+      background: linear-gradient(180deg, var(--telemetry-cyan), rgba(6, 182, 212, 0.15));
+    }
+
+    .bars.warn span:nth-child(7),
+    .bars.warn span:nth-child(8),
+    .bars.warn span:nth-child(9) {
+      background: linear-gradient(180deg, var(--safety-orange), rgba(249, 115, 22, 0.18));
+    }
+
+    .chart-note {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+
+    .prediction-list {
+      display: grid;
+      gap: 1px;
+      background: var(--line);
+    }
+
+    .prediction {
+      padding: 14px;
+      background: rgba(17, 17, 17, 0.96);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .prediction h4 {
+      margin: 0;
+      font-size: 0.86rem;
+    }
+
+    .prediction p {
+      margin: 4px 0 0;
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.68rem;
+    }
+
+    .risk-score {
+      width: 58px;
+      height: 58px;
+      border: 1px solid var(--line-strong);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      font-family: var(--mono);
+      font-size: 0.88rem;
+      color: var(--white);
+      background:
+        conic-gradient(var(--risk-color) var(--risk), rgba(55, 65, 81, 0.45) 0);
+      position: relative;
+    }
+
+    .risk-score::after {
+      content: "";
+      position: absolute;
+      inset: 7px;
+      border-radius: inherit;
+      background: var(--industrial-black);
+      z-index: 0;
+    }
+
+    .risk-score span {
+      position: relative;
+      z-index: 1;
+    }
+
+    .operator-strip {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr 0.8fr;
+      gap: 1px;
+      background: var(--line);
+    }
+
+    .operator-card {
+      min-height: 118px;
+      padding: 14px;
+      background: rgba(17, 17, 17, 0.96);
+    }
+
+    .operator-card span {
+      color: var(--muted);
+      font-family: var(--mono);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+    }
+
+    .operator-card strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 1.1rem;
+    }
+
+    .operator-card p {
+      margin: 7px 0 0;
+      color: var(--faint);
+      font-size: 0.76rem;
+    }
+
+    .mobile-tabs {
+      display: none;
+      position: sticky;
+      top: 76px;
+      z-index: 8;
+      padding: 8px 12px;
+      gap: 8px;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--line);
+      background: rgba(10, 10, 10, 0.9);
+    }
+
+    .mobile-tab {
+      border: 1px solid var(--line-strong);
+      border-radius: 999px;
+      background: rgba(243, 244, 246, 0.04);
+      color: var(--muted);
+      padding: 8px 11px;
+      white-space: nowrap;
+      font-family: var(--mono);
+      font-size: 0.72rem;
+    }
+
+    .mobile-tab.active {
+      color: var(--industrial-black);
+      border-color: var(--safety-orange);
+      background: var(--safety-orange);
+    }
+
+    .footer-note {
+      padding: 0 22px 22px;
+      color: var(--faint);
+      font-family: var(--mono);
+      font-size: 0.72rem;
+    }
+
+    @media (max-width: 1180px) {
+      .app-shell {
+        grid-template-columns: 84px minmax(0, 1fr);
+      }
+
+      .sidebar {
+        padding: 14px 10px;
+      }
+
+      .brand {
+        justify-content: center;
+      }
+
+      .brand h1,
+      .nav-label,
+      .nav-item code,
+      .field-card {
+        display: none;
+      }
+
+      .nav-item {
+        justify-content: center;
+        padding: 11px 8px;
+      }
+
+      .nav-item strong {
+        font-size: 0.7rem;
+      }
+
+      .dashboard {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 760px) {
+      body {
+        background-size: 30px 30px, 30px 30px, auto, auto, auto;
+      }
+
+      .app-shell {
+        display: block;
+      }
+
+      .sidebar {
+        display: none;
+      }
+
+      .topbar {
+        grid-template-columns: 1fr;
+        min-height: 76px;
+        padding: 12px;
+      }
+
+      .incident-banner h2 {
+        font-size: 0.94rem;
+      }
+
+      .incident-banner p {
+        white-space: normal;
+      }
+
+      .top-actions {
+        display: none;
+      }
+
+      .mobile-tabs {
+        display: flex;
+      }
+
+      .dashboard {
+        padding: 12px;
+        gap: 12px;
+      }
+
+      .left-stack,
+      .right-stack {
+        gap: 12px;
+      }
+
+      .panel {
+        border-radius: 7px;
+      }
+
+      .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .summary-card {
+        min-height: 92px;
+      }
+
+      .summary-card strong {
+        font-size: 1.35rem;
+      }
+
+      .map-wrap {
+        min-height: 270px;
+        padding: 8px;
+      }
+
+      .asset-map {
+        height: 252px;
+      }
+
+      .map-legend {
+        display: none;
+      }
+
+      .health-grid,
+      .telemetry-grid,
+      .operator-strip {
+        grid-template-columns: 1fr;
+      }
+
+      .device-card {
+        min-height: 148px;
+      }
+
+      .right-stack {
+        order: -1;
+      }
+
+      .alert-item {
+        grid-template-columns: auto minmax(0, 1fr);
+      }
+
+      .eta {
+        grid-column: 2;
+      }
+
+      .footer-note {
+        padding: 0 12px 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Fleet navigation">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 40 40" role="img">
+            <path d="M20 5L33 12V28L20 35L7 28V12L20 5Z" fill="none" stroke="#06B6D4" stroke-width="2"/>
+            <path d="M20 12V20L27 24" fill="none" stroke="#F3F4F6" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="20" cy="20" r="3" fill="#22C55E"/>
+          </svg>
+        </div>
+        <h1>Signal Fleet<span>ops grid / eu-central</span></h1>
+      </div>
+
+      <div class="nav-group">
+        <p class="nav-label">Priority</p>
+        <button class="nav-item warning" type="button">
+          <strong>P1 queue</strong>
+          <code>04</code>
+        </button>
+        <button class="nav-item active" type="button">
+          <strong>Fleet live</strong>
+          <code>1,284</code>
+        </button>
+        <button class="nav-item" type="button">
+          <strong>Degraded</strong>
+          <code>37</code>
+        </button>
+        <button class="nav-item" type="button">
+          <strong>Offline</strong>
+          <code>11</code>
+        </button>
+      </div>
+
+      <div class="nav-group">
+        <p class="nav-label">Operations</p>
+        <button class="nav-item" type="button">
+          <strong>Regions</strong>
+          <code>08</code>
+        </button>
+        <button class="nav-item" type="button">
+          <strong>Telemetry</strong>
+          <code>99.2%</code>
+        </button>
+        <button class="nav-item" type="button">
+          <strong>Maintenance</strong>
+          <code>18h</code>
+        </button>
+        <button class="nav-item" type="button">
+          <strong>Firmware</strong>
+          <code>2.9.4</code>
+        </button>
+      </div>
+
+      <div class="field-card">
+        <strong>Technician mode ready</strong>
+        <p>Mobile view surfaces active alerts first, then map and work orders.</p>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div class="incident-banner">
+          <span class="incident-dot" aria-hidden="true"></span>
+          <div>
+            <h2>P1 anomaly: cold-chain gateway drift above threshold</h2>
+            <p>FR-LYON-CC-039 · +8.7°C variance · 12 affected sensors · technician ETA 18m</p>
+          </div>
+        </div>
+        <div class="top-actions">
+          <input class="search" type="search" value="" aria-label="Search asset, site, serial">
+          <button class="control-button" type="button">Acknowledge</button>
+          <button class="control-button primary" type="button">Dispatch crew</button>
+        </div>
+      </header>
+
+      <nav class="mobile-tabs" aria-label="Field technician sections">
+        <button class="mobile-tab active" type="button">P1 alerts</button>
+        <button class="mobile-tab" type="button">Map</button>
+        <button class="mobile-tab" type="button">Devices</button>
+        <button class="mobile-tab" type="button">Work orders</button>
+      </nav>
+
+      <section class="dashboard">
+        <div class="left-stack">
+          <section class="panel" aria-labelledby="fleet-summary">
+            <div class="panel-header">
+              <div class="panel-title">
+                <h3 id="fleet-summary">Fleet health summary</h3>
+                <p>live telemetry · 8 regions · 30 second refresh</p>
+              </div>
+              <span class="status-pill live">LIVE SYNC</span>
+            </div>
+            <div class="summary-grid">
+              <article class="summary-card good">
+                <span>Live</span>
+                <strong>1,236</strong>
+                <p>96.3% reporting within SLA.</p>
+              </article>
+              <article class="summary-card warn">
+                <span>Degraded</span>
+                <strong>37</strong>
+                <p>Sensor drift or high retries.</p>
+              </article>
+              <article class="summary-card">
+                <span>Offline</span>
+                <strong>11</strong>
+                <p>Last heartbeat older than 15m.</p>
+              </article>
+              <article class="summary-card cyan">
+                <span>Maintenance</span>
+                <strong>18</strong>
+                <p>Predicted service window today.</p>
+              </article>
+            </div>
+          </section>
+
+          <section class="panel" aria-labelledby="asset-map">
+            <div class="panel-header">
+              <div class="panel-title">
+                <h3 id="asset-map">Asset map</h3>
+                <p>anomaly weighted by severity and downstream dependency</p>
+              </div>
+              <span class="status-pill degraded">4 P1 ANOMALIES</span>
+            </div>
+            <div class="map-wrap">
+              <svg class="asset-map" viewBox="0 0 960 420" role="img" aria-label="Map of connected IoT fleet sites with device status nodes">
+                <rect class="zone" x="38" y="48" width="226" height="138" rx="10"/>
+                <rect class="zone" x="308" y="36" width="250" height="176" rx="10"/>
+                <rect class="zone" x="602" y="68" width="270" height="132" rx="10"/>
+                <rect class="zone" x="90" y="244" width="256" height="118" rx="10"/>
+                <rect class="zone" x="424" y="252" width="412" height="104" rx="10"/>
+                <path class="route-line" d="M146 118C244 72 330 130 434 126S640 90 744 134"/>
+                <path class="route-line" d="M174 304C292 250 390 312 508 304S680 282 772 312"/>
+                <path class="route-line" d="M434 126C454 186 498 238 508 304"/>
+                <circle class="node-ring warn" cx="146" cy="118" r="15"/>
+                <circle class="node degraded" cx="146" cy="118" r="10"/>
+                <circle class="node-ring good" cx="260" cy="104" r="16"/>
+                <circle class="node live" cx="260" cy="104" r="10"/>
+                <circle class="node maintenance" cx="434" cy="126" r="10"/>
+                <circle class="node-ring warn" cx="548" cy="146" r="15"/>
+                <circle class="node degraded" cx="548" cy="146" r="10"/>
+                <circle class="node live" cx="744" cy="134" r="10"/>
+                <circle class="node offline" cx="812" cy="164" r="10"/>
+                <circle class="node live" cx="174" cy="304" r="10"/>
+                <circle class="node-ring warn" cx="314" cy="286" r="15"/>
+                <circle class="node degraded" cx="314" cy="286" r="10"/>
+                <circle class="node live" cx="508" cy="304" r="10"/>
+                <circle class="node maintenance" cx="642" cy="292" r="10"/>
+                <circle class="node live" cx="772" cy="312" r="10"/>
+                <text x="70" y="84" fill="#F3F4F6" font-family="IBM Plex Mono" font-size="13">NORTH COLD-CHAIN</text>
+                <text x="338" y="74" fill="#F3F4F6" font-family="IBM Plex Mono" font-size="13">CORE LOGISTICS</text>
+                <text x="632" y="104" fill="#F3F4F6" font-family="IBM Plex Mono" font-size="13">WAREHOUSE EAST</text>
+                <text x="118" y="280" fill="#F3F4F6" font-family="IBM Plex Mono" font-size="13">FIELD ENERGY</text>
+                <text x="454" y="288" fill="#F3F4F6" font-family="IBM Plex Mono" font-size="13">URBAN MOBILITY</text>
+              </svg>
+              <div class="map-legend" aria-label="Map legend">
+                <div class="legend-item"><span class="legend-dot live"></span><span>live heartbeat</span></div>
+                <div class="legend-item"><span class="legend-dot degraded"></span><span>degraded signal</span></div>
+                <div class="legend-item"><span class="legend-dot maintenance"></span><span>maintenance due</span></div>
+                <div class="legend-item"><span class="legend-dot offline"></span><span>offline asset</span></div>
+              </div>
+            </div>
+          </section>
+
+          <section class="panel" aria-labelledby="device-health">
+            <div class="panel-header">
+              <div class="panel-title">
+                <h3 id="device-health">Device health cards</h3>
+                <p>sorted by risk score, not alphabetical inventory</p>
+              </div>
+              <span class="status-pill degraded">ANOMALIES FIRST</span>
+            </div>
+            <div class="health-grid">
+              <article class="device-card degraded">
+                <div class="device-head">
+                  <div>
+                    <h4>Cold gateway 039</h4>
+                    <code>FR-LYON-CC-039</code>
+                  </div>
+                  <span class="status-pill degraded">DEGRADED</span>
+                </div>
+                <div class="device-meta">
+                  <div class="device-row"><span>Thermal drift</span><strong>+8.7°C</strong></div>
+                  <div class="device-row"><span>Packet retry</span><strong>18.4%</strong></div>
+                  <div class="meter"><span style="--value: 84%; --meter-color: #F97316;"></span></div>
+                </div>
+                <div class="device-row"><span>Next action</span><strong>Dispatch</strong></div>
+              </article>
+              <article class="device-card degraded">
+                <div class="device-head">
+                  <div>
+                    <h4>Pump array 118</h4>
+                    <code>DE-ESSN-PM-118</code>
+                  </div>
+                  <span class="status-pill degraded">DEGRADED</span>
+                </div>
+                <div class="device-meta">
+                  <div class="device-row"><span>Vibration</span><strong>71Hz</strong></div>
+                  <div class="device-row"><span>Motor load</span><strong>93%</strong></div>
+                  <div class="meter"><span style="--value: 79%; --meter-color: #F97316;"></span></div>
+                </div>
+                <div class="device-row"><span>Next action</span><strong>Inspect</strong></div>
+              </article>
+              <article class="device-card maintenance">
+                <div class="device-head">
+                  <div>
+                    <h4>EV node 442</h4>
+                    <code>NL-AMS-EV-442</code>
+                  </div>
+                  <span class="status-pill maintenance">MAINT</span>
+                </div>
+                <div class="device-meta">
+                  <div class="device-row"><span>Connector wear</span><strong>78%</strong></div>
+                  <div class="device-row"><span>Charge relay</span><strong>stable</strong></div>
+                  <div class="meter"><span style="--value: 62%; --meter-color: #06B6D4;"></span></div>
+                </div>
+                <div class="device-row"><span>Next action</span><strong>Schedule</strong></div>
+              </article>
+              <article class="device-card live">
+                <div class="device-head">
+                  <div>
+                    <h4>Urban hub 207</h4>
+                    <code>PL-WAW-MB-207</code>
+                  </div>
+                  <span class="status-pill live">LIVE</span>
+                </div>
+                <div class="device-meta">
+                  <div class="device-row"><span>Latency</span><strong>42ms</strong></div>
+                  <div class="device-row"><span>Battery</span><strong>91%</strong></div>
+                  <div class="meter"><span style="--value: 91%; --meter-color: #22C55E;"></span></div>
+                </div>
+                <div class="device-row"><span>Next action</span><strong>Monitor</strong></div>
+              </article>
+              <article class="device-card">
+                <div class="device-head">
+                  <div>
+                    <h4>Gate sensor 612</h4>
+                    <code>IT-MIL-GT-612</code>
+                  </div>
+                  <span class="status-pill offline">OFFLINE</span>
+                </div>
+                <div class="device-meta">
+                  <div class="device-row"><span>Heartbeat</span><strong>22m old</strong></div>
+                  <div class="device-row"><span>Backhaul</span><strong>lost</strong></div>
+                  <div class="meter"><span style="--value: 22%; --meter-color: #374151;"></span></div>
+                </div>
+                <div class="device-row"><span>Next action</span><strong>Ping</strong></div>
+              </article>
+              <article class="device-card live">
+                <div class="device-head">
+                  <div>
+                    <h4>Solar inverter 086</h4>
+                    <code>ES-SEV-PV-086</code>
+                  </div>
+                  <span class="status-pill live">LIVE</span>
+                </div>
+                <div class="device-meta">
+                  <div class="device-row"><span>Yield</span><strong>18.2kW</strong></div>
+                  <div class="device-row"><span>Temp</span><strong>39°C</strong></div>
+                  <div class="meter"><span style="--value: 88%; --meter-color: #22C55E;"></span></div>
+                </div>
+                <div class="device-row"><span>Next action</span><strong>Monitor</strong></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="panel" aria-labelledby="telemetry">
+            <div class="panel-header">
+              <div class="panel-title">
+                <h3 id="telemetry">Telemetry charts</h3>
+                <p>IBM Plex Mono readouts for live streams and forecasted risk</p>
+              </div>
+              <span class="status-pill live">STREAMING</span>
+            </div>
+            <div class="telemetry-grid">
+              <article class="chart-card">
+                <div class="chart-top">
+                  <h4>Heartbeat latency</h4>
+                  <code>p95 184ms</code>
+                </div>
+                <div class="bars">
+                  <span style="--h: 32%;"></span>
+                  <span style="--h: 38%;"></span>
+                  <span style="--h: 36%;"></span>
+                  <span style="--h: 41%;"></span>
+                  <span style="--h: 44%;"></span>
+                  <span style="--h: 39%;"></span>
+                  <span style="--h: 52%;"></span>
+                  <span style="--h: 49%;"></span>
+                  <span style="--h: 57%;"></span>
+                  <span style="--h: 61%;"></span>
+                  <span style="--h: 55%;"></span>
+                  <span style="--h: 48%;"></span>
+                  <span style="--h: 46%;"></span>
+                  <span style="--h: 42%;"></span>
+                  <span style="--h: 40%;"></span>
+                  <span style="--h: 43%;"></span>
+                  <span style="--h: 47%;"></span>
+                  <span style="--h: 44%;"></span>
+                </div>
+                <p class="chart-note">No global latency incident; spikes contained in Lyon cold-chain.</p>
+              </article>
+              <article class="chart-card">
+                <div class="chart-top">
+                  <h4>Thermal variance</h4>
+                  <code>+8.7°C max</code>
+                </div>
+                <div class="bars warn">
+                  <span style="--h: 22%;"></span>
+                  <span style="--h: 24%;"></span>
+                  <span style="--h: 27%;"></span>
+                  <span style="--h: 31%;"></span>
+                  <span style="--h: 39%;"></span>
+                  <span style="--h: 44%;"></span>
+                  <span style="--h: 86%;"></span>
+                  <span style="--h: 92%;"></span>
+                  <span style="--h: 78%;"></span>
+                  <span style="--h: 54%;"></span>
+                  <span style="--h: 49%;"></span>
+                  <span style="--h: 45%;"></span>
+                  <span style="--h: 36%;"></span>
+                  <span style="--h: 32%;"></span>
+                  <span style="--h: 28%;"></span>
+                  <span style="--h: 26%;"></span>
+                  <span style="--h: 24%;"></span>
+                  <span style="--h: 23%;"></span>
+                </div>
+                <p class="chart-note">Anomaly window starts at 07:42 and maps to compressor relay cycles.</p>
+              </article>
+            </div>
+          </section>
+        </div>
+
+        <div class="right-stack">
+          <section class="panel" aria-labelledby="alert-queue">
+            <div class="panel-header">
+              <div class="panel-title">
+                <h3 id="alert-queue">Alert queue</h3>
+                <p>mobile-first priority ordering for field response</p>
+              </div>
+              <span class="status-pill degraded">07 OPEN</span>
+            </div>
+            <div class="alert-list">
+              <button class="alert-item active" type="button" data-alert="cold-chain">
+                <span class="severity p1">P1</span>
+                <span class="alert-copy">
+                  <strong>Cold gateway temperature drift</strong>
+                  <span>FR-LYON-CC-039 · 12 linked probes</span>
+                </span>
+                <span class="eta">ETA 18m</span>
+              </button>
+              <button class="alert-item" type="button" data-alert="pump">
+                <span class="severity p1">P1</span>
+                <span class="alert-copy">
+                  <strong>Pump array vibration envelope</strong>
+                  <span>DE-ESSN-PM-118 · bearing risk high</span>
+                </span>
+                <span class="eta">ETA 42m</span>
+              </button>
+              <button class="alert-item" type="button" data-alert="gate">
+                <span class="severity p2">P2</span>
+                <span class="alert-copy">
+                  <strong>Gate sensor lost backhaul</strong>
+                  <span>IT-MIL-GT-612 · cellular failover missed</span>
+                </span>
+                <span class="eta">Ping now</span>
+              </button>
+              <button class="alert-item" type="button" data-alert="ev">
+                <span class="severity p2">P2</span>
+                <span class="alert-copy">
+                  <strong>EV relay maintenance threshold</strong>
+                  <span>NL-AMS-EV-442 · connector wear 78%</span>
+                </span>
+                <span class="eta">Today</span>
+              </button>
+              <button class="alert-item" type="button" data-alert="firmware">
+                <span class="severity p3">P3</span>
+                <span class="alert-copy">
+                  <strong>Firmware cohort behind baseline</strong>
+                  <span>EU-NORTH · 84 devices on v2.8.x</span>
+                </span>
+                <span class="eta">Queued</span>
+              </button>
+            </div>
+          </section>
+
+          <section class="panel" aria-labelledby="maintenance">
+            <div class="panel-header">
+              <div class="panel-title">
+                <h3 id="maintenance">Maintenance predictions</h3>
+                <p>risk windows ranked by impact on fleet availability</p>
+              </div>
+              <span class="status-pill maintenance">18 DUE</span>
+            </div>
+            <div class="prediction-list">
+              <article class="prediction">
+                <div>
+                  <h4>Compressor relay replacement</h4>
+                  <p>FR-LYON-CC-039 · within 9h · cold-chain SLA impact</p>
+                </div>
+                <div class="risk-score" style="--risk: 86%; --risk-color: #F97316;"><span>86</span></div>
+              </article>
+              <article class="prediction">
+                <div>
+                  <h4>Pump bearing inspection</h4>
+                  <p>DE-ESSN-PM-118 · within 14h · vibration trend rising</p>
+                </div>
+                <div class="risk-score" style="--risk: 74%; --risk-color: #F97316;"><span>74</span></div>
+              </article>
+              <article class="prediction">
+                <div>
+                  <h4>Connector torque service</h4>
+                  <p>NL-AMS-EV-442 · today · stable but aging fast</p>
+                </div>
+                <div class="risk-score" style="--risk: 62%; --risk-color: #06B6D4;"><span>62</span></div>
+              </article>
+              <article class="prediction">
+                <div>
+                  <h4>Battery swap cluster</h4>
+                  <p>PL-WAW-MB-207 · 3 days · normal depletion</p>
+                </div>
+                <div class="risk-score" style="--risk: 38%; --risk-color: #22C55E;"><span>38</span></div>
+              </article>
+            </div>
+          </section>
+
+          <section class="panel" aria-labelledby="operator">
+            <div class="panel-header">
+              <div class="panel-title">
+                <h3 id="operator">Operator handoff</h3>
+                <p>what the next shift needs without reading the whole log</p>
+              </div>
+              <span class="status-pill live">READY</span>
+            </div>
+            <div class="operator-strip">
+              <article class="operator-card">
+                <span>Current lead</span>
+                <strong>Marta K. · EU Ops</strong>
+                <p>Cold-chain incident acknowledged, crew dispatched, vendor bridge open.</p>
+              </article>
+              <article class="operator-card">
+                <span>Open bridge</span>
+                <strong>BRG-8821</strong>
+                <p>Telemetry and maintenance joined.</p>
+              </article>
+              <article class="operator-card">
+                <span>Next sweep</span>
+                <strong>08:45 UTC</strong>
+                <p>Confirm relay stabilization.</p>
+              </article>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <p class="footer-note">Signal IoT Fleet · Built by Paweł Łukasik · anomaly-first enterprise dashboard skeleton.</p>
+    </main>
+  </div>
+
+  <script>
+    const alerts = document.querySelectorAll(".alert-item");
+    const bannerTitle = document.querySelector(".incident-banner h2");
+    const bannerMeta = document.querySelector(".incident-banner p");
+    const tabs = document.querySelectorAll(".mobile-tab");
+
+    const alertCopy = {
+      "cold-chain": {
+        title: "P1 anomaly: cold-chain gateway drift above threshold",
+        meta: "FR-LYON-CC-039 · +8.7°C variance · 12 affected sensors · technician ETA 18m"
+      },
+      pump: {
+        title: "P1 anomaly: pump vibration envelope exceeded",
+        meta: "DE-ESSN-PM-118 · 71Hz vibration · bearing risk high · technician ETA 42m"
+      },
+      gate: {
+        title: "P2 outage: gate sensor backhaul unavailable",
+        meta: "IT-MIL-GT-612 · last heartbeat 22m ago · failover retry pending"
+      },
+      ev: {
+        title: "P2 maintenance: EV relay approaching service threshold",
+        meta: "NL-AMS-EV-442 · connector wear 78% · schedule field visit today"
+      },
+      firmware: {
+        title: "P3 action: firmware cohort behind current baseline",
+        meta: "EU-NORTH · 84 devices on v2.8.x · staged update queued"
+      }
+    };
+
+    alerts.forEach((alert) => {
+      alert.addEventListener("click", () => {
+        alerts.forEach((item) => item.classList.remove("active"));
+        alert.classList.add("active");
+        const selected = alertCopy[alert.dataset.alert];
+        bannerTitle.textContent = selected.title;
+        bannerMeta.textContent = selected.meta;
+      });
+    });
+
+    tabs.forEach((tab) => {
+      tab.addEventListener("click", () => {
+        tabs.forEach((item) => item.classList.remove("active"));
+        tab.classList.add("active");
+      });
+    });
+  </script>
+</body>
+</html>
