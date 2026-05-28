@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nestwave Smart Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --night: #0F172A;
+      --light: #FFE8A3;
+      --sky: #93C5FD;
+      --mint: #A7F3D0;
+      --clay: #D97706;
+      --gray: #E2E8F0;
+      --panel: rgba(226, 232, 240, 0.08);
+      --line: rgba(226, 232, 240, 0.14);
+      --muted: rgba(226, 232, 240, 0.68);
+      --sky-soft: rgba(147, 197, 253, 0.18);
+      --mint-soft: rgba(167, 243, 208, 0.16);
+      --light-soft: rgba(255, 232, 163, 0.16);
+      --clay-soft: rgba(217, 119, 6, 0.18);
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.24);
+      --radius: 8px;
+      --max: 1240px;
+    }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--gray);
+      background: var(--night);
+      font-family: "Manrope", system-ui, sans-serif;
+      line-height: 1.5;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+    button {
+      cursor: pointer;
+    }
+    :focus-visible {
+      outline: 3px solid var(--light);
+      outline-offset: 3px;
+    }
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 16px;
+      z-index: 1000;
+      padding: 10px 18px;
+      color: var(--night);
+      background: var(--light);
+      border-radius: 6px;
+      font-weight: 900;
+    }
+    .skip-link:focus {
+      top: 16px;
+    }
+    .app {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 24px;
+    }
+    .shell {
+      display: grid;
+      grid-template-columns: 230px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+    .sidebar {
+      position: sticky;
+      top: 24px;
+      min-height: calc(100vh - 48px);
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--panel);
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 28px;
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      color: var(--night);
+      background: var(--light);
+      font-weight: 900;
+    }
+    .side-nav {
+      display: grid;
+      gap: 8px;
+    }
+    .side-nav a {
+      padding: 12px;
+      border-radius: 12px;
+      color: var(--muted);
+      font-weight: 800;
+    }
+    .side-nav a[aria-current="page"],
+    .side-nav a:hover {
+      color: var(--night);
+      background: var(--light);
+    }
+    .home-status {
+      margin-top: 26px;
+      padding: 16px;
+      border-radius: 18px;
+      color: var(--night);
+      background: var(--mint);
+    }
+    .home-status strong {
+      display: block;
+      margin-bottom: 6px;
+      font-family: "Space Grotesk", system-ui, sans-serif;
+    }
+    .mobile-top {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .mobile-menu {
+      width: 44px;
+      height: 44px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--gray);
+      background: var(--panel);
+      font-weight: 900;
+    }
+    .content {
+      display: grid;
+      gap: 18px;
+    }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 18px;
+      align-items: stretch;
+    }
+    .overview-card {
+      padding: 28px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(147,197,253,0.12), rgba(255,232,163,0.08));
+      box-shadow: var(--shadow);
+    }
+    .eyebrow {
+      margin-bottom: 8px;
+      color: var(--light);
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .hero-title {
+      max-width: 680px;
+      margin: 0 0 14px;
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4.8rem);
+      line-height: 0.96;
+    }
+    .hero-text {
+      max-width: 560px;
+      margin: 0 0 22px;
+      color: var(--muted);
+    }
+    .room-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .room-tabs button {
+      min-height: 40px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--gray);
+      background: transparent;
+      font-weight: 900;
+    }
+    .room-tabs button.active {
+      color: var(--night);
+      background: var(--light);
+      border-color: var(--light);
+    }
+    .energy-card {
+      padding: 22px;
+      border-radius: 24px;
+      color: var(--night);
+      background: var(--light);
+    }
+    .energy-card h2 {
+      margin: 0 0 12px;
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      font-size: 2rem;
+    }
+    .energy-value {
+      font-size: 3.2rem;
+      line-height: 0.9;
+      font-weight: 900;
+    }
+    .energy-card p {
+      color: rgba(15, 23, 42, 0.72);
+    }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-top: 18px;
+    }
+    .section-title {
+      margin: 0;
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      font-size: 2rem;
+    }
+    .section-copy {
+      max-width: 440px;
+      margin: 0;
+      color: var(--muted);
+    }
+    .rooms-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .room-card {
+      min-height: 230px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: var(--panel);
+    }
+    .room-card h3 {
+      margin: 0 0 8px;
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      font-size: 1.35rem;
+    }
+    .room-card p {
+      margin: 0;
+      color: var(--muted);
+    }
+    .device-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .device-count {
+      color: var(--light);
+      font-weight: 900;
+    }
+    .toggle {
+      width: 62px;
+      height: 34px;
+      position: relative;
+      border: 0;
+      border-radius: 999px;
+      background: var(--mint);
+    }
+    .toggle::after {
+      content: "";
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      background: var(--night);
+    }
+    .toggle.off {
+      background: rgba(226, 232, 240, 0.22);
+    }
+    .toggle.off::after {
+      left: 4px;
+      right: auto;
+      background: var(--gray);
+    }
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 18px;
+    }
+    .security-panel,
+    .automation-panel {
+      padding: 22px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: var(--panel);
+    }
+    .security-panel h3,
+    .automation-panel h3 {
+      margin: 0 0 14px;
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      font-size: 1.7rem;
+    }
+    .security-state {
+      padding: 18px;
+      border-radius: 18px;
+      color: var(--night);
+      background: var(--mint);
+      font-weight: 900;
+    }
+    .security-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .security-item,
+    .timeline-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+    }
+    .security-item strong,
+    .timeline-item strong {
+      color: var(--gray);
+    }
+    .scene-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .scene-button {
+      min-height: 112px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      color: var(--gray);
+      background: var(--panel);
+      text-align: left;
+      font-weight: 900;
+    }
+    .scene-button.active {
+      color: var(--night);
+      background: var(--sky);
+      border-color: var(--sky);
+    }
+    .scene-button span {
+      display: block;
+      margin-top: 26px;
+      color: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      opacity: 0.74;
+    }
+    .device-table {
+      display: grid;
+      gap: 10px;
+    }
+    .device-item {
+      display: grid;
+      grid-template-columns: 1.2fr 0.7fr 0.7fr auto;
+      gap: 12px;
+      align-items: center;
+      min-height: 62px;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel);
+    }
+    .device-item strong {
+      color: var(--gray);
+    }
+    .device-item span {
+      color: var(--muted);
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+    .health-chip {
+      padding: 5px 9px;
+      border-radius: 999px;
+      color: var(--night);
+      background: var(--mint);
+      font-size: 0.74rem;
+      font-weight: 900;
+    }
+    .health-chip.warn {
+      background: var(--light);
+    }
+    .diagnostic-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .diagnostic-card {
+      min-height: 170px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel);
+    }
+    .diagnostic-value {
+      margin: 28px 0 8px;
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      font-size: 2.2rem;
+      line-height: 1;
+      color: var(--sky);
+      font-weight: 700;
+    }
+    .diagnostic-card p {
+      margin: 0;
+      color: var(--muted);
+    }
+    .routine-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .routine-card {
+      min-height: 138px;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: var(--panel);
+    }
+    .routine-card strong {
+      display: block;
+      color: var(--light);
+      margin-bottom: 24px;
+    }
+    .routine-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+    .routine-card:nth-child(2) strong {
+      color: var(--sky);
+    }
+    .routine-card:nth-child(3) strong {
+      color: var(--mint);
+    }
+    .routine-card:nth-child(4) strong {
+      color: var(--clay);
+    }
+    .mobile-scenes {
+      position: fixed;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      z-index: 80;
+      min-height: 58px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 18px;
+      color: var(--night);
+      background: var(--light);
+      box-shadow: var(--shadow);
+      font-weight: 900;
+    }
+    .footer {
+      border-top: 1px solid var(--line);
+      padding: 28px 0 0;
+      color: var(--muted);
+      text-align: center;
+      font-size: 0.76rem;
+    }
+    @media (max-width: 1024px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+      .sidebar {
+        display: none;
+      }
+      .mobile-top {
+        display: flex;
+      }
+      .hero,
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+      .rooms-grid,
+      .scene-grid,
+      .diagnostic-grid,
+      .routine-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 720px) {
+      body {
+        padding-bottom: 84px;
+      }
+      .app {
+        padding: 16px;
+      }
+      .overview-card,
+      .energy-card,
+      .security-panel,
+      .automation-panel {
+        padding: 18px;
+      }
+      .rooms-grid,
+      .scene-grid,
+      .diagnostic-grid,
+      .routine-strip,
+      .device-item {
+        grid-template-columns: 1fr;
+      }
+      .section-head {
+        display: block;
+      }
+      .section-copy {
+        margin-top: 8px;
+      }
+      .toggle {
+        width: 72px;
+        height: 40px;
+      }
+      .toggle::after {
+        width: 32px;
+        height: 32px;
+      }
+      .scene-button {
+        min-height: 86px;
+      }
+      .mobile-scenes {
+        display: flex;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="app">
+    <div class="mobile-top"><a class="brand" href="#"><span class="brand-mark">N</span>Nestwave</a><button class="mobile-menu" aria-label="Open room tabs">R</button></div>
+    <div class="shell">
+      <aside class="sidebar" aria-label="Home navigation"><a class="brand" href="#"><span class="brand-mark">N</span>Nestwave</a><nav class="side-nav"><a href="#overview" aria-current="page">Overview</a><a href="#rooms">Rooms</a><a href="#security">Security</a><a href="#automation">Automation</a><a href="#scenes">Scenes</a></nav><div class="home-status"><strong>Home is calm</strong><span>22 devices online. Front door locked. Energy under target.</span></div></aside>
+      <main class="content" id="main">
+        <section class="hero" id="overview" aria-labelledby="hero-title"><article class="overview-card"><div class="eyebrow">Tuesday evening mode</div><h1 class="hero-title" id="hero-title">Every room state, obvious at a glance.</h1><p class="hero-text">Nestwave groups rooms, devices, energy, security, and automations into controls that make the home feel predictable.</p><div class="room-tabs" aria-label="Room tabs"><button class="active">Living</button><button>Kitchen</button><button>Bedroom</button><button>Office</button></div></article><aside class="energy-card"><h2>Energy today</h2><div class="energy-value">18.4kWh</div><p>12% below your Tuesday average. Heat pump shifts to eco at 22:30.</p></aside></section>
+        <section id="rooms" aria-labelledby="rooms-title"><div class="section-head"><div><div class="eyebrow">Rooms grid</div><h2 class="section-title" id="rooms-title">Grouped by where decisions happen.</h2></div><p class="section-copy">Each room card shows device states, count, and one large toggle for the most common action.</p></div><div class="rooms-grid"><article class="room-card"><div><h3>Living room</h3><p>Warm lights, 21C, blinds half closed.</p></div><div class="device-row"><span class="device-count">8 devices</span><button class="toggle" aria-label="Toggle living room"></button></div></article><article class="room-card"><div><h3>Kitchen</h3><p>Air quality normal, oven off, fridge efficient.</p></div><div class="device-row"><span class="device-count">6 devices</span><button class="toggle" aria-label="Toggle kitchen"></button></div></article><article class="room-card"><div><h3>Bedroom</h3><p>Sleep scene ready, temperature lowering.</p></div><div class="device-row"><span class="device-count">5 devices</span><button class="toggle off" aria-label="Toggle bedroom"></button></div></article></div></section>
+        <section class="dashboard-grid"><article class="security-panel" id="security"><div class="eyebrow">Security panel</div><h3>Armed perimeter</h3><div class="security-state">All entry points secure</div><div class="security-list"><div class="security-item"><span>Front door</span><strong>Locked</strong></div><div class="security-item"><span>Garden camera</span><strong>Online</strong></div><div class="security-item"><span>Garage</span><strong>Quiet</strong></div></div></article><article class="automation-panel" id="automation"><div class="eyebrow">Automation timeline</div><h3>Next actions</h3><div class="timeline-item"><span>21:15</span><strong>Dim living lights to 35%</strong></div><div class="timeline-item"><span>22:00</span><strong>Lock doors and arm garden</strong></div><div class="timeline-item"><span>22:30</span><strong>Heat pump eco mode</strong></div><div class="timeline-item"><span>06:45</span><strong>Kitchen warm-up scene</strong></div></article></section>
+        <section id="devices" aria-labelledby="devices-title"><div class="section-head"><div><div class="eyebrow">Device status</div><h2 class="section-title" id="devices-title">Problems are explicit before they become mysterious.</h2></div><p class="section-copy">The status list separates online state, battery health, and action needed so users know what to trust.</p></div><div class="device-table"><div class="device-item"><strong>Hallway motion sensor</strong><span>Online</span><span>Battery 82%</span><em class="health-chip">Healthy</em></div><div class="device-item"><strong>Bedroom thermostat</strong><span>Online</span><span>Calibrating</span><em class="health-chip warn">Check</em></div><div class="device-item"><strong>Garden camera</strong><span>Online</span><span>Wi-Fi strong</span><em class="health-chip">Healthy</em></div><div class="device-item"><strong>Garage door relay</strong><span>Online</span><span>Last used 18:04</span><em class="health-chip">Healthy</em></div></div></section>
+        <section id="diagnostics" aria-labelledby="diagnostics-title"><div class="section-head"><div><div class="eyebrow">Home diagnostics</div><h2 class="section-title" id="diagnostics-title">The system explains why it recommends a scene.</h2></div><p class="section-copy">Diagnostics make automations feel trustworthy by showing comfort, air, and network context.</p></div><div class="diagnostic-grid"><article class="diagnostic-card"><strong>Comfort balance</strong><div class="diagnostic-value">94%</div><p>Temperature, humidity, and occupied rooms are within preferred evening range.</p></article><article class="diagnostic-card"><strong>Network health</strong><div class="diagnostic-value">31ms</div><p>Average device response latency across lights, sensors, and cameras.</p></article><article class="diagnostic-card"><strong>Air quality</strong><div class="diagnostic-value">Good</div><p>Kitchen fan cleared dinner spike; bedroom purifier stays idle until 23:00.</p></article></div></section>
+        <section id="routines" aria-labelledby="routines-title"><div class="section-head"><div><div class="eyebrow">Suggested routines</div><h2 class="section-title" id="routines-title">Small automations, clearly explained.</h2></div><p class="section-copy">Each suggestion names the trigger and the benefit before asking the user to trust it.</p></div><div class="routine-strip"><article class="routine-card"><strong>After sunset</strong><p>Lower blinds when glare crosses the living room sensor.</p></article><article class="routine-card"><strong>Quiet work</strong><p>Mute door chime in the office while calendar focus is active.</p></article><article class="routine-card"><strong>Fresh air</strong><p>Open kitchen vent when CO2 rises after dinner prep.</p></article><article class="routine-card"><strong>Lower bill</strong><p>Delay laundry start until the cheaper tariff window begins.</p></article></div></section>
+        <section id="scenes" aria-labelledby="scenes-title"><div class="section-head"><div><div class="eyebrow">Scene presets</div><h2 class="section-title" id="scenes-title">One-hand-friendly scene activation.</h2></div><p class="section-copy">Mobile uses large scene buttons so the most common actions are reachable without hunting.</p></div><div class="scene-grid"><button class="scene-button active">Evening calm<span>Lights, blinds, audio</span></button><button class="scene-button">Away<span>Locks, cameras, eco</span></button><button class="scene-button">Movie<span>Projector, lights, sound</span></button><button class="scene-button">Sleep<span>Temperature, locks, quiet</span></button></div></section>
+        <footer class="footer">Built by Paweł Łukasik</footer>
+      </main>
+    </div>
+  </div>
+  <button class="mobile-scenes" aria-label="Open scene presets"><span>Evening calm</span><span>Scenes</span></button>
+  <script>
+    document.querySelectorAll(".room-tabs button").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".room-tabs button").forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+      });
+    });
+    document.querySelectorAll(".scene-button").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".scene-button").forEach((item) => item.classList.remove("active"));
+        button.classList.add("active");
+      });
+    });
+  </script>
+</body>
+</html>

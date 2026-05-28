@@ -2,8 +2,8 @@
 
 ## Status
 - **Started:** 2026-05-28 02:44
-- **Current:** #25 nestwave-smart-home (next)
-- **Completed:** 24/100
+- **Current:** #26 signal-iot-fleet (next)
+- **Completed:** 25/100
 
 ## Rules (CONTEXT-SAFE)
 1. Work ONE template at a time. No parallel builds.
@@ -57,7 +57,7 @@ Mark each as: ✅ done | ⏳ in progress | ❌ failed | ⏭ skipped
 - [x] 22 haven-interior-studio ✅
 - [x] 23 verdant-climate-platform ✅
 - [x] 24 chargegrid-ev-network ✅
-- [ ] 25 nestwave-smart-home
+- [x] 25 nestwave-smart-home ✅
 - [ ] 26 signal-iot-fleet
 - [ ] 27 creatorforge-marketplace
 - [ ] 28 hearth-community-hub
