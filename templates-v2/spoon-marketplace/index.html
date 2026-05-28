@@ -1,0 +1,1131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spoon Marketplace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FFF7E6;
+      --tomato: #EF4444;
+      --tomato-soft: rgba(239, 68, 68, 0.12);
+      --basil: #22C55E;
+      --basil-soft: rgba(34, 197, 94, 0.13);
+      --saffron: #F59E0B;
+      --saffron-soft: rgba(245, 158, 11, 0.18);
+      --charcoal: #1F2937;
+      --charcoal-muted: rgba(31, 41, 55, 0.68);
+      --charcoal-faint: rgba(31, 41, 55, 0.12);
+      --mint: #DCFCE7;
+      --white: #FFFFFF;
+      --shadow: 0 24px 70px rgba(31, 41, 55, 0.14);
+      --shadow-soft: 0 12px 30px rgba(31, 41, 55, 0.08);
+      --radius: 10px;
+      --radius-sm: 6px;
+      --max: 1220px;
+      --nav-height: 68px;
+    }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--charcoal);
+      background: var(--cream);
+      font-family: "Inter", system-ui, sans-serif;
+      line-height: 1.5;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+    button {
+      cursor: pointer;
+    }
+    :focus-visible {
+      outline: 3px solid var(--saffron);
+      outline-offset: 3px;
+    }
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 16px;
+      z-index: 1000;
+      padding: 10px 18px;
+      color: var(--white);
+      background: var(--tomato);
+      border-radius: var(--radius-sm);
+      font-weight: 800;
+    }
+    .skip-link:focus {
+      top: 16px;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      background: rgba(255, 247, 230, 0.94);
+      border-bottom: 1px solid var(--charcoal-faint);
+      backdrop-filter: blur(18px);
+    }
+    .nav {
+      max-width: var(--max);
+      height: var(--nav-height);
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-size: 1.65rem;
+      font-weight: 800;
+    }
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 999px;
+      color: var(--white);
+      background: var(--tomato);
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-weight: 800;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--charcoal-muted);
+      font-size: 0.86rem;
+      font-weight: 800;
+    }
+    .nav-links a:hover {
+      color: var(--charcoal);
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .nav-pill {
+      min-height: 42px;
+      padding: 0 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid var(--charcoal-faint);
+      border-radius: 999px;
+      color: var(--charcoal);
+      background: var(--white);
+      font-weight: 800;
+    }
+    .cart-button {
+      min-height: 42px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 999px;
+      color: var(--white);
+      background: var(--charcoal);
+      font-weight: 900;
+    }
+    .menu-button {
+      display: none;
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--charcoal-faint);
+      border-radius: 999px;
+      background: var(--white);
+      font-weight: 900;
+    }
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 110;
+      display: none;
+      background: rgba(31, 41, 55, 0.34);
+    }
+    .drawer-overlay.open {
+      display: block;
+    }
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: -320px;
+      z-index: 120;
+      width: min(320px, 84vw);
+      height: 100%;
+      padding: 24px;
+      background: var(--cream);
+      transition: right 180ms ease;
+    }
+    .drawer.open {
+      right: 0;
+    }
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .drawer-close {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--charcoal-faint);
+      border-radius: 999px;
+      background: var(--white);
+      font-weight: 900;
+    }
+    .drawer nav {
+      display: grid;
+      gap: 4px;
+    }
+    .drawer a {
+      padding: 13px 0;
+      border-bottom: 1px solid var(--charcoal-faint);
+      font-weight: 800;
+    }
+    .hero {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 42px 24px 54px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.98fr) minmax(390px, 1.02fr);
+      gap: 28px;
+      align-items: stretch;
+    }
+    .hero-copy {
+      padding: 34px 0;
+    }
+    .kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      color: var(--charcoal);
+      background: var(--mint);
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+    .hero-title {
+      max-width: 650px;
+      margin: 0 0 18px;
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-size: clamp(3rem, 7vw, 5.8rem);
+      line-height: 0.92;
+      letter-spacing: 0;
+    }
+    .hero-text {
+      max-width: 540px;
+      margin: 0 0 24px;
+      color: var(--charcoal-muted);
+      font-size: 1.08rem;
+    }
+    .search-panel {
+      max-width: 620px;
+      padding: 12px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) auto;
+      gap: 8px;
+      border: 1px solid var(--charcoal-faint);
+      border-radius: 20px;
+      background: var(--white);
+      box-shadow: var(--shadow-soft);
+    }
+    .field {
+      min-height: 52px;
+      display: grid;
+      align-content: center;
+      padding: 0 14px;
+      border-radius: 14px;
+      background: var(--cream);
+    }
+    .field label {
+      color: var(--charcoal-muted);
+      font-size: 0.72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    .field input {
+      width: 100%;
+      border: 0;
+      color: var(--charcoal);
+      background: transparent;
+      font-weight: 800;
+    }
+    .search-button {
+      min-width: 124px;
+      border: 0;
+      border-radius: 16px;
+      color: var(--white);
+      background: var(--tomato);
+      font-weight: 900;
+    }
+    .cuisine-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 18px;
+    }
+    .cuisine-chip {
+      min-height: 38px;
+      padding: 0 14px;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--charcoal-faint);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.58);
+      color: var(--charcoal);
+      font-size: 0.84rem;
+      font-weight: 900;
+    }
+    .cuisine-chip.is-active {
+      border-color: var(--tomato);
+      color: var(--white);
+      background: var(--tomato);
+    }
+    .market-card {
+      min-height: 590px;
+      padding: 24px;
+      border-radius: 28px;
+      background: var(--charcoal);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .map-stage {
+      position: relative;
+      min-height: 100%;
+      border-radius: 20px;
+      background: linear-gradient(135deg, rgba(220,252,231,0.22), rgba(245,158,11,0.18));
+    }
+    .route-line {
+      position: absolute;
+      inset: 18% 10% 22% 15%;
+      border: 3px dashed rgba(255, 247, 230, 0.42);
+      border-radius: 46% 54% 38% 62%;
+    }
+    .food-pin {
+      position: absolute;
+      width: 168px;
+      padding: 14px;
+      border-radius: 18px;
+      color: var(--charcoal);
+      background: var(--cream);
+      box-shadow: 0 18px 42px rgba(0,0,0,0.18);
+    }
+    .food-pin.one {
+      top: 34px;
+      left: 28px;
+    }
+    .food-pin.two {
+      right: 24px;
+      top: 170px;
+    }
+    .food-pin.three {
+      left: 42px;
+      bottom: 38px;
+    }
+    .food-pin strong {
+      display: block;
+      margin-bottom: 4px;
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    }
+    .food-pin span {
+      color: var(--charcoal-muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+    .driver-card {
+      position: absolute;
+      right: 28px;
+      bottom: 28px;
+      width: 240px;
+      padding: 18px;
+      border-radius: 20px;
+      background: var(--mint);
+    }
+    .driver-card h3 {
+      margin: 0 0 8px;
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    }
+    .driver-card p {
+      margin: 0;
+      color: var(--charcoal-muted);
+    }
+    .section {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 62px 24px;
+    }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 28px;
+    }
+    .eyebrow {
+      margin-bottom: 8px;
+      color: var(--tomato);
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .section-title {
+      max-width: 680px;
+      margin: 0;
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-size: clamp(2rem, 4.4vw, 3.5rem);
+      line-height: 0.98;
+    }
+    .section-copy {
+      max-width: 470px;
+      margin: 0;
+      color: var(--charcoal-muted);
+    }
+    .restaurant-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .restaurant-card {
+      overflow: hidden;
+      border: 1px solid var(--charcoal-faint);
+      border-radius: 22px;
+      background: var(--white);
+      box-shadow: var(--shadow-soft);
+    }
+    .food-art {
+      min-height: 208px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--saffron-soft), var(--tomato-soft));
+    }
+    .plate {
+      width: 132px;
+      height: 132px;
+      position: relative;
+      border-radius: 999px;
+      background: var(--cream);
+      box-shadow: inset 0 0 0 14px rgba(255,255,255,0.72), 0 20px 40px rgba(31,41,55,0.14);
+    }
+    .plate::before,
+    .plate::after {
+      content: "";
+      position: absolute;
+      border-radius: 999px;
+    }
+    .plate::before {
+      width: 52px;
+      height: 52px;
+      left: 26px;
+      top: 34px;
+      background: var(--tomato);
+    }
+    .plate::after {
+      width: 40px;
+      height: 40px;
+      right: 28px;
+      bottom: 28px;
+      background: var(--basil);
+    }
+    .restaurant-body {
+      padding: 18px;
+    }
+    .restaurant-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+    .restaurant-card h3 {
+      margin: 0;
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-size: 1.3rem;
+    }
+    .rating {
+      height: 30px;
+      padding: 0 10px;
+      display: inline-flex;
+      align-items: center;
+      border-radius: 999px;
+      color: var(--charcoal);
+      background: var(--saffron-soft);
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+    .restaurant-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 12px 0 14px;
+    }
+    .meta-pill {
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: var(--cream);
+      color: var(--charcoal-muted);
+      font-size: 0.76rem;
+      font-weight: 800;
+    }
+    .meta-pill.fast {
+      color: #166534;
+      background: var(--mint);
+    }
+    .restaurant-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .delivery-fee {
+      color: var(--charcoal-muted);
+      font-size: 0.86rem;
+      font-weight: 800;
+    }
+    .restaurant-footer button {
+      min-height: 38px;
+      padding: 0 14px;
+      border: 0;
+      border-radius: 999px;
+      color: var(--white);
+      background: var(--charcoal);
+      font-weight: 900;
+    }
+    .eta-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .eta-card {
+      padding: 18px;
+      border: 1px solid var(--charcoal-faint);
+      border-radius: 18px;
+      background: var(--white);
+    }
+    .eta-value {
+      margin-bottom: 5px;
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+    }
+    .eta-card p {
+      margin: 0;
+      color: var(--charcoal-muted);
+      font-size: 0.88rem;
+    }
+    .picks-layout {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+    }
+    .pick-feature {
+      min-height: 440px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      border-radius: 26px;
+      color: var(--white);
+      background: linear-gradient(145deg, var(--tomato), #991b1b);
+    }
+    .pick-feature h3 {
+      max-width: 520px;
+      margin: 0 0 12px;
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-size: clamp(2rem, 4vw, 4rem);
+      line-height: 0.98;
+    }
+    .pick-feature p {
+      max-width: 520px;
+      margin: 0 0 20px;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    .pick-feature a {
+      width: fit-content;
+      padding: 12px 18px;
+      border-radius: 999px;
+      color: var(--charcoal);
+      background: var(--cream);
+      font-weight: 900;
+    }
+    .pick-list {
+      display: grid;
+      gap: 12px;
+    }
+    .pick-row {
+      display: grid;
+      grid-template-columns: 76px minmax(0, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      padding: 14px;
+      border: 1px solid var(--charcoal-faint);
+      border-radius: 18px;
+      background: var(--white);
+    }
+    .pick-thumb {
+      width: 76px;
+      height: 76px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--saffron-soft), var(--basil-soft));
+    }
+    .pick-row h3 {
+      margin: 0 0 4px;
+      font-size: 1rem;
+    }
+    .pick-row p {
+      margin: 0;
+      color: var(--charcoal-muted);
+      font-size: 0.82rem;
+    }
+    .pick-price {
+      color: var(--tomato);
+      font-weight: 900;
+    }
+    .loyalty-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: 30px;
+      align-items: center;
+      padding: 34px;
+      border-radius: 28px;
+      color: var(--charcoal);
+      background: var(--mint);
+    }
+    .loyalty-card h2 {
+      margin: 0 0 12px;
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-size: clamp(2rem, 4vw, 3.6rem);
+      line-height: 0.98;
+    }
+    .loyalty-card p {
+      max-width: 560px;
+      margin: 0 0 18px;
+      color: var(--charcoal-muted);
+    }
+    .loyalty-card button {
+      min-height: 46px;
+      padding: 0 20px;
+      border: 0;
+      border-radius: 999px;
+      color: var(--white);
+      background: var(--basil);
+      font-weight: 900;
+    }
+    .points-box {
+      padding: 22px;
+      border-radius: 22px;
+      background: var(--white);
+      box-shadow: var(--shadow-soft);
+    }
+    .points-value {
+      font-family: "Bricolage Grotesque", system-ui, sans-serif;
+      font-size: 3rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .points-box p {
+      margin: 8px 0 0;
+    }
+    .mobile-cart {
+      position: fixed;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      z-index: 80;
+      min-height: 56px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 18px;
+      color: var(--white);
+      background: var(--charcoal);
+      box-shadow: var(--shadow);
+      font-weight: 900;
+    }
+    .footer {
+      border-top: 1px solid var(--charcoal-faint);
+      background: rgba(255, 255, 255, 0.38);
+    }
+    .footer-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 34px 24px;
+      display: grid;
+      grid-template-columns: 1.4fr repeat(3, 1fr);
+      gap: 26px;
+    }
+    .footer p {
+      max-width: 330px;
+      margin: 10px 0 0;
+      color: var(--charcoal-muted);
+    }
+    .footer h3 {
+      margin: 0 0 10px;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+    }
+    .footer a {
+      display: block;
+      padding: 4px 0;
+      color: var(--charcoal-muted);
+      font-size: 0.86rem;
+    }
+    .footer-bottom {
+      padding: 14px 24px 24px;
+      text-align: center;
+      color: var(--charcoal-muted);
+      font-size: 0.74rem;
+    }
+    @media (max-width: 1024px) {
+      .nav-links,
+      .nav-pill,
+      .cart-button {
+        display: none;
+      }
+      .menu-button {
+        display: inline-grid;
+        place-items: center;
+      }
+      .hero-grid,
+      .picks-layout,
+      .loyalty-card {
+        grid-template-columns: 1fr;
+      }
+      .restaurant-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .eta-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .footer-inner {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    @media (max-width: 720px) {
+      body {
+        padding-bottom: 82px;
+      }
+      .nav {
+        padding: 0 16px;
+      }
+      .hero {
+        padding: 28px 16px 42px;
+      }
+      .hero-copy {
+        padding: 10px 0 0;
+      }
+      .search-panel {
+        grid-template-columns: 1fr;
+        border-radius: 18px;
+      }
+      .search-button {
+        min-height: 52px;
+      }
+      .market-card {
+        min-height: 430px;
+        padding: 16px;
+      }
+      .food-pin {
+        width: 146px;
+      }
+      .food-pin.two {
+        right: 12px;
+        top: 135px;
+      }
+      .driver-card {
+        left: 18px;
+        right: 18px;
+        bottom: 18px;
+        width: auto;
+      }
+      .section {
+        padding: 44px 16px;
+      }
+      .section-head {
+        display: block;
+      }
+      .section-copy {
+        margin-top: 12px;
+      }
+      .restaurant-grid,
+      .eta-strip,
+      .footer-inner {
+        grid-template-columns: 1fr;
+      }
+      .pick-row {
+        grid-template-columns: 64px minmax(0, 1fr);
+      }
+      .pick-price {
+        grid-column: 2;
+      }
+      .mobile-cart {
+        display: flex;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="drawer-head">
+      <a class="brand" href="#"><span class="brand-mark">S</span>Spoon</a>
+      <button class="drawer-close" id="drawerClose" aria-label="Close menu">x</button>
+    </div>
+    <nav aria-label="Mobile sections">
+      <a href="#restaurants">Restaurants</a>
+      <a href="#eta">Fast delivery</a>
+      <a href="#picks">Weekly picks</a>
+      <a href="#loyalty">Spoon Plus</a>
+    </nav>
+  </aside>
+  <header class="topbar">
+    <nav class="nav" aria-label="Primary navigation">
+      <a class="brand" href="#"><span class="brand-mark">S</span>Spoon</a>
+      <ul class="nav-links" role="list">
+        <li><a href="#restaurants">Restaurants</a></li>
+        <li><a href="#eta">Fast delivery</a></li>
+        <li><a href="#picks">Weekly picks</a></li>
+        <li><a href="#loyalty">Spoon Plus</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="nav-pill">Deliver to Wola</button>
+        <button class="cart-button">Cart - 2</button>
+        <button class="menu-button" id="drawerOpen" aria-label="Open menu" aria-expanded="false">M</button>
+      </div>
+    </nav>
+  </header>
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="kicker">Local restaurants, honest ETAs</div>
+          <h1 class="hero-title" id="hero-title">Dinner decisions, made fast.</h1>
+          <p class="hero-text">Spoon is a neighborhood food marketplace focused on the signals people need before ordering: cuisine, ETA, rating, delivery fee, dietary tags, and what locals are ordering this week.</p>
+          <form class="search-panel">
+            <div class="field">
+              <label for="location">Location</label>
+              <input id="location" value="Warsaw, Wola" autocomplete="street-address">
+            </div>
+            <div class="field">
+              <label for="query">Search</label>
+              <input id="query" value="ramen, vegan bowls, pierogi">
+            </div>
+            <button class="search-button" type="button">Find food</button>
+          </form>
+          <div class="cuisine-row" aria-label="Cuisine shortcuts">
+            <button class="cuisine-chip is-active" type="button">All</button>
+            <button class="cuisine-chip" type="button">Pizza</button>
+            <button class="cuisine-chip" type="button">Ramen</button>
+            <button class="cuisine-chip" type="button">Vegan</button>
+            <button class="cuisine-chip" type="button">Burgers</button>
+            <button class="cuisine-chip" type="button">Pierogi</button>
+            <button class="cuisine-chip" type="button">Sushi</button>
+            <button class="cuisine-chip" type="button">Dessert</button>
+          </div>
+        </div>
+        <div class="market-card" aria-label="Delivery map preview">
+          <div class="map-stage">
+            <div class="route-line"></div>
+            <div class="food-pin one"><strong>Miso Yard</strong><span>18-24 min - 4.8</span></div>
+            <div class="food-pin two"><strong>Basilico</strong><span>22-30 min - free delivery</span></div>
+            <div class="food-pin three"><strong>Green Bento</strong><span>15-20 min - vegan</span></div>
+            <div class="driver-card">
+              <h3>Courier Ania is 7 min away</h3>
+              <p>Smart batching keeps hot food hot and avoids silly detours.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="restaurants" aria-labelledby="restaurants-title">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Featured restaurants</div>
+          <h2 class="section-title" id="restaurants-title">Choose by cravings, not clutter.</h2>
+        </div>
+        <p class="section-copy">Restaurant cards expose the decision data up front: ETA, rating, delivery fee, dietary tags, and local popularity.</p>
+      </div>
+      <div class="restaurant-grid">
+        <article class="restaurant-card">
+          <div class="food-art"><div class="plate"></div></div>
+          <div class="restaurant-body">
+            <div class="restaurant-top">
+              <h3>Miso Yard</h3>
+              <span class="rating">4.8</span>
+            </div>
+            <p>Tokyo bowls, broth, gyoza</p>
+            <div class="restaurant-meta">
+              <span class="meta-pill fast">18-24 min</span>
+              <span class="meta-pill">Vegan options</span>
+            </div>
+            <div class="restaurant-footer">
+              <span class="delivery-fee">Free delivery</span>
+              <button>View menu</button>
+            </div>
+          </div>
+        </article>
+        <article class="restaurant-card">
+          <div class="food-art"><div class="plate"></div></div>
+          <div class="restaurant-body">
+            <div class="restaurant-top">
+              <h3>Basilico Pizza</h3>
+              <span class="rating">4.7</span>
+            </div>
+            <p>Sourdough pies and market salads</p>
+            <div class="restaurant-meta">
+              <span class="meta-pill fast">22-30 min</span>
+              <span class="meta-pill">Family meal</span>
+            </div>
+            <div class="restaurant-footer">
+              <span class="delivery-fee">$1.90 fee</span>
+              <button>View menu</button>
+            </div>
+          </div>
+        </article>
+        <article class="restaurant-card">
+          <div class="food-art"><div class="plate"></div></div>
+          <div class="restaurant-body">
+            <div class="restaurant-top">
+              <h3>Green Bento</h3>
+              <span class="rating">4.9</span>
+            </div>
+            <p>Fast bowls, tofu, seasonal veg</p>
+            <div class="restaurant-meta">
+              <span class="meta-pill fast">15-20 min</span>
+              <span class="meta-pill">Vegan</span>
+            </div>
+            <div class="restaurant-footer">
+              <span class="delivery-fee">Free delivery</span>
+              <button>View menu</button>
+            </div>
+          </div>
+        </article>
+        <article class="restaurant-card">
+          <div class="food-art"><div class="plate"></div></div>
+          <div class="restaurant-body">
+            <div class="restaurant-top">
+              <h3>Pierogi House</h3>
+              <span class="rating">4.6</span>
+            </div>
+            <p>Classic Polish comfort food</p>
+            <div class="restaurant-meta">
+              <span class="meta-pill fast">20-28 min</span>
+              <span class="meta-pill">Local favorite</span>
+            </div>
+            <div class="restaurant-footer">
+              <span class="delivery-fee">$0.99 fee</span>
+              <button>View menu</button>
+            </div>
+          </div>
+        </article>
+        <article class="restaurant-card">
+          <div class="food-art"><div class="plate"></div></div>
+          <div class="restaurant-body">
+            <div class="restaurant-top">
+              <h3>Firebird Burgers</h3>
+              <span class="rating">4.7</span>
+            </div>
+            <p>Smash burgers and fries</p>
+            <div class="restaurant-meta">
+              <span class="meta-pill fast">16-23 min</span>
+              <span class="meta-pill">Late night</span>
+            </div>
+            <div class="restaurant-footer">
+              <span class="delivery-fee">$1.49 fee</span>
+              <button>View menu</button>
+            </div>
+          </div>
+        </article>
+        <article class="restaurant-card">
+          <div class="food-art"><div class="plate"></div></div>
+          <div class="restaurant-body">
+            <div class="restaurant-top">
+              <h3>Sugar Window</h3>
+              <span class="rating">4.9</span>
+            </div>
+            <p>Desserts, coffee, pastries</p>
+            <div class="restaurant-meta">
+              <span class="meta-pill fast">12-18 min</span>
+              <span class="meta-pill">Sweet picks</span>
+            </div>
+            <div class="restaurant-footer">
+              <span class="delivery-fee">Free delivery</span>
+              <button>View menu</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="section" id="eta" aria-labelledby="eta-title">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Delivery ETA cards</div>
+          <h2 class="section-title" id="eta-title">Fast means believable, not fake.</h2>
+        </div>
+        <p class="section-copy">The marketplace separates preparation time, courier distance, and demand pressure so customers know what each promise means.</p>
+      </div>
+      <div class="eta-strip">
+        <article class="eta-card">
+          <div class="eta-value">12-18</div>
+          <p>dessert and coffee windows nearby</p>
+        </article>
+        <article class="eta-card">
+          <div class="eta-value">15-20</div>
+          <p>single-courier vegan bowls</p>
+        </article>
+        <article class="eta-card">
+          <div class="eta-value">18-24</div>
+          <p>popular ramen with live prep queue</p>
+        </article>
+        <article class="eta-card">
+          <div class="eta-value">25-35</div>
+          <p>family-size meals during dinner rush</p>
+        </article>
+      </div>
+    </section>
+    <section class="section" id="picks" aria-labelledby="picks-title">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Weekly picks</div>
+          <h2 class="section-title" id="picks-title">What locals are ordering on repeat.</h2>
+        </div>
+        <p class="section-copy">Editorial picks give the homepage personality without hiding practical ordering details.</p>
+      </div>
+      <div class="picks-layout">
+        <article class="pick-feature">
+          <h3>Friday ramen crawl, minus the queue.</h3>
+          <p>Three neighborhood ramen shops are running smaller menus tonight so delivery stays inside the good window.</p>
+          <a href="#restaurants">Explore ramen picks</a>
+        </article>
+        <div class="pick-list">
+          <article class="pick-row">
+            <div class="pick-thumb"></div>
+            <div>
+              <h3>Chili crisp gyoza</h3>
+              <p>Miso Yard - arrives in 21 min</p>
+            </div>
+            <div class="pick-price">$8.40</div>
+          </article>
+          <article class="pick-row">
+            <div class="pick-thumb"></div>
+            <div>
+              <h3>Burrata marinara</h3>
+              <p>Basilico - best with salad</p>
+            </div>
+            <div class="pick-price">$14.20</div>
+          </article>
+          <article class="pick-row">
+            <div class="pick-thumb"></div>
+            <div>
+              <h3>Sesame tofu bowl</h3>
+              <p>Green Bento - high protein</p>
+            </div>
+            <div class="pick-price">$11.90</div>
+          </article>
+          <article class="pick-row">
+            <div class="pick-thumb"></div>
+            <div>
+              <h3>Blueberry pierogi</h3>
+              <p>Pierogi House - weekend only</p>
+            </div>
+            <div class="pick-price">$9.60</div>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="loyalty" aria-labelledby="loyalty-title">
+      <div class="loyalty-card">
+        <div>
+          <div class="eyebrow">Loyalty banner</div>
+          <h2 id="loyalty-title">Spoon Plus turns repeat dinners into real savings.</h2>
+          <p>Earn points from local restaurants, unlock lower service fees, and get surprise weekly picks from places you already reorder from.</p>
+          <button>Join Spoon Plus</button>
+        </div>
+        <aside class="points-box" aria-label="Spoon Plus points preview">
+          <div class="points-value">1,840</div>
+          <p>points available. Redeem 900 for free delivery tonight.</p>
+        </aside>
+      </div>
+    </section>
+  </main>
+  <button class="mobile-cart" aria-label="Open cart"><span>2 items</span><span>$26.30 - checkout</span></button>
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <a class="brand" href="#"><span class="brand-mark">S</span>Spoon</a>
+        <p>Search-first local restaurant marketplace skeleton for fast food decisions and mobile ordering.</p>
+      </div>
+      <div><h3>Eat</h3><a href="#restaurants">Restaurants</a><a href="#picks">Weekly picks</a><a href="#eta">Fast delivery</a></div>
+      <div><h3>Account</h3><a href="#loyalty">Spoon Plus</a><a href="#">Gift cards</a><a href="#">Orders</a></div>
+      <div><h3>Company</h3><a href="#">For restaurants</a><a href="#">Courier hub</a><a href="#">Support</a></div>
+    </div>
+    <div class="footer-bottom">Built by Paweł Łukasik</div>
+  </footer>
+  <script>
+    const drawer = document.getElementById("drawer");
+    const overlay = document.getElementById("drawerOverlay");
+    const openButton = document.getElementById("drawerOpen");
+    const closeButton = document.getElementById("drawerClose");
+    function setDrawer(open) {
+      drawer.classList.toggle("open", open);
+      overlay.classList.toggle("open", open);
+      drawer.setAttribute("aria-hidden", String(!open));
+      overlay.setAttribute("aria-hidden", String(!open));
+      openButton.setAttribute("aria-expanded", String(open));
+    }
+    openButton.addEventListener("click", () => setDrawer(true));
+    closeButton.addEventListener("click", () => setDrawer(false));
+    overlay.addEventListener("click", () => setDrawer(false));
+    drawer.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setDrawer(false)));
+    document.querySelectorAll(".cuisine-chip").forEach((chip) => {
+      chip.addEventListener("click", () => {
+        document.querySelectorAll(".cuisine-chip").forEach((item) => item.classList.remove("is-active"));
+        chip.classList.add("is-active");
+      });
+    });
+  </script>
+</body>
+</html>
