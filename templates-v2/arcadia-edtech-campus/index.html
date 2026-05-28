@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arcadia — Online Learning</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --chalk: #FAF8F0;
+      --navy: #172554;
+      --navy-dim: rgba(23,37,84,0.08);
+      --citrus: #FACC15;
+      --citrus-dim: rgba(250,204,21,0.15);
+      --sky: #38BDF8;
+      --sky-dim: rgba(56,189,248,0.12);
+      --raspberry: #E11D48;
+      --raspberry-dim: rgba(225,29,72,0.1);
+      --slate: #334155;
+      --slate-mid: rgba(51,65,85,0.6);
+      --slate-dim: rgba(51,65,85,0.1);
+      --white: #FFFFFF;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --max: 1200px;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+    body{margin:0;min-height:100vh;color:var(--slate);background:var(--chalk);font-family:"Inter",system-ui,sans-serif;line-height:1.6}
+    a{color:inherit;text-decoration:none}
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    :focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+    .skip-link{position:absolute;top:-100px;left:16px;background:var(--navy);color:var(--citrus);padding:10px 20px;border-radius:var(--radius-sm);z-index:1000;font-weight:700}
+    .skip-link:focus{top:16px}
+    .topbar{position:sticky;top:0;z-index:100;background:var(--chalk);border-bottom:1px solid var(--slate-dim);padding:0 24px}
+    .topbar-inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+    .topbar-brand{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:1.25rem;display:flex;align-items:center;gap:8px}
+    .topbar-brand-icon{width:30px;height:30px;background:var(--navy);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--citrus);font-size:0.875rem;font-weight:800}
+    .topbar-links{display:flex;gap:20px;list-style:none;margin:0;padding:0}
+    .topbar-links a{font-size:0.875rem;font-weight:500;color:var(--slate-mid);transition:color 0.15s}
+    .topbar-links a:hover{color:var(--slate)}
+    .topbar-actions{display:flex;align-items:center;gap:12px}
+    .btn-outline{padding:8px 18px;border:1px solid var(--slate-dim);border-radius:var(--radius-sm);font-weight:600;font-size:0.8125rem;background:var(--white);color:var(--slate)}
+    .btn-primary{padding:10px 22px;background:var(--navy);color:var(--citrus);border:none;border-radius:var(--radius-sm);font-weight:700;font-size:0.875rem}
+    .topbar-drawer-btn{display:none;background:none;border:1px solid var(--slate-dim);border-radius:var(--radius-sm);padding:8px 12px;color:var(--slate)}
+    .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(51,65,85,0.3);z-index:200}
+    .drawer-overlay.open{display:block}
+    .drawer{position:fixed;top:0;left:-320px;width:300px;height:100%;background:var(--chalk);z-index:201;padding:24px;transition:left 0.2s ease;overflow-y:auto}
+    .drawer.open{left:0}
+    .drawer-close{background:none;border:none;font-size:1.5rem;color:var(--slate);float:right}
+    .drawer nav{clear:both;padding-top:24px}
+    .drawer nav a{display:block;padding:14px 0;font-size:1rem;font-weight:500;color:var(--slate);border-bottom:1px solid var(--slate-dim)}
+    .hero{max-width:var(--max);margin:0 auto;padding:60px 24px 48px;text-align:center}
+    .hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--citrus-dim);color:#92400E;padding:4px 14px;border-radius:999px;font-size:0.75rem;font-weight:600;margin-bottom:16px}
+    .hero-title{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:2.75rem;line-height:1.1;margin:0 0 16px}
+    .hero-sub{font-size:1.0625rem;color:var(--slate-mid);max-width:560px;margin:0 auto 28px}
+    .search-bar{max-width:560px;margin:0 auto;display:flex;gap:8px}
+    .search-input{flex:1;padding:12px 16px;border:2px solid var(--slate-dim);border-radius:var(--radius-sm);font-size:0.9375rem;background:var(--white);color:var(--slate)}
+    .search-input:focus{outline:2px solid var(--navy);border-color:var(--navy)}
+    .search-btn{padding:12px 24px;background:var(--navy);color:var(--citrus);border:none;border-radius:var(--radius-sm);font-weight:700;font-size:0.9375rem}
+    .hero-stats{display:flex;justify-content:center;gap:40px;margin-top:28px}
+    .hero-stat-value{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:1.5rem;color:var(--navy)}
+    .hero-stat-label{font-size:0.75rem;color:var(--slate-mid)}
+    .section{max-width:var(--max);margin:0 auto;padding:48px 24px}
+    .section-label{font-size:0.6875rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--navy);font-weight:700;margin-bottom:8px}
+    .section-title{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:1.75rem;margin:0 0 16px}
+    .section-sub{color:var(--slate-mid);max-width:560px;margin:0 0 32px}
+    .path-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .path-card{background:var(--white);border:1px solid var(--slate-dim);border-radius:var(--radius);padding:24px;position:relative}
+    .path-level{position:absolute;top:16px;right:16px;padding:3px 8px;border-radius:999px;font-size:0.625rem;font-weight:700;text-transform:uppercase}
+    .path-level.beginner{background:var(--sky-dim);color:#0369A1}
+    .path-level.intermediate{background:var(--citrus-dim);color:#92400E}
+    .path-level.advanced{background:var(--raspberry-dim);color:var(--raspberry)}
+    .path-icon{width:44px;height:44px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:1.25rem;margin-bottom:14px}
+    .path-title{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:1rem;margin-bottom:6px}
+    .path-desc{font-size:0.8125rem;color:var(--slate-mid);line-height:1.5;margin-bottom:12px}
+    .path-meta{display:flex;justify-content:space-between;font-size:0.6875rem;color:var(--slate-mid)}
+    .path-meta strong{color:var(--slate);font-weight:600}
+    .start-here{background:var(--citrus-dim);border-color:var(--citrus)}
+    .start-here-label{font-size:0.625rem;text-transform:uppercase;letter-spacing:0.08em;color:#92400E;font-weight:700;margin-bottom:8px}
+    .mentor-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .mentor-card{background:var(--white);border:1px solid var(--slate-dim);border-radius:var(--radius);padding:20px;text-align:center}
+    .mentor-avatar{width:56px;height:56px;background:var(--sky-dim);border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;font-weight:700;color:var(--navy)}
+    .mentor-name{font-weight:700;font-size:0.875rem}
+    .mentor-role{font-size:0.75rem;color:var(--slate-mid);margin-top:2px}
+    .mentor-rating{font-family:"Roboto Mono",monospace;font-size:0.6875rem;color:var(--citrus);margin-top:6px}
+    .progress-preview{background:var(--navy);border-radius:var(--radius);padding:32px;display:grid;grid-template-columns:1fr 1fr;gap:32px}
+    .progress-left{color:var(--white)}
+    .progress-title{font-family:"Bricolage Grotesque",sans-serif;font-weight:700;font-size:1.25rem;margin:0 0 8px}
+    .progress-sub{color:rgba(255,255,255,0.7);font-size:0.875rem}
+    .progress-bar-wrap{margin-top:20px}
+    .progress-bar-label{display:flex;justify-content:space-between;font-size:0.75rem;color:rgba(255,255,255,0.6);margin-bottom:6px}
+    .progress-bar{height:10px;background:rgba(255,255,255,0.15);border-radius:5px;overflow:hidden}
+    .progress-bar-fill{height:100%;background:var(--citrus);border-radius:5px}
+    .progress-right{display:flex;flex-direction:column;gap:12px}
+    .progress-module{display:flex;align-items:center;gap:12px;padding:10px;background:rgba(255,255,255,0.06);border-radius:var(--radius-sm)}
+    .progress-module-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;flex-shrink:0}
+    .progress-module-icon.done{background:var(--citrus);color:var(--navy)}
+    .progress-module-icon.current{background:var(--sky);color:var(--white)}
+    .progress-module-icon.locked{background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.4)}
+    .progress-module-text{font-size:0.8125rem;color:rgba(255,255,255,0.8)}
+    .marketplace-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .marketplace-card{background:var(--white);border:1px solid var(--slate-dim);border-radius:var(--radius);padding:18px}
+    .marketplace-tag{font-size:0.625rem;text-transform:uppercase;letter-spacing:0.06em;font-weight:700;margin-bottom:8px}
+    .marketplace-title{font-weight:700;font-size:0.875rem;margin-bottom:4px}
+    .marketplace-meta{font-family:"Roboto Mono",monospace;font-size:0.6875rem;color:var(--slate-mid)}
+    .calendar-card{background:var(--white);border:1px solid var(--slate-dim);border-radius:var(--radius);padding:24px}
+    .calendar-list{list-style:none;margin:0;padding:0}
+    .calendar-item{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--slate-dim)}
+    .calendar-item:last-child{border-bottom:none}
+    .calendar-date{width:48px;height:48px;background:var(--navy);border-radius:var(--radius-sm);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+    .calendar-date-month{font-size:0.5rem;text-transform:uppercase;color:var(--sky);font-weight:700}
+    .calendar-date-day{font-size:1rem;font-weight:700;color:var(--white);line-height:1}
+    .calendar-info{flex:1}
+    .calendar-title{font-weight:600;font-size:0.8125rem}
+    .calendar-meta{font-size:0.6875rem;color:var(--slate-mid)}
+    .outcomes-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .outcome-card{background:var(--white);border:1px solid var(--slate-dim);border-radius:var(--radius);padding:20px;text-align:center}
+    .outcome-value{font-family:"Roboto Mono",monospace;font-weight:600;font-size:1.5rem;color:var(--navy)}
+    .outcome-label{font-size:0.75rem;color:var(--slate-mid);margin-top:4px}
+    .footer{border-top:1px solid var(--slate-dim);padding:24px;text-align:center;font-size:0.75rem;color:var(--slate-mid)}
+    @media(max-width:1024px){
+      .path-grid,.mentor-grid{grid-template-columns:repeat(2,1fr)}
+      .marketplace-grid,.outcomes-grid{grid-template-columns:repeat(2,1fr)}
+      .progress-preview{grid-template-columns:1fr}
+      .topbar-links{display:none}.topbar-drawer-btn{display:block}
+    }
+    @media(max-width:768px){
+      .hero-title{font-size:2rem}
+      .search-bar{flex-direction:column}
+      .hero-stats{gap:20px}
+      .path-grid,.mentor-grid,.marketplace-grid,.outcomes-grid{grid-template-columns:1fr}
+      .section{padding:32px 16px}
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-label="Navigation" aria-hidden="true">
+    <button class="drawer-close" id="drawerClose" aria-label="Close menu">&times;</button>
+    <nav aria-label="Mobile navigation">
+      <a href="#paths">Learning Paths</a><a href="#mentors">Mentors</a><a href="#marketplace">Courses</a><a href="#schedule">Schedule</a>
+    </nav>
+  </aside>
+  <header class="topbar" role="banner">
+    <div class="topbar-inner">
+      <a href="#" class="topbar-brand" aria-label="Arcadia home"><span class="topbar-brand-icon" aria-hidden="true">A</span>Arcadia</a>
+      <ul class="topbar-links" role="list">
+        <li><a href="#paths">Paths</a></li><li><a href="#mentors">Mentors</a></li><li><a href="#marketplace">Courses</a></li><li><a href="#schedule">Schedule</a></li>
+      </ul>
+      <div class="topbar-actions">
+        <button class="btn-outline">Sign In</button>
+        <button class="btn-primary">Start Free</button>
+      </div>
+      <button class="topbar-drawer-btn" id="drawerOpen" aria-label="Open menu" aria-expanded="false">&#9776;</button>
+    </div>
+  </header>
+  <main id="main">
+    <section class="hero">
+      <div class="hero-badge">&#9733; New: AI-powered learning paths</div>
+      <h1 class="hero-title">Learn skills that matter,<br>at your own pace</h1>
+      <p class="hero-sub">Structured learning paths with real mentors, hands-on projects, and career-ready skills. Start where you are.</p>
+      <div class="search-bar">
+        <input class="search-input" type="text" placeholder="What do you want to learn?" aria-label="Search courses">
+        <button class="search-btn">Search</button>
+      </div>
+      <div class="hero-stats">
+        <div><div class="hero-stat-value">12,400+</div><div class="hero-stat-label">Students enrolled</div></div>
+        <div><div class="hero-stat-value">340+</div><div class="hero-stat-label">Courses available</div></div>
+        <div><div class="hero-stat-value">94%</div><div class="hero-stat-label">Completion rate</div></div>
+      </div>
+    </section>
+    <section class="section" id="paths" aria-labelledby="paths-title">
+      <div class="section-label">Learning Paths</div>
+      <h2 class="section-title" id="paths-title">Choose your path</h2>
+      <p class="section-sub">Structured curricula designed by industry experts. Each path has a clear start and finish.</p>
+      <div class="path-grid">
+        <div class="path-card start-here"><div class="start-here-label">Start here</div><div class="path-icon" style="background:var(--sky-dim)" aria-hidden="true">&#128218;</div><div class="path-title">Web Development Fundamentals</div><div class="path-desc">HTML, CSS, JavaScript, and Git. Build 5 projects from scratch.</div><div class="path-meta"><span>12 courses</span><span>4 months</span><span class="path-level beginner">Beginner</span></div></div>
+        <div class="path-card"><div class="path-icon" style="background:var(--citrus-dim)" aria-hidden="true">&#128202;</div><div class="path-title">Data Science with Python</div><div class="path-desc">Pandas, NumPy, scikit-learn, and data visualization.</div><div class="path-meta"><span>10 courses</span><span>3 months</span><span class="path-level intermediate">Intermediate</span></div></div>
+        <div class="path-card"><div class="path-icon" style="background:var(--raspberry-dim)" aria-hidden="true">&#129302;</div><div class="path-title">Machine Learning Engineering</div><div class="path-desc">Deep learning, MLOps, and production model deployment.</div><div class="path-meta"><span>14 courses</span><span>6 months</span><span class="path-level advanced">Advanced</span></div></div>
+      </div>
+    </section>
+    <section class="section" id="mentors" aria-labelledby="mentors-title">
+      <div class="section-label">Mentors</div>
+      <h2 class="section-title" id="mentors-title">Learn from the best</h2>
+      <p class="section-sub">Real engineers and designers who've built products you use every day.</p>
+      <div class="mentor-grid">
+        <div class="mentor-card"><div class="mentor-avatar">SK</div><div class="mentor-name">Sarah Kim</div><div class="mentor-role">Senior Engineer, Vercel</div><div class="mentor-rating">4.9 ★</div></div>
+        <div class="mentor-card"><div class="mentor-avatar">MR</div><div class="mentor-name">Marco Reyes</div><div class="mentor-role">Data Lead, Stripe</div><div class="mentor-rating">4.8 ★</div></div>
+        <div class="mentor-card"><div class="mentor-avatar">AJ</div><div class="mentor-name">Amira Johal</div><div class="mentor-role">ML Engineer, Google</div><div class="mentor-rating">4.9 ★</div></div>
+        <div class="mentor-card"><div class="mentor-avatar">TN</div><div class="mentor-name">Tomás Navarro</div><div class="mentor-role">Designer, Figma</div><div class="mentor-rating">4.7 ★</div></div>
+      </div>
+    </section>
+    <section class="section" aria-labelledby="progress-title">
+      <div class="progress-preview">
+        <div class="progress-left">
+          <h2 class="progress-title" id="progress-title">Your Learning Progress</h2>
+          <p class="progress-sub">Web Development Fundamentals — 67% complete</p>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar-label"><span>Progress</span><span style="font-family:'Roboto Mono',monospace">67%</span></div>
+            <div class="progress-bar"><div class="progress-bar-fill" style="width:67%"></div></div>
+          </div>
+        </div>
+        <div class="progress-right">
+          <div class="progress-module"><div class="progress-module-icon done" aria-hidden="true">&#10003;</div><div class="progress-module-text">HTML & CSS Basics — Complete</div></div>
+          <div class="progress-module"><div class="progress-module-icon done" aria-hidden="true">&#10003;</div><div class="progress-module-text">JavaScript Fundamentals — Complete</div></div>
+          <div class="progress-module"><div class="progress-module-icon current" aria-hidden="true">&#9654;</div><div class="progress-module-text">React Essentials — In Progress (4/8)</div></div>
+          <div class="progress-module"><div class="progress-module-icon locked" aria-hidden="true">&#128274;</div><div class="progress-module-text">Node.js & APIs — Locked</div></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="marketplace" aria-labelledby="marketplace-title">
+      <div class="section-label">Course Marketplace</div>
+      <h2 class="section-title" id="marketplace-title">Browse all courses</h2>
+      <div class="marketplace-grid">
+        <div class="marketplace-card"><div class="marketplace-tag" style="color:var(--sky)">Development</div><div class="marketplace-title">React Advanced Patterns</div><div class="marketplace-meta">8 modules · 24 hours · ★ 4.8</div></div>
+        <div class="marketplace-card"><div class="marketplace-tag" style="color:var(--citrus)">Design</div><div class="marketplace-title">Design Systems from Scratch</div><div class="marketplace-meta">6 modules · 18 hours · ★ 4.9</div></div>
+        <div class="marketplace-card"><div class="marketplace-tag" style="color:var(--raspberry)">Data</div><div class="marketplace-title">SQL for Analytics</div><div class="marketplace-meta">10 modules · 30 hours · ★ 4.7</div></div>
+        <div class="marketplace-card"><div class="marketplace-tag" style="color:var(--navy)">Career</div><div class="marketplace-title">Technical Interview Prep</div><div class="marketplace-meta">5 modules · 15 hours · ★ 4.9</div></div>
+      </div>
+    </section>
+    <section class="section" id="schedule" aria-labelledby="schedule-title">
+      <div class="section-label">Cohort Calendar</div>
+      <h2 class="section-title" id="schedule-title">Upcoming cohorts</h2>
+      <div class="calendar-card">
+        <ul class="calendar-list" aria-label="Upcoming cohorts">
+          <li class="calendar-item"><div class="calendar-date"><span class="calendar-date-month">Jun</span><span class="calendar-date-day">03</span></div><div class="calendar-info"><div class="calendar-title">Web Dev Fundamentals — Cohort 24</div><div class="calendar-meta">Tue/Thu 7PM · 12 weeks · 18 spots left</div></div></li>
+          <li class="calendar-item"><div class="calendar-date"><span class="calendar-date-month">Jun</span><span class="calendar-date-day">10</span></div><div class="calendar-info"><div class="calendar-title">Data Science with Python — Cohort 12</div><div class="calendar-meta">Mon/Wed 6PM · 10 weeks · 8 spots left</div></div></li>
+          <li class="calendar-item"><div class="calendar-date"><span class="calendar-date-month">Jun</span><span class="calendar-date-day">17</span></div><div class="calendar-info"><div class="calendar-title">ML Engineering — Cohort 5</div><div class="calendar-meta">Fri 2PM · 16 weeks · 12 spots left</div></div></li>
+        </ul>
+      </div>
+    </section>
+    <section class="section" aria-labelledby="outcomes-title">
+      <div class="section-label">Student Outcomes</div>
+      <h2 class="section-title" id="outcomes-title">Real results from real students</h2>
+      <div class="outcomes-grid">
+        <div class="outcome-card"><div class="outcome-value" style="font-family:'Roboto Mono',monospace">94%</div><div class="outcome-label">Completion rate</div></div>
+        <div class="outcome-card"><div class="outcome-value" style="font-family:'Roboto Mono',monospace">78%</div><div class="outcome-label">Got promoted or hired</div></div>
+        <div class="outcome-card"><div class="outcome-value" style="font-family:'Roboto Mono',monospace">4.8★</div><div class="outcome-label">Average course rating</div></div>
+        <div class="outcome-card"><div class="outcome-value" style="font-family:'Roboto Mono',monospace">$18k</div><div class="outcome-label">Avg salary increase</div></div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer" role="contentinfo">Arcadia EdTech &mdash; designed by Studio &middot; Standalone prototype &middot; Not affiliated with any education provider</footer>
+  <script>
+    (function(){
+      var o=document.getElementById('drawerOpen'),c=document.getElementById('drawerClose'),d=document.getElementById('drawer'),v=document.getElementById('drawerOverlay');
+      function open(){d.classList.add('open');v.classList.add('open');d.setAttribute('aria-hidden','false');o.setAttribute('aria-expanded','true');c.focus()}
+      function close(){d.classList.remove('open');v.classList.remove('open');d.setAttribute('aria-hidden','true');o.setAttribute('aria-expanded','false');o.focus()}
+      o.addEventListener('click',open);c.addEventListener('click',close);v.addEventListener('click',close);
+      document.addEventListener('keydown',function(e){if(e.key==='Escape'&&d.classList.contains('open'))close()});
+      d.querySelectorAll('a').forEach(function(l){l.addEventListener('click',close)});
+    })();
+  </script>
+</body>
+</html>
