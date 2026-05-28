@@ -3,627 +3,240 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Velvet Commerce Studio</title>
+  <title>Velvet — Fashion Commerce</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    :root { --cloud: #F6F8FC; --cloud-96: rgba(246, 248, 252, 0.96); --cloud-88: rgba(246, 248, 252, 0.88); --cloud-72: rgba(246, 248, 252, 0.72); --cloud-54: rgba(246, 248, 252, 0.54); --cloud-28: rgba(246, 248, 252, 0.28); --ink: #19212B; --ink-94: rgba(25, 33, 43, 0.94); --ink-78: rgba(25, 33, 43, 0.78); --ink-64: rgba(25, 33, 43, 0.64); --ink-48: rgba(25, 33, 43, 0.48); --ink-22: rgba(25, 33, 43, 0.22); --ink-14: rgba(25, 33, 43, 0.14); --ink-08: rgba(25, 33, 43, 0.08); --indigo: #4F46E5; --indigo-86: rgba(79, 70, 229, 0.86); --indigo-34: rgba(79, 70, 229, 0.34); --indigo-18: rgba(79, 70, 229, 0.18); --indigo-10: rgba(79, 70, 229, 0.10); --cyan: #06B6D4; --cyan-78: rgba(6, 182, 212, 0.78); --cyan-26: rgba(6, 182, 212, 0.26); --cyan-14: rgba(6, 182, 212, 0.14); --lime: #A3E635; --lime-72: rgba(163, 230, 53, 0.72); --lime-30: rgba(163, 230, 53, 0.30); --lime-16: rgba(163, 230, 53, 0.16); --coral: #FB7185; --coral-84: rgba(251, 113, 133, 0.84); --coral-28: rgba(251, 113, 133, 0.28); --coral-16: rgba(251, 113, 133, 0.16); --max: 1240px; --radius: 8px; --shadow: 0 28px 80px rgba(25, 33, 43, 0.12); }
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body { margin: 0; min-height: 100vh; color: var(--ink); background: radial-gradient(circle at 10% 4%, var(--cyan-14), transparent 28rem), radial-gradient(circle at 88% 0%, var(--indigo-10), transparent 30rem), linear-gradient(180deg, var(--cloud), var(--cloud)); font-family: "Inter", system-ui, sans-serif; line-height: 1.5; }
-    body.drawer-open { overflow: hidden; }
-    a { color: inherit; text-decoration: none; }
-    button,
-    input { font: inherit; }
-    button { cursor: pointer; }
-    :focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
-    h1, h2,
-    h3 { margin: 0; font-family: "Manrope", sans-serif; letter-spacing: 0; line-height: 1.05; }
-    p { margin: 0; }
-    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
-    .page-shell { min-height: 100vh; overflow: hidden; }
-    .topbar { position: sticky; top: 0; z-index: 50; border-bottom: 1px solid var(--ink-08); background: var(--cloud-96); backdrop-filter: blur(20px); }
-    .nav-inner { width: min(100% - 32px, var(--max)); min-height: 76px; margin: 0 auto; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 20px; }
-    .brand { display: inline-flex; align-items: center; gap: 10px; font-family: "Manrope", sans-serif; font-weight: 800; font-size: 1.02rem; letter-spacing: 0; }
-    .brand-mark { width: 38px; height: 38px; display: grid; place-items: center; border-radius: var(--radius); color: var(--cloud); background: linear-gradient(135deg, var(--indigo), var(--cyan)); box-shadow: 0 16px 36px var(--indigo-34); }
-    .nav-links { display: flex; align-items: center; justify-content: center; gap: 4px; }
-    .nav-links a { padding: 10px 12px; border-radius: var(--radius); color: var(--ink-64); font-size: 0.92rem; font-weight: 800; }
-    .nav-links a:hover { color: var(--ink); background: var(--indigo-10); }
-    .nav-actions { display: flex; align-items: center; justify-content: flex-end; gap: 10px; }
-    .search-wrap { position: relative; width: 260px; }
-    .search-wrap span { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--ink-48); font-weight: 900; }
-    .search-wrap input { width: 100%; height: 42px; padding: 0 12px 0 34px; border: 1px solid var(--ink-14); border-radius: var(--radius); color: var(--ink); background: var(--cloud-88); font-weight: 700; }
-    .notification-button { position: relative; width: 42px; height: 42px; border: 1px solid var(--ink-14); border-radius: var(--radius); color: var(--ink); background: var(--cloud-88); font-weight: 900; }
-    .notification-button::after { content: "8"; position: absolute; top: -7px; right: -7px; min-width: 20px; height: 20px; display: grid; place-items: center; border-radius: 999px; color: var(--cloud); background: var(--coral); font-size: 0.68rem; font-weight: 900; box-shadow: 0 0 0 3px var(--cloud); }
-    .hamburger { width: 42px; height: 42px; display: none; place-items: center; border: 1px solid var(--ink-14); border-radius: var(--radius); color: var(--ink); background: var(--cloud-88); }
-    .hamburger-lines { width: 18px; display: grid; gap: 4px; }
-    .hamburger-lines i { display: block; height: 2px; border-radius: 2px; background: var(--ink); }
-    .drawer-backdrop { position: fixed; inset: 0; z-index: 80; opacity: 0; pointer-events: none; background: rgba(25, 33, 43, 0.42); transition: opacity 180ms ease; }
-    .drawer { position: fixed; inset: 0 0 0 auto; z-index: 90; width: min(88vw, 360px); padding: 24px; transform: translateX(102%); transition: transform 220ms ease; border-left: 1px solid var(--ink-14); background: var(--cloud); box-shadow: var(--shadow); }
-    body.drawer-open .drawer-backdrop { opacity: 1; pointer-events: auto; }
-    body.drawer-open .drawer { transform: translateX(0); }
-    .drawer-head { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 22px; }
-    .drawer-close { width: 40px; height: 40px; border: 1px solid var(--ink-14); border-radius: var(--radius); color: var(--ink); background: var(--cloud); font-size: 1.3rem; line-height: 1; }
-    .drawer-links { display: grid; gap: 10px; margin-bottom: 18px; }
-    .drawer-links a { padding: 13px 12px; border: 1px solid var(--ink-14); border-radius: var(--radius); background: var(--cloud-88); font-weight: 800; }
-    .hero { width: min(100% - 32px, var(--max)); margin: 0 auto; padding: 58px 0 28px; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr); gap: 28px; align-items: stretch; }
-    .hero-copy { padding: 34px 0; }
-    .eyebrow { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 18px; color: var(--indigo); font-size: 0.78rem; font-weight: 900; letter-spacing: 0; text-transform: uppercase; }
-    .live-dot { width: 10px; height: 10px; border-radius: 999px; background: var(--cyan); box-shadow: 0 0 0 7px var(--cyan-26); animation: pulse 1800ms ease-in-out infinite; }
-    h1 { max-width: 760px; font-size: clamp(2.65rem, 5.6vw, 5.7rem); font-weight: 800; }
-    .hero-copy p { max-width: 650px; margin-top: 22px; color: var(--ink-64); font-size: 1.05rem; }
-    .hero-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 28px; }
-    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 0 16px; border: 1px solid var(--ink-14); border-radius: var(--radius); color: var(--ink); background: var(--cloud); font-weight: 900; }
-    .btn.primary { color: var(--cloud); border-color: var(--indigo); background: var(--indigo); box-shadow: 0 18px 38px var(--indigo-34); }
-    .command-panel { position: relative; min-height: 462px; padding: 20px; overflow: hidden; border: 1px solid var(--ink-14); border-radius: var(--radius); color: var(--cloud); background: linear-gradient(145deg, var(--ink), var(--ink-94)); box-shadow: var(--shadow); }
-    .command-panel::before { content: ""; position: absolute; inset: -22% -12% auto 24%; height: 330px; background: radial-gradient(circle, var(--cyan-78), transparent 68%); opacity: 0.42; }
-    .command-window { position: relative; height: 100%; display: grid; grid-template-rows: auto 1fr auto; gap: 16px; }
-    .window-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 14px; border-bottom: 1px solid var(--cloud-28); }
-    .window-dots { display: flex; gap: 7px; }
-    .window-dots i { width: 10px; height: 10px; border-radius: 50%; background: var(--cloud-54); }
-    .sync-state { display: inline-flex; align-items: center; gap: 8px; color: var(--lime); font-size: 0.86rem; font-weight: 900; }
-    .panel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .panel-tile { padding: 16px; border: 1px solid var(--cloud-28); border-radius: var(--radius); background: rgba(246, 248, 252, 0.08); }
-    .panel-tile small { color: var(--cloud-54); font-weight: 800; }
-    .panel-tile strong { display: block; margin-top: 8px; font-family: "Manrope", sans-serif; font-size: 1.55rem; }
-    .panel-tile.full { grid-column: 1 / -1; }
-    .route-line { margin-top: 14px; display: grid; grid-template-columns: 1fr 1.4fr 1fr; gap: 8px; align-items: center; }
-    .route-line span { height: 8px; border-radius: 999px; background: var(--cloud-28); overflow: hidden; }
-    .route-line i { display: block; height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--indigo), var(--cyan), var(--lime)); }
-    .mini-feed { display: grid; gap: 10px; }
-    .mini-event { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px; border: 1px solid var(--cloud-28); border-radius: var(--radius); background: rgba(246, 248, 252, 0.08); }
-    .mini-event b { font-size: 0.92rem; }
-    .mini-event span { color: var(--cloud-54); font-size: 0.82rem; font-weight: 800; }
-    .section { width: min(100% - 32px, var(--max)); margin: 0 auto; padding: 28px 0; }
-    .section-head { display: flex; align-items: end; justify-content: space-between; gap: 18px; margin-bottom: 18px; }
-    .section-head h2 { font-size: clamp(1.65rem, 2.4vw, 2.35rem); font-weight: 800; }
-    .section-head p { max-width: 560px; color: var(--ink-64); font-weight: 600; }
-    .kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-    .kpi-card,
-    .surface-card { border: 1px solid var(--ink-08); border-radius: var(--radius); background: var(--cloud-88); box-shadow: 0 18px 50px rgba(25, 33, 43, 0.07); }
-    .kpi-card { min-height: 132px; padding: 18px; display: grid; align-content: space-between; gap: 16px; }
-    .kpi-card span { color: var(--ink-64); font-size: 0.86rem; font-weight: 800; }
-    .kpi-card strong { font-family: "Manrope", sans-serif; font-size: clamp(1.75rem, 3vw, 2.6rem); line-height: 1; }
-    .trend { display: inline-flex; align-items: center; gap: 7px; color: var(--indigo); font-size: 0.82rem; font-weight: 900; }
-    .trend.ok { color: var(--lime); }
-    .trend.warn { color: var(--coral); }
-    .dashboard-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(320px, 0.75fr); gap: 16px; align-items: start; }
-    .pipeline { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
-    .pipeline-column { min-height: 470px; padding: 12px; border: 1px solid var(--ink-08); border-radius: var(--radius); background: rgba(246, 248, 252, 0.66); }
-    .column-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
-    .column-head h3 { font-size: 0.98rem; font-weight: 800; }
-    .column-count { min-width: 28px; height: 28px; display: grid; place-items: center; border-radius: 999px; color: var(--cloud); background: var(--ink); font-size: 0.78rem; font-weight: 900; }
-    .order-card { display: grid; gap: 12px; margin-bottom: 10px; padding: 13px; border: 1px solid var(--ink-08); border-radius: var(--radius); background: var(--cloud); }
-    .order-card header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-    .order-card b { font-size: 0.9rem; }
-    .order-card small { color: var(--ink-48); font-weight: 800; }
-    .order-meta { display: flex; flex-wrap: wrap; gap: 7px; }
-    .pill { display: inline-flex; align-items: center; min-height: 26px; padding: 0 9px; border-radius: 999px; color: var(--ink-78); background: var(--ink-08); font-size: 0.76rem; font-weight: 900; }
-    .pill.live { color: var(--indigo); background: var(--indigo-10); }
-    .pill.alert { color: var(--coral); background: var(--coral-16); }
-    .pill.good { color: var(--ink); background: var(--lime-16); }
-    .inventory-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-    .product-card { min-height: 218px; padding: 18px; display: grid; align-content: space-between; gap: 18px; }
-    .product-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
-    .product-thumb { width: 54px; height: 54px; display: grid; place-items: center; border-radius: var(--radius); color: var(--cloud); background: linear-gradient(135deg, var(--indigo), var(--cyan)); font-weight: 900; }
-    .product-card h3 { margin-bottom: 6px; font-size: 1.02rem; font-weight: 800; }
-    .sku { color: var(--ink-48); font-size: 0.78rem; font-weight: 900; }
-    .stock-meter { display: grid; gap: 8px; }
-    .stock-label { display: flex; align-items: center; justify-content: space-between; gap: 10px; color: var(--ink-64); font-size: 0.82rem; font-weight: 900; }
-    .meter-track { height: 9px; overflow: hidden; border-radius: 999px; background: var(--ink-08); }
-    .meter-fill { height: 100%; border-radius: 999px; background: var(--lime); }
-    .meter-fill.medium { background: var(--cyan); }
-    .meter-fill.low { background: var(--coral); }
-    .product-bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-    .price { font-family: "Manrope", sans-serif; font-size: 1.25rem; font-weight: 800; }
-    .analytics-grid { display: grid; grid-template-columns: minmax(280px, 0.75fr) minmax(0, 1.25fr); gap: 16px; }
-    .analytics-card { padding: 20px; }
-    .donut-wrap { display: grid; grid-template-columns: 180px 1fr; gap: 22px; align-items: center; margin-top: 18px; }
-    .donut { width: 180px; height: 180px; display: grid; place-items: center; border-radius: 50%; background: conic-gradient(var(--indigo) 0 64%, var(--cyan) 64% 100%); box-shadow: inset 0 0 0 1px var(--ink-08); }
-    .donut::after { content: "64%"; width: 112px; height: 112px; display: grid; place-items: center; border-radius: 50%; color: var(--ink); background: var(--cloud); font-family: "Manrope", sans-serif; font-size: 1.65rem; font-weight: 800; }
-    .legend { display: grid; gap: 12px; }
-    .legend-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; font-weight: 900; }
-    .legend-row i { width: 10px; height: 10px; display: inline-block; margin-right: 8px; border-radius: 999px; background: var(--indigo); }
-    .legend-row.returning i { background: var(--cyan); }
-    .customer-list { display: grid; gap: 10px; margin-top: 18px; }
-    .customer-row,
-    .activity-row { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 12px; padding: 12px; border: 1px solid var(--ink-08); border-radius: var(--radius); background: var(--cloud); }
-    .avatar { width: 40px; height: 40px; display: grid; place-items: center; border-radius: var(--radius); color: var(--cloud); background: var(--ink); font-weight: 900; }
-    .row-copy b { display: block; font-size: 0.93rem; }
-    .row-copy span { color: var(--ink-48); font-size: 0.8rem; font-weight: 800; }
-    .spend { font-family: "Manrope", sans-serif; font-weight: 800; }
-    .chart-card { padding: 20px; }
-    .bar-chart { height: 294px; display: grid; grid-template-columns: repeat(7, 1fr); align-items: end; gap: 12px; margin-top: 20px; padding: 16px; border: 1px solid var(--ink-08); border-radius: var(--radius); background: linear-gradient(180deg, transparent 24%, var(--ink-08) 25%, transparent 26%), linear-gradient(180deg, transparent 49%, var(--ink-08) 50%, transparent 51%), linear-gradient(180deg, transparent 74%, var(--ink-08) 75%, transparent 76%); }
-    .bar { min-width: 0; display: grid; gap: 9px; align-items: end; text-align: center; color: var(--ink-64); font-size: 0.76rem; font-weight: 900; }
-    .bar i { display: block; width: 100%; min-height: 32px; border-radius: 8px 8px 3px 3px; background: linear-gradient(180deg, var(--cyan), var(--indigo)); box-shadow: 0 14px 28px var(--indigo-18); }
-    .activity-feed { display: grid; gap: 10px; padding: 16px; }
-    .activity-dot { width: 12px; height: 12px; border-radius: 999px; background: var(--cyan); box-shadow: 0 0 0 6px var(--cyan-14); }
-    .activity-dot.stock { background: var(--coral); box-shadow: 0 0 0 6px var(--coral-16); }
-    .activity-dot.signup { background: var(--lime); box-shadow: 0 0 0 6px var(--lime-16); }
-    .footer { margin-top: 34px; color: var(--cloud); background: var(--ink); }
-    .footer-inner { width: min(100% - 32px, var(--max)); min-height: 118px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 18px; }
-    .footer strong { font-family: "Manrope", sans-serif; font-size: 1.08rem; }
-    .footer span { color: var(--cloud-54); font-weight: 700; }
-    @keyframes pulse { 0%,
-    100% { transform: scale(1); }
-    50% { transform: scale(0.72); }
+    :root {
+      --black: #09090B;
+      --porcelain: #F7F2EA;
+      --porcelain-dim: rgba(247,242,234,0.08);
+      --wine: #5E1224;
+      --wine-dim: rgba(94,18,36,0.1);
+      --champagne: #D6B77A;
+      --champagne-dim: rgba(214,183,122,0.15);
+      --rose: #E8C7C8;
+      --rose-dim: rgba(232,199,200,0.2);
+      --graphite: #27272A;
+      --graphite-mid: rgba(39,39,42,0.6);
+      --graphite-dim: rgba(39,39,42,0.1);
+      --white: #FFFFFF;
+      --radius: 4px;
+      --radius-sm: 3px;
+      --max: 1400px;
     }
-    @media (max-width: 1040px) { .nav-links,
-    .search-wrap { display: none; }
-    .hamburger { display: grid; }
-    .nav-inner { grid-template-columns: auto 1fr auto; }
-    .hero, .dashboard-grid,
-    .analytics-grid { grid-template-columns: 1fr; }
-    .kpi-strip,
-    .inventory-grid { grid-template-columns: repeat(2, 1fr); }
-    .pipeline { overflow-x: auto; grid-template-columns: repeat(4, minmax(246px, 1fr)); padding-bottom: 4px; }
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+    body{margin:0;min-height:100vh;color:var(--black);background:var(--porcelain);font-family:"Manrope",system-ui,sans-serif;line-height:1.5;font-size:14px}
+    a{color:inherit;text-decoration:none}
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    :focus-visible{outline:2px solid var(--wine);outline-offset:2px}
+    .skip-link{position:absolute;top:-100px;left:16px;background:var(--wine);color:var(--porcelain);padding:10px 20px;border-radius:var(--radius-sm);z-index:1000;font-weight:700}
+    .skip-link:focus{top:16px}
+    .nav{position:sticky;top:0;z-index:100;background:var(--porcelain);border-bottom:1px solid var(--graphite-dim);padding:0 32px}
+    .nav-inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}
+    .nav-brand{font-family:"Instrument Serif",serif;font-size:1.5rem;letter-spacing:-0.02em}
+    .nav-links{display:flex;gap:28px;list-style:none;margin:0;padding:0}
+    .nav-links a{font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.1em;color:var(--graphite-mid);transition:color 0.15s}
+    .nav-links a:hover{color:var(--black)}
+    .nav-right{display:flex;align-items:center;gap:16px}
+    .nav-icon{width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:0.875rem;color:var(--graphite)}
+    .nav-drawer-btn{display:none;background:none;border:none;color:var(--black);font-size:1.25rem}
+    .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(9,9,11,0.4);z-index:200}
+    .drawer-overlay.open{display:block}
+    .drawer{position:fixed;top:0;right:-320px;width:300px;height:100%;background:var(--porcelain);z-index:201;padding:32px;transition:right 0.2s ease;overflow-y:auto}
+    .drawer.open{right:0}
+    .drawer-close{background:none;border:none;font-size:1.5rem;color:var(--black);float:right}
+    .drawer nav{clear:both;padding-top:32px}
+    .drawer nav a{display:block;padding:14px 0;font-size:0.8125rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--black);border-bottom:1px solid var(--graphite-dim)}
+    .hero{max-width:var(--max);margin:0 auto;padding:0 32px}
+    .hero-inner{display:grid;grid-template-columns:1fr 1fr;min-height:70vh;align-items:center;gap:32px}
+    .hero-copy{padding:48px 0}
+    .hero-eyebrow{font-size:0.6875rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--wine);font-weight:700;margin-bottom:16px}
+    .hero-title{font-family:"Instrument Serif",serif;font-size:3.5rem;line-height:1.05;margin:0 0 20px;font-weight:400}
+    .hero-sub{font-size:1rem;color:var(--graphite-mid);margin:0 0 32px;max-width:400px}
+    .hero-cta{display:inline-block;padding:14px 36px;background:var(--wine);color:var(--porcelain);font-weight:700;font-size:0.8125rem;text-transform:uppercase;letter-spacing:0.08em;border:none;border-radius:var(--radius);transition:opacity 0.15s}
+    .hero-cta:hover{opacity:0.9}
+    .hero-image{background:var(--graphite);border-radius:var(--radius);min-height:500px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden}
+    .hero-image-text{font-family:"Instrument Serif",serif;font-size:2rem;color:var(--porcelain);opacity:0.3}
+    .hero-image-badge{position:absolute;bottom:24px;left:24px;background:var(--porcelain);padding:10px 16px;border-radius:var(--radius)}
+    .hero-image-badge-title{font-weight:700;font-size:0.75rem}
+    .hero-image-badge-price{font-family:"Instrument Serif",serif;font-size:1rem}
+    .section{max-width:var(--max);margin:0 auto;padding:64px 32px}
+    .section-eyebrow{font-size:0.625rem;text-transform:uppercase;letter-spacing:0.15em;color:var(--wine);font-weight:700;margin-bottom:8px}
+    .section-title{font-family:"Instrument Serif",serif;font-size:2rem;margin:0 0 12px;font-weight:400}
+    .section-sub{color:var(--graphite-mid);max-width:480px;margin:0 0 36px}
+    .products-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .product-card{background:var(--white);border-radius:var(--radius);overflow:hidden;transition:box-shadow 0.2s}
+    .product-card:hover{box-shadow:0 4px 20px rgba(9,9,11,0.08)}
+    .product-image{height:280px;background:var(--graphite);position:relative}
+    .product-wishlist{position:absolute;top:12px;right:12px;width:32px;height:32px;background:var(--porcelain);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;border:none;cursor:pointer}
+    .product-body{padding:14px}
+    .product-name{font-weight:700;font-size:0.8125rem;margin-bottom:4px}
+    .product-price{font-family:"Instrument Serif",serif;font-size:1rem;margin-bottom:8px}
+    .product-sizes{display:flex;gap:4px;margin-bottom:10px}
+    .product-size{width:28px;height:28px;border:1px solid var(--graphite-dim);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:0.5625rem;font-weight:600;background:var(--white);cursor:pointer}
+    .product-size:hover{border-color:var(--wine)}
+    .product-add{width:100%;padding:10px;background:var(--black);color:var(--porcelain);border:none;font-weight:700;font-size:0.6875rem;text-transform:uppercase;letter-spacing:0.08em;border-radius:var(--radius);cursor:pointer;transition:background 0.15s}
+    .product-add:hover{background:var(--wine)}
+    .asymmetric-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:16px;margin-bottom:16px}
+    .asymmetric-grid.reverse{grid-template-columns:1fr 1.5fr}
+    .collection-card{background:var(--graphite);border-radius:var(--radius);padding:40px;display:flex;flex-direction:column;justify-content:flex-end;min-height:360px;position:relative;overflow:hidden}
+    .collection-card.light{background:var(--rose)}
+    .collection-card.light .collection-title,.collection-card.light .collection-sub{color:var(--black)}
+    .collection-title{font-family:"Instrument Serif",serif;font-size:1.5rem;color:var(--porcelain);margin:0 0 6px;font-weight:400}
+    .collection-sub{font-size:0.8125rem;color:var(--porcelain);opacity:0.7;margin:0 0 16px}
+    .collection-cta{display:inline-block;padding:10px 24px;background:var(--champagne);color:var(--black);font-weight:700;font-size:0.6875rem;text-transform:uppercase;letter-spacing:0.08em;border:none;border-radius:var(--radius);width:fit-content}
+    .lookbook{max-width:var(--max);margin:0 auto;padding:0 32px}
+    .lookbook-scroll{display:flex;gap:16px;overflow-x:auto;padding-bottom:16px}
+    .lookbook-card{min-width:300px;height:400px;background:var(--graphite);border-radius:var(--radius);flex-shrink:0;position:relative}
+    .lookbook-label{position:absolute;bottom:16px;left:16px;font-family:"Instrument Serif",serif;font-size:1.125rem;color:var(--porcelain)}
+    .concierge{background:var(--black);border-radius:var(--radius);padding:48px;margin-top:48px}
+    .concierge-inner{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+    .concierge-title{font-family:"Instrument Serif",serif;font-size:2rem;color:var(--porcelain);margin:0 0 12px;font-weight:400}
+    .concierge-sub{color:var(--porcelain);opacity:0.7;font-size:0.9375rem;margin:0 0 24px}
+    .concierge-cta{display:inline-block;padding:14px 36px;background:var(--champagne);color:var(--black);font-weight:700;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.08em;border:none;border-radius:var(--radius)}
+    .concierge-features{display:flex;flex-direction:column;gap:16px}
+    .concierge-feature{display:flex;align-items:center;gap:12px;color:var(--porcelain);font-size:0.8125rem}
+    .concierge-feature-dot{width:6px;height:6px;border-radius:50%;background:var(--champagne);flex-shrink:0}
+    .footer{max-width:var(--max);margin:0 auto;padding:48px 32px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:32px;border-top:1px solid var(--graphite-dim)}
+    .footer-brand{font-family:"Instrument Serif",serif;font-size:1.25rem;margin-bottom:12px}
+    .footer-desc{font-size:0.75rem;color:var(--graphite-mid);line-height:1.6;max-width:280px}
+    .footer-col-title{font-weight:700;font-size:0.6875rem;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:12px}
+    .footer-col a{display:block;font-size:0.75rem;color:var(--graphite-mid);padding:3px 0;transition:color 0.15s}
+    .footer-col a:hover{color:var(--black)}
+    .footer-bottom{max-width:var(--max);margin:0 auto;padding:16px 32px;text-align:center;font-size:0.625rem;color:var(--graphite-mid)}
+    @media(max-width:1024px){
+      .hero-inner{grid-template-columns:1fr}
+      .products-grid{grid-template-columns:repeat(2,1fr)}
+      .asymmetric-grid,.asymmetric-grid.reverse{grid-template-columns:1fr}
+      .concierge-inner{grid-template-columns:1fr}
+      .footer{grid-template-columns:1fr 1fr}
+      .nav-links{display:none}.nav-drawer-btn{display:block}
     }
-    @media (max-width: 640px) {
-    .nav-inner { width: min(100% - 24px, var(--max)); gap: 12px; }
-    .notification-button { display: none; }
-    .hero, .section,
-    .footer-inner { width: min(100% - 24px, var(--max)); }
-    .hero { padding-top: 30px; }
-    .hero-copy { padding: 8px 0; }
-    .command-panel { min-height: 430px; }
-    .panel-grid, .kpi-strip, .inventory-grid,
-    .donut-wrap { grid-template-columns: 1fr; }
-    .section-head,
-    .footer-inner { align-items: flex-start; flex-direction: column; }
-    .bar-chart { gap: 8px; padding: 12px; }
-    .drawer { width: min(92vw, 360px); }
-    }
-    @media (prefers-reduced-motion: reduce) { *, *::before,
-    *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    @media(max-width:768px){
+      .hero-title{font-size:2.25rem}
+      .products-grid{grid-template-columns:1fr 1fr;gap:10px}
+      .product-image{height:200px}
+      .section{padding:40px 16px}
+      .hero{padding:0 16px}
     }
   </style>
 </head>
 <body>
-  <div class="page-shell">
-    <header class="topbar">
-      <nav class="nav-inner" aria-label="Primary navigation">
-        <a class="brand" href="#dashboard" aria-label="Velvet Commerce Studio home">
-          <span class="brand-mark" aria-hidden="true">V</span>
-          <span>Velvet Commerce</span>
-        </a>
-        <div class="nav-links" aria-label="Workspace sections">
-          <a href="#dashboard">Dashboard</a>
-          <a href="#orders">Orders</a>
-          <a href="#products">Products</a>
-          <a href="#customers">Customers</a>
-          <a href="#analytics">Analytics</a>
-        </div>
-        <div class="nav-actions">
-          <label class="search-wrap">
-            <span aria-hidden="true">⌕</span>
-            <span class="sr-only">Search operations</span>
-            <input type="search" value="Search orders, SKUs, customers" aria-label="Search orders, SKUs, customers">
-          </label>
-          <button class="notification-button" type="button" aria-label="Open notifications">!</button>
-          <button class="hamburger" type="button" aria-label="Open menu" aria-controls="mobile-drawer" aria-expanded="false">
-            <span class="hamburger-lines" aria-hidden="true">
-              <i></i>
-              <i></i>
-              <i></i>
-            </span>
-          </button>
-        </div>
-      </nav>
-    </header>
-
-    <div class="drawer-backdrop" data-close-drawer></div>
-    <aside class="drawer" id="mobile-drawer" aria-label="Mobile navigation" aria-hidden="true">
-      <div class="drawer-head">
-        <a class="brand" href="#dashboard">
-          <span class="brand-mark" aria-hidden="true">V</span>
-          <span>Velvet Commerce</span>
-        </a>
-        <button class="drawer-close" type="button" data-close-drawer aria-label="Close menu">×</button>
+  <a href="#main" class="skip-link">Skip to content</a>
+  <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-label="Navigation" aria-hidden="true">
+    <button class="drawer-close" id="drawerClose" aria-label="Close menu">&times;</button>
+    <nav aria-label="Mobile navigation">
+      <a href="#new">New Arrivals</a><a href="#collections">Collections</a><a href="#lookbook">Lookbook</a>
+    </nav>
+  </aside>
+  <header class="nav" role="banner">
+    <div class="nav-inner">
+      <a href="#" class="nav-brand" aria-label="Velvet home">Velvet</a>
+      <ul class="nav-links" role="list">
+        <li><a href="#new">New</a></li><li><a href="#collections">Collections</a></li><li><a href="#lookbook">Lookbook</a></li><li><a href="#">Sale</a></li>
+      </ul>
+      <div class="nav-right">
+        <span class="nav-icon" aria-label="Search">&#128269;</span>
+        <span class="nav-icon" aria-label="Account">&#128100;</span>
+        <span class="nav-icon" aria-label="Cart">&#128722;</span>
+        <button class="nav-drawer-btn" id="drawerOpen" aria-label="Open menu" aria-expanded="false">&#9776;</button>
       </div>
-      <div class="drawer-links">
-        <a href="#dashboard">Dashboard</a>
-        <a href="#orders">Orders</a>
-        <a href="#products">Products</a>
-        <a href="#customers">Customers</a>
-        <a href="#analytics">Analytics</a>
-      </div>
-      <label class="search-wrap" style="display:block;width:100%">
-        <span aria-hidden="true">⌕</span>
-        <span class="sr-only">Search mobile workspace</span>
-        <input type="search" value="Find Velvet data" aria-label="Search mobile workspace">
-      </label>
-    </aside>
-
-    <main id="dashboard">
-      <section class="hero" aria-labelledby="hero-title">
+    </div>
+  </header>
+  <main id="main">
+    <section class="hero">
+      <div class="hero-inner">
         <div class="hero-copy">
-          <span class="eyebrow"><i class="live-dot"></i> Live commerce command hub</span>
-          <h1 id="hero-title">Inventory, orders, and customers in one premium control room.</h1>
-          <p>Velvet Commerce Studio gives operators a clear daily picture of revenue movement, order pressure, product risk, and customer value without jumping between disconnected admin tabs.</p>
-          <div class="hero-actions">
-            <a class="btn primary" href="#orders">Review orders</a>
-            <a class="btn" href="#products">Audit inventory</a>
-          </div>
+          <div class="hero-eyebrow">Summer 2026</div>
+          <h1 class="hero-title">The Art of<br>Quiet Luxury</h1>
+          <p class="hero-sub">Timeless pieces crafted from the finest materials. Designed to last, made to be worn.</p>
+          <a href="#new" class="hero-cta">Shop Collection</a>
         </div>
-        <div class="command-panel" aria-label="Commerce operations preview">
-          <div class="command-window">
-            <div class="window-top">
-              <div class="window-dots" aria-hidden="true">
-                <i></i>
-                <i></i>
-                <i></i>
-              </div>
-              <span class="sync-state"><i class="live-dot"></i> All stores synced</span>
-            </div>
-            <div class="panel-grid">
-              <article class="panel-tile">
-                <small>Queued orders</small>
-                <strong>148</strong>
-              </article>
-              <article class="panel-tile">
-                <small>At-risk SKUs</small>
-                <strong>12</strong>
-              </article>
-              <article class="panel-tile full">
-                <small>Fulfillment route load</small>
-                <div class="route-line" aria-label="Route load split across warehouse zones">
-                  <span><i style="width:74%"></i></span>
-                  <span><i style="width:91%"></i></span>
-                  <span><i style="width:62%"></i></span>
-                </div>
-              </article>
-            </div>
-            <div class="mini-feed">
-              <div class="mini-event">
-                <b>Coral tote bundle moved to priority pick</b>
-                <span>2 min</span>
-              </div>
-              <div class="mini-event">
-                <b>Indigo capsule restock cleared receiving</b>
-                <span>9 min</span>
-              </div>
-              <div class="mini-event">
-                <b>High value customer segment expanded</b>
-                <span>18 min</span>
-              </div>
-            </div>
-          </div>
+        <div class="hero-image" aria-label="Featured product">
+          <span class="hero-image-text">Editorial Image</span>
+          <div class="hero-image-badge"><div class="hero-image-badge-title">Cashmere Blend Coat</div><div class="hero-image-badge-price">$1,280</div></div>
         </div>
-      </section>
-
-      <section class="section" aria-labelledby="kpi-title">
-        <div class="section-head">
-          <div>
-            <h2 id="kpi-title">Today at a glance</h2>
-          </div>
-          <p>Four signals summarize the store floor, checkout lane, and margin profile for the current trading day.</p>
-        </div>
-        <div class="kpi-strip">
-          <article class="kpi-card">
-            <span>Total revenue</span>
-            <strong>$428.6K</strong>
-            <em class="trend ok">↑ 18.4% versus last week</em>
-          </article>
-          <article class="kpi-card">
-            <span>Orders today</span>
-            <strong>1,284</strong>
-            <em class="trend">↑ 126 live carts</em>
-          </article>
-          <article class="kpi-card">
-            <span>Conversion rate</span>
-            <strong>6.8%</strong>
-            <em class="trend ok">↑ Checkout stable</em>
-          </article>
-          <article class="kpi-card">
-            <span>Avg order value</span>
-            <strong>$126</strong>
-            <em class="trend warn">↓ Bundle mix soft</em>
-          </article>
-        </div>
-      </section>
-
-      <section class="section" id="orders" aria-labelledby="orders-title">
-        <div class="section-head">
-          <div>
-            <h2 id="orders-title">Order pipeline</h2>
-          </div>
-          <p>Kanban lanes make handoffs visible across intake, warehouse processing, carrier movement, and final delivery.</p>
-        </div>
-        <div class="pipeline" aria-label="Order pipeline columns">
-          <section class="pipeline-column" aria-labelledby="new-orders">
-            <div class="column-head">
-              <h3 id="new-orders">New</h3>
-              <span class="column-count">6</span>
-            </div>
-            <article class="order-card">
-              <header><b>#VC-9048</b><small>$342</small></header>
-              <p>Grace Benton ordered velvet blazer sets for same-day dispatch.</p>
-              <div class="order-meta"><span class="pill live">Express</span><span class="pill">2 items</span></div>
-            </article>
-            <article class="order-card">
-              <header><b>#VC-9045</b><small>$118</small></header>
-              <p>Matte cyan accessory kit awaiting fraud confidence pass.</p>
-              <div class="order-meta"><span class="pill alert">Review</span><span class="pill">Card</span></div>
-            </article>
-            <article class="order-card">
-              <header><b>#VC-9042</b><small>$276</small></header>
-              <p>Returning customer added gift wrap and loyalty credit.</p>
-              <div class="order-meta"><span class="pill good">VIP</span><span class="pill">Gift</span></div>
-            </article>
-          </section>
-
-          <section class="pipeline-column" aria-labelledby="processing-orders">
-            <div class="column-head">
-              <h3 id="processing-orders">Processing</h3>
-              <span class="column-count">9</span>
-            </div>
-            <article class="order-card">
-              <header><b>#VC-9039</b><small>$489</small></header>
-              <p>Warehouse A is picking four premium travel capsules.</p>
-              <div class="order-meta"><span class="pill live">Pick wave</span><span class="pill">Aisle 4</span></div>
-            </article>
-            <article class="order-card">
-              <header><b>#VC-9033</b><small>$164</small></header>
-              <p>Split shipment created for low-stock silk scarf variant.</p>
-              <div class="order-meta"><span class="pill alert">Split</span><span class="pill">Low stock</span></div>
-            </article>
-            <article class="order-card">
-              <header><b>#VC-9027</b><small>$92</small></header>
-              <p>Customer care added a handwritten exchange note.</p>
-              <div class="order-meta"><span class="pill good">Care</span><span class="pill">Note</span></div>
-            </article>
-          </section>
-
-          <section class="pipeline-column" aria-labelledby="shipped-orders">
-            <div class="column-head">
-              <h3 id="shipped-orders">Shipped</h3>
-              <span class="column-count">14</span>
-            </div>
-            <article class="order-card">
-              <header><b>#VC-9018</b><small>$312</small></header>
-              <p>Carrier scan confirmed for indigo luggage bundle.</p>
-              <div class="order-meta"><span class="pill live">Carrier</span><span class="pill">Zone 2</span></div>
-            </article>
-            <article class="order-card">
-              <header><b>#VC-9006</b><small>$221</small></header>
-              <p>Shipment upgraded after loyalty threshold trigger.</p>
-              <div class="order-meta"><span class="pill good">Upgrade</span><span class="pill">Priority</span></div>
-            </article>
-            <article class="order-card">
-              <header><b>#VC-8999</b><small>$74</small></header>
-              <p>Address correction accepted by regional carrier hub.</p>
-              <div class="order-meta"><span class="pill">Corrected</span><span class="pill">Hub</span></div>
-            </article>
-          </section>
-
-          <section class="pipeline-column" aria-labelledby="delivered-orders">
-            <div class="column-head">
-              <h3 id="delivered-orders">Delivered</h3>
-              <span class="column-count">31</span>
-            </div>
-            <article class="order-card">
-              <header><b>#VC-8988</b><small>$616</small></header>
-              <p>Premium wardrobe order delivered and review requested.</p>
-              <div class="order-meta"><span class="pill good">Delivered</span><span class="pill">Review</span></div>
-            </article>
-            <article class="order-card">
-              <header><b>#VC-8976</b><small>$143</small></header>
-              <p>Customer accepted delivery with no support contact.</p>
-              <div class="order-meta"><span class="pill good">Clean</span><span class="pill">No ticket</span></div>
-            </article>
-            <article class="order-card">
-              <header><b>#VC-8964</b><small>$338</small></header>
-              <p>Repeat buyer added to concierge follow-up queue.</p>
-              <div class="order-meta"><span class="pill live">Concierge</span><span class="pill">Repeat</span></div>
-            </article>
-          </section>
-        </div>
-      </section>
-
-      <section class="section" id="products" aria-labelledby="products-title">
-        <div class="section-head">
-          <div>
-            <h2 id="products-title">Product inventory</h2>
-          </div>
-          <p>Stock cards combine merchandising context with operational urgency so buying teams can move before shelves thin out.</p>
-        </div>
-        <div class="inventory-grid">
-          <article class="surface-card product-card">
-            <div class="product-top">
-              <div>
-                <h3>Indigo Weekender</h3>
-                <span class="sku">SKU IND-WKD-24</span>
-              </div>
-              <span class="product-thumb">IW</span>
-            </div>
-            <div class="stock-meter">
-              <div class="stock-label"><span>Stock level</span><b>84 units</b></div>
-              <div class="meter-track"><i class="meter-fill" style="width:82%"></i></div>
-            </div>
-            <div class="product-bottom"><span class="price">$186</span><span class="pill good">Healthy</span></div>
-          </article>
-          <article class="surface-card product-card">
-            <div class="product-top">
-              <div>
-                <h3>Cyan Utility Tote</h3>
-                <span class="sku">SKU CYN-TOT-12</span>
-              </div>
-              <span class="product-thumb">CT</span>
-            </div>
-            <div class="stock-meter">
-              <div class="stock-label"><span>Stock level</span><b>42 units</b></div>
-              <div class="meter-track"><i class="meter-fill medium" style="width:48%"></i></div>
-            </div>
-            <div class="product-bottom"><span class="price">$74</span><span class="pill live">Watch</span></div>
-          </article>
-          <article class="surface-card product-card">
-            <div class="product-top">
-              <div>
-                <h3>Velvet Wrap Coat</h3>
-                <span class="sku">SKU VEL-COA-07</span>
-              </div>
-              <span class="product-thumb">VC</span>
-            </div>
-            <div class="stock-meter">
-              <div class="stock-label"><span>Stock level</span><b>11 units</b></div>
-              <div class="meter-track"><i class="meter-fill low" style="width:16%"></i></div>
-            </div>
-            <div class="product-bottom"><span class="price">$248</span><span class="pill alert">Low stock</span></div>
-          </article>
-          <article class="surface-card product-card">
-            <div class="product-top">
-              <div>
-                <h3>Lime Studio Sneaker</h3>
-                <span class="sku">SKU LIM-SNK-38</span>
-              </div>
-              <span class="product-thumb">LS</span>
-            </div>
-            <div class="stock-meter">
-              <div class="stock-label"><span>Stock level</span><b>126 units</b></div>
-              <div class="meter-track"><i class="meter-fill" style="width:91%"></i></div>
-            </div>
-            <div class="product-bottom"><span class="price">$132</span><span class="pill good">Healthy</span></div>
-          </article>
-        </div>
-      </section>
-
-      <section class="section" id="customers" aria-labelledby="customers-title">
-        <div class="section-head">
-          <div>
-            <h2 id="customers-title">Customer analytics</h2>
-          </div>
-          <p>Retention and customer value are tracked beside revenue so merchandising can prioritize the people behind the carts.</p>
-        </div>
-        <div class="analytics-grid">
-          <article class="surface-card analytics-card">
-            <h3>New vs returning</h3>
-            <div class="donut-wrap">
-              <div class="donut" role="img" aria-label="Returning customers are 64 percent of today's purchasing customers"></div>
-              <div class="legend">
-                <div class="legend-row"><span><i></i>Returning</span><b>64%</b></div>
-                <div class="legend-row returning"><span><i></i>New</span><b>36%</b></div>
-                <p>Returning customers are driving premium bundle attach rates and lower support volume.</p>
-              </div>
-            </div>
-          </article>
-          <article class="surface-card analytics-card">
-            <h3>Top customers by spend</h3>
-            <div class="customer-list">
-              <div class="customer-row">
-                <span class="avatar">GB</span>
-                <span class="row-copy"><b>Grace Benton</b><span>12 orders · concierge tier</span></span>
-                <span class="spend">$8,420</span>
-              </div>
-              <div class="customer-row">
-                <span class="avatar">MN</span>
-                <span class="row-copy"><b>Mika Novak</b><span>9 orders · early access</span></span>
-                <span class="spend">$6,980</span>
-              </div>
-              <div class="customer-row">
-                <span class="avatar">AR</span>
-                <span class="row-copy"><b>Ada Rivera</b><span>7 orders · gift buyer</span></span>
-                <span class="spend">$5,760</span>
-              </div>
-              <div class="customer-row">
-                <span class="avatar">SL</span>
-                <span class="row-copy"><b>Soren Liu</b><span>6 orders · high margin mix</span></span>
-                <span class="spend">$4,880</span>
-              </div>
-            </div>
-          </article>
-        </div>
-      </section>
-
-      <section class="section" id="analytics" aria-labelledby="analytics-title">
-        <div class="section-head">
-          <div>
-            <h2 id="analytics-title">Revenue and activity</h2>
-          </div>
-          <p>The final grid pairs seven-day revenue shape with operational events that explain movement in the numbers.</p>
-        </div>
-        <div class="dashboard-grid">
-          <article class="surface-card chart-card">
-            <h3>Revenue chart · last 7 days</h3>
-            <div class="bar-chart" aria-label="Revenue bar chart for the last seven days">
-              <span class="bar"><i style="height:46%"></i>Thu</span>
-              <span class="bar"><i style="height:62%"></i>Fri</span>
-              <span class="bar"><i style="height:71%"></i>Sat</span>
-              <span class="bar"><i style="height:55%"></i>Sun</span>
-              <span class="bar"><i style="height:78%"></i>Mon</span>
-              <span class="bar"><i style="height:86%"></i>Tue</span>
-              <span class="bar"><i style="height:94%"></i>Wed</span>
-            </div>
-          </article>
-          <aside class="surface-card" aria-labelledby="activity-title">
-            <div class="activity-feed">
-              <h3 id="activity-title">Recent activity</h3>
-              <div class="activity-row">
-                <span class="activity-dot"></span>
-                <span class="row-copy"><b>Order #VC-9048 paid</b><span>Express workflow opened for Warehouse A</span></span>
-                <span class="spend">2m</span>
-              </div>
-              <div class="activity-row">
-                <span class="activity-dot stock"></span>
-                <span class="row-copy"><b>Velvet Wrap Coat is low</b><span>Only 11 units remain in the east region</span></span>
-                <span class="spend">7m</span>
-              </div>
-              <div class="activity-row">
-                <span class="activity-dot signup"></span>
-                <span class="row-copy"><b>42 new customers joined</b><span>Cyan tote campaign is leading acquisition</span></span>
-                <span class="spend">21m</span>
-              </div>
-              <div class="activity-row">
-                <span class="activity-dot"></span>
-                <span class="row-copy"><b>Carrier exception cleared</b><span>Indigo Weekender route returned to schedule</span></span>
-                <span class="spend">34m</span>
-              </div>
-              <div class="activity-row">
-                <span class="activity-dot stock"></span>
-                <span class="row-copy"><b>Bundle margin changed</b><span>Average order value dipped after discount mix</span></span>
-                <span class="spend">48m</span>
-              </div>
-            </div>
-          </aside>
-        </div>
-      </section>
-    </main>
-
-    <footer class="footer">
-      <div class="footer-inner">
-        <strong>Velvet Commerce Studio — designed by Northstar Atelier</strong>
-        <span>Premium e-commerce management hub for operators, merchandisers, and customer teams.</span>
       </div>
-    </footer>
-  </div>
-
+    </section>
+    <section class="section" id="new" aria-labelledby="new-title">
+      <div class="section-eyebrow">New Arrivals</div>
+      <h2 class="section-title" id="new-title">Just landed</h2>
+      <p class="section-sub">The latest additions to our permanent collection.</p>
+      <div class="products-grid">
+        <div class="product-card"><div class="product-image"><button class="product-wishlist" aria-label="Add to wishlist">&#9825;</button></div><div class="product-body"><div class="product-name">Silk Midi Dress</div><div class="product-price">$680</div><div class="product-sizes"><span class="product-size">XS</span><span class="product-size">S</span><span class="product-size">M</span><span class="product-size">L</span></div><button class="product-add">Quick Add</button></div></div>
+        <div class="product-card"><div class="product-image"><button class="product-wishlist" aria-label="Add to wishlist">&#9825;</button></div><div class="product-body"><div class="product-name">Merino Wool Sweater</div><div class="product-price">$340</div><div class="product-sizes"><span class="product-size">S</span><span class="product-size">M</span><span class="product-size">L</span><span class="product-size">XL</span></div><button class="product-add">Quick Add</button></div></div>
+        <div class="product-card"><div class="product-image"><button class="product-wishlist" aria-label="Add to wishlist">&#9825;</button></div><div class="product-body"><div class="product-name">Tailored Trousers</div><div class="product-price">$420</div><div class="product-sizes"><span class="product-size">XS</span><span class="product-size">S</span><span class="product-size">M</span><span class="product-size">L</span></div><button class="product-add">Quick Add</button></div></div>
+        <div class="product-card"><div class="product-image"><button class="product-wishlist" aria-label="Add to wishlist">&#9825;</button></div><div class="product-body"><div class="product-name">Leather Tote Bag</div><div class="product-price">$890</div><div class="product-sizes"><span class="product-size">OS</span></div><button class="product-add">Quick Add</button></div></div>
+      </div>
+    </section>
+    <section class="section" id="collections" aria-labelledby="collections-title">
+      <div class="section-eyebrow">Collections</div>
+      <h2 class="section-title" id="collections-title">Stories to wear</h2>
+      <div class="asymmetric-grid">
+        <div class="collection-card"><div class="collection-title">The Essential Edit</div><div class="collection-sub">10 pieces, endless combinations. The foundation of a mindful wardrobe.</div><a href="#" class="collection-cta">Explore</a></div>
+        <div class="collection-card light"><div class="collection-title">Evening Wear</div><div class="collection-sub">For moments that matter. Elegant silhouettes in rich fabrics.</div><a href="#" class="collection-cta">Explore</a></div>
+      </div>
+      <div class="asymmetric-grid reverse">
+        <div class="collection-card light"><div class="collection-title">Weekend</div><div class="collection-sub">Relaxed luxury for downtime. Soft knits, easy shapes, muted tones.</div><a href="#" class="collection-cta">Explore</a></div>
+        <div class="collection-card"><div class="collection-title">Outerwear</div><div class="collection-sub">Coats and jackets built for seasons, not trends.</div><a href="#" class="collection-cta">Explore</a></div>
+      </div>
+    </section>
+    <section class="section" id="lookbook" aria-labelledby="lookbook-title">
+      <div class="section-eyebrow">Lookbook</div>
+      <h2 class="section-title" id="lookbook-title">Summer 2026</h2>
+      <p class="section-sub">Scroll through the collection.</p>
+    </section>
+    <div class="lookbook">
+      <div class="lookbook-scroll" role="region" aria-label="Lookbook images">
+        <div class="lookbook-card"><span class="lookbook-label">Look 01</span></div>
+        <div class="lookbook-card"><span class="lookbook-label">Look 02</span></div>
+        <div class="lookbook-card"><span class="lookbook-label">Look 03</span></div>
+        <div class="lookbook-card"><span class="lookbook-label">Look 04</span></div>
+        <div class="lookbook-card"><span class="lookbook-label">Look 05</span></div>
+      </div>
+    </div>
+    <div class="section">
+      <div class="concierge">
+        <div class="concierge-inner">
+          <div>
+            <h2 class="concierge-title">Personal Concierge</h2>
+            <p class="concierge-sub">Not sure what to choose? Our stylists will help you build a wardrobe that works for your life.</p>
+            <a href="#" class="concierge-cta">Book a Session</a>
+          </div>
+          <div class="concierge-features">
+            <div class="concierge-feature"><span class="concierge-feature-dot"></span>1-on-1 styling consultation</div>
+            <div class="concierge-feature"><span class="concierge-feature-dot"></span>Personalized recommendations</div>
+            <div class="concierge-feature"><span class="concierge-feature-dot"></span>Free alterations on full-price items</div>
+            <div class="concierge-feature"><span class="concierge-feature-dot"></span>Exclusive early access to new collections</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <footer>
+    <div class="footer">
+      <div><div class="footer-brand">Velvet</div><div class="footer-desc">Timeless fashion for the modern wardrobe. Crafted with care, designed to last.</div></div>
+      <div class="footer-col"><div class="footer-col-title">Shop</div><a href="#">New Arrivals</a><a href="#">Collections</a><a href="#">Sale</a><a href="#">Gift Cards</a></div>
+      <div class="footer-col"><div class="footer-col-title">About</div><a href="#">Our Story</a><a href="#">Sustainability</a><a href="#">Careers</a></div>
+      <div class="footer-col"><div class="footer-col-title">Help</div><a href="#">Shipping</a><a href="#">Returns</a><a href="#">Size Guide</a><a href="#">Contact</a></div>
+    </div>
+    <div class="footer-bottom">Velvet Commerce &mdash; designed by Studio &middot; Standalone prototype</div>
+  </footer>
   <script>
-    const body = document.body;
-    const drawer = document.querySelector("#mobile-drawer");
-    const menuButton = document.querySelector(".hamburger");
-    const closeTargets = document.querySelectorAll("[data-close-drawer]");
-    const drawerLinks = drawer.querySelectorAll("a");
-
-    function setDrawer(open) {
-      body.classList.toggle("drawer-open", open);
-      drawer.setAttribute("aria-hidden", String(!open));
-      menuButton.setAttribute("aria-expanded", String(open));
-      if (open) {
-        drawer.querySelector("a").focus();
-      } else {
-        menuButton.focus();
-      }
-    }
-
-    menuButton.addEventListener("click", () => setDrawer(true));
-    closeTargets.forEach((target) => target.addEventListener("click", () => setDrawer(false)));
-    drawerLinks.forEach((link) => link.addEventListener("click", () => setDrawer(false)));
-
-    window.addEventListener("keydown", (event) => {
-      if (event.key === "Escape" && body.classList.contains("drawer-open")) {
-        setDrawer(false);
-      }
-    });
+    (function(){
+      var o=document.getElementById('drawerOpen'),c=document.getElementById('drawerClose'),d=document.getElementById('drawer'),v=document.getElementById('drawerOverlay');
+      function open(){d.classList.add('open');v.classList.add('open');d.setAttribute('aria-hidden','false');o.setAttribute('aria-expanded','true');c.focus()}
+      function close(){d.classList.remove('open');v.classList.remove('open');d.setAttribute('aria-hidden','true');o.setAttribute('aria-expanded','false');o.focus()}
+      o.addEventListener('click',open);c.addEventListener('click',close);v.addEventListener('click',close);
+      document.addEventListener('keydown',function(e){if(e.key==='Escape'&&d.classList.contains('open'))close()});
+      d.querySelectorAll('a').forEach(function(l){l.addEventListener('click',close)});
+    })();
   </script>
 </body>
 </html>
