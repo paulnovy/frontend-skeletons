@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quantum Encryption Tools</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --cloud: #F6F8FC;
+    --ink: #19212B;
+    --indigo: #4F46E5;
+    --cyan: #06B6D4;
+    --lime: #A3E635;
+    --coral: #FB7185;
+    --card: #FFFFFF;
+    --border: #E5E7EB;
+    --green: #10B981;
+    --orange: #F59E0B;
+    --red: #EF4444;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--ink);
+    color: #E5E7EB;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  a { color: var(--cyan); text-decoration: none; }
+  button { cursor: pointer; font-family: inherit; }
+
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--indigo);
+    color: #fff;
+    padding: 8px 16px;
+    z-index: 100;
+    font-size: 0.875rem;
+  }
+  .skip-link:focus { top: 0; }
+
+  .top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 24px;
+    height: 60px;
+    background: #111827;
+    border-bottom: 1px solid #1F2937;
+  }
+  .nav-brand {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--cyan);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-links { display: flex; gap: 4px; margin-left: 24px; }
+  .nav-links a {
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.6);
+  }
+  .nav-links a:hover,
+  .nav-links a[aria-current="page"] {
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+  }
+  .nav-search { margin-left: auto; position: relative; }
+  .nav-search input {
+    width: 200px;
+    padding: 8px 12px 8px 36px;
+    border: 1px solid #374151;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    background: #1F2937;
+    color: #fff;
+  }
+  .nav-search svg {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: #6B7280;
+  }
+  .nav-cta {
+    margin-left: 12px;
+    padding: 8px 18px;
+    background: var(--indigo);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+  .hamburger { display: none; background: none; border: none; padding: 8px; color: #fff; }
+  .hamburger svg { width: 24px; height: 24px; }
+
+  .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 60; }
+  .drawer-overlay.open { display: block; }
+  .drawer {
+    position: fixed; top: 0; left: 0; width: 280px; height: 100%;
+    background: #1F2937; z-index: 70; transform: translateX(-100%);
+    transition: transform 0.25s ease; padding: 24px; overflow-y: auto;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-close { background: none; border: none; font-size: 1.5rem; position: absolute; top: 16px; right: 16px; color: #fff; }
+  .drawer nav { display: flex; flex-direction: column; gap: 4px; margin-top: 24px; }
+  .drawer nav a { padding: 10px 14px; border-radius: 8px; font-size: 0.9375rem; color: #E5E7EB; }
+  .drawer nav a:hover { background: rgba(255,255,255,0.08); }
+
+  @media (max-width: 768px) {
+    .nav-links, .nav-search, .nav-cta { display: none; }
+    .hamburger { display: block; }
+    .top-nav { padding: 0 16px; }
+  }
+
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 24px;
+  }
+  .kpi-card {
+    background: #1F2937;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #374151;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .kpi-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.25rem; flex-shrink: 0;
+  }
+  .kpi-label { font-size: 0.8125rem; color: #9CA3AF; margin-bottom: 2px; }
+  .kpi-value { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 1.5rem; }
+  .kpi-trend { font-size: 0.75rem; margin-top: 2px; }
+
+  .main-content { padding: 0 24px 48px; }
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
+  }
+  .section-header h2 { font-size: 1.25rem; }
+  .badge {
+    background: #1F2937; padding: 4px 12px; border-radius: 20px;
+    font-size: 0.8125rem; font-weight: 600; color: #9CA3AF;
+  }
+
+  /* Algorithm Cards */
+  .algo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .algo-card {
+    background: #1F2937;
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid #374151;
+    position: relative;
+    overflow: hidden;
+  }
+  .algo-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+  .algo-card h4 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .algo-card .desc {
+    font-size: 0.8125rem;
+    color: #9CA3AF;
+    margin-bottom: 12px;
+  }
+  .algo-meta {
+    display: flex;
+    gap: 12px;
+    font-size: 0.75rem;
+    color: #6B7280;
+  }
+  .algo-tag {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+  }
+  .tag-post { background: #DBEAFE; color: #1E40AF; }
+  .tag-sym { background: #D1FAE5; color: #065F46; }
+  .tag-hash { background: #FEF3C7; color: #92400E; }
+  .tag-key { background: #EEF2FF; color: #4F46E5; }
+
+  /* Key Management Table */
+  .data-tbl {
+    width: 100%;
+    border-collapse: collapse;
+    background: #1F2937;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #374151;
+    margin-bottom: 32px;
+  }
+  .data-tbl th {
+    text-align: left; padding: 12px 16px; font-size: 0.8125rem;
+    color: #9CA3AF; font-weight: 600; border-bottom: 1px solid #374151; background: #111827;
+  }
+  .data-tbl td { padding: 12px 16px; font-size: 0.875rem; border-bottom: 1px solid #1F2937; color: #E5E7EB; }
+  .data-tbl tr:last-child td { border-bottom: none; }
+  .data-tbl tr:hover { background: rgba(255,255,255,0.03); }
+  .badge-status {
+    display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
+  }
+  .st-active { background: #D1FAE5; color: #065F46; }
+  .st-expired { background: #FEE2E2; color: #991B1B; }
+  .st-rotating { background: #FEF3C7; color: #92400E; }
+  .st-pending { background: #DBEAFE; color: #1E40AF; }
+
+  /* Cipher Suite */
+  .cipher-list {
+    display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px;
+  }
+  .cipher-item {
+    background: #1F2937;
+    border-radius: 10px;
+    padding: 14px 18px;
+    border: 1px solid #374151;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .cipher-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; flex-shrink: 0;
+  }
+  .cipher-info { flex: 1; }
+  .cipher-info h4 { font-size: 0.9375rem; margin-bottom: 2px; color: #fff; }
+  .cipher-info .meta { font-size: 0.8125rem; color: #9CA3AF; }
+  .cipher-strength {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 0.875rem;
+  }
+
+  /* Audit Log */
+  .audit-list {
+    display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px;
+  }
+  .audit-item {
+    background: #1F2937;
+    border-radius: 8px;
+    padding: 12px 16px;
+    border: 1px solid #374151;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.875rem;
+    color: #E5E7EB;
+  }
+  .audit-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .audit-time {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: #6B7280;
+  }
+
+  /* Benchmark Chart */
+  .chart-box {
+    background: #1F2937;
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid #374151;
+    margin-bottom: 32px;
+  }
+  .chart-title { font-size: 1rem; margin-bottom: 4px; color: #fff; }
+  .chart-sub { font-size: 0.8125rem; color: #9CA3AF; margin-bottom: 20px; }
+  .bar-chart {
+    display: flex; align-items: flex-end; gap: 16px;
+    height: 200px; padding-bottom: 28px; border-bottom: 1px solid #374151;
+  }
+  .bar-group {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; height: 100%; justify-content: flex-end;
+  }
+  .bar-rect {
+    width: 100%; max-width: 48px; border-radius: 4px 4px 0 0; min-height: 4px;
+  }
+  .bar-lbl { font-size: 0.6875rem; color: #6B7280; margin-top: 8px; }
+  .bar-val {
+    font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 0.75rem; color: #fff; margin-bottom: 4px;
+  }
+
+  /* Compliance */
+  .compliance-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px; margin-bottom: 32px;
+  }
+  .compliance-card {
+    background: #1F2937; border-radius: 12px; padding: 20px;
+    border: 1px solid #374151; text-align: center;
+  }
+  .compliance-card .score {
+    font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 2rem; margin-bottom: 4px;
+  }
+  .compliance-card .label {
+    font-size: 0.8125rem; color: #9CA3AF; margin-bottom: 8px;
+  }
+  .compliance-card .bar {
+    height: 4px; background: #374151; border-radius: 2px; overflow: hidden;
+  }
+  .compliance-card .bar-fill {
+    height: 100%; border-radius: 2px;
+  }
+
+  .site-footer {
+    padding: 32px 24px; text-align: center; font-size: 0.8125rem;
+    color: #6B7280; border-top: 1px solid #1F2937; margin-top: 48px;
+  }
+
+  :focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  @media (max-width: 768px) {
+    .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    .algo-grid { grid-template-columns: 1fr; }
+    .data-tbl { display: block; overflow-x: auto; }
+    .compliance-grid { grid-template-columns: repeat(2, 1fr); }
+    .cipher-item { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header class="top-nav">
+  <button class="hamburger" aria-label="Open menu" aria-expanded="false"
+    onclick="document.getElementById('drawer').classList.toggle('open');document.getElementById('overlay').classList.toggle('open');this.setAttribute('aria-expanded',document.getElementById('drawer').classList.contains('open'))">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+  </button>
+  <a href="#" class="nav-brand">🔐 Quantum Encryption Tools</a>
+  <nav class="nav-links" aria-label="Main">
+    <a href="#" aria-current="page">Dashboard</a>
+    <a href="#keys">Key Manager</a>
+    <a href="#ciphers">Cipher Suites</a>
+    <a href="#audit">Audit Log</a>
+    <a href="#benchmarks">Benchmarks</a>
+    <a href="#compliance">Compliance</a>
+  </nav>
+  <div class="nav-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" aria-label="Search algorithms">
+  </div>
+  <button class="nav-cta">+ Generate Key</button>
+</header>
+
+<div class="drawer-overlay" id="overlay" onclick="document.getElementById('drawer').classList.remove('open');this.classList.remove('open')"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-label="Navigation">
+  <button class="drawer-close" aria-label="Close menu"
+    onclick="document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open')">&times;</button>
+  <nav>
+    <a href="#">Dashboard</a>
+    <a href="#keys">Key Manager</a>
+    <a href="#ciphers">Cipher Suites</a>
+    <a href="#audit">Audit Log</a>
+    <a href="#benchmarks">Benchmarks</a>
+    <a href="#compliance">Compliance</a>
+  </nav>
+</aside>
+
+<main id="main">
+  <div class="kpi-strip" role="region" aria-label="Encryption metrics">
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#EEF2FF">🔑</div>
+      <div>
+        <div class="kpi-label">Active Keys</div>
+        <div class="kpi-value" style="color:var(--indigo)">1,247</div>
+        <div class="kpi-trend" style="color:var(--green)">Post-quantum ready</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#ECFEFF">🛡️</div>
+      <div>
+        <div class="kpi-label">Encrypted Sessions</div>
+        <div class="kpi-value" style="color:var(--cyan)">34,891</div>
+        <div class="kpi-trend" style="color:var(--green)">Zero breaches</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#FEF3C7">⚠️</div>
+      <div>
+        <div class="kpi-label">Keys Expiring Soon</div>
+        <div class="kpi-value" style="color:var(--orange)">23</div>
+        <div class="kpi-trend" style="color:var(--orange)">Within 30 days</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#D1FAE5">✅</div>
+      <div>
+        <div class="kpi-label">Compliance Score</div>
+        <div class="kpi-value" style="color:var(--green)">97%</div>
+        <div class="kpi-trend" style="color:var(--green)">NIST aligned</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <!-- Algorithm Library -->
+    <section>
+      <div class="section-header">
+        <h2>Post-Quantum Algorithms</h2>
+        <span class="badge">NIST Round 4</span>
+      </div>
+      <div class="algo-grid">
+        <div class="algo-card" style="border-top:4px solid var(--indigo)">
+          <h4>🔐 CRYSTALS-Kyber</h4>
+          <div class="desc">Lattice-based key encapsulation mechanism. Selected by NIST for standardization. Fast key generation and encapsulation.</div>
+          <div class="algo-meta">
+            <span class="algo-tag tag-key">KEM</span>
+            <span class="algo-tag tag-post">Post-Quantum</span>
+            <span>NIST Level 3</span>
+          </div>
+        </div>
+        <div class="algo-card" style="border-top:4px solid var(--cyan)">
+          <h4>✍️ CRYSTALS-Dilithium</h4>
+          <div class="desc">Lattice-based digital signature scheme. Primary NIST selection for post-quantum signatures with strong security guarantees.</div>
+          <div class="algo-meta">
+            <span class="algo-tag tag-sym">Signature</span>
+            <span class="algo-tag tag-post">Post-Quantum</span>
+            <span>NIST Level 3</span>
+          </div>
+        </div>
+        <div class="algo-card" style="border-top:4px solid var(--lime)">
+          <h4>🔑 FALCON</h4>
+          <div class="desc">Compact lattice-based signatures using NTRU lattices. Smaller signatures than Dilithium but more complex implementation.</div>
+          <div class="algo-meta">
+            <span class="algo-tag tag-sym">Signature</span>
+            <span class="algo-tag tag-post">Post-Quantum</span>
+            <span>NIST Level 5</span>
+          </div>
+        </div>
+        <div class="algo-card" style="border-top:4px solid var(--coral)">
+          <h4># SPHINCS+</h4>
+          <div class="desc">Stateless hash-based signature scheme. Conservative choice based on minimal assumptions. Larger signatures but well-understood security.</div>
+          <div class="algo-meta">
+            <span class="algo-tag tag-hash">Hash-Based</span>
+            <span class="algo-tag tag-post">Post-Quantum</span>
+            <span>NIST Level 5</span>
+          </div>
+        </div>
+        <div class="algo-card" style="border-top:4px solid var(--indigo)">
+          <h4>🔄 Classic McEliece</h4>
+          <div class="desc">Code-based KEM with 40+ years of cryptanalysis. Very large public keys but smallest ciphertexts among PQC candidates.</div>
+          <div class="algo-meta">
+            <span class="algo-tag tag-key">KEM</span>
+            <span class="algo-tag tag-post">Post-Quantum</span>
+            <span>NIST Level 3</span>
+          </div>
+        </div>
+        <div class="algo-card" style="border-top:4px solid var(--cyan)">
+          <h4>🌊 BIKE</h4>
+          <div class="desc">Code-based KEM using quasi-cyclic moderate-density parity-check codes. Efficient implementation with hardware acceleration support.</div>
+          <div class="algo-meta">
+            <span class="algo-tag tag-key">KEM</span>
+            <span class="algo-tag tag-post">Post-Quantum</span>
+            <span>NIST Level 1</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Key Management -->
+    <section id="keys">
+      <div class="section-header">
+        <h2>Key Management</h2>
+        <span class="badge">1,247 active keys</span>
+      </div>
+      <table class="data-tbl" aria-label="Key management">
+        <thead>
+          <tr>
+            <th>Key ID</th>
+            <th>Algorithm</th>
+            <th>Purpose</th>
+            <th>Created</th>
+            <th>Expires</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>KYB-a7f3</strong></td>
+            <td>CrySTALs-Kyber-1024</td>
+            <td>Key Encapsulation</td>
+            <td>API Gateway TLS</td>
+            <td>Jan 15, 2026</td>
+            <td>Jul 15, 2026</td>
+            <td><span class="badge-status st-active">Active</span></td>
+          </tr>
+          <tr>
+            <td><strong>DLT-b2e8</strong></td>
+            <td>CRYSTALS-Dilithium3</td>
+            <td>Digital Signatures</td>
+            <td>Feb 3, 2026</td>
+            <td>Aug 3, 2026</td>
+            <td><span class="badge-status st-active">Active</span></td>
+          </tr>
+          <tr>
+            <td><strong>FLN-c9d1</strong></td>
+            <td>FALCON-1024</td>
+            <td>Code Signing</td>
+            <td>Mar 12, 2026</td>
+            <td>Sep 12, 2026</td>
+            <td><span class="badge-status st-rotating">Rotating</span></td>
+          </tr>
+          <tr>
+            <td><strong>SPX-d4f6</strong></td>
+            <td>SPHINCS+-256f</td>
+            <td>Root CA</td>
+            <td>Jan 1, 2025</td>
+            <td>Jan 1, 2028</td>
+            <td><span class="badge-status st-active">Active</span></td>
+          </tr>
+          <tr>
+            <td><strong>RSA-e1a2</strong></td>
+            <td>RSA-4096</td>
+            <td>Legacy Compat</td>
+            <td>Jun 10, 2024</td>
+            <td>Jun 10, 2026</td>
+            <td><span class="badge-status st-expired">Expiring</span></td>
+          </tr>
+          <tr>
+            <td><strong>KYB-f5b3</strong></td>
+            <td>CrySTALs-Kyber-768</td>
+            <td>Internal Comms</td>
+            <td>Apr 20, 2026</td>
+            <td>Oct 20, 2026</td>
+            <td><span class="badge-status st-pending">Pending Deploy</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Cipher Suites -->
+    <section id="ciphers">
+      <div class="section-header">
+        <h2>Supported Cipher Suites</h2>
+        <span class="badge">8 suites</span>
+      </div>
+      <div class="cipher-list" role="list">
+        <div class="cipher-item" role="listitem">
+          <div class="cipher-icon" style="background:#EEF2FF">🔐</div>
+          <div class="cipher-info">
+            <h4>TLS_KYBER1024_AES256GCM_SHA384</h4>
+            <div class="meta">Hybrid TLS 1.3 with Kyber KEM + AES-256-GCM</div>
+          </div>
+          <div class="cipher-strength" style="color:var(--green)">256-bit</div>
+        </div>
+        <div class="cipher-item" role="listitem">
+          <div class="cipher-icon" style="background:#ECFEFF">🛡️</div>
+          <div class="cipher-info">
+            <h4>TLS_DILITHIUM3_CHACHA20_POLY1305</h4>
+            <div class="meta">Dilithium signatures with ChaCha20-Poly1305 AEAD</div>
+          </div>
+          <div class="cipher-strength" style="color:var(--cyan)">192-bit</div>
+        </div>
+        <div class="cipher-item" role="listitem">
+          <div class="cipher-icon" style="background:#D1FAE5">🔑</div>
+          <div class="cipher-info">
+            <h4>TLS_HYBRID_KYBER_AES_X25519</h4>
+            <div class="meta">Hybrid key exchange combining Kyber + X25519</div>
+          </div>
+          <div class="cipher-strength" style="color:var(--lime)">256-bit</div>
+        </div>
+        <div class="cipher-item" role="listitem">
+          <div class="cipher-icon" style="background:#FEF3C7">⚡</div>
+          <div class="cipher-info">
+            <h4>TLS_FALCON1024_AES256GCM_SHA512</h4>
+            <div class="meta">FALCON signatures with AES-256-GCM bulk encryption</div>
+          </div>
+          <div class="cipher-strength" style="color:var(--orange)">256-bit</div>
+        </div>
+        <div class="cipher-item" role="listitem">
+          <div class="cipher-icon" style="background:#FEE2E2">#</div>
+          <div class="cipher-info">
+            <h4>TLS_SPHINCS256F_AES256GCM_SHA384</h4>
+            <div class="meta">SPHINCS+ hash-based signatures for maximum conservatism</div>
+          </div>
+          <div class="cipher-strength" style="color:var(--coral)">256-bit</div>
+        </div>
+        <div class="cipher-item" role="listitem">
+          <div class="cipher-icon" style="background:#EEF2FF">🔄</div>
+          <div class="cipher-info">
+            <h4>TLS_MCELIECE6960119_AES256GCM</h4>
+            <div class="meta">Classic McEliece KEM for long-term archival encryption</div>
+          </div>
+          <div class="cipher-strength" style="color:var(--indigo)">256-bit</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Audit Log -->
+    <section id="audit">
+      <div class="section-header">
+        <h2>Security Audit Log</h2>
+        <span class="badge">Last 24 hours</span>
+      </div>
+      <div class="audit-list" role="list">
+        <div class="audit-item" role="listitem">
+          <div class="audit-dot" style="background:var(--green)"></div>
+          <span>Key KYB-a7f3 rotation completed — new key deployed to 12 endpoints</span>
+          <span class="audit-time">2 hours ago</span>
+        </div>
+        <div class="audit-item" role="listitem">
+          <div class="audit-dot" style="background:var(--cyan)"></div>
+          <span>Cipher suite upgrade: API Gateway migrated to TLS_KYBER1024_AES256GCM_SHA384</span>
+          <span class="audit-time">5 hours ago</span>
+        </div>
+        <div class="audit-item" role="listitem">
+          <div class="audit-dot" style="background:var(--coral)"></div>
+          <span>Key RSA-e1a2 expiring in 14 days — auto-rotation scheduled</span>
+          <span class="audit-time">8 hours ago</span>
+        </div>
+        <div class="audit-item" role="listitem">
+          <div class="audit-dot" style="background:var(--lime)"></div>
+          <span>NIST algorithm compliance check passed — all keys meet PQC requirements</span>
+          <span class="audit-time">12 hours ago</span>
+        </div>
+        <div class="audit-item" role="listitem">
+          <div class="audit-dot" style="background:var(--indigo)"></div>
+          <span>New FALCON-1024 key pair generated for code signing pipeline</span>
+          <span class="audit-time">18 hours ago</span>
+        </div>
+        <div class="audit-item" role="listitem">
+          <div class="audit-dot" style="background:var(--cyan)"></div>
+          <span>Key KYB-f5b3 created and staged for internal comms deployment</span>
+          <span class="audit-time">22 hours ago</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Benchmarks -->
+    <section id="benchmarks">
+      <div class="section-header">
+        <h2>Performance Benchmarks</h2>
+        <span class="badge">Latest results</span>
+      </div>
+      <div class="chart-box">
+        <div class="chart-title">Key Generation Time (ms)</div>
+        <div class="chart-sub">Lower is faster — tested on AMD EPYC 7763</div>
+        <div class="bar-chart" role="img" aria-label="Benchmark chart">
+          <div class="bar-group">
+            <div class="bar-val">0.8</div>
+            <div class="bar-rect" style="height:32px;background:var(--indigo)"></div>
+            <span class="bar-lbl">Kyber</span>
+          </div>
+          <div class="bar-group">
+            <div class="bar-val">2.1</div>
+            <div class="bar-rect" style="height:84px;background:var(--cyan)"></div>
+            <span class="bar-lbl">Dilithium</span>
+          </div>
+          <div class="bar-group">
+            <div class="bar-val">5.3</div>
+            <div class="bar-rect" style="height:140px;background:var(--lime)"></div>
+            <span class="bar-lbl">FALCON</span>
+          </div>
+          <div class="bar-group">
+            <div class="bar-val">12.7</div>
+            <div class="bar-rect" style="height:190px;background:var(--coral)"></div>
+            <span class="bar-lbl">SPHINCS+</span>
+          </div>
+          <div class="bar-group">
+            <div class="bar-val">45.2</div>
+            <div class="bar-rect" style="height:200px;background:var(--orange)"></div>
+            <span class="bar-lbl">McEliece</span>
+          </div>
+          <div class="bar-group">
+            <div class="bar-val">0.3</div>
+            <div class="bar-rect" style="height:12px;background:#6B7280"></div>
+            <span class="bar-lbl">RSA-4096</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Compliance -->
+    <section id="compliance">
+      <div class="section-header">
+        <h2>Compliance Status</h2>
+        <span class="badge">Q2 2026</span>
+      </div>
+      <div class="compliance-grid">
+        <div class="compliance-card">
+          <div class="score" style="color:var(--green)">100%</div>
+          <div class="label">NIST PQC Migration</div>
+          <div class="bar"><div class="bar-fill" style="width:100%;background:var(--green)"></div></div>
+        </div>
+        <div class="compliance-card">
+          <div class="score" style="color:var(--cyan)">96%</div>
+          <div class="label">Key Rotation Policy</div>
+          <div class="bar"><div class="bar-fill" style="width:96%;background:var(--cyan)"></div></div>
+        </div>
+        <div class="compliance-card">
+          <div class="score" style="color:var(--indigo)">94%</div>
+          <div class="label">Cipher Suite Strength</div>
+          <div class="bar"><div class="bar-fill" style="width:94%;background:var(--indigo)"></div></div>
+        </div>
+        <div class="compliance-card">
+          <div class="score" style="color:var(--lime)">98%</div>
+          <div class="label">Audit Log Coverage</div>
+          <div class="bar"><div class="bar-fill" style="width:98%;background:var(--lime)"></div></div>
+        </div>
+        <div class="compliance-card">
+          <div class="score" style="color:var(--coral)">89%</div>
+          <div class="label">Hybrid Mode Adoption</div>
+          <div class="bar"><div class="bar-fill" style="width:89%;background:var(--coral)"></div></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p>Quantum Encryption Tools — designed by Studio · Standalone prototype · Not affiliated with any cryptography provider</p>
+</footer>
+
+<script>
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.getElementById('drawer').classList.remove('open');
+      document.getElementById('overlay').classList.remove('open');
+    }
+  });
+</script>
+</body>
+</html>
