@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meridian — Sales CRM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --gray: #F4F6F8;
+      --ink: #111827;
+      --ink-mid: rgba(17,24,39,0.6);
+      --ink-dim: rgba(17,24,39,0.1);
+      --blue: #315CFF;
+      --blue-dim: rgba(49,92,255,0.08);
+      --green: #2FBF71;
+      --green-dim: rgba(47,191,113,0.1);
+      --amber: #F59E0B;
+      --amber-dim: rgba(245,158,11,0.1);
+      --plum: #7C3AED;
+      --plum-dim: rgba(124,58,237,0.1);
+      --white: #FFFFFF;
+      --radius: 10px;
+      --radius-sm: 6px;
+      --max: 1400px;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+    body{margin:0;min-height:100vh;color:var(--ink);background:var(--gray);font-family:"Manrope",system-ui,sans-serif;line-height:1.5;font-size:14px}
+    a{color:inherit;text-decoration:none}
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    :focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+    .skip-link{position:absolute;top:-100px;left:16px;background:var(--blue);color:var(--white);padding:8px 16px;border-radius:var(--radius-sm);z-index:1000;font-weight:700;font-size:0.8125rem}
+    .skip-link:focus{top:16px}
+    .topbar{position:sticky;top:0;z-index:100;background:var(--white);border-bottom:1px solid var(--ink-dim);padding:0 20px}
+    .topbar-inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:52px}
+    .topbar-brand{font-weight:800;font-size:1rem;display:flex;align-items:center;gap:8px}
+    .topbar-brand-icon{width:26px;height:26px;background:var(--blue);border-radius:6px;display:flex;align-items:center;justify-content:center;color:var(--white);font-size:0.625rem;font-weight:800}
+    .topbar-links{display:flex;gap:6px;list-style:none;margin:0;padding:0}
+    .topbar-links a{display:block;padding:6px 14px;font-size:0.8125rem;font-weight:600;color:var(--ink-mid);border-radius:var(--radius-sm);transition:background 0.15s,color 0.15s}
+    .topbar-links a:hover,.topbar-links a.active{color:var(--ink);background:var(--blue-dim)}
+    .topbar-right{display:flex;align-items:center;gap:10px}
+    .topbar-avatar{width:30px;height:30px;background:var(--plum-dim);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.6875rem;font-weight:700;color:var(--plum)}
+    .topbar-drawer-btn{display:none;background:none;border:1px solid var(--ink-dim);border-radius:var(--radius-sm);padding:6px 10px;color:var(--ink)}
+    .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(17,24,39,0.3);z-index:200}
+    .drawer-overlay.open{display:block}
+    .drawer{position:fixed;top:0;left:-300px;width:280px;height:100%;background:var(--white);z-index:201;padding:20px;transition:left 0.2s ease;overflow-y:auto}
+    .drawer.open{left:0}
+    .drawer-close{background:none;border:none;font-size:1.25rem;color:var(--ink);float:right}
+    .drawer nav{clear:both;padding-top:16px}
+    .drawer nav a{display:block;padding:12px 0;font-size:0.875rem;font-weight:600;color:var(--ink);border-bottom:1px solid var(--ink-dim)}
+    .revenue-bar{background:var(--white);border-bottom:1px solid var(--ink-dim);padding:12px 20px;position:sticky;top:52px;z-index:50}
+    .revenue-inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between}
+    .revenue-metrics{display:flex;gap:24px}
+    .revenue-metric{display:flex;flex-direction:column}
+    .revenue-label{font-size:0.625rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-mid);font-weight:600}
+    .revenue-value{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:1.125rem}
+    .revenue-change{font-size:0.625rem;font-weight:600}
+    .revenue-change.up{color:var(--green)}.revenue-change.down{color:#EF4444}
+    .pipeline{max-width:var(--max);margin:0 auto;padding:16px 20px;display:flex;gap:12px;overflow-x:auto}
+    .stage{min-width:260px;flex:1;background:var(--white);border:1px solid var(--ink-dim);border-radius:var(--radius);display:flex;flex-direction:column}
+    .stage-header{padding:12px 14px;border-bottom:1px solid var(--ink-dim);display:flex;align-items:center;justify-content:space-between}
+    .stage-name{font-weight:700;font-size:0.8125rem}
+    .stage-count{font-size:0.6875rem;color:var(--ink-mid);font-weight:600}
+    .stage-value{font-family:"Space Grotesk",sans-serif;font-size:0.75rem;font-weight:600;color:var(--blue)}
+    .stage-cards{padding:8px;flex:1;display:flex;flex-direction:column;gap:8px;min-height:200px}
+    .deal-card{background:var(--white);border:1px solid var(--ink-dim);border-radius:var(--radius-sm);padding:12px;cursor:grab;transition:box-shadow 0.15s}
+    .deal-card:hover{box-shadow:0 2px 8px rgba(17,24,39,0.08)}
+    .deal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+    .deal-company{font-weight:700;font-size:0.8125rem}
+    .deal-health{width:8px;height:8px;border-radius:50%}
+    .deal-health.hot{background:var(--green)}.deal-health.warm{background:var(--amber)}.deal-health.cold{background:var(--ink-dim)}
+    .deal-value{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:0.875rem;margin-bottom:4px}
+    .deal-contact{font-size:0.6875rem;color:var(--ink-mid)}
+    .deal-next{font-size:0.625rem;color:var(--blue);font-weight:600;margin-top:6px}
+    .contact-drawer{position:fixed;top:0;right:-360px;width:340px;height:100%;background:var(--white);z-index:201;border-left:1px solid var(--ink-dim);padding:20px;transition:right 0.2s ease;overflow-y:auto}
+    .contact-drawer.open{right:0}
+    .contact-close{background:none;border:none;font-size:1.25rem;color:var(--ink);float:right}
+    .contact-avatar{width:48px;height:48px;background:var(--blue-dim);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;color:var(--blue);margin:16px auto 12px}
+    .contact-name{font-weight:700;font-size:1rem;text-align:center}
+    .contact-role{font-size:0.75rem;color:var(--ink-mid);text-align:center;margin-bottom:16px}
+    .contact-actions{display:flex;gap:8px;justify-content:center;margin-bottom:20px}
+    .contact-btn{padding:8px 16px;border-radius:var(--radius-sm);font-size:0.75rem;font-weight:600;border:none}
+    .contact-btn.primary{background:var(--blue);color:var(--white)}
+    .contact-btn.secondary{background:var(--gray);color:var(--ink);border:1px solid var(--ink-dim)}
+    .contact-section{margin-bottom:16px}
+    .contact-section-title{font-size:0.625rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--ink-mid);font-weight:700;margin-bottom:8px}
+    .contact-field{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--ink-dim);font-size:0.75rem}
+    .contact-field-label{color:var(--ink-mid)}
+    .activity-composer{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1px solid var(--ink-dim);padding:12px 20px;z-index:50}
+    .composer-inner{max-width:var(--max);margin:0 auto;display:flex;gap:8px;align-items:center}
+    .composer-input{flex:1;padding:10px 14px;border:1px solid var(--ink-dim);border-radius:var(--radius-sm);font-size:0.8125rem;background:var(--gray)}
+    .composer-input:focus{outline:2px solid var(--blue);border-color:var(--blue)}
+    .composer-btn{padding:10px 18px;background:var(--blue);color:var(--white);border:none;border-radius:var(--radius-sm);font-weight:700;font-size:0.8125rem}
+    .footer{max-width:var(--max);margin:0 auto;padding:60px 20px 80px;text-align:center;font-size:0.625rem;color:var(--ink-mid)}
+    @media(max-width:1024px){
+      .pipeline{flex-direction:column}
+      .stage{min-width:auto}
+      .topbar-links{display:none}.topbar-drawer-btn{display:block}
+    }
+    @media(max-width:768px){
+      .revenue-metrics{gap:16px;flex-wrap:wrap}
+      .revenue-value{font-size:1rem}
+      .stage-cards{min-height:auto}
+    }
+  </style>
+</head>
+<body>
+  <a href="#pipeline" class="skip-link">Skip to pipeline</a>
+  <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-label="Navigation" aria-hidden="true">
+    <button class="drawer-close" id="drawerClose" aria-label="Close menu">&times;</button>
+    <nav aria-label="Mobile navigation">
+      <a href="#pipeline">Pipeline</a><a href="#">Contacts</a><a href="#">Reports</a>
+    </nav>
+  </aside>
+  <header class="topbar" role="banner">
+    <div class="topbar-inner">
+      <a href="#" class="topbar-brand" aria-label="Meridian home"><span class="topbar-brand-icon" aria-hidden="true">M</span>Meridian</a>
+      <ul class="topbar-links" role="list">
+        <li><a href="#pipeline" class="active">Pipeline</a></li><li><a href="#">Contacts</a></li><li><a href="#">Reports</a></li>
+      </ul>
+      <div class="topbar-right">
+        <div class="topbar-avatar" aria-label="User">PL</div>
+        <button class="topbar-drawer-btn" id="drawerOpen" aria-label="Open menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="revenue-bar">
+    <div class="revenue-inner">
+      <div class="revenue-metrics">
+        <div class="revenue-metric"><span class="revenue-label">Pipeline Value</span><span class="revenue-value">$1.24M</span><span class="revenue-change up">+18% this quarter</span></div>
+        <div class="revenue-metric"><span class="revenue-label">Weighted Forecast</span><span class="revenue-value">$480K</span><span class="revenue-change up">+12% vs target</span></div>
+        <div class="revenue-metric"><span class="revenue-label">Win Rate</span><span class="revenue-value">34%</span><span class="revenue-change up">+3% this month</span></div>
+        <div class="revenue-metric"><span class="revenue-label">Avg Deal Size</span><span class="revenue-value">$18.5K</span><span class="revenue-change down">-2% vs last Q</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="pipeline" id="pipeline" role="region" aria-label="Sales pipeline">
+    <div class="stage" aria-label="Lead stage">
+      <div class="stage-header"><span class="stage-name">Lead</span><span class="stage-count">12</span><span class="stage-value">$240K</span></div>
+      <div class="stage-cards">
+        <div class="deal-card"><div class="deal-header"><span class="deal-company">Acme Corp</span><span class="deal-health hot"></span></div><div class="deal-value">$45,000</div><div class="deal-contact">Sarah Kim · VP Engineering</div><div class="deal-next">Next: Demo scheduled Jun 2</div></div>
+        <div class="deal-card"><div class="deal-header"><span class="deal-company">TechStart</span><span class="deal-health warm"></span></div><div class="deal-value">$12,000</div><div class="deal-contact">Marco R. · CTO</div><div class="deal-next">Next: Send proposal</div></div>
+        <div class="deal-card"><div class="deal-header"><span class="deal-company">DataFlow</span><span class="deal-health cold"></span></div><div class="deal-value">$28,000</div><div class="deal-contact">Amira J. · Head of Ops</div><div class="deal-next">Next: Follow up email</div></div>
+      </div>
+    </div>
+    <div class="stage" aria-label="Qualified stage">
+      <div class="stage-header"><span class="stage-name">Qualified</span><span class="stage-count">8</span><span class="stage-value">$320K</span></div>
+      <div class="stage-cards">
+        <div class="deal-card"><div class="deal-header"><span class="deal-company">CloudNine</span><span class="deal-health hot"></span></div><div class="deal-value">$67,000</div><div class="deal-contact">Tomás N. · Director</div><div class="deal-next">Next: Technical review</div></div>
+        <div class="deal-card"><div class="deal-header"><span class="deal-company">Quantum Inc</span><span class="deal-health hot"></span></div><div class="deal-value">$52,000</div><div class="deal-contact">Lisa P. · CEO</div><div class="deal-next">Next: Contract review</div></div>
+      </div>
+    </div>
+    <div class="stage" aria-label="Proposal stage">
+      <div class="stage-header"><span class="stage-name">Proposal</span><span class="stage-count">5</span><span class="stage-value">$280K</span></div>
+      <div class="stage-cards">
+        <div class="deal-card"><div class="deal-header"><span class="deal-company">MegaCorp</span><span class="deal-health warm"></span></div><div class="deal-value">$120,000</div><div class="deal-contact">James W. · VP Sales</div><div class="deal-next">Next: Negotiate terms</div></div>
+        <div class="deal-card"><div class="deal-header"><span class="deal-company">InnovateLab</span><span class="deal-health hot"></span></div><div class="deal-value">$35,000</div><div class="deal-contact">Priya S. · Founder</div><div class="deal-next">Next: Awaiting signature</div></div>
+      </div>
+    </div>
+    <div class="stage" aria-label="Closed Won stage">
+      <div class="stage-header"><span class="stage-name">Closed Won</span><span class="stage-count">3</span><span class="stage-value">$400K</span></div>
+      <div class="stage-cards">
+        <div class="deal-card"><div class="deal-header"><span class="deal-company">GlobalTech</span><span class="deal-health hot"></span></div><div class="deal-value">$180,000</div><div class="deal-contact">Carlos M. · CTO</div><div class="deal-next">Won: May 15, 2026</div></div>
+        <div class="deal-card"><div class="deal-header"><span class="deal-company">StartupXYZ</span><span class="deal-health hot"></span></div><div class="deal-value">$42,000</div><div class="deal-contact">Emma R. · Head of Eng</div><div class="deal-next">Won: May 22, 2026</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="footer">Meridian CRM &mdash; designed by Studio &middot; Standalone prototype</div>
+  <div class="contact-drawer" id="contactDrawer" role="dialog" aria-label="Contact details" aria-hidden="true">
+    <button class="contact-close" id="contactClose" aria-label="Close contact">&times;</button>
+    <div class="contact-avatar">SK</div>
+    <div class="contact-name">Sarah Kim</div>
+    <div class="contact-role">VP Engineering · Acme Corp</div>
+    <div class="contact-actions"><button class="contact-btn primary">Email</button><button class="contact-btn secondary">Call</button><button class="contact-btn secondary">Note</button></div>
+    <div class="contact-section"><div class="contact-section-title">Details</div><div class="contact-field"><span class="contact-field-label">Email</span><span>sarah@acme.com</span></div><div class="contact-field"><span class="contact-field-label">Phone</span><span>+1 (555) 123-4567</span></div><div class="contact-field"><span class="contact-field-label">LinkedIn</span><span>/in/sarahkim</span></div></div>
+    <div class="contact-section"><div class="contact-section-title">Deal</div><div class="contact-field"><span class="contact-field-label">Value</span><span style="font-weight:700">$45,000</span></div><div class="contact-field"><span class="contact-field-label">Stage</span><span>Lead</span></div><div class="contact-field"><span class="contact-field-label">Health</span><span style="color:var(--green)">Hot</span></div></div>
+  </div>
+  <div class="activity-composer">
+    <div class="composer-inner">
+      <input class="composer-input" type="text" placeholder="Log activity: called Sarah, sent proposal, scheduled demo..." aria-label="Log activity">
+      <button class="composer-btn">Log</button>
+    </div>
+  </div>
+  <script>
+    (function(){
+      var o=document.getElementById('drawerOpen'),c=document.getElementById('drawerClose'),d=document.getElementById('drawer'),v=document.getElementById('drawerOverlay');
+      function open(){d.classList.add('open');v.classList.add('open');d.setAttribute('aria-hidden','false');o.setAttribute('aria-expanded','true');c.focus()}
+      function close(){d.classList.remove('open');v.classList.remove('open');d.setAttribute('aria-hidden','true');o.setAttribute('aria-expanded','false');o.focus()}
+      o.addEventListener('click',open);c.addEventListener('click',close);v.addEventListener('click',close);
+      document.addEventListener('keydown',function(e){if(e.key==='Escape'){if(d.classList.contains('open'))close();if(cd.classList.contains('open'))closeContact()}});
+      d.querySelectorAll('a').forEach(function(l){l.addEventListener('click',close)});
+      var cd=document.getElementById('contactDrawer'),cc=document.getElementById('contactClose');
+      function openContact(){cd.classList.add('open');cd.setAttribute('aria-hidden','false')}
+      function closeContact(){cd.classList.remove('open');cd.setAttribute('aria-hidden','true')}
+      cc.addEventListener('click',closeContact);
+      document.querySelectorAll('.deal-card').forEach(function(card){card.addEventListener('click',openContact)});
+    })();
+  </script>
+</body>
+</html>
