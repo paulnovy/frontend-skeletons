@@ -3,599 +3,222 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Orbit Cloud Observability is a cloud infrastructure operations dashboard for service health, latency, alerts, dependencies, incidents, and capacity.">
-  <title>Orbit Cloud Observability</title>
+  <title>Orbit — Cloud Observability</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
-    :root {--cloud:#F6F8FC;--ink:#19212B;--indigo:#4F46E5;--cyan:#06B6D4;--lime:#A3E635;--coral:#FB7185;--amber:#F59E0B;--white:#FFFFFF;--slate:#596579;--muted:#7B8798;--line:#DDE4F0;--line-strong:#C5D0E2;--panel:#FFFFFF;--panel-ink:#202B38;--soft-indigo:rgba(79, 70, 229, 0.10);--soft-cyan:rgba(6, 182, 212, 0.12);--soft-lime:rgba(163, 230, 53, 0.26);--soft-coral:rgba(251, 113, 133, 0.15);--soft-amber:rgba(245, 158, 11, 0.15);--shadow:0 22px 60px rgba(25, 33, 43, 0.10);--shadow-soft:0 12px 28px rgba(25, 33, 43, 0.07);--radius-xs:6px;--radius-sm:8px;--radius-md:12px;--radius-lg:16px;--max:1480px;--nav-height:72px;--font-heading:"Manrope", "Inter", system-ui, sans-serif;--font-ui:"Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;}
-     * {box-sizing:border-box;}
-     html {background:var(--cloud);color:var(--ink);scroll-behavior:smooth;}
-     body {margin:0;min-height:100vh;font-family:var(--font-ui);line-height:1.45;color:var(--ink);background:linear-gradient(180deg, rgba(79, 70, 229, 0.07), transparent 260px), radial-gradient(circle at 82% 2%, rgba(6, 182, 212, 0.18), transparent 280px), var(--cloud);overflow-x:hidden;}
-     body.drawer-open {overflow:hidden;}
-     button, input, select {font:inherit;}
-     button {cursor:pointer;border:0;}
-     a {color:inherit;text-decoration:none;}
-     h1, h2, h3, .brand-name, .kpi-value {font-family:var(--font-heading);letter-spacing:0;}
-     :focus-visible {outline:3px solid var(--cyan);outline-offset:3px;border-radius:var(--radius-xs);}
-     .sr-only {position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0, 0, 0, 0);white-space:nowrap;border:0;}
-     .skip-link {position:fixed;top:16px;left:16px;z-index:100;padding:10px 14px;color:var(--ink);background:var(--lime);font-weight:800;border-radius:var(--radius-sm);transform:translateY(-160%);transition:transform 180ms ease;}
-     .skip-link:focus {transform:translateY(0);}
-     .app-shell {min-height:100vh;display:grid;grid-template-rows:auto 1fr auto;}
-     .topbar {position:sticky;top:0;z-index:50;min-height:var(--nav-height);background:rgba(246, 248, 252, 0.88);backdrop-filter:blur(18px);border-bottom:1px solid var(--line);}
-     .topbar-inner {width:min(100% - 32px, var(--max));min-height:var(--nav-height);margin:0 auto;display:grid;grid-template-columns:auto minmax(240px, 1fr) auto;align-items:center;gap:18px;}
-     .brand {display:inline-flex;align-items:center;gap:12px;min-width:0;}
-     .brand-mark {width:38px;height:38px;display:grid;place-items:center;color:var(--white);background:linear-gradient(135deg, var(--indigo), var(--cyan));border-radius:var(--radius-sm);box-shadow:0 12px 28px rgba(79, 70, 229, 0.25);}
-     .brand-mark svg {width:24px;height:24px;}
-     .brand-name {display:block;font-size:1rem;font-weight:800;white-space:nowrap;}
-     .brand-meta {display:block;margin-top:1px;color:var(--slate);font-size:0.76rem;font-weight:700;}
-     .search-wrap {position:relative;display:flex;align-items:center;min-width:0;}
-     .search-wrap svg {position:absolute;left:14px;width:18px;height:18px;color:var(--muted);pointer-events:none;}
-     .search-wrap input {width:100%;height:44px;padding:0 14px 0 42px;color:var(--ink);background:var(--white);border:1px solid var(--line);border-radius:var(--radius-sm);box-shadow:var(--shadow-soft);}
-     .nav-actions {display:flex;align-items:center;justify-content:flex-end;gap:10px;}
-     .env-select {height:42px;padding:0 36px 0 12px;color:var(--ink);background:var(--white);border:1px solid var(--line);border-radius:var(--radius-sm);font-weight:800;}
-     .badge-button, .icon-button {min-height:42px;display:inline-flex;align-items:center;justify-content:center;gap:8px;color:var(--ink);background:var(--white);border:1px solid var(--line);border-radius:var(--radius-sm);box-shadow:var(--shadow-soft);font-weight:800;}
-     .badge-button {padding:0 12px;}
-     .alert-count {display:inline-grid;min-width:24px;height:24px;place-items:center;color:var(--white);background:var(--coral);border-radius:999px;font-size:0.74rem;font-weight:800;}
-     .icon-button {width:42px;}
-     .hamburger {display:none;}
-     .dashboard {width:min(100% - 32px, var(--max));margin:26px auto 32px;display:grid;gap:18px;}
-     .hero-row {display:grid;grid-template-columns:minmax(0, 1fr) auto;gap:16px;align-items:end;}
-     .eyebrow {margin:0 0 6px;color:var(--indigo);font-size:0.78rem;font-weight:800;text-transform:uppercase;}
-     h1 {margin:0;max-width:900px;font-size:clamp(2rem, 4vw, 4.5rem);line-height:0.98;font-weight:800;}
-     .hero-copy {margin:12px 0 0;max-width:760px;color:var(--slate);font-size:1rem;}
-     .war-room {min-width:260px;padding:14px;color:var(--white);background:var(--ink);border-radius:var(--radius-md);box-shadow:var(--shadow);}
-     .war-room strong {display:block;font-family:var(--font-heading);font-size:1.1rem;}
-     .war-room span {display:block;margin-top:4px;color:rgba(255, 255, 255, 0.76);font-size:0.86rem;}
-     .pulse-row {display:flex;align-items:center;gap:8px;margin-top:12px;color:var(--lime);font-size:0.82rem;font-weight:800;}
-     .live-dot {width:10px;height:10px;background:var(--cyan);border-radius:999px;box-shadow:0 0 0 7px rgba(6, 182, 212, 0.16);animation:ping 1.8s ease-in-out infinite;}
-     .kpi-strip {display:grid;grid-template-columns:repeat(4, minmax(0, 1fr));gap:12px;}
-     .panel, .kpi-card, .service-card, .alert-card {background:rgba(255, 255, 255, 0.92);border:1px solid var(--line);border-radius:var(--radius-md);box-shadow:var(--shadow-soft);}
-     .kpi-card {padding:16px;min-height:126px;display:grid;align-content:space-between;gap:12px;}
-     .card-topline {display:flex;align-items:center;justify-content:space-between;gap:10px;color:var(--slate);font-size:0.8rem;font-weight:800;}
-     .kpi-value {font-size:2rem;line-height:1;font-weight:800;}
-     .trend {display:inline-flex;align-items:center;gap:6px;color:var(--slate);font-size:0.78rem;font-weight:700;}
-     .trend.good {color:#4D7C0F;}
-     .trend.bad {color:#BE123C;}
-     .dashboard-grid {display:grid;grid-template-columns:minmax(280px, 0.92fr) minmax(360px, 1.28fr) minmax(300px, 0.98fr);gap:18px;align-items:start;}
-     .column {display:grid;gap:18px;min-width:0;}
-     .panel {padding:16px;overflow:hidden;}
-     .panel.dark {color:var(--white);background:var(--ink);border-color:rgba(255, 255, 255, 0.10);}
-     .panel-header {display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px;}
-     .panel-title {margin:0;font-size:1.05rem;font-weight:800;}
-     .panel-note {margin:4px 0 0;color:var(--slate);font-size:0.82rem;}
-     .dark .panel-note {color:rgba(255, 255, 255, 0.68);}
-     .link-action {display:inline-flex;align-items:center;gap:6px;color:var(--indigo);background:var(--soft-indigo);border-radius:var(--radius-xs);padding:8px 10px;font-size:0.78rem;font-weight:800;white-space:nowrap;}
-     .dark .link-action {color:var(--lime);background:rgba(163, 230, 53, 0.12);}
-     .service-grid {display:grid;grid-template-columns:repeat(2, minmax(0, 1fr));gap:10px;}
-     .service-card {padding:12px;min-height:132px;display:grid;gap:10px;transition:transform 180ms ease, border-color 180ms ease;}
-     .service-card:hover {transform:translateY(-2px);border-color:var(--line-strong);}
-     .service-head {display:flex;align-items:center;justify-content:space-between;gap:10px;}
-     .service-name {margin:0;font-size:0.96rem;font-weight:800;}
-     .status-lights {display:inline-flex;gap:4px;padding:4px;background:var(--cloud);border-radius:999px;}
-     .lamp {width:9px;height:9px;border-radius:999px;background:var(--line-strong);}
-     .lamp.green.active {background:var(--lime);}
-     .lamp.amber.active {background:var(--amber);}
-     .lamp.red.active {background:var(--coral);}
-     .metric-row {display:grid;grid-template-columns:repeat(3, 1fr);gap:6px;}
-     .mini-metric {padding:7px;background:var(--cloud);border-radius:var(--radius-xs);}
-     .mini-metric span {display:block;color:var(--muted);font-size:0.68rem;font-weight:800;}
-     .mini-metric strong {display:block;margin-top:3px;font-size:0.86rem;font-weight:800;}
-     .service-action {align-self:end;color:var(--indigo);font-size:0.76rem;font-weight:800;}
-     .filter-row {display:flex;align-items:center;gap:8px;margin-bottom:12px;}
-     .filter-row input {width:100%;height:40px;padding:0 12px;color:var(--ink);background:var(--cloud);border:1px solid var(--line);border-radius:var(--radius-sm);}
-     .filter-chip {height:40px;padding:0 12px;color:var(--ink);background:var(--white);border:1px solid var(--line);border-radius:var(--radius-sm);font-size:0.78rem;font-weight:800;}
-     .alert-feed {display:grid;gap:10px;}
-     .alert-card {padding:12px;display:grid;gap:10px;}
-     .alert-card.hidden {display:none;}
-     .alert-main {display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
-     .severity {display:inline-grid;min-width:38px;height:28px;place-items:center;color:var(--white);border-radius:var(--radius-xs);font-size:0.78rem;font-weight:800;}
-     .severity.p1 {background:var(--coral);}
-     .severity.p2 {color:var(--ink);background:var(--amber);}
-     .severity.p3 {color:var(--ink);background:var(--cyan);}
-     .alert-copy strong {display:block;font-size:0.95rem;}
-     .alert-copy span {display:block;margin-top:3px;color:var(--slate);font-size:0.78rem;font-weight:700;}
-     .assignee {display:inline-flex;align-items:center;gap:7px;color:var(--slate);font-size:0.78rem;font-weight:800;}
-     .avatar {width:24px;height:24px;display:inline-grid;place-items:center;color:var(--white);background:var(--indigo);border-radius:999px;font-size:0.68rem;}
-     .heatmap-wrap {overflow-x:auto;padding-bottom:4px;}
-     .heatmap {min-width:620px;display:grid;grid-template-columns:110px repeat(7, minmax(58px, 1fr));gap:6px;}
-     .heat-cell, .heat-label, .heat-time {min-height:38px;display:grid;align-items:center;padding:7px;border-radius:var(--radius-xs);font-size:0.72rem;font-weight:800;}
-     .heat-label, .heat-time {color:var(--slate);background:var(--cloud);}
-     .heat-cell {color:var(--ink);background:rgba(163, 230, 53, 0.26);position:relative;}
-     .heat-cell span {display:block;color:var(--slate);font-weight:700;}
-     .heat-cell.lv2 {background:rgba(6, 182, 212, 0.20);}
-     .heat-cell.lv3 {background:rgba(245, 158, 11, 0.22);}
-     .heat-cell.lv4 {background:rgba(251, 113, 133, 0.28);}
-     .dependency-map {position:relative;min-height:360px;background:linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px);background-size:28px 28px;border-radius:var(--radius-md);overflow:hidden;}
-     .dependency-map svg {position:absolute;inset:0;width:100%;height:100%;}
-     .edge {stroke:rgba(255, 255, 255, 0.22);stroke-width:2;fill:none;}
-     .edge.hot {stroke:var(--coral);stroke-width:4;stroke-dasharray:8 7;animation:dash 1.6s linear infinite;}
-     .node {position:absolute;width:104px;min-height:58px;display:grid;place-items:center;padding:8px;text-align:center;color:var(--white);background:rgba(255, 255, 255, 0.10);border:1px solid rgba(255, 255, 255, 0.18);border-radius:var(--radius-sm);font-size:0.76rem;font-weight:800;}
-     .node.ok {box-shadow:inset 0 0 0 2px rgba(163, 230, 53, 0.44);}
-     .node.hot {background:rgba(251, 113, 133, 0.20);box-shadow:inset 0 0 0 2px rgba(251, 113, 133, 0.52);}
-     .n-api {left:42%;top:16px;}
-     .n-auth {left:11%;top:105px;}
-     .n-billing {right:9%;top:110px;}
-     .n-search {left:16%;bottom:62px;}
-     .n-events {right:18%;bottom:60px;}
-     .n-db {left:42%;bottom:12px;}
-     .map-callout {position:absolute;left:14px;bottom:14px;max-width:218px;padding:10px;color:var(--white);background:rgba(251, 113, 133, 0.18);border:1px solid rgba(251, 113, 133, 0.34);border-radius:var(--radius-sm);font-size:0.78rem;font-weight:700;}
-     .timeline {display:grid;gap:12px;position:relative;}
-     .timeline::before {content:"";position:absolute;left:14px;top:10px;bottom:10px;width:2px;background:var(--line);}
-     .timeline-item {position:relative;display:grid;grid-template-columns:34px 1fr;gap:10px;}
-     .timeline-dot {width:30px;height:30px;z-index:1;display:grid;place-items:center;background:var(--white);border:2px solid var(--indigo);border-radius:999px;font-size:0.7rem;font-weight:800;}
-     .timeline-dot.done {color:var(--ink);background:var(--lime);border-color:var(--lime);}
-     .timeline-dot.hot {color:var(--white);background:var(--coral);border-color:var(--coral);}
-     .timeline-copy {padding-bottom:4px;}
-     .timeline-copy strong {display:block;font-size:0.92rem;}
-     .timeline-copy span {display:block;margin-top:3px;color:var(--slate);font-size:0.78rem;font-weight:700;}
-     .gauge-grid {display:grid;grid-template-columns:repeat(3, 1fr);gap:10px;}
-     .gauge {display:grid;justify-items:center;gap:8px;padding:12px 8px;background:var(--cloud);border-radius:var(--radius-sm);}
-     .ring {--value:50;--ring:var(--cyan);width:96px;height:96px;display:grid;place-items:center;border-radius:999px;background:conic-gradient(var(--ring) calc(var(--value) * 1%), rgba(25, 33, 43, 0.10) 0), var(--white);position:relative;}
-     .ring::after {content:"";position:absolute;inset:10px;background:var(--white);border-radius:inherit;}
-     .ring strong {position:relative;z-index:1;font-family:var(--font-heading);font-size:1.1rem;}
-     .gauge span {color:var(--slate);font-size:0.76rem;font-weight:800;}
-     .drawer-backdrop {position:fixed;inset:0;z-index:80;background:rgba(25, 33, 43, 0.45);opacity:0;pointer-events:none;transition:opacity 180ms ease;}
-     .mobile-drawer {position:fixed;top:0;right:0;z-index:90;width:min(88vw, 360px);height:100vh;padding:18px;color:var(--ink);background:var(--white);box-shadow:-20px 0 60px rgba(25, 33, 43, 0.18);transform:translateX(105%);transition:transform 220ms ease;}
-     body.drawer-open .drawer-backdrop {opacity:1;pointer-events:auto;}
-     body.drawer-open .mobile-drawer {transform:translateX(0);}
-     .drawer-head {display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;}
-     .drawer-links {display:grid;gap:10px;}
-     .drawer-links a, .drawer-links button {width:100%;display:flex;justify-content:space-between;align-items:center;padding:12px;color:var(--ink);background:var(--cloud);border:1px solid var(--line);border-radius:var(--radius-sm);font-weight:800;}
-     .footer {width:min(100% - 32px, var(--max));margin:0 auto 28px;padding:16px 0 0;color:var(--slate);border-top:1px solid var(--line);font-size:0.84rem;font-weight:700;}
-    
-
-    @keyframes ping {0%, 100% {transform:scale(1);opacity:1;}
-     50% {transform:scale(0.82);opacity:0.72;}
+    :root {
+      --midnight: #080C16;
+      --navy: #111C2E;
+      --navy-light: #172540;
+      --violet: #8B5CF6;
+      --violet-dim: rgba(139,92,246,0.12);
+      --cyan: #22D3EE;
+      --cyan-dim: rgba(34,211,238,0.12);
+      --green: #34D399;
+      --green-dim: rgba(52,211,153,0.12);
+      --rose: #FB7185;
+      --rose-dim: rgba(251,113,133,0.12);
+      --white: #F1F5F9;
+      --white-mid: rgba(241,245,249,0.55);
+      --white-dim: rgba(241,245,249,0.08);
+      --radius: 8px;
+      --radius-sm: 6px;
+      --max: 1400px;
     }
-    
-
-    @keyframes dash {to {stroke-dashoffset:-30;}
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+    body{margin:0;min-height:100vh;color:var(--white);background:var(--midnight);font-family:"Inter",system-ui,sans-serif;line-height:1.5;font-size:13px}
+    a{color:inherit;text-decoration:none}
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    code,pre{font-family:"JetBrains Mono",monospace}
+    :focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+    .skip-link{position:absolute;top:-100px;left:16px;background:var(--cyan);color:var(--midnight);padding:8px 16px;border-radius:var(--radius-sm);z-index:1000;font-weight:700;font-size:0.8125rem}
+    .skip-link:focus{top:16px}
+    .topnav{position:sticky;top:0;z-index:100;background:var(--midnight);border-bottom:1px solid var(--white-dim);padding:0 16px}
+    .topnav-inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:44px}
+    .topnav-brand{font-weight:700;font-size:0.875rem;display:flex;align-items:center;gap:6px}
+    .topnav-brand-icon{width:22px;height:22px;background:var(--violet);border-radius:5px;display:flex;align-items:center;justify-content:center;color:white;font-size:0.5625rem;font-weight:700}
+    .topnav-links{display:flex;gap:12px;list-style:none;margin:0;padding:0}
+    .topnav-links a{font-size:0.75rem;color:var(--white-mid);transition:color 0.15s}
+    .topnav-links a:hover,.topnav-links a.active{color:var(--white)}
+    .topnav-right{display:flex;align-items:center;gap:8px}
+    .topnav-env{font-family:"JetBrains Mono",monospace;font-size:0.5625rem;background:var(--green-dim);color:var(--green);padding:2px 8px;border-radius:999px}
+    .topnav-drawer-btn{display:none;background:none;border:1px solid var(--white-dim);border-radius:var(--radius-sm);padding:4px 8px;color:var(--white);font-size:0.875rem}
+    .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(8,12,22,0.8);z-index:200}
+    .drawer-overlay.open{display:block}
+    .drawer{position:fixed;top:0;left:-280px;width:260px;height:100%;background:var(--navy);z-index:201;padding:16px;transition:left 0.2s ease;overflow-y:auto}
+    .drawer.open{left:0}
+    .drawer-close{background:none;border:none;color:var(--white);font-size:1.125rem;float:right}
+    .drawer nav{clear:both;padding-top:12px}
+    .drawer nav a{display:block;padding:10px 0;font-size:0.8125rem;color:var(--white);border-bottom:1px solid var(--white-dim)}
+    .shell{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:280px 1fr 300px;grid-template-rows:auto auto 1fr;gap:1px;min-height:calc(100vh - 44px);background:var(--white-dim)}
+    .service-map{grid-column:1/-1;background:var(--midnight);padding:12px 16px}
+    .map-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .map-title{font-weight:600;font-size:0.75rem}
+    .map-legend{display:flex;gap:12px}
+    .map-legend-item{display:flex;align-items:center;gap:4px;font-size:0.625rem;color:var(--white-mid)}
+    .map-legend-dot{width:6px;height:6px;border-radius:50%}
+    .map-nodes{display:flex;gap:8px;flex-wrap:wrap}
+    .map-node{padding:6px 12px;background:var(--navy);border:1px solid var(--white-dim);border-radius:var(--radius-sm);font-size:0.6875rem;display:flex;align-items:center;gap:6px}
+    .map-node-dot{width:5px;height:5px;border-radius:50%}
+    .map-node.healthy .map-node-dot{background:var(--green)}
+    .map-node.warning .map-node-dot{background:#FBBF24}
+    .map-node.critical .map-node-dot{background:var(--rose)}
+    .map-node.healthy{border-color:var(--green-dim)}
+    .map-node.warning{border-color:rgba(251,191,36,0.2)}
+    .map-node.critical{border-color:var(--rose-dim)}
+    .incidents{background:var(--midnight);padding:12px;overflow-y:auto}
+    .incidents-title{font-weight:600;font-size:0.75rem;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+    .incidents-count{font-family:"JetBrains Mono",monospace;font-size:0.5625rem;background:var(--rose-dim);color:var(--rose);padding:1px 6px;border-radius:999px}
+    .incident-list{list-style:none;margin:0;padding:0}
+    .incident-item{padding:10px 0;border-bottom:1px solid var(--white-dim)}
+    .incident-item:last-child{border-bottom:none}
+    .incident-severity{display:inline-block;padding:1px 6px;border-radius:3px;font-size:0.5rem;font-weight:700;text-transform:uppercase;margin-bottom:4px}
+    .incident-severity.critical{background:var(--rose-dim);color:var(--rose)}
+    .incident-severity.warning{background:rgba(251,191,36,0.12);color:#FBBF24}
+    .incident-severity.info{background:var(--cyan-dim);color:var(--cyan)}
+    .incident-title{font-weight:600;font-size:0.75rem;margin-bottom:2px}
+    .incident-service{font-size:0.625rem;color:var(--white-mid)}
+    .incident-time{font-family:"JetBrains Mono",monospace;font-size:0.5625rem;color:var(--white-mid);margin-top:4px}
+    .latency{background:var(--midnight);padding:12px;overflow-y:auto}
+    .latency-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .latency-title{font-weight:600;font-size:0.75rem}
+    .latency-period{font-family:"JetBrains Mono",monospace;font-size:0.5625rem;color:var(--white-mid)}
+    .chart-area{height:180px;position:relative;margin-bottom:12px}
+    .chart-svg{width:100%;height:100%}
+    .chart-line{fill:none;stroke:var(--cyan);stroke-width:1.5}
+    .chart-line-2{fill:none;stroke:var(--violet);stroke-width:1.5;stroke-dasharray:4 3}
+    .chart-area-fill{fill:var(--cyan-dim)}
+    .chart-grid line{stroke:var(--white-dim);stroke-width:0.5}
+    .chart-annotation{font-family:"JetBrains Mono",monospace;font-size:0.5rem;fill:var(--white-mid)}
+    .probable-cause{background:var(--rose-dim);border:1px solid rgba(251,113,133,0.2);border-radius:var(--radius-sm);padding:10px;margin-top:10px}
+    .probable-cause-label{font-size:0.5625rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--rose);font-weight:700;margin-bottom:4px}
+    .probable-cause-text{font-size:0.75rem;line-height:1.5}
+    .logs{background:var(--midnight);padding:12px;border-left:1px solid var(--white-dim);overflow-y:auto}
+    .logs-title{font-weight:600;font-size:0.75rem;margin-bottom:10px}
+    .log-entry{font-family:"JetBrains Mono",monospace;font-size:0.625rem;line-height:1.6;padding:4px 0;border-bottom:1px solid var(--white-dim)}
+    .log-entry:last-child{border-bottom:none}
+    .log-time{color:var(--white-mid)}.log-level{font-weight:600}.log-level.error{color:var(--rose)}.log-level.warn{color:#FBBF24}.log-level.info{color:var(--cyan)}
+    .deploy-timeline{grid-column:1/-1;background:var(--midnight);padding:12px 16px}
+    .deploy-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .deploy-title{font-weight:600;font-size:0.75rem}
+    .deploy-list{display:flex;gap:8px;overflow-x:auto}
+    .deploy-item{flex-shrink:0;padding:8px 14px;background:var(--navy);border:1px solid var(--white-dim);border-radius:var(--radius-sm);font-size:0.6875rem}
+    .deploy-item.success{border-color:var(--green-dim)}.deploy-item.failed{border-color:var(--rose-dim)}.deploy-item.pending{border-color:var(--cyan-dim)}
+    .deploy-ver{font-family:"JetBrains Mono",monospace;font-size:0.625rem;color:var(--cyan)}
+    .deploy-time{font-size:0.5625rem;color:var(--white-mid);margin-top:2px}
+    .deploy-status{font-size:0.5rem;font-weight:700;text-transform:uppercase;margin-top:4px}
+    .deploy-status.success{color:var(--green)}.deploy-status.failed{color:var(--rose)}.deploy-status.pending{color:var(--cyan)}
+    .footer{background:var(--midnight);border-top:1px solid var(--white-dim);padding:8px 16px;text-align:center;font-size:0.5625rem;color:var(--white-mid);opacity:0.5}
+    @media(max-width:1024px){
+      .shell{grid-template-columns:1fr;grid-template-rows:auto}
+      .logs{border-left:none;border-top:1px solid var(--white-dim)}
+      .topnav-links{display:none}.topnav-drawer-btn{display:block}
     }
-    
-
-    @media (max-width:1100px) {.topbar-inner {grid-template-columns:auto 1fr auto;}
-     .dashboard-grid {grid-template-columns:1fr 1fr;}
-     .column.right {grid-column:1 / -1;}
-     .gauge-grid {grid-template-columns:repeat(3, minmax(0, 1fr));}
-    }
-    
-
-    @media (max-width:820px) {.topbar-inner {grid-template-columns:auto 1fr auto;}
-     .nav-actions .env-select, .nav-actions .badge-button {display:none;}
-     .hamburger {display:inline-flex;}
-     .hero-row {grid-template-columns:1fr;}
-     .kpi-strip {grid-template-columns:repeat(2, minmax(0, 1fr));}
-     .dashboard-grid {grid-template-columns:1fr;}
-     .column.alerts {order:-2;}
-     .service-grid {grid-template-columns:repeat(2, minmax(0, 1fr));}
-    }
-    
-
-    @media (max-width:560px) {.topbar-inner, .dashboard, .footer {width:min(100% - 22px, var(--max));}
-     .topbar-inner {grid-template-columns:auto auto;}
-     .search-wrap {grid-column:1 / -1;order:3;width:100%;}
-     .topbar {padding-bottom:10px;}
-     .brand-meta {display:none;}
-     h1 {font-size:2.12rem;}
-     .kpi-strip, .service-grid, .gauge-grid {grid-template-columns:1fr;}
-     .war-room {min-width:0;}
-     .dependency-map {min-height:320px;}
-     .node {width:88px;font-size:0.68rem;}
-     .n-api, .n-db {left:37%;}
-    }
-    
-
-    @media (prefers-reduced-motion:reduce) {*, *::before, *::after {animation-duration:0.001ms !important;animation-iteration-count:1 !important;scroll-behavior:auto !important;transition-duration:0.001ms !important;}
+    @media(max-width:768px){
+      .service-map{display:none}
+      .incidents{max-height:300px}
+      .chart-area{height:140px}
     }
   </style>
 </head>
 <body>
-  <a class="skip-link" href="#dashboard">Skip to dashboard</a>
-  <div class="app-shell">
-    <header class="topbar" aria-label="Operations navigation">
-      <div class="topbar-inner">
-        <a class="brand" href="#dashboard" aria-label="Orbit Cloud Observability home">
-          <span class="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 24 24" fill="none">
-              <path d="M4 12c0-4.4 3.6-8 8-8 3.4 0 6.3 2.1 7.5 5.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M20 12c0 4.4-3.6 8-8 8-3.4 0-6.3-2.1-7.5-5.1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <circle cx="12" cy="12" r="3" fill="currentColor"/>
-            </svg>
-          </span>
-          <span>
-            <span class="brand-name">Orbit Cloud</span>
-            <span class="brand-meta">Observability</span>
-          </span>
-        </a>
-        <form class="search-wrap" role="search">
-          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="m21 21-4.3-4.3M10.8 18a7.2 7.2 0 1 1 0-14.4 7.2 7.2 0 0 1 0 14.4Z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-          <label class="sr-only" for="global-search">Search services, alerts, incidents</label>
-          <input id="global-search" type="search" autocomplete="off" value="" aria-label="Search services, alerts, incidents" data-filter-source>
-        </form>
-        <nav class="nav-actions" aria-label="Runtime controls">
-          <label class="sr-only" for="environment">Environment</label>
-          <select id="environment" class="env-select" aria-label="Environment">
-            <option>Production</option>
-            <option>Staging</option>
-            <option>EU West</option>
-          </select>
-          <button class="badge-button" type="button" aria-label="Open active alerts">
-            Alerts <span class="alert-count">7</span>
-          </button>
-          <button class="icon-button hamburger" type="button" aria-label="Open menu" aria-controls="mobile-drawer" aria-expanded="false" data-open-drawer>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </button>
-        </nav>
+  <a href="#latency" class="skip-link">Skip to charts</a>
+  <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-label="Navigation" aria-hidden="true">
+    <button class="drawer-close" id="drawerClose" aria-label="Close menu">&times;</button>
+    <nav aria-label="Mobile navigation">
+      <a href="#incidents">Incidents</a><a href="#latency">Latency</a><a href="#logs">Logs</a><a href="#deploys">Deploys</a>
+    </nav>
+  </aside>
+  <header class="topnav" role="banner">
+    <div class="topnav-inner">
+      <a href="#" class="topnav-brand" aria-label="Orbit home"><span class="topnav-brand-icon" aria-hidden="true">O</span>Orbit</a>
+      <ul class="topnav-links" role="list">
+        <li><a href="#" class="active">Dashboard</a></li><li><a href="#incidents">Incidents</a></li><li><a href="#deploys">Deploys</a></li>
+      </ul>
+      <div class="topnav-right">
+        <span class="topnav-env">prod-us-east</span>
+        <button class="topnav-drawer-btn" id="drawerOpen" aria-label="Open menu" aria-expanded="false">&#9776;</button>
       </div>
-    </header>
-
-    <div class="drawer-backdrop" data-close-drawer></div>
-    <aside class="mobile-drawer" id="mobile-drawer" aria-label="Mobile operations drawer" aria-hidden="true">
-      <div class="drawer-head">
-        <strong>Operations</strong>
-        <button class="icon-button" type="button" aria-label="Close menu" data-close-drawer>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </button>
+    </div>
+  </header>
+  <div class="shell">
+    <div class="service-map" aria-label="Service map">
+      <div class="map-header"><span class="map-title">Service Map</span><div class="map-legend"><span class="map-legend-item"><span class="map-legend-dot" style="background:var(--green)"></span>Healthy</span><span class="map-legend-item"><span class="map-legend-dot" style="background:#FBBF24"></span>Degraded</span><span class="map-legend-item"><span class="map-legend-dot" style="background:var(--rose)"></span>Down</span></div></div>
+      <div class="map-nodes">
+        <div class="map-node healthy"><span class="map-node-dot"></span>api-gateway</div>
+        <div class="map-node healthy"><span class="map-node-dot"></span>auth-service</div>
+        <div class="map-node critical"><span class="map-node-dot"></span>payment-svc</div>
+        <div class="map-node warning"><span class="map-node-dot"></span>user-service</div>
+        <div class="map-node healthy"><span class="map-node-dot"></span>notification-svc</div>
+        <div class="map-node healthy"><span class="map-node-dot"></span>cdn-edge</div>
+        <div class="map-node healthy"><span class="map-node-dot"></span>db-primary</div>
+        <div class="map-node healthy"><span class="map-node-dot"></span>cache-redis</div>
       </div>
-      <div class="drawer-links">
-        <a href="#alerts" data-close-drawer>Alert feed <span>7</span></a>
-        <a href="#services" data-close-drawer>Service health <span>6</span></a>
-        <a href="#incidents" data-close-drawer>Incidents <span>2 active</span></a>
-        <a href="#latency" data-close-drawer>Latency heatmap <span>p99</span></a>
-        <button type="button">Production environment <span>Live</span></button>
+    </div>
+    <div class="incidents" id="incidents">
+      <div class="incidents-title">Incident Queue <span class="incidents-count">4 active</span></div>
+      <ul class="incident-list" aria-label="Active incidents">
+        <li class="incident-item"><div class="incident-severity critical">Critical</div><div class="incident-title">payment-svc: 503 errors spike</div><div class="incident-service">Affects: checkout, subscriptions</div><div class="incident-time">Started 12m ago · INC-2026-0847</div></li>
+        <li class="incident-item"><div class="incident-severity warning">Warning</div><div class="incident-title">user-service: latency >2s</div><div class="incident-service">Affects: login, profile</div><div class="incident-time">Started 34m ago · INC-2026-0846</div></li>
+        <li class="incident-item"><div class="incident-severity info">Info</div><div class="incident-title">cdn-edge: certificate expiring</div><div class="incident-service">Affects: static assets</div><div class="incident-time">Auto-detected · INC-2026-0845</div></li>
+      </ul>
+    </div>
+    <div class="latency" id="latency">
+      <div class="latency-header"><span class="latency-title">Latency — p95</span><span class="latency-period">Last 1 hour</span></div>
+      <div class="chart-area" role="img" aria-label="Latency chart showing p95 spike to 2400ms">
+        <svg class="chart-svg" viewBox="0 0 500 180" preserveAspectRatio="none" aria-hidden="true">
+          <g class="chart-grid"><line x1="0" y1="45" x2="500" y2="45"/><line x1="0" y1="90" x2="500" y2="90"/><line x1="0" y1="135" x2="500" y2="135"/></g>
+          <text class="chart-annotation" x="4" y="43">2s</text><text class="chart-annotation" x="4" y="88">1s</text><text class="chart-annotation" x="4" y="133">0</text>
+          <path class="chart-area-fill" d="M30,160 L80,155 L130,150 L180,145 L230,140 L280,130 L330,120 L380,40 L430,80 L480,130 L480,170 L30,170 Z"/>
+          <path class="chart-line" d="M30,160 L80,155 L130,150 L180,145 L230,140 L280,130 L330,120 L380,40 L430,80 L480,130"/>
+          <path class="chart-line-2" d="M30,165 L80,162 L130,158 L180,155 L230,150 L280,148 L330,140 L380,120 L430,135 L480,145"/>
+          <text class="chart-annotation" x="370" y="35" fill="var(--rose)" font-weight="600">2.4s</text>
+          <text class="chart-annotation" x="30" y="178">:00</text><text class="chart-annotation" x="130" y="178">:15</text><text class="chart-annotation" x="230" y="178">:30</text><text class="chart-annotation" x="330" y="178">:45</text><text class="chart-annotation" x="430" y="178">:55</text>
+        </svg>
       </div>
-    </aside>
-
-    <main id="dashboard" class="dashboard">
-      <section class="hero-row" aria-labelledby="page-title">
-        <div>
-          <p class="eyebrow">Cloud command surface</p>
-          <h1 id="page-title">See failures, blast radius, and next action in one view.</h1>
-          <p class="hero-copy">Orbit links service status to operational action so SREs can move from signal to mitigation without digging through separate tools.</p>
-        </div>
-        <aside class="war-room" aria-label="Current incident commander">
-          <strong>Incident ORB-4312</strong>
-          <span>Search p99 and event fanout are degrading checkout flows in US East.</span>
-          <div class="pulse-row"><span class="live-dot" aria-hidden="true"></span>Live response bridge open</div>
-        </aside>
-      </section>
-
-      <section class="kpi-strip" aria-label="Platform KPIs">
-        <article class="kpi-card">
-          <div class="card-topline"><span>Global uptime</span><span>30d</span></div>
-          <div class="kpi-value">99.982%</div>
-          <div class="trend good">Above SLO by 0.012%</div>
-        </article>
-        <article class="kpi-card">
-          <div class="card-topline"><span>p99 latency</span><span>API</span></div>
-          <div class="kpi-value">412ms</div>
-          <div class="trend bad">+86ms in 18 minutes</div>
-        </article>
-        <article class="kpi-card">
-          <div class="card-topline"><span>Error rate</span><span>5m</span></div>
-          <div class="kpi-value">0.41%</div>
-          <div class="trend bad">Billing retries elevated</div>
-        </article>
-        <article class="kpi-card">
-          <div class="card-topline"><span>Active incidents</span><span>Now</span></div>
-          <div class="kpi-value">2</div>
-          <div class="trend">1 customer-impacting P1</div>
-        </article>
-      </section>
-
-      <div class="dashboard-grid">
-        <div class="column alerts">
-          <section class="panel" id="alerts" aria-labelledby="alerts-title">
-            <div class="panel-header">
-              <div>
-                <h2 class="panel-title" id="alerts-title">Alert feed</h2>
-                <p class="panel-note">Filter by severity, service, assignee, or action.</p>
-              </div>
-              <a class="link-action" href="#incidents">Start runbook</a>
-            </div>
-            <div class="filter-row">
-              <label class="sr-only" for="alert-filter">Filter alerts</label>
-              <input id="alert-filter" type="search" value="" aria-label="Filter alerts" data-alert-filter>
-              <button class="filter-chip" type="button" data-clear-filter>Clear</button>
-            </div>
-            <div class="alert-feed" data-alert-feed>
-              <article class="alert-card" data-alert="p1 search 9m ren degrade checkout">
-                <div class="alert-main">
-                  <span class="severity p1">P1</span>
-                  <div class="alert-copy">
-                    <strong>Search p99 crossed customer-impact threshold</strong>
-                    <span>Search · 9m old · checkout hot path</span>
-                  </div>
-                </div>
-                <div class="assignee"><span class="avatar">RN</span>Ren owns mitigation</div>
-              </article>
-              <article class="alert-card" data-alert="p2 events 14m maya queue lag">
-                <div class="alert-main">
-                  <span class="severity p2">P2</span>
-                  <div class="alert-copy">
-                    <strong>Events fanout lag above shard budget</strong>
-                    <span>Events · 14m old · replay queue growing</span>
-                  </div>
-                </div>
-                <div class="assignee"><span class="avatar">MK</span>Maya scaling consumers</div>
-              </article>
-              <article class="alert-card" data-alert="p2 billing 22m jo retries">
-                <div class="alert-main">
-                  <span class="severity p2">P2</span>
-                  <div class="alert-copy">
-                    <strong>Billing retry loop near rate limit</strong>
-                    <span>Billing · 22m old · processor backoff</span>
-                  </div>
-                </div>
-                <div class="assignee"><span class="avatar">JL</span>Jo validating provider</div>
-              </article>
-              <article class="alert-card" data-alert="p3 api gateway 34m nia saturation">
-                <div class="alert-main">
-                  <span class="severity p3">P3</span>
-                  <div class="alert-copy">
-                    <strong>API Gateway saturation forecast breached</strong>
-                    <span>API Gateway · 34m old · add edge pool</span>
-                  </div>
-                </div>
-                <div class="assignee"><span class="avatar">NP</span>Nia watching capacity</div>
-              </article>
-            </div>
-          </section>
-
-          <section class="panel" id="incidents" aria-labelledby="timeline-title">
-            <div class="panel-header">
-              <div>
-                <h2 class="panel-title" id="timeline-title">Incident timeline</h2>
-                <p class="panel-note">ORB-4312 progression and operator handoffs.</p>
-              </div>
-            </div>
-            <div class="timeline">
-              <div class="timeline-item">
-                <div class="timeline-dot done">1</div>
-                <div class="timeline-copy">
-                  <strong>Detected</strong>
-                  <span>11:42 · SLO burn alert linked to Search p99.</span>
-                </div>
-              </div>
-              <div class="timeline-item">
-                <div class="timeline-dot hot">2</div>
-                <div class="timeline-copy">
-                  <strong>Investigating</strong>
-                  <span>11:49 · Event queue lag confirmed on checkout path.</span>
-                </div>
-              </div>
-              <div class="timeline-item">
-                <div class="timeline-dot">3</div>
-                <div class="timeline-copy">
-                  <strong>Mitigated</strong>
-                  <span>12:17 · Consumer scale-out awaiting error-rate drop.</span>
-                </div>
-              </div>
-              <div class="timeline-item">
-                <div class="timeline-dot">4</div>
-                <div class="timeline-copy">
-                  <strong>Resolved</strong>
-                  <span>Pending · Close after 20 minutes under threshold.</span>
-                </div>
-              </div>
-            </div>
-          </section>
-        </div>
-
-        <div class="column">
-          <section class="panel" id="services" aria-labelledby="services-title">
-            <div class="panel-header">
-              <div>
-                <h2 class="panel-title" id="services-title">Service health</h2>
-                <p class="panel-note">Traffic-light status with the next action attached.</p>
-              </div>
-              <a class="link-action" href="#dependency">Trace blast radius</a>
-            </div>
-            <div class="service-grid">
-              <article class="service-card">
-                <div class="service-head">
-                  <h3 class="service-name">API Gateway</h3>
-                  <span class="status-lights" aria-label="Healthy"><span class="lamp green active"></span><span class="lamp amber"></span><span class="lamp red"></span></span>
-                </div>
-                <div class="metric-row"><div class="mini-metric"><span>RPS</span><strong>18.4k</strong></div><div class="mini-metric"><span>p99</span><strong>121ms</strong></div><div class="mini-metric"><span>Err</span><strong>0.08%</strong></div></div>
-                <a class="service-action" href="#latency">Review edge pools</a>
-              </article>
-              <article class="service-card">
-                <div class="service-head">
-                  <h3 class="service-name">Auth</h3>
-                  <span class="status-lights" aria-label="Healthy"><span class="lamp green active"></span><span class="lamp amber"></span><span class="lamp red"></span></span>
-                </div>
-                <div class="metric-row"><div class="mini-metric"><span>RPS</span><strong>7.1k</strong></div><div class="mini-metric"><span>p99</span><strong>88ms</strong></div><div class="mini-metric"><span>Err</span><strong>0.02%</strong></div></div>
-                <a class="service-action" href="#dependency">Keep on watch</a>
-              </article>
-              <article class="service-card">
-                <div class="service-head">
-                  <h3 class="service-name">Billing</h3>
-                  <span class="status-lights" aria-label="Degraded"><span class="lamp green"></span><span class="lamp amber active"></span><span class="lamp red"></span></span>
-                </div>
-                <div class="metric-row"><div class="mini-metric"><span>RPS</span><strong>2.3k</strong></div><div class="mini-metric"><span>p99</span><strong>268ms</strong></div><div class="mini-metric"><span>Err</span><strong>0.62%</strong></div></div>
-                <a class="service-action" href="#alerts">Throttle retries</a>
-              </article>
-              <article class="service-card">
-                <div class="service-head">
-                  <h3 class="service-name">Search</h3>
-                  <span class="status-lights" aria-label="Critical"><span class="lamp green"></span><span class="lamp amber"></span><span class="lamp red active"></span></span>
-                </div>
-                <div class="metric-row"><div class="mini-metric"><span>QPS</span><strong>4.8k</strong></div><div class="mini-metric"><span>p99</span><strong>612ms</strong></div><div class="mini-metric"><span>Err</span><strong>1.14%</strong></div></div>
-                <a class="service-action" href="#incidents">Scale hot shards</a>
-              </article>
-              <article class="service-card">
-                <div class="service-head">
-                  <h3 class="service-name">Events</h3>
-                  <span class="status-lights" aria-label="Degraded"><span class="lamp green"></span><span class="lamp amber active"></span><span class="lamp red"></span></span>
-                </div>
-                <div class="metric-row"><div class="mini-metric"><span>Lag</span><strong>42s</strong></div><div class="mini-metric"><span>p95</span><strong>331ms</strong></div><div class="mini-metric"><span>Drop</span><strong>0.01%</strong></div></div>
-                <a class="service-action" href="#capacity">Add consumers</a>
-              </article>
-              <article class="service-card">
-                <div class="service-head">
-                  <h3 class="service-name">Database</h3>
-                  <span class="status-lights" aria-label="Healthy"><span class="lamp green active"></span><span class="lamp amber"></span><span class="lamp red"></span></span>
-                </div>
-                <div class="metric-row"><div class="mini-metric"><span>CPU</span><strong>57%</strong></div><div class="mini-metric"><span>p99</span><strong>94ms</strong></div><div class="mini-metric"><span>Conn</span><strong>72%</strong></div></div>
-                <a class="service-action" href="#capacity">Reserve failover</a>
-              </article>
-            </div>
-          </section>
-
-          <section class="panel" id="latency" aria-labelledby="latency-title">
-            <div class="panel-header">
-              <div>
-                <h2 class="panel-title" id="latency-title">Latency heatmap</h2>
-                <p class="panel-note">Service × time grid showing p50, p95, and p99 pressure.</p>
-              </div>
-              <a class="link-action" href="#alerts">Open alert context</a>
-            </div>
-            <div class="heatmap-wrap" tabindex="0" aria-label="Scrollable latency heatmap">
-              <div class="heatmap">
-                <div class="heat-time">Service</div><div class="heat-time">11:35</div><div class="heat-time">11:40</div><div class="heat-time">11:45</div><div class="heat-time">11:50</div><div class="heat-time">11:55</div><div class="heat-time">12:00</div><div class="heat-time">12:05</div>
-                <div class="heat-label">API Gateway</div><div class="heat-cell">42<span>p50</span></div><div class="heat-cell lv2">88<span>p95</span></div><div class="heat-cell lv2">121<span>p99</span></div><div class="heat-cell lv2">118<span>p99</span></div><div class="heat-cell">76<span>p95</span></div><div class="heat-cell">51<span>p50</span></div><div class="heat-cell lv2">128<span>p99</span></div>
-                <div class="heat-label">Auth</div><div class="heat-cell">36<span>p50</span></div><div class="heat-cell">44<span>p50</span></div><div class="heat-cell">71<span>p95</span></div><div class="heat-cell lv2">88<span>p99</span></div><div class="heat-cell">68<span>p95</span></div><div class="heat-cell">39<span>p50</span></div><div class="heat-cell">57<span>p95</span></div>
-                <div class="heat-label">Billing</div><div class="heat-cell lv2">116<span>p95</span></div><div class="heat-cell lv3">214<span>p99</span></div><div class="heat-cell lv3">268<span>p99</span></div><div class="heat-cell lv3">241<span>p99</span></div><div class="heat-cell lv2">166<span>p95</span></div><div class="heat-cell lv3">223<span>p99</span></div><div class="heat-cell lv3">251<span>p99</span></div>
-                <div class="heat-label">Search</div><div class="heat-cell lv2">138<span>p95</span></div><div class="heat-cell lv3">319<span>p99</span></div><div class="heat-cell lv4">504<span>p99</span></div><div class="heat-cell lv4">612<span>p99</span></div><div class="heat-cell lv4">587<span>p99</span></div><div class="heat-cell lv3">421<span>p99</span></div><div class="heat-cell lv4">533<span>p99</span></div>
-                <div class="heat-label">Events</div><div class="heat-cell">52<span>p50</span></div><div class="heat-cell lv2">142<span>p95</span></div><div class="heat-cell lv3">276<span>p99</span></div><div class="heat-cell lv3">331<span>p99</span></div><div class="heat-cell lv3">309<span>p99</span></div><div class="heat-cell lv2">184<span>p95</span></div><div class="heat-cell lv3">288<span>p99</span></div>
-                <div class="heat-label">Database</div><div class="heat-cell">34<span>p50</span></div><div class="heat-cell">61<span>p95</span></div><div class="heat-cell">84<span>p95</span></div><div class="heat-cell lv2">94<span>p99</span></div><div class="heat-cell">69<span>p95</span></div><div class="heat-cell">45<span>p50</span></div><div class="heat-cell">82<span>p95</span></div>
-              </div>
-            </div>
-          </section>
-        </div>
-
-        <div class="column right">
-          <section class="panel dark" id="dependency" aria-labelledby="dependency-title">
-            <div class="panel-header">
-              <div>
-                <h2 class="panel-title" id="dependency-title">Dependency map</h2>
-                <p class="panel-note">Hot path highlights degraded service links.</p>
-              </div>
-              <a class="link-action" href="#services">Open topology</a>
-            </div>
-            <div class="dependency-map" role="img" aria-label="API Gateway connects to Auth, Billing, Search, Events, and Database with Search to Events degraded">
-              <svg viewBox="0 0 560 360" aria-hidden="true">
-                <path class="edge" d="M280 58 C180 80 130 110 92 138"/>
-                <path class="edge" d="M280 58 C390 80 444 110 480 140"/>
-                <path class="edge hot" d="M280 58 C180 180 160 230 112 276"/>
-                <path class="edge hot" d="M112 276 C260 252 348 250 450 276"/>
-                <path class="edge" d="M450 276 C380 318 330 330 280 332"/>
-                <path class="edge" d="M480 140 C412 238 350 294 280 332"/>
-              </svg>
-              <div class="node ok n-api">API Gateway</div>
-              <div class="node ok n-auth">Auth</div>
-              <div class="node n-billing">Billing</div>
-              <div class="node hot n-search">Search</div>
-              <div class="node hot n-events">Events</div>
-              <div class="node ok n-db">Database</div>
-              <div class="map-callout">Search to Events is the degraded checkout path. Scale consumers before widening cache TTL.</div>
-            </div>
-          </section>
-
-          <section class="panel" id="capacity" aria-labelledby="capacity-title">
-            <div class="panel-header">
-              <div>
-                <h2 class="panel-title" id="capacity-title">Capacity gauges</h2>
-                <p class="panel-note">Forecasts for the next 45 minutes.</p>
-              </div>
-              <a class="link-action" href="#alerts">Plan capacity</a>
-            </div>
-            <div class="gauge-grid">
-              <div class="gauge">
-                <div class="ring" style="--value: 68; --ring: var(--cyan);"><strong>68%</strong></div>
-                <span>CPU pool</span>
-              </div>
-              <div class="gauge">
-                <div class="ring" style="--value: 74; --ring: var(--indigo);"><strong>74%</strong></div>
-                <span>Memory</span>
-              </div>
-              <div class="gauge">
-                <div class="ring" style="--value: 83; --ring: var(--coral);"><strong>83%</strong></div>
-                <span>Network</span>
-              </div>
-            </div>
-          </section>
-        </div>
+      <div class="probable-cause">
+        <div class="probable-cause-label">Probable Cause</div>
+        <div class="probable-cause-text">payment-svc latency spike correlates with deploy v3.8.2 (14 min ago). Database connection pool exhaustion detected. Rollback recommended.</div>
       </div>
-    </main>
-
-    <footer class="footer">
-      Orbit Cloud Observability — designed by Northstar Systems Studio
-    </footer>
+    </div>
+    <div class="logs" id="logs">
+      <div class="logs-title">Live Logs</div>
+      <div class="log-entry"><span class="log-time">14:32:01</span> <span class="log-level error">ERROR</span> payment-svc: Connection pool exhausted (max=50, active=50)</div>
+      <div class="log-entry"><span class="log-time">14:31:58</span> <span class="log-level error">ERROR</span> payment-svc: Timeout waiting for DB connection (30s)</div>
+      <div class="log-entry"><span class="log-time">14:31:55</span> <span class="log-level warn">WARN</span> user-service: Response time 2100ms (threshold: 1000ms)</div>
+      <div class="log-entry"><span class="log-time">14:31:50</span> <span class="log-level info">INFO</span> api-gateway: Request routed to payment-svc (attempt 3)</div>
+      <div class="log-entry"><span class="log-time">14:31:45</span> <span class="log-level error">ERROR</span> payment-svc: 503 Service Unavailable (3 consecutive)</div>
+      <div class="log-entry"><span class="log-time">14:31:40</span> <span class="log-level warn">WARN</span> auth-service: JWT validation slow (890ms)</div>
+      <div class="log-entry"><span class="log-time">14:31:35</span> <span class="log-level info">INFO</span> cdn-edge: Cache hit ratio 94.2%</div>
+      <div class="log-entry"><span class="log-time">14:31:30</span> <span class="log-level info">INFO</span> deploy: v3.8.2 rollout complete (100%)</div>
+    </div>
+    <div class="deploy-timeline" id="deploys">
+      <div class="deploy-header"><span class="deploy-title">Recent Deployments</span></div>
+      <div class="deploy-list">
+        <div class="deploy-item failed"><div class="deploy-ver">v3.8.2</div><div class="deploy-time">14 min ago</div><div class="deploy-status failed">Suspected cause</div></div>
+        <div class="deploy-item success"><div class="deploy-ver">v3.8.1</div><div class="deploy-time">2 hours ago</div><div class="deploy-status success">Healthy</div></div>
+        <div class="deploy-item success"><div class="deploy-ver">v3.8.0</div><div class="deploy-time">6 hours ago</div><div class="deploy-status success">Healthy</div></div>
+        <div class="deploy-item success"><div class="deploy-ver">v3.7.4</div><div class="deploy-time">1 day ago</div><div class="deploy-status success">Healthy</div></div>
+        <div class="deploy-item success"><div class="deploy-ver">v3.7.3</div><div class="deploy-time">2 days ago</div><div class="deploy-status success">Healthy</div></div>
+      </div>
+    </div>
   </div>
-
+  <footer class="footer" role="contentinfo">Orbit Observability &mdash; designed by Studio &middot; Standalone prototype</footer>
   <script>
-    const body = document.body;
-    const drawer = document.getElementById('mobile-drawer');
-    const openDrawer = document.querySelector('[data-open-drawer]');
-    const closeDrawerControls = document.querySelectorAll('[data-close-drawer]');
-    const alertFilter = document.querySelector('[data-alert-filter]');
-    const globalSearch = document.querySelector('[data-filter-source]');
-    const clearFilter = document.querySelector('[data-clear-filter]');
-    const alertCards = Array.from(document.querySelectorAll('[data-alert]'));
-
-    function setDrawer(open) {
-      body.classList.toggle('drawer-open', open);
-      drawer.setAttribute('aria-hidden', String(!open));
-      openDrawer.setAttribute('aria-expanded', String(open));
-      if (open) {
-        drawer.querySelector('a, button').focus();
-      } else {
-        openDrawer.focus();
-      }
-    }
-
-    function filterAlerts(value) {
-      const query = value.trim().toLowerCase();
-      alertCards.forEach((card) => {
-        const text = card.dataset.alert + ' ' + card.textContent.toLowerCase();
-        card.classList.toggle('hidden', query.length > 0 && !text.includes(query));
-      });
-    }
-
-    openDrawer.addEventListener('click', () => setDrawer(true));
-    closeDrawerControls.forEach((control) => {
-      control.addEventListener('click', () => {
-        if (body.classList.contains('drawer-open')) {
-          setDrawer(false);
-        }
-      });
-    });
-
-    alertFilter.addEventListener('input', (event) => filterAlerts(event.target.value));
-    globalSearch.addEventListener('input', (event) => {
-      alertFilter.value = event.target.value;
-      filterAlerts(event.target.value);
-    });
-    clearFilter.addEventListener('click', () => {
-      alertFilter.value = '';
-      globalSearch.value = '';
-      filterAlerts('');
-      alertFilter.focus();
-    });
-
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape' && body.classList.contains('drawer-open')) {
-        setDrawer(false);
-      }
-      if (event.key === '/' && document.activeElement.tagName !== 'INPUT') {
-        event.preventDefault();
-        alertFilter.focus();
-      }
-    });
+    (function(){
+      var o=document.getElementById('drawerOpen'),c=document.getElementById('drawerClose'),d=document.getElementById('drawer'),v=document.getElementById('drawerOverlay');
+      function open(){d.classList.add('open');v.classList.add('open');d.setAttribute('aria-hidden','false');o.setAttribute('aria-expanded','true');c.focus()}
+      function close(){d.classList.remove('open');v.classList.remove('open');d.setAttribute('aria-hidden','true');o.setAttribute('aria-expanded','false');o.focus()}
+      o.addEventListener('click',open);c.addEventListener('click',close);v.addEventListener('click',close);
+      document.addEventListener('keydown',function(e){if(e.key==='Escape'&&d.classList.contains('open'))close()});
+      d.querySelectorAll('a').forEach(function(l){l.addEventListener('click',close)});
+    })();
   </script>
-
-
-
-
 </body>
 </html>
