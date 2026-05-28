@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nova — Patient Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Source+Serif+4:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --white: #FAFCFF;
+      --teal: #0A5C5A;
+      --teal-dim: rgba(10,92,90,0.08);
+      --teal-mid: rgba(10,92,90,0.15);
+      --sky: #BDEBFF;
+      --sky-dim: rgba(189,235,255,0.3);
+      --lavender: #E8E2FF;
+      --lavender-dim: rgba(232,226,255,0.3);
+      --red: #FFB4A8;
+      --red-dim: rgba(255,180,168,0.2);
+      --navy: #182333;
+      --navy-mid: rgba(24,35,51,0.6);
+      --navy-dim: rgba(24,35,51,0.1);
+      --radius: 12px;
+      --radius-sm: 8px;
+      --max: 1200px;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+    body{margin:0;min-height:100vh;color:var(--navy);background:var(--white);font-family:"Atkinson Hyperlegible",system-ui,sans-serif;line-height:1.6;font-size:15px}
+    a{color:inherit;text-decoration:none}
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    :focus-visible{outline:3px solid var(--teal);outline-offset:2px}
+    .skip-link{position:absolute;top:-100px;left:16px;background:var(--teal);color:var(--white);padding:10px 20px;border-radius:var(--radius-sm);z-index:1000;font-weight:700;font-size:0.9375rem}
+    .skip-link:focus{top:16px}
+    .care-banner{background:var(--teal);color:var(--white);padding:10px 24px;text-align:center;font-size:0.8125rem;font-weight:700}
+    .care-banner a{color:var(--sky);text-decoration:underline;text-underline-offset:2px}
+    .topbar{position:sticky;top:0;z-index:100;background:var(--white);border-bottom:1px solid var(--navy-dim);padding:0 24px}
+    .topbar-inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+    .topbar-brand{font-family:"Source Serif 4",serif;font-weight:700;font-size:1.125rem;display:flex;align-items:center;gap:8px}
+    .topbar-brand-icon{width:30px;height:30px;background:var(--teal);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--white);font-size:0.75rem;font-weight:700}
+    .topbar-links{display:flex;gap:6px;list-style:none;margin:0;padding:0}
+    .topbar-links a{display:block;padding:8px 14px;font-size:0.875rem;font-weight:700;color:var(--navy-mid);border-radius:var(--radius-sm);transition:background 0.15s,color 0.15s}
+    .topbar-links a:hover,.topbar-links a[aria-current="page"]{color:var(--teal);background:var(--teal-dim)}
+    .topbar-right{display:flex;align-items:center;gap:12px}
+    .topbar-avatar{width:36px;height:36px;background:var(--lavender);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.8125rem;color:var(--navy)}
+    .topbar-drawer-btn{display:none;background:none;border:1px solid var(--navy-dim);border-radius:var(--radius-sm);padding:8px 12px;color:var(--navy);font-size:1.125rem}
+    .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(24,35,51,0.3);z-index:200}
+    .drawer-overlay.open{display:block}
+    .drawer{position:fixed;top:0;left:-320px;width:300px;height:100%;background:var(--white);z-index:201;padding:24px;transition:left 0.2s ease;overflow-y:auto}
+    .drawer.open{left:0}
+    .drawer-close{background:none;border:none;font-size:1.5rem;color:var(--navy);float:right}
+    .drawer nav{clear:both;padding-top:24px}
+    .drawer nav a{display:block;padding:14px 0;font-size:1rem;font-weight:700;color:var(--navy);border-bottom:1px solid var(--navy-dim)}
+    .shell{max-width:var(--max);margin:0 auto;padding:24px;display:grid;grid-template-columns:1fr 340px;gap:24px}
+    .main-area{display:flex;flex-direction:column;gap:20px}
+    .sidebar{display:flex;flex-direction:column;gap:20px}
+    .card{background:var(--white);border:1px solid var(--navy-dim);border-radius:var(--radius);padding:20px}
+    .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+    .card-title{font-family:"Source Serif 4",serif;font-weight:600;font-size:1rem;margin:0}
+    .card-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:0.6875rem;font-weight:700}
+    .card-badge.attention{background:var(--red-dim);color:#B33A2A}
+    .card-badge.ok{background:var(--teal-dim);color:var(--teal)}
+    .card-badge.info{background:var(--lavender-dim);color:#5B4EC2}
+    .appointment-list{list-style:none;margin:0;padding:0}
+    .appointment-item{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--navy-dim)}
+    .appointment-item:last-child{border-bottom:none}
+    .appt-date{width:52px;height:52px;background:var(--teal);border-radius:var(--radius-sm);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+    .appt-date-month{font-size:0.5625rem;font-weight:700;text-transform:uppercase;color:var(--sky);letter-spacing:0.06em}
+    .appt-date-day{font-size:1.125rem;font-weight:700;color:var(--white);line-height:1}
+    .appt-info{flex:1}
+    .appt-title{font-weight:700;font-size:0.875rem}
+    .appt-meta{font-size:0.75rem;color:var(--navy-mid);margin-top:2px}
+    .appt-action{padding:8px 14px;background:var(--teal);color:var(--white);border:none;border-radius:var(--radius-sm);font-weight:700;font-size:0.75rem;min-height:44px}
+    .rx-list{list-style:none;margin:0;padding:0}
+    .rx-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--navy-dim)}
+    .rx-item:last-child{border-bottom:none}
+    .rx-icon{width:40px;height:40px;background:var(--lavender);border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+    .rx-info{flex:1}
+    .rx-name{font-weight:700;font-size:0.8125rem}
+    .rx-dose{font-size:0.75rem;color:var(--navy-mid)}
+    .rx-status{padding:3px 8px;border-radius:999px;font-size:0.625rem;font-weight:700}
+    .rx-status.active{background:var(--teal-dim);color:var(--teal)}
+    .rx-status.refill{background:var(--red-dim);color:#B33A2A}
+    .lab-list{list-style:none;margin:0;padding:0}
+    .lab-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--navy-dim)}
+    .lab-item:last-child{border-bottom:none}
+    .lab-icon{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.875rem;flex-shrink:0}
+    .lab-info{flex:1}
+    .lab-name{font-weight:700;font-size:0.8125rem}
+    .lab-date{font-size:0.6875rem;color:var(--navy-mid)}
+    .lab-result{font-weight:700;font-size:0.8125rem}
+    .lab-result.normal{color:var(--teal)}
+    .lab-result.review{color:#B33A2A}
+    .msg-list{list-style:none;margin:0;padding:0}
+    .msg-item{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--navy-dim)}
+    .msg-item:last-child{border-bottom:none}
+    .msg-avatar{width:36px;height:36px;background:var(--sky);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:var(--navy);flex-shrink:0}
+    .msg-info{flex:1}
+    .msg-from{font-weight:700;font-size:0.8125rem}
+    .msg-preview{font-size:0.75rem;color:var(--navy-mid);margin-top:2px;line-height:1.4}
+    .msg-time{font-size:0.625rem;color:var(--navy-mid);flex-shrink:0}
+    .msg-unread{width:8px;height:8px;background:var(--teal);border-radius:50%;flex-shrink:0;margin-top:6px}
+    .care-plan-card{background:var(--teal-dim);border-color:var(--teal-mid)}
+    .care-plan-title{font-family:"Source Serif 4",serif;font-weight:700;font-size:1rem;margin:0 0 12px}
+    .care-plan-list{list-style:none;margin:0;padding:0}
+    .care-plan-item{display:flex;align-items:center;gap:10px;padding:8px 0;font-size:0.8125rem}
+    .care-plan-check{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.625rem;flex-shrink:0}
+    .care-plan-check.done{background:var(--teal);color:var(--white)}
+    .care-plan-check.pending{background:var(--white);border:2px solid var(--teal);color:var(--teal)}
+    .footer{max-width:var(--max);margin:0 auto;padding:16px 24px;text-align:center;font-size:0.75rem;color:var(--navy-mid)}
+    @media(max-width:1024px){
+      .shell{grid-template-columns:1fr;padding:16px}
+      .topbar-links{display:none}.topbar-drawer-btn{display:block}
+    }
+    @media(max-width:768px){
+      .appt-action{width:100%;text-align:center;padding:12px}
+      .card{padding:16px}
+      .care-banner{font-size:0.75rem;padding:8px 16px}
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <div class="care-banner" role="status">Your next appointment is in 3 days — <a href="#appointments">View details</a></div>
+  <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-label="Navigation" aria-hidden="true">
+    <button class="drawer-close" id="drawerClose" aria-label="Close menu">&times;</button>
+    <nav aria-label="Mobile navigation">
+      <a href="#appointments">Appointments</a><a href="#prescriptions">Prescriptions</a><a href="#lab-results">Lab Results</a><a href="#messages">Messages</a><a href="#care-plan">Care Plan</a>
+    </nav>
+  </aside>
+  <header class="topbar" role="banner">
+    <div class="topbar-inner">
+      <a href="#" class="topbar-brand" aria-label="Nova home"><span class="topbar-brand-icon" aria-hidden="true">N</span>Nova</a>
+      <ul class="topbar-links" role="list">
+        <li><a href="#appointments" aria-current="page">Appointments</a></li>
+        <li><a href="#prescriptions">Prescriptions</a></li>
+        <li><a href="#lab-results">Lab Results</a></li>
+        <li><a href="#messages">Messages</a></li>
+      </ul>
+      <div class="topbar-right">
+        <div class="topbar-avatar" aria-label="Patient">PL</div>
+        <button class="topbar-drawer-btn" id="drawerOpen" aria-label="Open menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="shell">
+    <main class="main-area" id="main" role="main">
+      <section id="appointments" aria-labelledby="appt-title">
+        <div class="card">
+          <div class="card-header"><h2 class="card-title" id="appt-title">Upcoming Appointments</h2><span class="card-badge attention">Needs your attention</span></div>
+          <ul class="appointment-list" aria-label="Upcoming appointments">
+            <li class="appointment-item">
+              <div class="appt-date" aria-hidden="true"><span class="appt-date-month">Jun</span><span class="appt-date-day">01</span></div>
+              <div class="appt-info"><div class="appt-title">Dr. Kowalska — Annual Checkup</div><div class="appt-meta">10:00 AM · Room 204 · Main Campus</div></div>
+              <button class="appt-action">Confirm</button>
+            </li>
+            <li class="appointment-item">
+              <div class="appt-date" aria-hidden="true"><span class="appt-date-month">Jun</span><span class="appt-date-day">12</span></div>
+              <div class="appt-info"><div class="appt-title">Lab Work — Blood Panel</div><div class="appt-meta">8:30 AM · Lab B · Fasting required</div></div>
+              <button class="appt-action">Details</button>
+            </li>
+            <li class="appointment-item">
+              <div class="appt-date" aria-hidden="true"><span class="appt-date-month">Jun</span><span class="appt-date-day">28</span></div>
+              <div class="appt-info"><div class="appt-title">Dr. Nowak — Follow-up</div><div class="appt-meta">2:00 PM · Telehealth</div></div>
+              <button class="appt-action">Join Call</button>
+            </li>
+          </ul>
+        </div>
+      </section>
+      <section id="lab-results" aria-labelledby="lab-title">
+        <div class="card">
+          <div class="card-header"><h2 class="card-title" id="lab-title">Lab Results</h2><span class="card-badge info">2 new</span></div>
+          <ul class="lab-list" aria-label="Lab results">
+            <li class="lab-item"><div class="lab-icon" style="background:var(--teal-dim)" aria-hidden="true">&#10003;</div><div class="lab-info"><div class="lab-name">Complete Blood Count</div><div class="lab-date">May 15, 2026</div></div><div class="lab-result normal">Normal</div></li>
+            <li class="lab-item"><div class="lab-icon" style="background:var(--red-dim)" aria-hidden="true">&#9888;</div><div class="lab-info"><div class="lab-name">Lipid Panel</div><div class="lab-date">May 15, 2026</div></div><div class="lab-result review">Review needed</div></li>
+            <li class="lab-item"><div class="lab-icon" style="background:var(--teal-dim)" aria-hidden="true">&#10003;</div><div class="lab-info"><div class="lab-name">Thyroid Function</div><div class="lab-date">Apr 02, 2026</div></div><div class="lab-result normal">Normal</div></li>
+          </ul>
+        </div>
+      </section>
+    </main>
+    <aside class="sidebar" role="complementary" aria-label="Health details">
+      <section id="prescriptions">
+        <div class="card">
+          <div class="card-header"><h2 class="card-title">Prescriptions</h2><span class="card-badge ok">All active</span></div>
+          <ul class="rx-list" aria-label="Prescriptions">
+            <li class="rx-item"><div class="rx-icon" aria-hidden="true">&#9738;</div><div class="rx-info"><div class="rx-name">Levothyroxine</div><div class="rx-dose">50mcg · 1x daily morning</div></div><span class="rx-status active">Active</span></li>
+            <li class="rx-item"><div class="rx-icon" aria-hidden="true">&#9738;</div><div class="rx-info"><div class="rx-name">Vitamin D3</div><div class="rx-dose">2000 IU · 1x daily</div></div><span class="rx-status active">Active</span></li>
+            <li class="rx-item"><div class="rx-icon" aria-hidden="true">&#9888;</div><div class="rx-info"><div class="rx-name">Atorvastatin</div><div class="rx-dose">10mg · 1x daily evening</div></div><span class="rx-status refill">Refill needed</span></li>
+          </ul>
+        </div>
+      </section>
+      <section id="messages">
+        <div class="card">
+          <div class="card-header"><h2 class="card-title">Messages</h2><span class="card-badge attention">2 unread</span></div>
+          <ul class="msg-list" aria-label="Secure messages">
+            <li class="msg-item"><div class="msg-avatar">DK</div><div class="msg-info"><div class="msg-from">Dr. Kowalska</div><div class="msg-preview">Your lab results look good overall. I'd like to discuss the lipid panel at your next visit.</div></div><div class="msg-unread" aria-label="Unread"></div><span class="msg-time">2h ago</span></li>
+            <li class="msg-item"><div class="msg-avatar">NS</div><div class="msg-info"><div class="msg-from">Nova Staff</div><div class="msg-preview">Reminder: Please confirm your June 1st appointment by replying to this message.</div></div><div class="msg-unread" aria-label="Unread"></div><span class="msg-time">1d ago</span></li>
+            <li class="msg-item"><div class="msg-avatar">RN</div><div class="msg-info"><div class="msg-from">Dr. Nowak</div><div class="msg-preview">Your prescription for Atorvastatin has been renewed. You can pick it up at your pharmacy.</div></div><span class="msg-time">May 10</span></li>
+          </ul>
+        </div>
+      </section>
+      <section id="care-plan">
+        <div class="card care-plan-card">
+          <h2 class="care-plan-title">Your Care Plan</h2>
+          <ul class="care-plan-list" aria-label="Care plan tasks">
+            <li class="care-plan-item"><span class="care-plan-check done" aria-hidden="true">&#10003;</span> Annual blood work completed</li>
+            <li class="care-plan-item"><span class="care-plan-check done" aria-hidden="true">&#10003;</span> Flu vaccine — Oct 2025</li>
+            <li class="care-plan-item"><span class="care-plan-check pending" aria-hidden="true"></span> Schedule dental cleaning</li>
+            <li class="care-plan-item"><span class="care-plan-check pending" aria-hidden="true"></span> Eye exam — due this year</li>
+          </ul>
+        </div>
+      </section>
+    </aside>
+  </div>
+  <footer class="footer" role="contentinfo">Nova Patient Portal &mdash; designed by Studio &middot; Standalone prototype &middot; Not affiliated with any healthcare provider</footer>
+  <script>
+    (function(){
+      var o=document.getElementById('drawerOpen'),c=document.getElementById('drawerClose'),d=document.getElementById('drawer'),v=document.getElementById('drawerOverlay');
+      function open(){d.classList.add('open');v.classList.add('open');d.setAttribute('aria-hidden','false');o.setAttribute('aria-expanded','true');c.focus()}
+      function close(){d.classList.remove('open');v.classList.remove('open');d.setAttribute('aria-hidden','true');o.setAttribute('aria-expanded','false');o.focus()}
+      o.addEventListener('click',open);c.addEventListener('click',close);v.addEventListener('click',close);
+      document.addEventListener('keydown',function(e){if(e.key==='Escape'&&d.classList.contains('open'))close()});
+      d.querySelectorAll('a').forEach(function(l){l.addEventListener('click',close)});
+    })();
+  </script>
+</body>
+</html>
