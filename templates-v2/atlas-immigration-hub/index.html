@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Atlas Immigration Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --cloud: #F6F8FC;
+    --ink: #19212B;
+    --indigo: #4F46E5;
+    --cyan: #06B6D4;
+    --lime: #A3E635;
+    --coral: #FB7185;
+    --card: #FFFFFF;
+    --border: #E5E7EB;
+    --green: #10B981;
+    --orange: #F59E0B;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cloud);
+    color: #111827;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+  }
+
+  a { color: var(--indigo); text-decoration: none; }
+  button { cursor: pointer; font-family: inherit; }
+
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--indigo);
+    color: #fff;
+    padding: 8px 16px;
+    z-index: 100;
+    font-size: 0.875rem;
+  }
+  .skip-link:focus { top: 0; }
+
+  .top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 24px;
+    height: 60px;
+    background: var(--ink);
+    color: #fff;
+  }
+  .nav-brand {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--cyan);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-links { display: flex; gap: 4px; margin-left: 24px; }
+  .nav-links a {
+    padding: 8px 14px; border-radius: 8px; font-size: 0.875rem; font-weight: 500;
+    color: rgba(255,255,255,0.7);
+  }
+  .nav-links a:hover,
+  .nav-links a[aria-current="page"] {
+    background: rgba(255,255,255,0.1); color: #fff;
+  }
+  .nav-search { margin-left: auto; position: relative; }
+  .nav-search input {
+    width: 200px; padding: 8px 12px 8px 36px;
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;
+    font-size: 0.875rem; background: rgba(255,255,255,0.1); color: #fff;
+  }
+  .nav-search svg {
+    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    width: 16px; height: 16px; color: rgba(255,255,255,0.5);
+  }
+  .nav-cta {
+    margin-left: 12px; padding: 8px 18px;
+    background: var(--indigo); color: #fff; border: none; border-radius: 8px;
+    font-size: 0.875rem; font-weight: 600;
+  }
+  .hamburger { display: none; background: none; border: none; padding: 8px; color: #fff; }
+  .hamburger svg { width: 24px; height: 24px; }
+
+  .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 60; }
+  .drawer-overlay.open { display: block; }
+  .drawer {
+    position: fixed; top: 0; left: 0; width: 280px; height: 100%;
+    background: #fff; z-index: 70; transform: translateX(-100%);
+    transition: transform 0.25s ease; padding: 24px; overflow-y: auto;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-close { background: none; border: none; font-size: 1.5rem; position: absolute; top: 16px; right: 16px; color: #111827; }
+  .drawer nav { display: flex; flex-direction: column; gap: 4px; margin-top: 24px; }
+  .drawer nav a { padding: 10px 14px; border-radius: 8px; font-size: 0.9375rem; color: #111827; }
+  .drawer nav a:hover { background: var(--cloud); }
+
+  @media (max-width: 768px) {
+    .nav-links, .nav-search, .nav-cta { display: none; }
+    .hamburger { display: block; }
+    .top-nav { padding: 0 16px; }
+  }
+
+  .kpi-strip {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px; padding: 24px;
+  }
+  .kpi-card {
+    background: var(--card); border-radius: 12px; padding: 20px;
+    border: 1px solid var(--border); display: flex; align-items: center; gap: 14px;
+  }
+  .kpi-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0;
+  }
+  .kpi-label { font-size: 0.8125rem; color: #6B7280; margin-bottom: 2px; }
+  .kpi-value { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 1.5rem; }
+  .kpi-trend { font-size: 0.75rem; margin-top: 2px; }
+
+  .main-content { padding: 0 24px 48px; }
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
+  }
+  .section-header h2 { font-size: 1.25rem; }
+  .badge {
+    background: var(--cloud); padding: 4px 12px; border-radius: 20px;
+    font-size: 0.8125rem; font-weight: 600; color: #6B7280;
+  }
+
+  .case-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px; margin-bottom: 32px;
+  }
+  .case-card {
+    background: var(--card); border-radius: 12px; padding: 20px;
+    border: 1px solid var(--border); border-left: 4px solid;
+  }
+  .case-card h4 { font-size: 1rem; margin-bottom: 8px; }
+  .case-card .detail { font-size: 0.8125rem; color: #6B7280; margin-bottom: 4px; }
+  .case-meta {
+    display: flex; justify-content: space-between; font-size: 0.75rem; color: #9CA3AF;
+    margin-top: 8px;
+  }
+  .visa-tag {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 0.6875rem; font-weight: 600;
+  }
+  .tag-work { background: #DBEAFE; color: #1E40AF; }
+  .tag-student { background: #D1FAE5; color: #065F46; }
+  .tag-family { background: #FEF3C7; color: #92400E; }
+  .tag-residence { background: #EEF2FF; color: #4F46E5; }
+  .tag-asylum { background: #FEE2E2; color: #991B1B; }
+
+  .data-tbl {
+    width: 100%; border-collapse: collapse; background: var(--card);
+    border-radius: 12px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 32px;
+  }
+  .data-tbl th {
+    text-align: left; padding: 12px 16px; font-size: 0.8125rem;
+    color: #6B7280; font-weight: 600; border-bottom: 1px solid var(--border); background: var(--cloud);
+  }
+  .data-tbl td { padding: 12px 16px; font-size: 0.875rem; border-bottom: 1px solid #F3F4F6; }
+  .data-tbl tr:last-child td { border-bottom: none; }
+  .data-tbl tr:hover { background: var(--cloud); }
+  .badge-status {
+    display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
+  }
+  .st-approved { background: #D1FAE5; color: #065F46; }
+  .st-pending { background: #FEF3C7; color: #92400E; }
+  .st-review { background: #DBEAFE; color: #1E40AF; }
+  .st-denied { background: #FEE2E2; color: #991B1B; }
+
+  .timeline {
+    position: relative; padding-left: 28px; margin-bottom: 32px;
+  }
+  .timeline::before {
+    content: ''; position: absolute; left: 8px; top: 0; bottom: 0;
+    width: 2px; background: var(--border);
+  }
+  .timeline-item {
+    position: relative; margin-bottom: 20px; background: var(--card);
+    border-radius: 10px; padding: 14px 18px; border: 1px solid var(--border);
+  }
+  .timeline-item::before {
+    content: ''; position: absolute; left: -24px; top: 18px;
+    width: 12px; height: 12px; border-radius: 50%;
+    border: 2px solid var(--border); background: #fff;
+  }
+  .timeline-item.active::before { background: var(--green); border-color: var(--green); }
+  .timeline-item .time { font-size: 0.75rem; color: #6B7280; margin-bottom: 4px; }
+  .timeline-item h4 { font-size: 0.9375rem; margin-bottom: 4px; }
+  .timeline-item p { font-size: 0.8125rem; color: #6B7280; }
+
+  .doc-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 16px; margin-bottom: 32px;
+  }
+  .doc-card {
+    background: var(--card); border-radius: 12px; padding: 20px;
+    border: 1px solid var(--border); text-align: center;
+  }
+  .doc-card .icon { font-size: 2rem; margin-bottom: 8px; }
+  .doc-card h4 { font-size: 0.9375rem; margin-bottom: 4px; }
+  .doc-card .count { font-size: 0.8125rem; color: #6B7280; }
+
+  .site-footer {
+    padding: 32px 24px; text-align: center; font-size: 0.8125rem;
+    color: #9CA3AF; border-top: 1px solid var(--border); margin-top: 48px;
+  }
+
+  :focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  @media (max-width: 768px) {
+    .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    .case-grid { grid-template-columns: 1fr; }
+    .data-tbl { display: block; overflow-x: auto; }
+    .doc-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header class="top-nav">
+  <button class="hamburger" aria-label="Open menu" aria-expanded="false"
+    onclick="document.getElementById('drawer').classList.toggle('open');document.getElementById('overlay').classList.toggle('open');this.setAttribute('aria-expanded',document.getElementById('drawer').classList.contains('open'))">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+  </button>
+  <a href="#" class="nav-brand">🌍 Atlas Immigration Hub</a>
+  <nav class="nav-links" aria-label="Main">
+    <a href="#" aria-current="page">Dashboard</a>
+    <a href="#cases">Cases</a>
+    <a href="#applications">Applications</a>
+    <a href="#timeline">Timeline</a>
+    <a href="#documents">Documents</a>
+  </nav>
+  <div class="nav-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" aria-label="Search cases">
+  </div>
+  <button class="nav-cta">+ New Case</button>
+</header>
+
+<div class="drawer-overlay" id="overlay" onclick="document.getElementById('drawer').classList.remove('open');this.classList.remove('open')"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-label="Navigation">
+  <button class="drawer-close" aria-label="Close menu"
+    onclick="document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open')">&times;</button>
+  <nav>
+    <a href="#">Dashboard</a>
+    <a href="#cases">Cases</a>
+    <a href="#applications">Applications</a>
+    <a href="#timeline">Timeline</a>
+    <a href="#documents">Documents</a>
+  </nav>
+</aside>
+
+<main id="main">
+  <div class="kpi-strip" role="region" aria-label="Immigration metrics">
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#ECFEFF">📋</div>
+      <div>
+        <div class="kpi-label">Active Cases</div>
+        <div class="kpi-value" style="color:var(--cyan)">342</div>
+        <div class="kpi-trend" style="color:var(--green)">28 new this month</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#D1FAE5">✅</div>
+      <div>
+        <div class="kpi-label">Approved This Month</div>
+        <div class="kpi-value" style="color:var(--green)">47</div>
+        <div class="kpi-trend" style="color:var(--green)">92% approval rate</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#FEF3C7">⏳</div>
+      <div>
+        <div class="kpi-label">Pending Review</div>
+        <div class="kpi-value" style="color:var(--orange)">89</div>
+        <div class="kpi-trend" style="color:var(--orange)">12 urgent</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#EEF2FF">📅</div>
+      <div>
+        <div class="kpi-label">Interviews Scheduled</div>
+        <div class="kpi-value" style="color:var(--indigo)">18</div>
+        <div class="kpi-trend" style="color:var(--green)">This week</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <section id="cases">
+      <div class="section-header">
+        <h2>Active Cases</h2>
+        <span class="badge">342 total</span>
+      </div>
+      <div class="case-grid">
+        <div class="case-card" style="border-left-color:var(--indigo)">
+          <h4>Maria Gonzalez — Work Visa H-1B</h4>
+          <div class="detail">Client: TechCorp Inc · Filing: Mar 15, 2026</div>
+          <div class="detail">Status: USCIS receipt notice received</div>
+          <div class="case-meta">
+            <span class="visa-tag tag-work">Work Visa</span>
+            <span>Attorney: J. Smith</span>
+          </div>
+        </div>
+        <div class="case-card" style="border-left-color:var(--green)">
+          <h4>Ahmed Hassan — Student Visa F-1</h4>
+          <div class="detail">University: State University · Program: MS Computer Science</div>
+          <div class="detail">Status: SEVIS fee paid, awaiting interview</div>
+          <div class="case-meta">
+            <span class="visa-tag tag-student">Student Visa</span>
+            <span>Attorney: L. Chen</span>
+          </div>
+        </div>
+        <div class="case-card" style="border-left-color:var(--orange)">
+          <h4>Elena Petrova — Family Reunification</h4>
+          <div class="detail">Petitioner: John Petrova (US Citizen) · Relationship: Spouse</div>
+          <div class="detail">Status: I-130 approved, consular processing</div>
+          <div class="case-meta">
+            <span class="visa-tag tag-family">Family Visa</span>
+            <span>Attorney: J. Smith</span>
+          </div>
+        </div>
+        <div class="case-card" style="border-left-color:var(--cyan)">
+          <h4>Li Wei — EB-2 Green Card</h4>
+          <div class="detail">Category: National Interest Waiver · Priority: Mar 2025</div>
+          <div class="detail">Status: I-140 approved, waiting for visa number</div>
+          <div class="case-meta">
+            <span class="visa-tag tag-residence">Residence</span>
+            <span>Attorney: M. Rodriguez</span>
+          </div>
+        </div>
+        <div class="case-card" style="border-left-color:var(--coral)">
+          <h4>Fatima Al-Rashid — Asylum</h4>
+          <div class="detail">Filing: Jan 2026 · Interview: Scheduled Jun 12</div>
+          <div class="detail">Status: Biometrics completed, interview prep</div>
+          <div class="case-meta">
+            <span class="visa-tag tag-asylum">Asylum</span>
+            <span>Attorney: K. Williams</span>
+          </div>
+        </div>
+        <div class="case-card" style="border-left-color:var(--indigo)">
+          <h4>Carlos Mendez — L-1 Transfer</h4>
+          <div class="detail">Company: GlobalTech Ltd · From: São Paulo office</div>
+          <div class="detail">Status: Premium processing, RFE response filed</div>
+          <div class="case-meta">
+            <span class="visa-tag tag-work">Work Visa</span>
+            <span>Attorney: L. Chen</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="applications">
+      <div class="section-header">
+        <h2>Application Tracker</h2>
+        <span class="badge">Last 30 days</span>
+      </div>
+      <table class="data-tbl" aria-label="Application tracker">
+        <thead>
+          <tr>
+            <th>Case ID</th>
+            <th>Applicant</th>
+            <th>Visa Type</th>
+            <th>Filed</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>IMM-2847</strong></td>
+            <td>Maria Gonzalez</td>
+            <td>H-1B Work</td>
+            <td>Mar 15, 2026</td>
+            <td><span class="badge-status st-review">Under Review</span></td>
+          </tr>
+          <tr>
+            <td><strong>IMM-2846</strong></td>
+            <td>Ahmed Hassan</td>
+            <td>F-1 Student</td>
+            <td>Mar 10, 2026</td>
+            <td><span class="badge-status st-pending">Interview Pending</span></td>
+          </tr>
+          <tr>
+            <td><strong>IMM-2845</strong></td>
+            <td>Elena Petrova</td>
+            <td>IR-1 Spouse</td>
+            <td>Jan 22, 2026</td>
+            <td><span class="badge-status st-approved">Approved</span></td>
+          </tr>
+          <tr>
+            <td><strong>IMM-2844</strong></td>
+            <td>Li Wei</td>
+            <td>EB-2 NIW</td>
+            <td>Mar 2025</td>
+            <td><span class="badge-status st-review">Consular Processing</span></td>
+          </tr>
+          <tr>
+            <td><strong>IMM-2843</strong></td>
+            <td>Fatima Al-Rashid</td>
+            <td>Asylum</td>
+            <td>Jan 8, 2026</td>
+            <td><span class="badge-status st-pending">Interview Jun 12</span></td>
+          </tr>
+          <tr>
+            <td><strong>IMM-2842</strong></td>
+            <td>Carlos Mendez</td>
+            <td>L-1A Transfer</td>
+            <td>Feb 28, 2026</td>
+            <td><span class="badge-status st-review">RFE Response Filed</span></td>
+          </tr>
+          <tr>
+            <td><strong>IMM-2841</strong></td>
+            <td>Yuki Tanaka</td>
+            <td>O-1 Extraordinary</td>
+            <td>Feb 15, 2026</td>
+            <td><span class="badge-status st-approved">Approved</span></td>
+          </tr>
+          <tr>
+            <td><strong>IMM-2840</strong></td>
+            <td>Priya Sharma</td>
+            <td>H-4 Dependent</td>
+            <td>Mar 1, 2026</td>
+            <td><span class="badge-status st-denied">Denied — Appeal Filed</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="timeline">
+      <div class="section-header">
+        <h2>Recent Milestones</h2>
+        <span class="badge">This week</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-item active">
+          <div class="time">Today, 10:30 AM</div>
+          <h4>Elena Petrova — Visa Issued</h4>
+          <p>Immigrant visa issued at US Embassy Warsaw. Client notified and travel preparation started.</p>
+        </div>
+        <div class="timeline-item active">
+          <div class="time">Yesterday, 2:15 PM</div>
+          <h4>Yuki Tanaka — O-1 Approved</h4>
+          <p>USCIS approved O-1 petition without RFE. Premium processing timeline met — 12 business days.</p>
+        </div>
+        <div class="timeline-item active">
+          <div class="time">May 28, 4:00 PM</div>
+          <h4>Ahmed Hassan — SEVIS Confirmed</h4>
+          <p>I-20 issued by State University. SEVIS fee paid. Embassy interview scheduling in progress.</p>
+        </div>
+        <div class="timeline-item active">
+          <div class="time">May 27, 11:00 AM</div>
+          <h4>Carlos Mendez — RFE Response Filed</h4>
+          <p>Response to Request for Evidence submitted with additional supporting documentation for L-1A petition.</p>
+        </div>
+        <div class="timeline-item active">
+          <div class="time">May 25, 9:30 AM</div>
+          <h4>Fatima Al-Rashid — Biometrics Completed</h4>
+          <p>Biometrics appointment completed at local USCIS office. Interview scheduled for June 12.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="documents">
+      <div class="section-header">
+        <h2>Document Library</h2>
+        <span class="badge">By category</span>
+      </div>
+      <div class="doc-grid">
+        <div class="doc-card">
+          <div class="icon">📄</div>
+          <h4>Petitions Filed</h4>
+          <div class="count">247 documents</div>
+        </div>
+        <div class="doc-card">
+          <div class="icon">📑</div>
+          <h4>Supporting Evidence</h4>
+          <div class="count">1,842 documents</div>
+        </div>
+        <div class="doc-card">
+          <div class="icon">📬</div>
+          <h4>USCIS Notices</h4>
+          <div class="count">389 documents</div>
+        </div>
+        <div class="doc-card">
+          <div class="icon">✈️</div>
+          <h4>Travel Documents</h4>
+          <div class="count">156 documents</div>
+        </div>
+        <div class="doc-card">
+          <div class="icon">📋</div>
+          <h4>Client Agreements</h4>
+          <div class="count">342 documents</div>
+        </div>
+        <div class="doc-card">
+          <div class="icon">🏛️</div>
+          <h4>Court Filings</h4>
+          <div class="count">28 documents</div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p>Atlas Immigration Hub — designed by Studio · Standalone prototype · Not affiliated with any legal service</p>
+</footer>
+
+<script>
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.getElementById('drawer').classList.remove('open');
+      document.getElementById('overlay').classList.remove('open');
+    }
+  });
+</script>
+</body>
+</html>
+<!-- Extended Content Section -->
+<section>
+  <div class="section-header">
+    <h2>Country-Specific Processing Times</h2>
+    <span class="badge">Current estimates</span>
+  </div>
+  <table class="data-tbl" aria-label="Processing times">
+    <thead>
+      <tr>
+        <th>Visa Category</th>
+        <th>Service Center</th>
+        <th>Processing Time</th>
+        <th>Our Avg</th>
+        <th>Trend</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>H-1B (Regular)</td>
+        <td>California</td>
+        <td>4.5 months</td>
+        <td>3.8 months</td>
+        <td style="color:var(--green)">↓ Faster</td>
+      </tr>
+      <tr>
+        <td>H-1B (Premium)</td>
+        <td>All Centers</td>
+        <td>15 calendar days</td>
+        <td>12 days</td>
+        <td style="color:var(--green)">↓ Faster</td>
+      </tr>
+      <tr>
+        <td>I-130 (Spouse)</td>
+        <td>Nebraska</td>
+        <td>10.5 months</td>
+        <td>9.2 months</td>
+        <td style="color:var(--green)">↓ Faster</td>
+      </tr>
+      <tr>
+        <td>I-140 (EB-2)</td>
+        <td>Texas</td>
+        <td>7.8 months</td>
+        <td>6.5 months</td>
+        <td style="color:var(--green)">↓ Faster</td>
+      </tr>
+      <tr>
+        <td>N-400 (Naturalization)</td>
+        <td>All Districts</td>
+        <td>8.3 months</td>
+        <td>7.1 months</td>
+        <td style="color:var(--green)">↓ Faster</td>
+      </tr>
+      <tr>
+        <td>Asylum (Affirmative)</td>
+        <td>All Offices</td>
+        <td>6.2 months</td>
+        <td>5.8 months</td>
+        <td style="color:var(--orange)">→ Stable</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section>
+  <div class="section-header">
+    <h2>Upcoming Deadlines</h2>
+    <span class="badge">Next 14 days</span>
+  </div>
+  <div class="activity-list" role="list">
+    <div class="activity-item" role="listitem">
+      <div class="activity-dot" style="background:var(--coral)"></div>
+      <span><strong>Jun 3:</strong> H-1B RFE response deadline — Carlos Mendez (L-1A extension evidence)</span>
+      <span class="activity-time">3 days</span>
+    </div>
+    <div class="activity-item" role="listitem">
+      <div class="activity-dot" style="background:var(--orange)"></div>
+      <span><strong>Jun 5:</strong> F-1 visa interview — Ahmed Hassan at US Embassy Cairo</span>
+      <span class="activity-time">5 days</span>
+    </div>
+    <div class="activity-item" role="listitem">
+      <div class="activity-dot" style="background:var(--indigo)"></div>
+      <span><strong>Jun 8:</strong> I-130 supporting documents due — Petrova family (consular processing)</span>
+      <span class="activity-time">8 days</span>
+    </div>
+    <div class="activity-item" role="listitem">
+      <div class="activity-dot" style="background:var(--coral)"></div>
+      <span><strong>Jun 12:</strong> Asylum interview — Fatima Al-Rashid at Arlington Asylum Office</span>
+      <span class="activity-time">12 days</span>
+    </div>
+    <div class="activity-item" role="listitem">
+      <div class="activity-dot" style="background:var(--cyan)"></div>
+      <span><strong>Jun 14:</strong> Biometrics appointment — 3 clients at local USCIS ASC</span>
+      <span class="activity-time">14 days</span>
+    </div>
+  </div>
+</section>
