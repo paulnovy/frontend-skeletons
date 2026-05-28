@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Haven Senior Living</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --cloud: #F6F8FC;
+    --ink: #19212B;
+    --indigo: #4F46E5;
+    --cyan: #06B6D4;
+    --lime: #A3E635;
+    --coral: #FB7185;
+    --card: #FFFFFF;
+    --border: #E5E7EB;
+    --green: #10B981;
+    --orange: #F59E0B;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cloud);
+    color: #111827;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+  }
+
+  a {
+    color: var(--indigo);
+    text-decoration: none;
+  }
+
+  button {
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--indigo);
+    color: #fff;
+    padding: 8px 16px;
+    z-index: 100;
+    font-size: 0.875rem;
+  }
+
+  .skip-link:focus {
+    top: 0;
+  }
+
+  .top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 24px;
+    height: 60px;
+    background: var(--ink);
+    color: #fff;
+  }
+
+  .nav-brand {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--cyan);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 4px;
+    margin-left: 24px;
+  }
+
+  .nav-links a {
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .nav-links a:hover,
+  .nav-links a[aria-current="page"] {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+
+  .nav-search {
+    margin-left: auto;
+    position: relative;
+  }
+
+  .nav-search input {
+    width: 200px;
+    padding: 8px 12px 8px 36px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+
+  .nav-search svg {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .nav-cta {
+    margin-left: 12px;
+    padding: 8px 18px;
+    background: var(--cyan);
+    color: var(--ink);
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .hamburger {
+    display: none;
+    background: none;
+    border: none;
+    padding: 8px;
+    color: #fff;
+  }
+
+  .hamburger svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .drawer-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 60;
+  }
+
+  .drawer-overlay.open {
+    display: block;
+  }
+
+  .drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100%;
+    background: #fff;
+    z-index: 70;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    padding: 24px;
+    overflow-y: auto;
+  }
+
+  .drawer.open {
+    transform: translateX(0);
+  }
+
+  .drawer-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    color: #111827;
+  }
+
+  .drawer nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 24px;
+  }
+
+  .drawer nav a {
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: #111827;
+  }
+
+  .drawer nav a:hover {
+    background: var(--cloud);
+  }
+
+  @media (max-width: 768px) {
+    .nav-links,
+    .nav-search,
+    .nav-cta {
+      display: none;
+    }
+
+    .hamburger {
+      display: block;
+    }
+
+    .top-nav {
+      padding: 0 16px;
+    }
+  }
+
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 24px;
+  }
+
+  .kpi-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .kpi-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  .kpi-label {
+    font-size: 0.8125rem;
+    color: #6B7280;
+    margin-bottom: 2px;
+  }
+
+  .kpi-value {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+  }
+
+  .kpi-trend {
+    font-size: 0.75rem;
+    margin-top: 2px;
+  }
+
+  .main-content {
+    padding: 0 24px 48px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .section-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .badge {
+    background: var(--cloud);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #6B7280;
+  }
+
+  .resident-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .resident-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+  }
+
+  .resident-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .resident-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  .resident-header h4 {
+    font-size: 1rem;
+    margin-bottom: 2px;
+  }
+
+  .resident-header .room {
+    font-size: 0.8125rem;
+    color: #6B7280;
+  }
+
+  .resident-card .detail {
+    font-size: 0.8125rem;
+    color: #6B7280;
+    margin-bottom: 4px;
+  }
+
+  .care-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    margin-top: 8px;
+  }
+
+  .care-independent {
+    background: #D1FAE5;
+    color: #065F46;
+  }
+
+  .care-assisted {
+    background: #DBEAFE;
+    color: #1E40AF;
+  }
+
+  .care-memory {
+    background: #FEF3C7;
+    color: #92400E;
+  }
+
+  .care-skilled {
+    background: #FEE2E2;
+    color: #991B1B;
+  }
+
+  .data-tbl {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+
+  .data-tbl th {
+    text-block: 1px solid var(--border);
+    background: var(--cloud);
+  }
+
+  .data-tbl th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 0.8125rem;
+    color: #6B7280;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    background: var(--cloud);
+  }
+
+  .data-tbl td {
+    padding: 12px 16px;
+    font-size: 0.875rem;
+    border-bottom: 1px solid #F3F4F6;
+  }
+
+  .data-tbl tr:last-child td {
+    border-bottom: none;
+  }
+
+  .data-tbl tr:hover {
+    background: var(--cloud);
+  }
+
+  .badge-status {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .st-good {
+    background: #D1FAE5;
+    color: #065F46;
+  }
+
+  .st-fair {
+    background: #FEF3C7;
+    color: #92400E;
+  }
+
+  .st-alert {
+    background: #FEE2E2;
+    color: #991B1B;
+  }
+
+  .health-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .health-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    text-align: center;
+  }
+
+  .health-card .icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+  }
+
+  .health-card h4 {
+    font-size: 0.9375rem;
+    margin-bottom: 4px;
+  }
+
+  .health-card .value {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.75rem;
+    margin-bottom: 4px;
+  }
+
+  .health-card .status {
+    font-size: 0.8125rem;
+    color: #6B7280;
+  }
+
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+
+  .cal-item {
+    background: var(--card);
+    border-radius: 10px;
+    padding: 14px 18px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .cal-time {
+    background: var(--indigo);
+    color: #fff;
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-align: center;
+    min-width: 50px;
+    flex-shrink: 0;
+  }
+
+  .cal-info h4 {
+    font-size: 0.9375rem;
+    margin-bottom: 2px;
+  }
+
+  .cal-info .meta {
+    font-size: 0.8125rem;
+    color: #6B7280;
+  }
+
+  .message-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+
+  .message-item {
+    background: var(--card);
+    border-radius: 8px;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.875rem;
+  }
+
+  .message-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .message-time {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: #9CA3AF;
+  }
+
+  .site-footer {
+    padding: 32px 24px;
+    text-align: center;
+    font-size: 0.8125rem;
+    color: #9CA3AF;
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--indigo);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .kpi-strip {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .resident-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .data-tbl {
+      display: block;
+      overflow-x: auto;
+    }
+
+    .health-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .calendar-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header class="top-nav">
+  <button class="hamburger" aria-label="Open menu" aria-expanded="false"
+    onclick="document.getElementById('drawer').classList.toggle('open');document.getElementById('overlay').classList.toggle('open');this.setAttribute('aria-expanded',document.getElementById('drawer').classList.contains('open'))">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+  </button>
+  <a href="#" class="nav-brand">🏠 Haven Senior Living</a>
+  <nav class="nav-links" aria-label="Main">
+    <a href="#" aria-current="page">Dashboard</a>
+    <a href="#residents">Residents</a>
+    <a href="#activities">Activities</a>
+    <a href="#health">Health</a>
+    <a href="#dining">Dining</a>
+    <a href="#family">Family</a>
+  </nav>
+  <div class="nav-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" aria-label="Search residents">
+  </div>
+  <button class="nav-cta">+ New Resident</button>
+</header>
+
+<div class="drawer-overlay" id="overlay" onclick="document.getElementById('drawer').classList.remove('open');this.classList.remove('open')"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-label="Navigation">
+  <button class="drawer-close" aria-label="Close menu"
+    onclick="document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open')">&times;</button>
+  <nav>
+    <a href="#">Dashboard</a>
+    <a href="#residents">Residents</a>
+    <a href="#activities">Activities</a>
+    <a href="#health">Health</a>
+    <a href="#dining">Dining</a>
+    <a href="#family">Family</a>
+  </nav>
+</aside>
+
+<main id="main">
+  <div class="kpi-strip" role="region" aria-label="Community overview">
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#ECFEFF">👥</div>
+      <div>
+        <div class="kpi-label">Residents</div>
+        <div class="kpi-value" style="color:var(--cyan)">124</div>
+        <div class="kpi-trend" style="color:var(--green)">2 new this month</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#EEF2FF">🎯</div>
+      <div>
+        <div class="kpi-label">Activities Today</div>
+        <div class="kpi-value" style="color:var(--indigo)">8</div>
+        <div class="kpi-trend" style="color:var(--green)">92% participation</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#FEE2E2">⚠️</div>
+      <div>
+        <div class="kpi-label">Health Alerts</div>
+        <div class="kpi-value" style="color:var(--coral)">3</div>
+        <div class="kpi-trend" style="color:var(--coral)">2 fall risk, 1 vitals</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#D1FAE5">🏠</div>
+      <div>
+        <div class="kpi-label">Occupancy Rate</div>
+        <div class="kpi-value" style="color:var(--green)">94%</div>
+        <div class="kpi-trend" style="color:var(--green)">8 rooms available</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <section id="residents">
+      <div class="section-header">
+        <h2>Residents</h2>
+        <span class="badge">124 total</span>
+      </div>
+      <div class="resident-grid">
+        <div class="resident-card">
+          <div class="resident-header">
+            <div class="resident-avatar" style="background:#D1FAE5">👵</div>
+            <div>
+              <h4>Eleanor Mitchell</h4>
+              <div class="room">Room 214 · Wing B</div>
+            </div>
+          </div>
+          <div class="detail">Age: 82 · Admitted: Jan 2024</div>
+          <div class="detail">Next activity: Art Class (14:00)</div>
+          <span class="care-badge care-independent">Independent Living</span>
+        </div>
+        <div class="resident-card">
+          <div class="resident-header">
+            <div class="resident-avatar" style="background:#DBEAFE">👴</div>
+            <div>
+              <h4>Robert Chen</h4>
+              <div class="room">Room 108 · Wing A</div>
+            </div>
+          </div>
+          <div class="detail">Age: 78 · Admitted: Mar 2023</div>
+          <div class="detail">Next activity: Garden Walk (15:30)</div>
+          <span class="care-badge care-assisted">Assisted Living</span>
+        </div>
+        <div class="resident-card">
+          <div class="resident-header">
+            <div class="resident-avatar" style="background:#FEF3C7">👵</div>
+            <div>
+              <h4>Maria Kowalska</h4>
+              <div class="room">Room 305 · Wing C</div>
+            </div>
+          </div>
+          <div class="detail">Age: 88 · Admitted: Sep 2022</div>
+          <div class="detail">Next activity: Music Therapy (10:00)</div>
+          <span class="care-badge care-memory">Memory Care</span>
+        </div>
+        <div class="resident-card">
+          <div class="resident-header">
+            <div class="resident-avatar" style="background:#FEE2E2">👴</div>
+            <div>
+              <h4>James O'Brien</h4>
+              <div class="room">Room 401 · Wing D</div>
+            </div>
+          </div>
+          <div class="detail">Age: 75 · Admitted: Nov 2024</div>
+          <div class="detail">Next activity: Physical Therapy (09:00)</div>
+          <span class="care-badge care-skilled">Skilled Nursing</span>
+        </div>
+        <div class="resident-card">
+          <div class="resident-header">
+            <div class="resident-avatar" style="background:#D1FAE5">👵</div>
+            <div>
+              <h4>Sophia Jensen</h4>
+              <div class="room">Room 219 · Wing B</div>
+            </div>
+          </div>
+          <div class="detail">Age: 80 · Admitted: Jun 2023</div>
+          <div class="detail">Next activity: Yoga (11:00)</div>
+          <span class="care-badge care-independent">Independent Living</span>
+        </div>
+        <div class="resident-card">
+          <div class="resident-header">
+            <div class="resident-avatar" style="background:#ECFEFF">👴</div>
+            <div>
+              <h4>Henrik Andersen</h4>
+              <div class="room">Room 112 · Wing A</div>
+            </div>
+          </div>
+          <div class="detail">Age: 85 · Admitted: Feb 2024</div>
+          <div class="detail">Next activity: Movie Night (19:00)</div>
+          <span class="care-badge care-assisted">Assisted Living</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="activities">
+      <div class="section-header">
+        <h2>Weekly Activity Calendar</h2>
+        <span class="badge">This week</span>
+      </div>
+      <div class="calendar-grid">
+        <div class="cal-item">
+          <div class="cal-time">09:00</div>
+          <div class="cal-info">
+            <h4>Morning Yoga</h4>
+            <div class="meta">Studio A · 12 residents · Every Mon/Wed/Fri</div>
+          </div>
+        </div>
+        <div class="cal-item">
+          <div class="cal-time">10:00</div>
+          <div class="cal-info">
+            <h4>Music Therapy</h4>
+            <div class="meta">Activity Room · 8 residents · Tuesday</div>
+          </div>
+        </div>
+        <div class="cal-item">
+          <div class="cal-time">10:30</div>
+          <div class="cal-info">
+            <h4>Art Class — Watercolors</h4>
+            <div class="meta">Creative Studio · 10 residents · Wednesday</div>
+          </div>
+        </div>
+        <div class="cal-item">
+          <div class="cal-time">11:00</div>
+          <div class="cal-info">
+            <h4>Book Club</h4>
+            <div class="meta">Library · 6 residents · Thursday</div>
+          </div>
+        </div>
+        <div class="cal-item">
+          <div class="cal-time">14:00</div>
+          <div class="cal-info">
+            <h4>Garden Walk</h4>
+            <div class="meta">Outdoor Gardens · 15 residents · Daily</div>
+          </div>
+        </div>
+        <div class="cal-item">
+          <div class="cal-time">15:00</div>
+          <div class="cal-info">
+            <h4>Cooking Club</h4>
+            <div class="meta">Kitchen Studio · 8 residents · Friday</div>
+          </div>
+        </div>
+        <div class="cal-item">
+          <div class="cal-time">16:00</div>
+          <div class="cal-info">
+            <h4>Chair Exercises</h4>
+            <div class="meta">Studio B · 14 residents · Daily</div>
+          </div>
+        </div>
+        <div class="cal-item">
+          <div class="cal-time">19:00</div>
+          <div class="cal-info">
+            <h4>Movie Night</h4>
+            <div class="meta">Theater Room · 20 residents · Saturday</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="health">
+      <div class="section-header">
+        <h2>Health Monitoring</h2>
+        <span class="badge">Community averages</span>
+      </div>
+      <div class="health-grid">
+        <div class="health-card">
+          <div class="icon">❤️</div>
+          <h4>Avg Blood Pressure</h4>
+          <div class="value" style="color:var(--green)">128/82</div>
+          <div class="status">Within normal range</div>
+        </div>
+        <div class="health-card">
+          <div class="icon">💓</div>
+          <h4>Avg Heart Rate</h4>
+          <div class="value" style="color:var(--cyan)">72 bpm</div>
+          <div class="status">Healthy resting rate</div>
+        </div>
+        <div class="health-card">
+          <div class="icon">⚖️</div>
+          <h4>Avg Weight</h4>
+          <div class="value" style="color:var(--indigo)">68 kg</div>
+          <div class="status">Stable — no concerns</div>
+        </div>
+        <div class="health-card">
+          <div class="icon">😴</div>
+          <h4>Avg Sleep Quality</h4>
+          <div class="value" style="color:var(--lime)">7.2 hrs</div>
+          <div class="status">Good — 85% restful</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="dining">
+      <div class="section-header">
+        <h2>Weekly Dining Menu</h2>
+        <span class="badge">This week</span>
+      </div>
+      <table class="data-tbl" aria-label="Dining menu">
+        <thead>
+          <tr>
+            <th>Day</th>
+            <th>Breakfast</th>
+            <th>Lunch</th>
+            <th>Dinner</th>
+            <th>Dietary</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Monday</strong></td>
+            <td>Oatmeal &amp; Fresh Fruit</td>
+            <td>Grilled Chicken Salad</td>
+            <td>Baked Salmon &amp; Vegetables</td>
+            <td>GF, Low Sodium</td>
+          </tr>
+          <tr>
+            <td><strong>Tuesday</strong></td>
+            <td>Scrambled Eggs &amp; Toast</td>
+            <td>Tomato Soup &amp; Sandwich</td>
+            <td>Beef Stew &amp; Mashed Potato</td>
+            <td>Vegetarian option</td>
+          </tr>
+          <tr>
+            <td><strong>Wednesday</strong></td>
+            <td>Pancakes &amp; Berries</td>
+            <td>Pasta Primavera</td>
+            <td>Roast Turkey &amp; Gravy</td>
+            <td>DF, Nut-free</td>
+          </tr>
+          <tr>
+            <td><strong>Thursday</strong></td>
+            <td>Yogurt Parfait</td>
+            <td>Fish Tacos</td>
+            <td>Lamb Chops &amp; Couscous</td>
+            <td>GF available</td>
+          </tr>
+          <tr>
+            <td><strong>Friday</strong></td>
+            <td>French Toast</td>
+            <td>Caesar Salad Wrap</td>
+            <td>Lobster Ravioli</td>
+            <td>Vegetarian option</td>
+          </tr>
+          <tr>
+            <td><strong>Saturday</strong></td>
+            <td>Bagels &amp; Lox</td>
+            <td>BBQ Pulled Pork</td>
+            <td>Chicken Marsala</td>
+            <td>Low Sodium</td>
+          </tr>
+          <tr>
+            <td><strong>Sunday</strong></td>
+            <td>Brunch Buffet</td>
+            <td>—</td>
+            <td>Prime Rib &amp; Yorkshire</td>
+            <td>GF, DF available</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="family">
+      <div class="section-header">
+        <h2>Family Portal</h2>
+        <span class="badge">Recent activity</span>
+      </div>
+      <div class="message-list" role="list">
+        <div class="message-item" role="listitem">
+          <div class="message-dot" style="background:var(--cyan)"></div>
+          <span>Sarah Mitchell confirmed visit for Saturday 2pm — Room 214 (Eleanor)</span>
+          <span class="message-time">1 hour ago</span>
+        </div>
+        <div class="message-item" role="listitem">
+          <div class="message-dot" style="background:var(--green)"></div>
+          <span>Dr. Patel updated care plan for Robert Chen — new physical therapy schedule</span>
+          <span class="message-time">3 hours ago</span>
+        </div>
+        <div class="message-item" role="listitem">
+          <div class="message-dot" style="background:var(--indigo)"></div>
+          <span>Family newsletter sent to 89 contacts — June activities and menu preview</span>
+          <span class="message-time">Yesterday</span>
+        </div>
+        <div class="message-item" role="listitem">
+          <div class="message-dot" style="background:var(--coral)"></div>
+          <span>Urgent: James O'Brien's son notified about upcoming medical appointment</span>
+          <span class="message-time">Yesterday</span>
+        </div>
+        <div class="message-item" role="listitem">
+          <div class="message-dot" style="background:var(--lime)"></div>
+          <span>Photo gallery updated — Spring Festival pictures shared with families</span>
+          <span class="message-time">2 days ago</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p>Haven Senior Living — designed by Studio · Standalone prototype · Not affiliated with any healthcare provider</p>
+</footer>
+
+<script>
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.getElementById('drawer').classList.remove('open');
+      document.getElementById('overlay').classList.remove('open');
+    }
+  });
+</script>
+</body>
+</html>
