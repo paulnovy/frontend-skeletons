@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>InkLine — Editorial Media</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,600;0,6..72,700;1,6..72,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --paper: #FAF7F0;
+  --ink: #111111;
+  --crimson: #B91C1C;
+  --cobalt: #1D4ED8;
+  --warm-gray: #D6D3D1;
+  --charcoal: #27272A;
+  --font-head: 'Newsreader', Georgia, serif;
+  --font-ui: 'Inter', -apple-system, sans-serif;
+}
+
+body {
+  font-family: var(--font-ui);
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── HEADER ── */
+.site-header {
+  border-bottom: 2px solid var(--ink);
+  padding: 0 2rem;
+}
+.header-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+}
+.logo {
+  font-family: var(--font-head);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-decoration: none;
+}
+.logo span { color: var(--crimson); }
+.header-date {
+  font-size: 0.8rem;
+  color: var(--charcoal);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.header-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+.btn-subscribe {
+  background: var(--crimson);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  letter-spacing: 0.03em;
+}
+.btn-subscribe:hover { background: #991B1B; }
+.search-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--ink);
+}
+.search-btn svg { width: 20px; height: 20px; }
+
+/* ── NAV ── */
+.nav-bar {
+  display: flex;
+  gap: 0;
+  border-top: 1px solid var(--warm-gray);
+  overflow-x: auto;
+}
+.nav-bar a {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.75rem 1.25rem;
+  color: var(--charcoal);
+  text-decoration: none;
+  white-space: nowrap;
+  border-bottom: 2px solid transparent;
+  transition: border-color 0.2s, color 0.2s;
+}
+.nav-bar a:hover, .nav-bar a.active {
+  color: var(--crimson);
+  border-bottom-color: var(--crimson);
+}
+
+/* ── LEAD STORY ── */
+.lead-story {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  border-bottom: 1px solid var(--warm-gray);
+}
+.lead-image {
+  position: relative;
+  overflow: hidden;
+  min-height: 480px;
+  background: var(--charcoal);
+}
+.lead-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.lead-image .topic-tag {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+}
+.lead-body {
+  padding: 3rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.lead-body .topic-tag { margin-bottom: 1rem; }
+.lead-body h1 {
+  font-family: var(--font-head);
+  font-size: 2.5rem;
+  font-weight: 700;
+  line-height: 1.15;
+  margin-bottom: 1rem;
+  letter-spacing: -0.01em;
+}
+.lead-body p {
+  font-size: 1.1rem;
+  line-height: 1.7;
+  color: var(--charcoal);
+  margin-bottom: 1.5rem;
+  max-width: 540px;
+}
+.byline {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--charcoal);
+}
+.byline-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--warm-gray);
+}
+.byline-name { font-weight: 600; color: var(--ink); }
+.byline-meta { color: #71717A; }
+
+/* ── TOPIC TAG ── */
+.topic-tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.3rem 0.75rem;
+  border: 1.5px solid var(--crimson);
+  color: var(--crimson);
+}
+.topic-tag.cobalt { border-color: var(--cobalt); color: var(--cobalt); }
+
+/* ── READING TIME ── */
+.read-time {
+  font-size: 0.75rem;
+  color: #71717A;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+.read-time::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  background: var(--crimson);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* ── ASYMMETRIC GRID ── */
+.section-label {
+  font-family: var(--font-head);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--crimson);
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--ink);
+  margin-bottom: 2rem;
+  display: inline-block;
+}
+
+.article-grid {
+  padding: 3rem 2rem;
+}
+.asym-grid {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 1.5rem;
+}
+.asym-grid .card:first-child {
+  grid-row: 1 / 3;
+}
+
+.card {
+  border-bottom: 1px solid var(--warm-gray);
+  padding-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+.card-image {
+  width: 100%;
+  aspect-ratio: 16/10;
+  background: var(--warm-gray);
+  margin-bottom: 1rem;
+  overflow: hidden;
+  position: relative;
+}
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.card-image.tall { aspect-ratio: 3/4; }
+.card-image .topic-tag { position: absolute; top: 0.75rem; left: 0.75rem; }
+.card h2 {
+  font-family: var(--font-head);
+  font-size: 1.5rem;
+  font-weight: 600;
+  line-height: 1.25;
+  margin-bottom: 0.6rem;
+  color: var(--ink);
+}
+.card h3 {
+  font-family: var(--font-head);
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 0.5rem;
+  color: var(--ink);
+}
+.card p {
+  font-size: 0.9rem;
+  color: var(--charcoal);
+  line-height: 1.6;
+  margin-bottom: 0.75rem;
+  flex: 1;
+}
+.card .byline { font-size: 0.8rem; }
+
+/* ── TOPIC RAILS ── */
+.topic-rails {
+  padding: 3rem 2rem;
+  border-top: 1px solid var(--warm-gray);
+}
+.rail {
+  margin-bottom: 3rem;
+}
+.rail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  border-bottom: 2px solid var(--ink);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+.rail-header h2 {
+  font-family: var(--font-head);
+  font-size: 1.3rem;
+  font-weight: 700;
+}
+.rail-header a {
+  font-size: 0.8rem;
+  color: var(--cobalt);
+  text-decoration: none;
+  font-weight: 600;
+}
+.rail-header a:hover { text-decoration: underline; }
+.rail-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+}
+.rail-card h3 {
+  font-family: var(--font-head);
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 0.4rem;
+}
+.rail-card .card-meta {
+  font-size: 0.8rem;
+  color: #71717A;
+}
+
+/* ── AUDIO ARTICLES ── */
+.audio-hybrid {
+  border: 1px solid var(--warm-gray);
+  padding: 1.25rem;
+  display: flex;
+  gap: 1.25rem;
+  align-items: flex-start;
+  background: #fff;
+  margin-bottom: 1rem;
+}
+.audio-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--cobalt);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.audio-icon svg { fill: #fff; width: 18px; height: 18px; margin-left: 2px; }
+.audio-hybrid h3 {
+  font-family: var(--font-head);
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+.audio-hybrid .audio-duration {
+  font-size: 0.75rem;
+  color: var(--cobalt);
+  font-weight: 600;
+}
+
+/* ── NEWSLETTER ── */
+.newsletter-block {
+  background: var(--ink);
+  color: #fff;
+  padding: 4rem 2rem;
+  text-align: center;
+}
+.newsletter-block h2 {
+  font-family: var(--font-head);
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.75rem;
+}
+.newsletter-block p {
+  font-size: 1rem;
+  color: var(--warm-gray);
+  max-width: 500px;
+  margin: 0 auto 2rem;
+}
+.newsletter-form {
+  display: flex;
+  gap: 0;
+  max-width: 460px;
+  margin: 0 auto;
+}
+.newsletter-form input {
+  flex: 1;
+  padding: 0.85rem 1rem;
+  border: none;
+  font-size: 0.9rem;
+  font-family: var(--font-ui);
+}
+.newsletter-form button {
+  background: var(--crimson);
+  color: #fff;
+  border: none;
+  padding: 0.85rem 1.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  letter-spacing: 0.03em;
+}
+.newsletter-form button:hover { background: #991B1B; }
+
+/* ── FOOTER ── */
+.site-footer {
+  border-top: 2px solid var(--ink);
+  padding: 3rem 2rem;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+.footer-brand .logo { font-size: 1.5rem; margin-bottom: 0.75rem; display: block; }
+.footer-brand p { font-size: 0.85rem; color: var(--charcoal); max-width: 300px; }
+.footer-col h4 {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 1rem;
+  color: var(--ink);
+}
+.footer-col a {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--charcoal);
+  text-decoration: none;
+  margin-bottom: 0.5rem;
+}
+.footer-col a:hover { color: var(--crimson); }
+.footer-bottom {
+  border-top: 1px solid var(--warm-gray);
+  padding-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #71717A;
+}
+.footer-social {
+  display: flex;
+  gap: 1rem;
+}
+.footer-social a {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--warm-gray);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--charcoal);
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: border-color 0.2s, color 0.2s;
+}
+.footer-social a:hover {
+  border-color: var(--crimson);
+  color: var(--crimson);
+}
+
+/* ── MOBILE ── */
+@media (max-width: 768px) {
+  .lead-story { grid-template-columns: 1fr; }
+  .lead-image { min-height: 260px; }
+  .lead-body { padding: 2rem 1.25rem; }
+  .lead-body h1 { font-size: 1.75rem; }
+  .asym-grid {
+    grid-template-columns: 1fr;
+  }
+  .asym-grid .card:first-child { grid-row: auto; }
+  .rail-cards {
+    grid-template-columns: 1fr 1fr;
+  }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .newsletter-form { flex-direction: column; }
+  .newsletter-form button { padding: 0.85rem; }
+  .audio-hybrid { flex-direction: column; }
+  .nav-bar { gap: 0; }
+  .nav-bar a { padding: 0.75rem 0.75rem; font-size: 0.7rem; }
+  .header-top { flex-wrap: wrap; gap: 0.5rem; }
+}
+
+@media (max-width: 480px) {
+  .rail-cards { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header class="site-header">
+  <div class="header-top">
+    <a href="#" class="logo">Ink<span>Line</span></a>
+    <span class="header-date">Thursday, May 28, 2026</span>
+    <div class="header-actions">
+      <button class="search-btn" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+      </button>
+      <button class="btn-subscribe">Subscribe</button>
+    </div>
+  </div>
+  <nav class="nav-bar">
+    <a href="#" class="active">Home</a>
+    <a href="#">World</a>
+    <a href="#">Politics</a>
+    <a href="#">Technology</a>
+    <a href="#">Culture</a>
+    <a href="#">Science</a>
+    <a href="#">Business</a>
+    <a href="#">Opinion</a>
+    <a href="#">Audio</a>
+  </nav>
+</header>
+
+<!-- ── LEAD STORY ── -->
+<section class="lead-story">
+  <div class="lead-image">
+    <div class="topic-tag">Investigation</div>
+    <svg width="100%" height="100%" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+      <rect fill="#27272A" width="800" height="600"/>
+      <text x="400" y="300" text-anchor="middle" fill="#71717A" font-family="Inter, sans-serif" font-size="14">Lead Story Image</text>
+    </svg>
+  </div>
+  <div class="lead-body">
+    <div class="topic-tag">Investigation</div>
+    <h1>The Hidden Cost of Fast Fashion: Inside the Factories the Industry Doesn't Want You to See</h1>
+    <p>A year-long investigation reveals the true human and environmental toll behind the world's cheapest clothing — and why recycling promises ring hollow.</p>
+    <div class="byline">
+      <div class="byline-avatar"></div>
+      <div>
+        <span class="byline-name">Amara Osei</span> · <span class="byline-meta">May 28, 2026</span>
+        <div class="read-time">14 min read</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FEATURED ARTICLES ── -->
+<section class="article-grid">
+  <div class="section-label">Featured Stories</div>
+  <div class="asym-grid">
+    <!-- Tall left card -->
+    <article class="card">
+      <div class="card-image tall">
+        <div class="topic-tag cobalt">Technology</div>
+        <svg width="100%" height="100%" viewBox="0 0 600 800" xmlns="http://www.w3.org/2000/svg">
+          <rect fill="#D6D3D1" width="600" height="800"/>
+          <text x="300" y="400" text-anchor="middle" fill="#71717A" font-family="Inter, sans-serif" font-size="13">Article Image</text>
+        </svg>
+      </div>
+      <h2>When Algorithms Edit the News: AI and the Future of Journalism</h2>
+      <p>Newsrooms are adopting AI tools at breakneck speed. But as automated writing improves, questions about accuracy, bias, and trust grow louder.</p>
+      <div class="byline">
+        <span class="byline-name">James Chen</span> · <span class="byline-meta">8 min read</span>
+      </div>
+    </article>
+
+    <!-- Top right -->
+    <article class="card">
+      <div class="card-image">
+        <svg width="100%" height="100%" viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">
+          <rect fill="#D6D3D1" width="400" height="250"/>
+          <text x="200" y="125" text-anchor="middle" fill="#71717A" font-family="Inter, sans-serif" font-size="13">Article Image</text>
+        </svg>
+      </div>
+      <div class="topic-tag">World</div>
+      <h3>Pacific Island Nations Unite to Demand Climate Reparations at UN Summit</h3>
+      <p>A coalition of 14 nations presents a landmark legal framework.</p>
+      <div class="byline">
+        <span class="byline-name">Leilani Tau</span> · <span class="byline-meta">5 min read</span>
+      </div>
+    </article>
+
+    <!-- Bottom right -->
+    <article class="card">
+      <div class="card-image">
+        <svg width="100%" height="100%" viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg">
+          <rect fill="#D6D3D1" width="400" height="250"/>
+          <text x="200" y="125" text-anchor="middle" fill="#71717A" font-family="Inter, sans-serif" font-size="13">Article Image</text>
+        </svg>
+      </div>
+      <div class="topic-tag">Culture</div>
+      <h3>The Library of Things: Why Borrowing Is the New Buying</h3>
+      <p>A growing movement rethinks ownership, one tool at a time.</p>
+      <div class="byline">
+        <span class="byline-name">Priya Sharma</span> · <span class="byline-meta">6 min read</span>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ── TOPIC RAILS ── -->
+<section class="topic-rails">
+  <!-- Technology Rail -->
+  <div class="rail">
+    <div class="rail-header">
+      <h2>Technology</h2>
+      <a href="#">View all →</a>
+    </div>
+    <div class="rail-cards">
+      <article class="rail-card">
+        <div class="topic-tag cobalt">Technology</div>
+        <h3>Quantum Computing Hits Its First Commercial Milestone</h3>
+        <div class="card-meta">Ravi Patel · 7 min read</div>
+      </article>
+      <article class="rail-card">
+        <div class="topic-tag cobalt">Technology</div>
+        <h3>The Open-Source Movement That's Rewriting Silicon Valley's Rules</h3>
+        <div class="card-meta">Sofia Bergström · 6 min read</div>
+      </article>
+      <article class="rail-card">
+        <div class="topic-tag cobalt">Technology</div>
+        <h3>How Satellite Internet Is Transforming Rural Education in Sub-Saharan Africa</h3>
+        <div class="card-meta">Kwame Asante · 9 min read</div>
+      </article>
+      <article class="rail-card">
+        <div class="topic-tag cobalt">Technology</div>
+        <h3>Privacy in 2026: The Tools That Actually Protect You</h3>
+        <div class="card-meta">Elena Volkov · 5 min read</div>
+      </article>
+    </div>
+  </div>
+
+  <!-- Culture Rail -->
+  <div class="rail">
+    <div class="rail-header">
+      <h2>Culture</h2>
+      <a href="#">View all →</a>
+    </div>
+    <div class="rail-cards">
+      <article class="rail-card">
+        <div class="topic-tag">Culture</div>
+        <h3>The Return of the Vinyl Record — and What It Says About Us</h3>
+        <div class="card-meta">Marcus Rivera · 6 min read</div>
+      </article>
+      <article class="rail-card">
+        <div class="topic-tag">Culture</div>
+        <h3>Why Contemporary Art Needs Fewer Galleries and More Living Rooms</h3>
+        <div class="card-meta">Yuki Tanaka · 5 min read</div>
+      </article>
+      <article class="rail-card">
+        <div class="topic-tag">Culture</div>
+        <h3>The Age of Comfort TV: How Streaming Changed What We Watch</h3>
+        <div class="card-meta">Claire Dubois · 8 min read</div>
+      </article>
+      <article class="rail-card">
+        <div class="topic-tag">Culture</div>
+        <h3>Street Food Goes Fine Dining — and the Chefs Who Hate It</h3>
+        <div class="card-meta">Aisha Okafor · 4 min read</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ── AUDIO ARTICLES ── -->
+<section class="article-grid" style="border-top: 1px solid var(--warm-gray);">
+  <div class="section-label">Listen & Read</div>
+  <div style="max-width: 720px;">
+    <article class="audio-hybrid">
+      <div class="audio-icon">
+        <svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg>
+      </div>
+      <div>
+        <h3>The Making of a Refugee Crisis: A Three-Part Investigation</h3>
+        <p style="font-size:0.85rem; color: var(--charcoal); margin-bottom: 0.4rem;">An audio documentary tracing displacement across three continents, narrated by the journalists who reported it.</p>
+        <span class="audio-duration">38 min · Part 1 of 3</span>
+      </div>
+    </article>
+    <article class="audio-hybrid">
+      <div class="audio-icon">
+        <svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg>
+      </div>
+      <div>
+        <h3>Interview: The Economist Who Predicted the 2025 Downturn</h3>
+        <p style="font-size:0.85rem; color: var(--charcoal); margin-bottom: 0.4rem;">Dr. Lena Fischer on why she warned the markets — and what she sees coming next.</p>
+        <span class="audio-duration">22 min</span>
+      </div>
+    </article>
+    <article class="audio-hybrid">
+      <div class="audio-icon">
+        <svg viewBox="0 0 24 24"><polygon points="8,5 19,12 8,19"/></svg>
+      </div>
+      <div>
+        <h3>The Daily Briefing: What You Need to Know This Week</h3>
+        <p style="font-size:0.85rem; color: var(--charcoal); margin-bottom: 0.4rem;">Five stories, five minutes. Our editors' picks for the week's most important developments.</p>
+        <span class="audio-duration">5 min</span>
+      </div>
+    </article>
+  </div>
+</section>
+
+<!-- ── NEWSLETTER ── -->
+<section class="newsletter-block">
+  <h2>The Morning Edit</h2>
+  <p>Smart, concise, and delivered before your first coffee. The stories that matter, curated daily.</p>
+  <form class="newsletter-form" onsubmit="return false;">
+    <input type="email" aria-label="Email address" required>
+    <button type="submit">Subscribe</button>
+  </form>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <span class="logo">Ink<span>Line</span></span>
+      <p>Independent journalism for a complex world. Stories that inform, challenge, and inspire.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Sections</h4>
+      <a href="#">World</a>
+      <a href="#">Politics</a>
+      <a href="#">Technology</a>
+      <a href="#">Culture</a>
+      <a href="#">Science</a>
+    </div>
+    <div class="footer-col">
+      <h4>More</h4>
+      <a href="#">Opinion</a>
+      <a href="#">Audio</a>
+      <a href="#">Video</a>
+      <a href="#">Photography</a>
+      <a href="#">Data</a>
+    </div>
+    <div class="footer-col">
+      <h4>About</h4>
+      <a href="#">Our Mission</a>
+      <a href="#">Masthead</a>
+      <a href="#">Careers</a>
+      <a href="#">Ethics Policy</a>
+      <a href="#">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 InkLine. All rights reserved.</span>
+    <div class="footer-social">
+      <a href="#" aria-label="Twitter">𝕏</a>
+      <a href="#" aria-label="Instagram">IG</a>
+      <a href="#" aria-label="LinkedIn">in</a>
+      <a href="#" aria-label="RSS">RSS</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
