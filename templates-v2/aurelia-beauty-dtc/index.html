@@ -1,0 +1,1306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aurelia Beauty DTC</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #FFF8F0;
+      --rose: #F7C7D9;
+      --rose-soft: rgba(247, 199, 217, 0.34);
+      --terracotta: #C76F56;
+      --terracotta-soft: rgba(199, 111, 86, 0.14);
+      --cocoa: #5B3A32;
+      --cocoa-muted: rgba(91, 58, 50, 0.68);
+      --cocoa-faint: rgba(91, 58, 50, 0.12);
+      --pearl: #FDF2F8;
+      --sage: #A8BFA0;
+      --sage-soft: rgba(168, 191, 160, 0.25);
+      --white: #FFFFFF;
+      --shadow: 0 22px 60px rgba(91, 58, 50, 0.14);
+      --shadow-soft: 0 12px 28px rgba(91, 58, 50, 0.08);
+      --radius: 10px;
+      --radius-sm: 6px;
+      --max: 1220px;
+      --nav-height: 64px;
+    }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--cocoa);
+      background: var(--cream);
+      font-family: "DM Sans", system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+    button {
+      cursor: pointer;
+    }
+    img,
+    svg {
+      display: block;
+      max-width: 100%;
+    }
+    :focus-visible {
+      outline: 2px solid var(--terracotta);
+      outline-offset: 3px;
+    }
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 16px;
+      z-index: 1000;
+      padding: 10px 18px;
+      color: var(--white);
+      background: var(--terracotta);
+      border-radius: var(--radius-sm);
+      font-weight: 700;
+    }
+    .skip-link:focus {
+      top: 16px;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      background: rgba(255, 248, 240, 0.92);
+      border-bottom: 1px solid var(--cocoa-faint);
+      backdrop-filter: blur(18px);
+    }
+    .nav {
+      max-width: var(--max);
+      height: var(--nav-height);
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+    }
+    .brand {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.75rem;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--cocoa-muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+    .nav-links a:hover {
+      color: var(--cocoa);
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .icon-button {
+      width: 40px;
+      height: 40px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--cocoa-faint);
+      border-radius: 999px;
+      color: var(--cocoa);
+      background: rgba(255, 255, 255, 0.58);
+    }
+    .nav-cta {
+      min-height: 40px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 999px;
+      color: var(--white);
+      background: var(--terracotta);
+      font-size: 0.84rem;
+      font-weight: 800;
+    }
+    .menu-button {
+      display: none;
+    }
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 110;
+      display: none;
+      background: rgba(91, 58, 50, 0.34);
+    }
+    .drawer-overlay.open {
+      display: block;
+    }
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: -320px;
+      z-index: 120;
+      width: min(320px, 84vw);
+      height: 100%;
+      padding: 24px;
+      background: var(--cream);
+      border-left: 1px solid var(--cocoa-faint);
+      transition: right 180ms ease;
+    }
+    .drawer.open {
+      right: 0;
+    }
+    .drawer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .drawer-close {
+      width: 38px;
+      height: 38px;
+      border: 1px solid var(--cocoa-faint);
+      border-radius: 999px;
+      color: var(--cocoa);
+      background: var(--white);
+    }
+    .drawer nav {
+      display: grid;
+      gap: 4px;
+    }
+    .drawer a {
+      padding: 13px 0;
+      border-bottom: 1px solid var(--cocoa-faint);
+      font-weight: 700;
+    }
+    .hero {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 52px 24px 70px;
+      display: grid;
+      grid-template-columns: minmax(0, 0.92fr) minmax(420px, 1.08fr);
+      gap: 42px;
+      align-items: center;
+    }
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 18px;
+      padding: 7px 12px;
+      color: var(--cocoa);
+      background: var(--sage-soft);
+      border: 1px solid rgba(168, 191, 160, 0.46);
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 800;
+    }
+    .hero-title {
+      max-width: 620px;
+      margin: 0 0 20px;
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(3rem, 7vw, 5.7rem);
+      font-weight: 600;
+      line-height: 0.94;
+    }
+    .hero-copy {
+      max-width: 505px;
+      margin: 0 0 28px;
+      color: var(--cocoa-muted);
+      font-size: 1.08rem;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .btn-primary,
+    .btn-secondary {
+      min-height: 48px;
+      padding: 0 24px;
+      border-radius: 999px;
+      font-weight: 800;
+    }
+    .btn-primary {
+      border: 0;
+      color: var(--white);
+      background: var(--terracotta);
+      box-shadow: var(--shadow-soft);
+    }
+    .btn-secondary {
+      border: 1px solid var(--cocoa-faint);
+      color: var(--cocoa);
+      background: rgba(255, 255, 255, 0.65);
+    }
+    .hero-proof {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      max-width: 520px;
+    }
+    .proof-card {
+      padding: 14px;
+      border: 1px solid var(--cocoa-faint);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.45);
+    }
+    .proof-value {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+    }
+    .proof-label {
+      color: var(--cocoa-muted);
+      font-size: 0.76rem;
+    }
+    .product-stage {
+      position: relative;
+      min-height: 590px;
+      display: grid;
+      place-items: center;
+      border-radius: 28px;
+      background: linear-gradient(135deg, var(--pearl), var(--rose));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .product-stage::before {
+      content: "";
+      position: absolute;
+      width: 420px;
+      height: 420px;
+      border-radius: 999px;
+      background: rgba(255, 248, 240, 0.48);
+    }
+    .product-bottle {
+      position: relative;
+      width: min(280px, 58vw);
+      height: 430px;
+      border: 1px solid rgba(91, 58, 50, 0.16);
+      border-radius: 80px 80px 26px 26px;
+      background: linear-gradient(180deg, var(--cream), #f9dfde 70%, var(--rose));
+      box-shadow: 0 34px 90px rgba(91, 58, 50, 0.22);
+    }
+    .product-cap {
+      position: absolute;
+      top: -54px;
+      left: 50%;
+      width: 118px;
+      height: 70px;
+      transform: translateX(-50%);
+      border-radius: 22px 22px 8px 8px;
+      background: var(--cocoa);
+    }
+    .product-label {
+      position: absolute;
+      left: 34px;
+      right: 34px;
+      bottom: 54px;
+      padding: 24px 18px;
+      border: 1px solid rgba(91, 58, 50, 0.18);
+      border-radius: 18px;
+      text-align: center;
+      background: rgba(255, 248, 240, 0.82);
+    }
+    .product-label strong {
+      display: block;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.8rem;
+    }
+    .product-label span {
+      color: var(--cocoa-muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .float-card {
+      position: absolute;
+      z-index: 2;
+      width: 210px;
+      padding: 16px;
+      border: 1px solid rgba(91, 58, 50, 0.12);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow: var(--shadow-soft);
+    }
+    .float-card.top {
+      top: 28px;
+      left: 28px;
+    }
+    .float-card.bottom {
+      right: 24px;
+      bottom: 28px;
+    }
+    .float-label {
+      margin-bottom: 5px;
+      color: var(--terracotta);
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+    }
+    .float-text {
+      color: var(--cocoa-muted);
+      font-size: 0.82rem;
+    }
+    .section {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 68px 24px;
+    }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 28px;
+      margin-bottom: 30px;
+    }
+    .eyebrow {
+      margin-bottom: 8px;
+      color: var(--terracotta);
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+    }
+    .section-title {
+      max-width: 680px;
+      margin: 0;
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(2.2rem, 4.5vw, 3.6rem);
+      font-weight: 600;
+      line-height: 1;
+    }
+    .section-copy {
+      max-width: 440px;
+      margin: 0;
+      color: var(--cocoa-muted);
+    }
+    .ingredients-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .ingredient-card {
+      min-height: 236px;
+      padding: 22px;
+      border: 1px solid var(--cocoa-faint);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.58);
+    }
+    .ingredient-symbol {
+      width: 54px;
+      height: 54px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 20px;
+      border-radius: 50%;
+      color: var(--cocoa);
+      background: var(--sage-soft);
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+    }
+    .ingredient-card h3 {
+      margin: 0 0 8px;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.55rem;
+    }
+    .ingredient-card p {
+      margin: 0 0 14px;
+      color: var(--cocoa-muted);
+      font-size: 0.9rem;
+    }
+    .ingredient-meta {
+      color: var(--terracotta);
+      font-size: 0.76rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    .compare-panel {
+      margin-top: 22px;
+      padding: 24px;
+      border-radius: 24px;
+      background: var(--pearl);
+    }
+    .compare-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+    .compare-card {
+      min-height: 300px;
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      border-radius: 20px;
+      background: linear-gradient(150deg, rgba(255, 255, 255, 0.72), rgba(247, 199, 217, 0.44));
+    }
+    .compare-card.after {
+      background: linear-gradient(150deg, rgba(168, 191, 160, 0.42), rgba(255, 255, 255, 0.72));
+    }
+    .compare-tag {
+      width: fit-content;
+      margin-bottom: 10px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      color: var(--white);
+      background: var(--cocoa);
+      font-size: 0.72rem;
+      font-weight: 900;
+    }
+    .compare-card h3 {
+      margin: 0 0 8px;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 2rem;
+    }
+    .compare-card p {
+      margin: 0;
+      color: var(--cocoa-muted);
+    }
+    .routine-shell {
+      display: grid;
+      grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.2fr);
+      gap: 24px;
+      align-items: start;
+    }
+    .quiz-card {
+      position: sticky;
+      top: calc(var(--nav-height) + 22px);
+      padding: 26px;
+      border-radius: 22px;
+      color: var(--cream);
+      background: var(--cocoa);
+    }
+    .quiz-card h3 {
+      margin: 0 0 10px;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 2rem;
+    }
+    .quiz-card p {
+      margin: 0 0 22px;
+      color: rgba(255, 248, 240, 0.74);
+    }
+    .progress {
+      height: 8px;
+      margin-bottom: 18px;
+      border-radius: 999px;
+      background: rgba(255, 248, 240, 0.18);
+      overflow: hidden;
+    }
+    .progress span {
+      display: block;
+      width: 66%;
+      height: 100%;
+      border-radius: 999px;
+      background: var(--sage);
+    }
+    .goal-list {
+      display: grid;
+      gap: 8px;
+      margin: 0 0 20px;
+      padding: 0;
+      list-style: none;
+    }
+    .goal-list button {
+      width: 100%;
+      min-height: 44px;
+      padding: 0 14px;
+      border: 1px solid rgba(255, 248, 240, 0.18);
+      border-radius: 12px;
+      color: var(--cream);
+      background: transparent;
+      text-align: left;
+      font-weight: 700;
+    }
+    .goal-list button.is-selected {
+      color: var(--cocoa);
+      background: var(--cream);
+    }
+    .quiz-submit {
+      width: 100%;
+      min-height: 46px;
+      border: 0;
+      border-radius: 999px;
+      color: var(--cocoa);
+      background: var(--rose);
+      font-weight: 900;
+    }
+    .routine-steps {
+      display: grid;
+      gap: 14px;
+    }
+    .step-card {
+      display: grid;
+      grid-template-columns: 74px minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      padding: 18px;
+      border: 1px solid var(--cocoa-faint);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.58);
+    }
+    .step-number {
+      width: 56px;
+      height: 56px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      color: var(--white);
+      background: var(--terracotta);
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+    }
+    .step-card h3 {
+      margin: 0 0 4px;
+      font-size: 1rem;
+    }
+    .step-card p {
+      margin: 0;
+      color: var(--cocoa-muted);
+      font-size: 0.88rem;
+    }
+    .step-product {
+      min-width: 118px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      text-align: center;
+      color: var(--cocoa);
+      background: var(--sage-soft);
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+    .bundle-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .bundle-card {
+      padding: 20px;
+      border: 1px solid var(--cocoa-faint);
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.6);
+    }
+    .bundle-image {
+      height: 210px;
+      margin-bottom: 18px;
+      display: grid;
+      place-items: center;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--rose-soft), var(--sage-soft));
+    }
+    .bundle-bottles {
+      display: flex;
+      align-items: end;
+      gap: 10px;
+    }
+    .mini-bottle {
+      width: 42px;
+      height: 118px;
+      border-radius: 20px 20px 8px 8px;
+      background: var(--cream);
+      border: 1px solid var(--cocoa-faint);
+    }
+    .mini-bottle.short {
+      height: 92px;
+      background: var(--pearl);
+    }
+    .mini-bottle.tall {
+      height: 138px;
+      background: var(--rose);
+    }
+    .bundle-tag {
+      display: inline-flex;
+      margin-bottom: 10px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      color: var(--terracotta);
+      background: var(--terracotta-soft);
+      font-size: 0.72rem;
+      font-weight: 900;
+    }
+    .bundle-card h3 {
+      margin: 0 0 8px;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.8rem;
+    }
+    .bundle-card p {
+      margin: 0 0 16px;
+      color: var(--cocoa-muted);
+    }
+    .bundle-price {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 14px;
+      font-weight: 900;
+    }
+    .bundle-price s {
+      color: var(--cocoa-muted);
+      font-size: 0.86rem;
+      font-weight: 500;
+    }
+    .bundle-actions {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+    }
+    .bundle-actions button {
+      min-height: 42px;
+      border-radius: 999px;
+      font-weight: 900;
+    }
+    .add-button {
+      border: 0;
+      color: var(--white);
+      background: var(--terracotta);
+    }
+    .save-button {
+      width: 42px;
+      border: 1px solid var(--cocoa-faint);
+      color: var(--cocoa);
+      background: var(--white);
+    }
+    .review-band {
+      background: var(--pearl);
+    }
+    .review-layout {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 68px 24px;
+      display: grid;
+      grid-template-columns: 0.75fr 1.25fr;
+      gap: 34px;
+    }
+    .score-card {
+      padding: 28px;
+      border-radius: 24px;
+      background: var(--cream);
+    }
+    .score-number {
+      font-family: "Cormorant Garamond", serif;
+      font-size: 5rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .score-stars {
+      margin: 8px 0 12px;
+      color: var(--terracotta);
+      letter-spacing: 0.1em;
+    }
+    .score-card p {
+      color: var(--cocoa-muted);
+    }
+    .review-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .review-card {
+      padding: 20px;
+      border: 1px solid var(--cocoa-faint);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.62);
+    }
+    .review-card blockquote {
+      margin: 0 0 14px;
+      color: var(--cocoa-muted);
+    }
+    .review-author {
+      font-weight: 900;
+    }
+    .review-meta {
+      color: var(--terracotta);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+    .subscribe {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 70px 24px;
+    }
+    .subscribe-card {
+      padding: 44px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.72fr);
+      gap: 34px;
+      align-items: center;
+      border-radius: 28px;
+      color: var(--cream);
+      background: var(--cocoa);
+      overflow: hidden;
+    }
+    .subscribe-card h2 {
+      margin: 0 0 14px;
+      font-family: "Cormorant Garamond", serif;
+      font-size: clamp(2.25rem, 4vw, 4rem);
+      line-height: 1;
+    }
+    .subscribe-card p {
+      max-width: 540px;
+      margin: 0 0 24px;
+      color: rgba(255, 248, 240, 0.74);
+    }
+    .subscribe-perks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .subscribe-perks span {
+      padding: 7px 11px;
+      border: 1px solid rgba(255, 248, 240, 0.18);
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+    .subscribe-form {
+      padding: 22px;
+      border-radius: 22px;
+      background: rgba(255, 248, 240, 0.08);
+    }
+    .subscribe-form label {
+      display: block;
+      margin-bottom: 8px;
+      color: rgba(255, 248, 240, 0.8);
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+    .subscribe-form input,
+    .subscribe-form select {
+      width: 100%;
+      min-height: 44px;
+      margin-bottom: 12px;
+      padding: 0 12px;
+      border: 1px solid rgba(255, 248, 240, 0.2);
+      border-radius: 12px;
+      color: var(--cream);
+      background: rgba(255, 248, 240, 0.1);
+    }
+    .subscribe-form option {
+      color: var(--cocoa);
+    }
+    .subscribe-form button {
+      width: 100%;
+      min-height: 46px;
+      border: 0;
+      border-radius: 999px;
+      color: var(--cocoa);
+      background: var(--rose);
+      font-weight: 900;
+    }
+    .footer {
+      border-top: 1px solid var(--cocoa-faint);
+      background: rgba(255, 255, 255, 0.32);
+    }
+    .footer-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 36px 24px;
+      display: grid;
+      grid-template-columns: 1.4fr repeat(3, 1fr);
+      gap: 28px;
+    }
+    .footer-brand {
+      margin-bottom: 10px;
+      font-family: "Cormorant Garamond", serif;
+      font-size: 1.55rem;
+      font-weight: 700;
+    }
+    .footer p {
+      max-width: 310px;
+      margin: 0;
+      color: var(--cocoa-muted);
+      font-size: 0.86rem;
+    }
+    .footer h3 {
+      margin: 0 0 12px;
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .footer a {
+      display: block;
+      padding: 4px 0;
+      color: var(--cocoa-muted);
+      font-size: 0.84rem;
+    }
+    .footer-bottom {
+      padding: 16px 24px 24px;
+      text-align: center;
+      color: var(--cocoa-muted);
+      font-size: 0.74rem;
+    }
+    @media (max-width: 1024px) {
+      .nav-links,
+      .nav-cta {
+        display: none;
+      }
+      .menu-button {
+        display: inline-flex;
+      }
+      .hero {
+        grid-template-columns: 1fr;
+      }
+      .product-stage {
+        min-height: 500px;
+      }
+      .ingredients-grid,
+      .bundle-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .routine-shell,
+      .review-layout,
+      .subscribe-card {
+        grid-template-columns: 1fr;
+      }
+      .quiz-card {
+        position: static;
+      }
+      .footer-inner {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    @media (max-width: 720px) {
+      .nav {
+        padding: 0 16px;
+      }
+      .hero {
+        padding: 34px 16px 48px;
+      }
+      .hero-proof,
+      .ingredients-grid,
+      .compare-grid,
+      .bundle-grid,
+      .review-grid,
+      .footer-inner {
+        grid-template-columns: 1fr;
+      }
+      .product-stage {
+        min-height: 430px;
+        border-radius: 20px;
+      }
+      .product-bottle {
+        width: 210px;
+        height: 330px;
+      }
+      .product-cap {
+        top: -42px;
+        width: 92px;
+        height: 54px;
+      }
+      .float-card {
+        position: static;
+        width: auto;
+        margin: 10px;
+      }
+      .section,
+      .review-layout,
+      .subscribe {
+        padding: 46px 16px;
+      }
+      .section-head {
+        display: block;
+      }
+      .section-copy {
+        margin-top: 12px;
+      }
+      .step-card {
+        grid-template-columns: 52px 1fr;
+      }
+      .step-product {
+        grid-column: 1 / -1;
+        width: fit-content;
+      }
+      .subscribe-card {
+        padding: 28px 18px;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="drawer-header">
+      <a class="brand" href="#">Aurelia</a>
+      <button class="drawer-close" id="drawerClose" aria-label="Close menu">x</button>
+    </div>
+    <nav aria-label="Mobile sections">
+      <a href="#ingredients">Ingredients</a>
+      <a href="#routine">Routine finder</a>
+      <a href="#bundles">Bundles</a>
+      <a href="#reviews">Reviews</a>
+      <a href="#subscribe">Subscribe</a>
+    </nav>
+  </aside>
+  <header class="topbar">
+    <nav class="nav" aria-label="Primary navigation">
+      <a class="brand" href="#">Aurelia</a>
+      <ul class="nav-links" role="list">
+        <li><a href="#ingredients">Ingredients</a></li>
+        <li><a href="#routine">Routine</a></li>
+        <li><a href="#bundles">Bundles</a></li>
+        <li><a href="#reviews">Reviews</a></li>
+      </ul>
+      <div class="nav-actions">
+        <button class="icon-button" aria-label="Search products">S</button>
+        <button class="icon-button" aria-label="Open cart">0</button>
+        <button class="nav-cta">Find my routine</button>
+        <button class="icon-button menu-button" id="drawerOpen" aria-label="Open menu" aria-expanded="false">M</button>
+      </div>
+    </nav>
+  </header>
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-content">
+        <div class="hero-kicker">Barrier-first formulas, refill-ready packaging</div>
+        <h1 class="hero-title" id="hero-title">Skin goals, not shelf clutter.</h1>
+        <p class="hero-copy">Aurelia is a direct-to-consumer skincare house that builds compact routines from clinical botanicals, skin goal data, and products customers can actually finish.</p>
+        <div class="hero-actions">
+          <a class="btn-primary" href="#routine">Build my routine</a>
+          <a class="btn-secondary" href="#bundles">Shop sets</a>
+        </div>
+        <div class="hero-proof" aria-label="Brand proof points">
+          <div class="proof-card">
+            <div class="proof-value">94%</div>
+            <div class="proof-label">saw calmer skin in 21 days</div>
+          </div>
+          <div class="proof-card">
+            <div class="proof-value">4 steps</div>
+            <div class="proof-label">maximum routine length</div>
+          </div>
+          <div class="proof-card">
+            <div class="proof-value">82k</div>
+            <div class="proof-label">refill pouches avoided</div>
+          </div>
+        </div>
+      </div>
+      <div class="product-stage" aria-label="Featured Aurelia serum bottle illustration">
+        <div class="float-card top">
+          <div class="float-label">Skin goal</div>
+          <div class="float-text">Reduce redness while keeping the moisture barrier intact.</div>
+        </div>
+        <div class="product-bottle">
+          <div class="product-cap"></div>
+          <div class="product-label">
+            <span>Barrier Serum</span>
+            <strong>Aurelia 03</strong>
+          </div>
+        </div>
+        <div class="float-card bottom">
+          <div class="float-label">Recommended step</div>
+          <div class="float-text">Apply after cleansing, before cream, morning and evening.</div>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="ingredients" aria-labelledby="ingredients-title">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Ingredient logic</div>
+          <h2 class="section-title" id="ingredients-title">Every active earns its place.</h2>
+        </div>
+        <p class="section-copy">Ingredient cards explain what each active does, who should use it, and which routine step it belongs to. No miracle language, no mystery blends.</p>
+      </div>
+      <div class="ingredients-grid">
+        <article class="ingredient-card">
+          <div class="ingredient-symbol">B</div>
+          <h3>Bakuchiol</h3>
+          <p>Retinol-style smoothing without the dry, angry phase.</p>
+          <div class="ingredient-meta">Night serum</div>
+        </article>
+        <article class="ingredient-card">
+          <div class="ingredient-symbol">N</div>
+          <h3>Niacinamide</h3>
+          <p>Balances visible oil and helps uneven tone look quieter.</p>
+          <div class="ingredient-meta">Daily support</div>
+        </article>
+        <article class="ingredient-card">
+          <div class="ingredient-symbol">H</div>
+          <h3>Hyaluronic acid</h3>
+          <p>Layered hydration for skin that feels tight after cleansing.</p>
+          <div class="ingredient-meta">Hydration step</div>
+        </article>
+        <article class="ingredient-card">
+          <div class="ingredient-symbol">S</div>
+          <h3>Squalane</h3>
+          <p>Lightweight lipid comfort that seals without a greasy finish.</p>
+          <div class="ingredient-meta">Final step</div>
+        </article>
+      </div>
+      <div class="compare-panel" aria-labelledby="compare-title">
+        <div class="section-head">
+          <div>
+            <div class="eyebrow">Before and after</div>
+            <h2 class="section-title" id="compare-title">A slider concept without hiding the evidence.</h2>
+          </div>
+          <p class="section-copy">The production template can wire this panel as a draggable comparison. The skeleton keeps it accessible with two labeled outcomes and written summaries.</p>
+        </div>
+        <div class="compare-grid">
+          <article class="compare-card">
+            <div class="compare-tag">Before</div>
+            <h3>Reactive, overloaded routine</h3>
+            <p>Six overlapping actives, tight cheeks after cleansing, and products chosen by trend instead of skin goal.</p>
+          </article>
+          <article class="compare-card after">
+            <div class="compare-tag">After 28 days</div>
+            <h3>Calmer barrier, fewer decisions</h3>
+            <p>Three products, consistent timing, and visible reduction in redness around the nose and cheeks.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="routine" aria-labelledby="routine-title">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Routine builder</div>
+          <h2 class="section-title" id="routine-title">A guided quiz that sells by simplifying.</h2>
+        </div>
+        <p class="section-copy">On desktop the builder shows the logic and recommendation together. On mobile it becomes a focused, step-by-step quiz with a visible progress indicator.</p>
+      </div>
+      <div class="routine-shell">
+        <aside class="quiz-card" aria-label="Skin goal quiz preview">
+          <h3>Choose your primary goal</h3>
+          <p>Step 2 of 3. Aurelia uses goals before skin type because most customers know the outcome they want first.</p>
+          <div class="progress" aria-label="Quiz progress"><span></span></div>
+          <ul class="goal-list" role="list">
+            <li><button class="is-selected">Calm visible redness</button></li>
+            <li><button>Repair a dry barrier</button></li>
+            <li><button>Brighten dull texture</button></li>
+            <li><button>Keep breakouts quiet</button></li>
+          </ul>
+          <button class="quiz-submit">See matched routine</button>
+        </aside>
+        <div class="routine-steps">
+          <article class="step-card">
+            <div class="step-number">01</div>
+            <div>
+              <h3>Cleanse</h3>
+              <p>A low-foam cream cleanser removes sunscreen without stripping.</p>
+            </div>
+            <div class="step-product">Cloud Cleanser</div>
+          </article>
+          <article class="step-card">
+            <div class="step-number">02</div>
+            <div>
+              <h3>Treat</h3>
+              <p>Aurelia 03 layers bakuchiol, niacinamide, and oat extract.</p>
+            </div>
+            <div class="step-product">Barrier Serum</div>
+          </article>
+          <article class="step-card">
+            <div class="step-number">03</div>
+            <div>
+              <h3>Hydrate</h3>
+              <p>A gel cream locks water in while staying light under SPF.</p>
+            </div>
+            <div class="step-product">Dew Cream</div>
+          </article>
+          <article class="step-card">
+            <div class="step-number">04</div>
+            <div>
+              <h3>Protect</h3>
+              <p>Mineral SPF with cocoa-neutral tint avoids the white cast problem.</p>
+            </div>
+            <div class="step-product">Veil SPF</div>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="bundles" aria-labelledby="bundles-title">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">Product bundles</div>
+          <h2 class="section-title" id="bundles-title">Sets grouped by skin goal.</h2>
+        </div>
+        <p class="section-copy">Each bundle exposes what is included, what changes in the routine, and the subscription benefit without pressuring the customer into a full cart.</p>
+      </div>
+      <div class="bundle-grid">
+        <article class="bundle-card">
+          <div class="bundle-image" aria-hidden="true">
+            <div class="bundle-bottles"><span class="mini-bottle short"></span><span class="mini-bottle tall"></span><span class="mini-bottle"></span></div>
+          </div>
+          <div class="bundle-tag">Best for redness</div>
+          <h3>Calm Reset Set</h3>
+          <p>Cleanser, Barrier Serum, Dew Cream. Ships with a routine card and refill reminder.</p>
+          <div class="bundle-price">$96 <s>$118</s></div>
+          <div class="bundle-actions">
+            <button class="add-button">Add set</button>
+            <button class="save-button" aria-label="Save bundle">+</button>
+          </div>
+        </article>
+        <article class="bundle-card">
+          <div class="bundle-image" aria-hidden="true">
+            <div class="bundle-bottles"><span class="mini-bottle short"></span><span class="mini-bottle tall"></span><span class="mini-bottle"></span></div>
+          </div>
+          <div class="bundle-tag">Best for dry skin</div>
+          <h3>Barrier Refill Set</h3>
+          <p>Milk Cleanser, Lipid Cream, Night Balm. Ships with a routine card and refill reminder.</p>
+          <div class="bundle-price">$112 <s>$139</s></div>
+          <div class="bundle-actions">
+            <button class="add-button">Add set</button>
+            <button class="save-button" aria-label="Save bundle">+</button>
+          </div>
+        </article>
+        <article class="bundle-card">
+          <div class="bundle-image" aria-hidden="true">
+            <div class="bundle-bottles"><span class="mini-bottle short"></span><span class="mini-bottle tall"></span><span class="mini-bottle"></span></div>
+          </div>
+          <div class="bundle-tag">Best for glow</div>
+          <h3>Texture Edit Set</h3>
+          <p>Polish Powder, Bright Serum, Veil SPF. Ships with a routine card and refill reminder.</p>
+          <div class="bundle-price">$104 <s>$132</s></div>
+          <div class="bundle-actions">
+            <button class="add-button">Add set</button>
+            <button class="save-button" aria-label="Save bundle">+</button>
+          </div>
+        </article>
+      </div>
+    </section>
+    <section class="review-band" id="reviews" aria-labelledby="reviews-title">
+      <div class="review-layout">
+        <aside class="score-card">
+          <div class="eyebrow">Customer proof</div>
+          <h2 class="section-title" id="reviews-title">Real routines, reviewed after use.</h2>
+          <div class="score-number">4.8</div>
+          <div class="score-stars" aria-label="4.8 out of 5 stars">*****</div>
+          <p>Average rating across verified 30-day routine check-ins. Reviews ask what changed, what stayed hard, and whether customers would reorder.</p>
+        </aside>
+        <div class="review-grid">
+          <article class="review-card">
+            <blockquote>The quiz stopped me from buying four serums that all did the same thing. My cheeks are finally not angry by lunchtime.</blockquote>
+            <div class="review-author">Mara L.</div>
+            <div class="review-meta">Calm Reset Set, week 5</div>
+          </article>
+          <article class="review-card">
+            <blockquote>The refill pouch made me subscribe. The cream is rich enough for winter but does not sit like wax.</blockquote>
+            <div class="review-author">Priya S.</div>
+            <div class="review-meta">Barrier Refill Set, reorder 3</div>
+          </article>
+          <article class="review-card">
+            <blockquote>I liked that the routine card said exactly when to pause the polish powder. That saved my skin.</blockquote>
+            <div class="review-author">Elena R.</div>
+            <div class="review-meta">Texture Edit Set, week 4</div>
+          </article>
+          <article class="review-card">
+            <blockquote>The products feel premium, but the best part is fewer decisions in the bathroom every morning.</blockquote>
+            <div class="review-author">Nadia K.</div>
+            <div class="review-meta">Custom routine, week 8</div>
+          </article>
+        </div>
+      </div>
+    </section>
+    <section class="subscribe" id="subscribe" aria-labelledby="subscribe-title">
+      <div class="subscribe-card">
+        <div>
+          <div class="eyebrow">Subscription CTA</div>
+          <h2 id="subscribe-title">Refills timed to your actual routine.</h2>
+          <p>Aurelia subscription starts with a predicted finish date, then lets customers delay, swap, or pause in one tap. No dark patterns, no surprise boxes.</p>
+          <div class="subscribe-perks">
+            <span>15% refill savings</span>
+            <span>Free pouch recycling</span>
+            <span>Pause anytime</span>
+          </div>
+        </div>
+        <form class="subscribe-form">
+          <label for="email">Email</label>
+          <input id="email" type="email" autocomplete="email" value="hello@example.com">
+          <label for="goal">Skin goal</label>
+          <select id="goal">
+            <option>Calm redness</option>
+            <option>Repair dryness</option>
+            <option>Brighten texture</option>
+          </select>
+          <button type="button">Start routine preview</button>
+        </form>
+      </div>
+    </section>
+  </main>
+  <footer class="footer">
+    <div class="footer-inner">
+      <div>
+        <div class="footer-brand">Aurelia</div>
+        <p>Premium skincare commerce skeleton for beauty brands that sell through education, skin goals, bundles, and refills.</p>
+      </div>
+      <div>
+        <h3>Shop</h3>
+        <a href="#bundles">Bundles</a>
+        <a href="#routine">Routine finder</a>
+        <a href="#ingredients">Ingredients</a>
+      </div>
+      <div>
+        <h3>Care</h3>
+        <a href="#reviews">Reviews</a>
+        <a href="#subscribe">Refills</a>
+        <a href="#">Derm notes</a>
+      </div>
+      <div>
+        <h3>Company</h3>
+        <a href="#">Sustainability</a>
+        <a href="#">Stockists</a>
+        <a href="#">Support</a>
+      </div>
+    </div>
+    <div class="footer-bottom">Built by Paweł Łukasik</div>
+  </footer>
+  <script>
+    const drawer = document.getElementById("drawer");
+    const overlay = document.getElementById("drawerOverlay");
+    const openButton = document.getElementById("drawerOpen");
+    const closeButton = document.getElementById("drawerClose");
+    function setDrawer(open) {
+      drawer.classList.toggle("open", open);
+      overlay.classList.toggle("open", open);
+      drawer.setAttribute("aria-hidden", String(!open));
+      overlay.setAttribute("aria-hidden", String(!open));
+      openButton.setAttribute("aria-expanded", String(open));
+    }
+    openButton.addEventListener("click", () => setDrawer(true));
+    closeButton.addEventListener("click", () => setDrawer(false));
+    overlay.addEventListener("click", () => setDrawer(false));
+    drawer.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setDrawer(false)));
+    document.querySelectorAll(".goal-list button").forEach((button) => {
+      button.addEventListener("click", () => {
+        document.querySelectorAll(".goal-list button").forEach((item) => item.classList.remove("is-selected"));
+        button.classList.add("is-selected");
+      });
+    });
+  </script>
+</body>
+</html>
