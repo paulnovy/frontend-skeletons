@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ember — HR Talent OS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --milk: #FFF9F0;
+      --aubergine: #3B1D54;
+      --aubergine-dim: rgba(59,29,84,0.08);
+      --peach: #FFB199;
+      --peach-dim: rgba(255,177,153,0.15);
+      --lilac: #D8B4FE;
+      --lilac-dim: rgba(216,180,254,0.15);
+      --sage: #A7C957;
+      --sage-dim: rgba(167,201,87,0.12);
+      --ink: #24212A;
+      --ink-mid: rgba(36,33,42,0.6);
+      --ink-dim: rgba(36,33,42,0.1);
+      --white: #FFFFFF;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --max: 1200px;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+    body{margin:0;min-height:100vh;color:var(--ink);background:var(--milk);font-family:"Inter",system-ui,sans-serif;line-height:1.6;font-size:14px}
+    a{color:inherit;text-decoration:none}
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    :focus-visible{outline:2px solid var(--aubergine);outline-offset:2px}
+    .skip-link{position:absolute;top:-100px;left:16px;background:var(--aubergine);color:var(--white);padding:8px 16px;border-radius:var(--radius-sm);z-index:1000;font-weight:700}
+    .skip-link:focus{top:16px}
+    .topbar{position:sticky;top:0;z-index:100;background:var(--milk);border-bottom:1px solid var(--ink-dim);padding:0 24px}
+    .topbar-inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:52px}
+    .topbar-brand{font-family:"Outfit",sans-serif;font-weight:800;font-size:1.125rem;display:flex;align-items:center;gap:8px}
+    .topbar-brand-icon{width:28px;height:28px;background:var(--aubergine);border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--peach);font-size:0.75rem;font-weight:800}
+    .topbar-links{display:flex;gap:6px;list-style:none;margin:0;padding:0}
+    .topbar-links a{display:block;padding:6px 14px;font-size:0.8125rem;font-weight:600;color:var(--ink-mid);border-radius:var(--radius-sm);transition:background 0.15s,color 0.15s}
+    .topbar-links a:hover,.topbar-links a.active{color:var(--ink);background:var(--aubergine-dim)}
+    .topbar-right{display:flex;align-items:center;gap:10px}
+    .topbar-avatar{width:30px;height:30px;background:var(--lilac-dim);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.6875rem;font-weight:700;color:var(--aubergine)}
+    .topbar-drawer-btn{display:none;background:none;border:1px solid var(--ink-dim);border-radius:var(--radius-sm);padding:6px 10px;color:var(--ink)}
+    .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(36,33,42,0.3);z-index:200}
+    .drawer-overlay.open{display:block}
+    .drawer{position:fixed;top:0;left:-300px;width:280px;height:100%;background:var(--milk);z-index:201;padding:20px;transition:left 0.2s ease;overflow-y:auto}
+    .drawer.open{left:0}
+    .drawer-close{background:none;border:none;font-size:1.25rem;color:var(--ink);float:right}
+    .drawer nav{clear:both;padding-top:16px}
+    .drawer nav a{display:block;padding:12px 0;font-size:0.875rem;font-weight:600;color:var(--ink);border-bottom:1px solid var(--ink-dim)}
+    .shell{max-width:var(--max);margin:0 auto;padding:20px 24px;display:grid;grid-template-columns:1fr 320px;gap:20px}
+    .main-area{display:flex;flex-direction:column;gap:20px}
+    .sidebar{display:flex;flex-direction:column;gap:20px}
+    .card{background:var(--white);border:1px solid var(--ink-dim);border-radius:var(--radius);padding:18px}
+    .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+    .card-title{font-family:"Outfit",sans-serif;font-weight:700;font-size:0.9375rem;margin:0}
+    .card-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:0.625rem;font-weight:700}
+    .card-badge.action{background:var(--peach-dim);color:#C2410C}
+    .card-badge.ok{background:var(--sage-dim);color:#4D7C0F}
+    .kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .kpi-card{background:var(--white);border:1px solid var(--ink-dim);border-radius:var(--radius);padding:14px}
+    .kpi-label{font-size:0.625rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-mid);font-weight:600}
+    .kpi-value{font-family:"Outfit",sans-serif;font-weight:800;font-size:1.25rem;margin-top:2px}
+    .kpi-change{font-size:0.625rem;font-weight:600;margin-top:2px}
+    .kpi-change.up{color:var(--sage)}.kpi-change.down{color:#EF4444}
+    .pipeline-kanban{display:flex;gap:10px;overflow-x:auto}
+    .pipeline-stage{min-width:220px;flex:1;background:var(--white);border:1px solid var(--ink-dim);border-radius:var(--radius);display:flex;flex-direction:column}
+    .pipeline-stage-header{padding:10px 12px;border-bottom:1px solid var(--ink-dim);display:flex;align-items:center;justify-content:space-between}
+    .pipeline-stage-name{font-weight:700;font-size:0.75rem}
+    .pipeline-stage-count{font-size:0.625rem;color:var(--ink-mid);font-weight:600}
+    .pipeline-stage-cards{padding:6px;flex:1;display:flex;flex-direction:column;gap:6px;min-height:160px}
+    .candidate-card{background:var(--white);border:1px solid var(--ink-dim);border-radius:var(--radius-sm);padding:10px;transition:box-shadow 0.15s}
+    .candidate-card:hover{box-shadow:0 2px 8px rgba(36,33,42,0.06)}
+    .candidate-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:4px}
+    .candidate-name{font-weight:700;font-size:0.75rem}
+    .candidate-fit{padding:1px 6px;border-radius:999px;font-size:0.5rem;font-weight:700}
+    .candidate-fit.strong{background:var(--sage-dim);color:#4D7C0F}
+    .candidate-fit.moderate{background:var(--peach-dim);color:#C2410C}
+    .candidate-role{font-size:0.625rem;color:var(--ink-mid)}
+    .candidate-next{font-size:0.5625rem;color:var(--aubergine);font-weight:600;margin-top:4px}
+    .candidate-risk{font-size:0.5625rem;color:#EF4444;margin-top:2px}
+    .interview-list{list-style:none;margin:0;padding:0}
+    .interview-item{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--ink-dim)}
+    .interview-item:last-child{border-bottom:none}
+    .interview-time{width:48px;height:48px;background:var(--aubergine);border-radius:var(--radius-sm);display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0}
+    .interview-time-hour{font-size:0.75rem;font-weight:700;color:var(--white)}
+    .interview-time-ampm{font-size:0.5rem;color:var(--lilac);text-transform:uppercase}
+    .interview-info{flex:1}
+    .interview-candidate{font-weight:700;font-size:0.8125rem}
+    .interview-meta{font-size:0.6875rem;color:var(--ink-mid)}
+    .interview-type{padding:3px 8px;border-radius:999px;font-size:0.5625rem;font-weight:700}
+    .interview-type.technical{background:var(--lilac-dim);color:var(--aubergine)}
+    .interview-type.behavioral{background:var(--peach-dim);color:#C2410C}
+    .interview-type.final{background:var(--sage-dim);color:#4D7C0F}
+    .scorecard-list{list-style:none;margin:0;padding:0}
+    .scorecard-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--ink-dim)}
+    .scorecard-item:last-child{border-bottom:none}
+    .scorecard-avatar{width:32px;height:32px;background:var(--lilac-dim);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.625rem;font-weight:700;color:var(--aubergine);flex-shrink:0}
+    .scorecard-info{flex:1}
+    .scorecard-name{font-weight:600;font-size:0.75rem}
+    .scorecard-status{font-size:0.625rem;color:var(--ink-mid)}
+    .scorecard-bar{height:4px;background:var(--ink-dim);border-radius:2px;overflow:hidden;margin-top:4px}
+    .scorecard-bar-fill{height:100%;border-radius:2px}
+    .diversity-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+    .diversity-card{background:var(--white);border:1px solid var(--ink-dim);border-radius:var(--radius-sm);padding:12px;text-align:center}
+    .diversity-value{font-family:"Outfit",sans-serif;font-weight:800;font-size:1.125rem}
+    .diversity-label{font-size:0.625rem;color:var(--ink-mid);margin-top:2px}
+    .plan-list{list-style:none;margin:0;padding:0}
+    .plan-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--ink-dim);font-size:0.75rem}
+    .plan-item:last-child{border-bottom:none}
+    .plan-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+    .plan-role{flex:1;font-weight:600}
+    .plan-dept{color:var(--ink-mid);font-size:0.625rem}
+    .plan-priority{padding:2px 6px;border-radius:3px;font-size:0.5rem;font-weight:700;text-transform:uppercase}
+    .plan-priority.high{background:var(--peach-dim);color:#C2410C}
+    .plan-priority.medium{background:var(--lilac-dim);color:var(--aubergine)}
+    .footer{max-width:var(--max);margin:0 auto;padding:16px 24px;text-align:center;font-size:0.625rem;color:var(--ink-mid)}
+    @media(max-width:1024px){
+      .shell{grid-template-columns:1fr}
+      .topbar-links{display:none}.topbar-drawer-btn{display:block}
+    }
+    @media(max-width:768px){
+      .kpi-strip{grid-template-columns:repeat(2,1fr)}
+      .pipeline-kanban{flex-direction:column}
+      .pipeline-stage{min-width:auto}
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+  <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-label="Navigation" aria-hidden="true">
+    <button class="drawer-close" id="drawerClose" aria-label="Close menu">&times;</button>
+    <nav aria-label="Mobile navigation">
+      <a href="#pipeline">Pipeline</a><a href="#interviews">Interviews</a><a href="#scorecards">Scorecards</a>
+    </nav>
+  </aside>
+  <header class="topbar" role="banner">
+    <div class="topbar-inner">
+      <a href="#" class="topbar-brand" aria-label="Ember home"><span class="topbar-brand-icon" aria-hidden="true">E</span>Ember</a>
+      <ul class="topbar-links" role="list">
+        <li><a href="#" class="active">Dashboard</a></li><li><a href="#pipeline">Pipeline</a></li><li><a href="#interviews">Interviews</a></li>
+      </ul>
+      <div class="topbar-right">
+        <div class="topbar-avatar" aria-label="User">HR</div>
+        <button class="topbar-drawer-btn" id="drawerOpen" aria-label="Open menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="shell">
+    <main class="main-area" id="main" role="main">
+      <div class="kpi-strip" role="region" aria-label="Hiring metrics">
+        <div class="kpi-card"><div class="kpi-label">Open Roles</div><div class="kpi-value">14</div><div class="kpi-change up">+3 this month</div></div>
+        <div class="kpi-card"><div class="kpi-label">Candidates</div><div class="kpi-value">87</div><div class="kpi-change up">+12 this week</div></div>
+        <div class="kpi-card"><div class="kpi-label">Interviews This Week</div><div class="kpi-value">23</div><div class="kpi-change up">+5 vs last week</div></div>
+        <div class="kpi-card"><div class="kpi-label">Avg Time to Hire</div><div class="kpi-value">18d</div><div class="kpi-change up">-2d improvement</div></div>
+      </div>
+      <section id="pipeline" aria-labelledby="pipeline-title">
+        <div class="card">
+          <div class="card-header"><h2 class="card-title" id="pipeline-title">Candidate Pipeline</h2><span class="card-badge action">5 awaiting action</span></div>
+          <div class="pipeline-kanban">
+            <div class="pipeline-stage"><div class="pipeline-stage-header"><span class="pipeline-stage-name">Applied</span><span class="pipeline-stage-count">24</span></div><div class="pipeline-stage-cards"><div class="candidate-card"><div class="candidate-header"><span class="candidate-name">Alex Chen</span><span class="candidate-fit strong">Strong</span></div><div class="candidate-role">Sr. Frontend · 8yr exp</div><div class="candidate-next">Next: Phone screen</div></div><div class="candidate-card"><div class="candidate-header"><span class="candidate-name">Maria Santos</span><span class="candidate-fit moderate">Moderate</span></div><div class="candidate-role">Full Stack · 5yr exp</div><div class="candidate-next">Next: Resume review</div></div></div></div>
+            <div class="pipeline-stage"><div class="pipeline-stage-header"><span class="pipeline-stage-name">Screening</span><span class="pipeline-stage-count">18</span></div><div class="pipeline-stage-cards"><div class="candidate-card"><div class="candidate-header"><span class="candidate-name">Jordan Lee</span><span class="candidate-fit strong">Strong</span></div><div class="candidate-role">Backend · 6yr exp</div><div class="candidate-next">Next: Technical interview</div><div class="candidate-risk">Risk: Currently at competitor</div></div></div></div>
+            <div class="pipeline-stage"><div class="pipeline-stage-header"><span class="pipeline-stage-name">Interview</span><span class="pipeline-stage-count">12</span></div><div class="pipeline-stage-cards"><div class="candidate-card"><div class="candidate-header"><span class="candidate-name">Sam Rivera</span><span class="candidate-fit strong">Strong</span></div><div class="candidate-role">DevOps · 7yr exp</div><div class="candidate-next">Next: Final round Jun 3</div></div></div></div>
+            <div class="pipeline-stage"><div class="pipeline-stage-header"><span class="pipeline-stage-name">Offer</span><span class="pipeline-stage-count">4</span></div><div class="pipeline-stage-cards"><div class="candidate-card"><div class="candidate-header"><span class="candidate-name">Taylor Kim</span><span class="candidate-fit strong">Strong</span></div><div class="candidate-role">ML Engineer · 10yr exp</div><div class="candidate-next">Next: Offer response by Jun 5</div></div></div></div>
+          </div>
+        </div>
+      </section>
+      <section id="scorecards" aria-labelledby="scorecards-title">
+        <div class="card">
+          <div class="card-header"><h2 class="card-title" id="scorecards-title">Scorecards</h2><span class="card-badge action">3 incomplete</span></div>
+          <ul class="scorecard-list" aria-label="Scorecards">
+            <li class="scorecard-item"><div class="scorecard-avatar">JR</div><div class="scorecard-info"><div class="scorecard-name">Jordan Lee — Technical</div><div class="scorecard-status">Completed by M. Reyes</div><div class="scorecard-bar"><div class="scorecard-bar-fill" style="width:85%;background:var(--sage)"></div></div></div></li>
+            <li class="scorecard-item"><div class="scorecard-avatar">SR</div><div class="scorecard-info"><div class="scorecard-name">Sam Rivera — Behavioral</div><div class="scorecard-status">Pending · Due today</div><div class="scorecard-bar"><div class="scorecard-bar-fill" style="width:0%;background:var(--peach)"></div></div></div></li>
+            <li class="scorecard-item"><div class="scorecard-avatar">TK</div><div class="scorecard-info"><div class="scorecard-name">Taylor Kim — Final</div><div class="scorecard-status">Completed by A. Johal</div><div class="scorecard-bar"><div class="scorecard-bar-fill" style="width:100%;background:var(--sage)"></div></div></div></li>
+          </ul>
+        </div>
+      </section>
+    </main>
+    <aside class="sidebar" role="complementary" aria-label="Schedule and planning">
+      <div class="card" id="interviews">
+        <div class="card-header"><h2 class="card-title">Today's Interviews</h2><span class="card-badge ok">4 scheduled</span></div>
+        <ul class="interview-list" aria-label="Today's interviews">
+          <li class="interview-item"><div class="interview-time"><span class="interview-time-hour">9:00</span><span class="interview-time-ampm">AM</span></div><div class="interview-info"><div class="interview-candidate">Jordan Lee</div><div class="interview-meta">Technical · M. Reyes</div></div><span class="interview-type technical">Technical</span></li>
+          <li class="interview-item"><div class="interview-time"><span class="interview-time-hour">11:00</span><span class="interview-time-ampm">AM</span></div><div class="interview-info"><div class="interview-candidate">Sam Rivera</div><div class="interview-meta">Behavioral · A. Johal</div></div><span class="interview-type behavioral">Behavioral</span></li>
+          <li class="interview-item"><div class="interview-time"><span class="interview-time-hour">2:00</span><span class="interview-time-ampm">PM</span></div><div class="interview-info"><div class="interview-candidate">Alex Chen</div><div class="interview-meta">Phone screen · T. Navarro</div></div><span class="interview-type technical">Screen</span></li>
+          <li class="interview-item"><div class="interview-time"><span class="interview-time-hour">4:00</span><span class="interview-time-ampm">PM</span></div><div class="interview-info"><div class="interview-candidate">Taylor Kim</div><div class="interview-meta">Final · VP Eng</div></div><span class="interview-type final">Final</span></li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="card-header"><h2 class="card-title">Diversity Snapshot</h2></div>
+        <div class="diversity-grid">
+          <div class="diversity-card"><div class="diversity-value">48%</div><div class="diversity-label">Women in pipeline</div></div>
+          <div class="diversity-card"><div class="diversity-value">62%</div><div class="diversity-label">Underrepresented</div></div>
+          <div class="diversity-card"><div class="diversity-value">34%</div><div class="diversity-label">Diverse hires Q2</div></div>
+          <div class="diversity-card"><div class="diversity-value">4.2★</div><div class="diversity-label">Candidate experience</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><h2 class="card-title">Hiring Plan</h2></div>
+        <ul class="plan-list" aria-label="Hiring plan">
+          <li class="plan-item"><span class="plan-dot" style="background:var(--peach)"></span><span class="plan-role">Sr. Frontend</span><span class="plan-dept">Engineering</span><span class="plan-priority high">High</span></li>
+          <li class="plan-item"><span class="plan-dot" style="background:var(--lilac)"></span><span class="plan-role">ML Engineer</span><span class="plan-dept">Data</span><span class="plan-priority high">High</span></li>
+          <li class="plan-item"><span class="plan-dot" style="background:var(--sage)"></span><span class="plan-role">Product Designer</span><span class="plan-dept">Design</span><span class="plan-priority medium">Medium</span></li>
+          <li class="plan-item"><span class="plan-dot" style="background:var(--aubergine)"></span><span class="plan-role">DevOps</span><span class="plan-dept">Platform</span><span class="plan-priority medium">Medium</span></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+  <footer class="footer" role="contentinfo">Ember HR &mdash; designed by Studio &middot; Standalone prototype</footer>
+  <script>
+    (function(){
+      var o=document.getElementById('drawerOpen'),c=document.getElementById('drawerClose'),d=document.getElementById('drawer'),v=document.getElementById('drawerOverlay');
+      function open(){d.classList.add('open');v.classList.add('open');d.setAttribute('aria-hidden','false');o.setAttribute('aria-expanded','true');c.focus()}
+      function close(){d.classList.remove('open');v.classList.remove('open');d.setAttribute('aria-hidden','true');o.setAttribute('aria-expanded','false');o.focus()}
+      o.addEventListener('click',open);c.addEventListener('click',close);v.addEventListener('click',close);
+      document.addEventListener('keydown',function(e){if(e.key==='Escape'&&d.classList.contains('open'))close()});
+      d.querySelectorAll('a').forEach(function(l){l.addEventListener('click',close)});
+    })();
+  </script>
+</body>
+</html>
