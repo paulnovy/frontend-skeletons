@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quantum Physics Sim — Lab Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --cloud-90: rgba(246, 248, 252, 0.9);
+      --cloud-78: rgba(246, 248, 252, 0.78);
+      --cloud-58: rgba(246, 248, 252, 0.58);
+      --cloud-24: rgba(246, 248, 252, 0.24);
+      --ink: #19212B;
+      --ink-92: rgba(25, 33, 43, 0.92);
+      --ink-72: rgba(25, 33, 43, 0.72);
+      --ink-58: rgba(25, 33, 43, 0.58);
+      --ink-42: rgba(25, 33, 43, 0.42);
+      --ink-16: rgba(25, 33, 43, 0.16);
+      --ink-10: rgba(25, 33, 43, 0.1);
+      --indigo: #4F46E5;
+      --indigo-82: rgba(79, 70, 229, 0.82);
+      --indigo-26: rgba(79, 70, 229, 0.26);
+      --indigo-14: rgba(79, 70, 229, 0.14);
+      --cyan: #06B6D4;
+      --cyan-78: rgba(6, 182, 212, 0.78);
+      --cyan-22: rgba(6, 182, 212, 0.22);
+      --lime: #A3E635;
+      --lime-72: rgba(163, 230, 53, 0.72);
+      --lime-22: rgba(163, 230, 53, 0.22);
+      --coral: #FB7185;
+      --coral-82: rgba(251, 113, 133, 0.82);
+      --coral-24: rgba(251, 113, 133, 0.24);
+      --shadow: 0 24px 80px rgba(25, 33, 43, 0.12);
+      --card: rgba(246, 248, 252, 0.78);
+      --radius: 8px;
+      --radius-lg: 12px;
+      --max: 1240px;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background: radial-gradient(circle at 12% 8%, var(--indigo-14), transparent 28rem),
+                  radial-gradient(circle at 80% 6%, var(--cyan-22), transparent 30rem),
+                  linear-gradient(180deg, var(--cloud), var(--cloud));
+      font-family: "Inter", system-ui, sans-serif;
+      line-height: 1.5;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 3px;
+    }
+
+    /* Skip link */
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 16px;
+      background: var(--indigo);
+      color: var(--cloud);
+      padding: 8px 16px;
+      border-radius: var(--radius);
+      z-index: 1000;
+      font-weight: 600;
+    }
+
+    .skip-link:focus {
+      top: 16px;
+    }
+
+    /* Nav */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--cloud-90);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--ink-10);
+      padding: 0 24px;
+    }
+
+    .nav-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 56px;
+    }
+
+    .nav-brand {
+      font-family: "Manrope", sans-serif;
+      font-weight: 800;
+      font-size: 1.125rem;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-brand-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--indigo);
+      display: inline-block;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .nav-links a {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--ink-72);
+      transition: color 0.15s;
+    }
+
+    .nav-links a:hover,
+    .nav-links a[aria-current="page"] {
+      color: var(--ink);
+    }
+
+    .nav-drawer-btn {
+      display: none;
+      background: none;
+      border: 1px solid var(--ink-16);
+      border-radius: var(--radius);
+      padding: 6px 10px;
+      color: var(--ink);
+    }
+
+    .drawer-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(25, 33, 43, 0.4);
+      z-index: 200;
+    }
+
+    .drawer-overlay.open {
+      display: block;
+    }
+
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: -300px;
+      width: 280px;
+      height: 100%;
+      background: var(--cloud);
+      z-index: 201;
+      padding: 24px;
+      transition: right 0.25s ease;
+      overflow-y: auto;
+    }
+
+    .drawer.open {
+      right: 0;
+    }
+
+    .drawer-close {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--ink);
+      float: right;
+    }
+
+    .drawer nav {
+      clear: both;
+      padding-top: 24px;
+    }
+
+    .drawer nav a {
+      display: block;
+      padding: 12px 0;
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--ink);
+      border-bottom: 1px solid var(--ink-10);
+    }
+
+    /* KPI strip */
+    .kpi-strip {
+      background: var(--ink);
+      color: var(--cloud);
+      padding: 16px 24px;
+    }
+
+    .kpi-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+    }
+
+    .kpi-item {
+      text-align: center;
+    }
+
+    .kpi-value {
+      font-family: "Manrope", sans-serif;
+      font-weight: 800;
+      font-size: 1.5rem;
+      line-height: 1.2;
+    }
+
+    .kpi-label {
+      font-size: 0.75rem;
+      color: var(--cloud-58);
+      margin-top: 2px;
+    }
+
+    /* Sections */
+    .section {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 48px 24px;
+    }
+
+    .section-title {
+      font-family: "Manrope", sans-serif;
+      font-weight: 700;
+      font-size: 1.25rem;
+      margin: 0 0 24px;
+      color: var(--ink);
+    }
+
+    /* Cards grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--ink-10);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      backdrop-filter: blur(8px);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .card-title {
+      font-family: "Manrope", sans-serif;
+      font-weight: 700;
+      font-size: 0.9375rem;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.6875rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .badge-running {
+      background: var(--lime-22);
+      color: #3f6212;
+    }
+
+    .badge-queued {
+      background: var(--indigo-14);
+      color: var(--indigo);
+    }
+
+    .badge-complete {
+      background: var(--cyan-22);
+      color: #0e7490;
+    }
+
+    .badge-failed {
+      background: var(--coral-24);
+      color: #be123c;
+    }
+
+    .card-meta {
+      font-size: 0.8125rem;
+      color: var(--ink-58);
+      line-height: 1.6;
+    }
+
+    .card-meta strong {
+      color: var(--ink-72);
+    }
+
+    /* Table */
+    .table-wrap {
+      overflow-x: auto;
+      border: 1px solid var(--ink-10);
+      border-radius: var(--radius-lg);
+      background: var(--card);
+      backdrop-filter: blur(8px);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8125rem;
+    }
+
+    th {
+      text-align: left;
+      padding: 12px 16px;
+      font-family: "Manrope", sans-serif;
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--ink-58);
+      background: var(--cloud);
+      border-bottom: 1px solid var(--ink-10);
+    }
+
+    td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--ink-10);
+      color: var(--ink-72);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    td strong {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    /* Chart */
+    .chart-container {
+      background: var(--card);
+      border: 1px solid var(--ink-10);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      backdrop-filter: blur(8px);
+    }
+
+    .chart-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      height: 160px;
+      padding-top: 16px;
+    }
+
+    .chart-bar-group {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chart-bar {
+      width: 100%;
+      max-width: 48px;
+      border-radius: 4px 4px 0 0;
+      background: var(--indigo);
+      transition: background 0.15s;
+      min-height: 4px;
+    }
+
+    .chart-bar:hover {
+      background: var(--indigo-82);
+    }
+
+    .chart-label {
+      font-size: 0.6875rem;
+      color: var(--ink-42);
+      text-align: center;
+    }
+
+    .chart-value {
+      font-size: 0.6875rem;
+      font-weight: 600;
+      color: var(--ink-72);
+    }
+
+    /* Equipment status */
+    .equip-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .equip-card {
+      background: var(--card);
+      border: 1px solid var(--ink-10);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .equip-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: var(--radius);
+      background: var(--indigo-14);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    .equip-name {
+      font-family: "Manrope", sans-serif;
+      font-weight: 700;
+      font-size: 0.875rem;
+    }
+
+    .equip-status {
+      font-size: 0.75rem;
+      color: var(--ink-58);
+      margin-top: 2px;
+    }
+
+    .equip-status-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-right: 4px;
+    }
+
+    .dot-online {
+      background: var(--lime);
+    }
+
+    .dot-offline {
+      background: var(--coral);
+    }
+
+    .dot-maintenance {
+      background: var(--ink-42);
+    }
+
+    /* Activity list */
+    .activity-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .activity-item {
+      display: flex;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--ink-10);
+    }
+
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+
+    .activity-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
+    .activity-text {
+      font-size: 0.8125rem;
+      color: var(--ink-72);
+      line-height: 1.5;
+    }
+
+    .activity-time {
+      font-size: 0.75rem;
+      color: var(--ink-42);
+      margin-top: 2px;
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--ink-10);
+      padding: 24px;
+      text-align: center;
+      font-size: 0.75rem;
+      color: var(--ink-42);
+    }
+
+    .footer a {
+      color: var(--indigo);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+
+      .nav-drawer-btn {
+        display: block;
+      }
+
+      .kpi-inner {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+      }
+
+      .kpi-value {
+        font-size: 1.25rem;
+      }
+
+      .cards-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .equip-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section {
+        padding: 32px 16px;
+      }
+
+      .chart-bars {
+        height: 120px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .kpi-inner {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <!-- Drawer overlay -->
+  <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+
+  <!-- Drawer -->
+  <aside class="drawer" id="drawer" role="dialog" aria-label="Navigation menu" aria-hidden="true">
+    <button class="drawer-close" id="drawerClose" aria-label="Close menu">&times;</button>
+    <nav aria-label="Mobile navigation">
+      <a href="#experiments">Experiments</a>
+      <a href="#particles">Particles</a>
+      <a href="#wavefunction">Wave Function</a>
+      <a href="#equipment">Equipment</a>
+      <a href="#results">Results</a>
+      <a href="#activity">Activity</a>
+    </nav>
+  </aside>
+
+  <!-- Navigation -->
+  <header class="nav" role="banner">
+    <div class="nav-inner">
+      <a href="#" class="nav-brand" aria-label="Quantum Physics Sim home">
+        <span class="nav-brand-dot" aria-hidden="true"></span>
+        Quantum Physics Sim
+      </a>
+      <ul class="nav-links" role="list">
+        <li><a href="#experiments" aria-current="page">Experiments</a></li>
+        <li><a href="#particles">Particles</a></li>
+        <li><a href="#wavefunction">Wave Function</a></li>
+        <li><a href="#equipment">Equipment</a></li>
+        <li><a href="#results">Results</a></li>
+      </ul>
+      <button class="nav-drawer-btn" id="drawerOpen" aria-label="Open menu" aria-expanded="false">
+        ☰
+      </button>
+    </div>
+  </header>
+
+  <!-- KPI strip -->
+  <div class="kpi-strip" role="region" aria-label="Key metrics">
+    <div class="kpi-inner">
+      <div class="kpi-item">
+        <div class="kpi-value">12</div>
+        <div class="kpi-label">Active Experiments</div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-value">47K</div>
+        <div class="kpi-label">Particles Tracked</div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-value">4.2ms</div>
+        <div class="kpi-label">Coherence Time</div>
+      </div>
+      <div class="kpi-item">
+        <div class="kpi-value">15mK</div>
+        <div class="kpi-label">Lab Temperature</div>
+      </div>
+    </div>
+  </div>
+
+  <main id="main">
+    <!-- Experiments -->
+    <section class="section" id="experiments" aria-labelledby="experiments-title">
+      <h2 class="section-title" id="experiments-title">Active Experiments</h2>
+      <div class="cards-grid">
+        <article class="card">
+          <div class="card-header">
+            <h3 class="card-title">Entanglement Verification</h3>
+            <span class="badge badge-running">Running</span>
+          </div>
+          <div class="card-meta">
+            <strong>Protocol:</strong> Bell-state measurement<br>
+            <strong>Qubits:</strong> 8 paired<br>
+            <strong>Runtime:</strong> 4h 23m<br>
+            <strong>Fidelity:</strong> 98.7%
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-header">
+            <h3 class="card-title">Quantum Error Correction</h3>
+            <span class="badge badge-running">Running</span>
+          </div>
+          <div class="card-meta">
+            <strong>Protocol:</strong> Surface code d=5<br>
+            <strong>Qubits:</strong> 17 logical<br>
+            <strong>Runtime:</strong> 12h 07m<br>
+            <strong>Error rate:</strong> 0.31%
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-header">
+            <h3 class="card-title">Superposition Decay Study</h3>
+            <span class="badge badge-queued">Queued</span>
+          </div>
+          <div class="card-meta">
+            <strong>Protocol:</strong> T1 relaxation<br>
+            <strong>Qubits:</strong> 4<br>
+            <strong>Est. start:</strong> 14:30 UTC<br>
+            <strong>Priority:</strong> High
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-header">
+            <h3 class="card-title">Grover Search Benchmark</h3>
+            <span class="badge badge-complete">Complete</span>
+          </div>
+          <div class="card-meta">
+            <strong>Protocol:</strong> Amplitude amplification<br>
+            <strong>Qubits:</strong> 12<br>
+            <strong>Duration:</strong> 2h 10m<br>
+            <strong>Speedup:</strong> 3.4× classical
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-header">
+            <h3 class="card-title">QFT Phase Estimation</h3>
+            <span class="badge badge-running">Running</span>
+          </div>
+          <div class="card-meta">
+            <strong>Protocol:</strong> Iterative QFT<br>
+            <strong>Qubits:</strong> 6<br>
+            <strong>Runtime:</strong> 1h 45m<br>
+            <strong>Precision:</strong> ±0.02 rad
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-header">
+            <h3 class="card-title">Noise Characterization</h3>
+            <span class="badge badge-failed">Failed</span>
+          </div>
+          <div class="card-meta">
+            <strong>Protocol:</strong> Randomized benchmarking<br>
+            <strong>Qubits:</strong> 20<br>
+            <strong>Error:</strong> Calibration drift detected<br>
+            <strong>Action:</strong> Re-calibrate scheduled
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Particle Table -->
+    <section class="section" id="particles" aria-labelledby="particles-title">
+      <h2 class="section-title" id="particles-title">Particle Tracking</h2>
+      <div class="table-wrap">
+        <table aria-label="Particle tracking data">
+          <thead>
+            <tr>
+              <th scope="col">Particle ID</th>
+              <th scope="col">Type</th>
+              <th scope="col">State</th>
+              <th scope="col">Spin</th>
+              <th scope="col">Energy (eV)</th>
+              <th scope="col">Decay Channel</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Q-001</strong></td>
+              <td>Electron</td>
+              <td>|↑⟩</td>
+              <td>+½</td>
+              <td>511.00</td>
+              <td>Stable</td>
+            </tr>
+            <tr>
+              <td><strong>Q-002</strong></td>
+              <td>Photon</td>
+              <td>|H⟩</td>
+              <td>1</td>
+              <td>2.33</td>
+              <td>Absorbed</td>
+            </tr>
+            <tr>
+              <td><strong>Q-003</strong></td>
+              <td>Neutron</td>
+              <td>|↓⟩</td>
+              <td>−½</td>
+              <td>939.57</td>
+              <td>β⁻ decay</td>
+            </tr>
+            <tr>
+              <td><strong>Q-004</strong></td>
+              <td>Electron</td>
+              <td>|+⟩</td>
+              <td>+½</td>
+              <td>511.00</td>
+              <td>Stable</td>
+            </tr>
+            <tr>
+              <td><strong>Q-005</strong></td>
+              <td>Proton</td>
+              <td>|↑⟩</td>
+              <td>+½</td>
+              <td>938.27</td>
+              <td>Stable</td>
+            </tr>
+            <tr>
+              <td><strong>Q-006</strong></td>
+              <td>Photon</td>
+              <td>|V⟩</td>
+              <td>1</td>
+              <td>1.89</td>
+              <td>Emitted</td>
+            </tr>
+            <tr>
+              <td><strong>Q-007</strong></td>
+              <td>Neutrino</td>
+              <td>|νₑ⟩</td>
+              <td>½</td>
+              <td>0.001</td>
+              <td>Detected</td>
+            </tr>
+            <tr>
+              <td><strong>Q-008</strong></td>
+              <td>Electron</td>
+              <td>|↓⟩</td>
+              <td>−½</td>
+              <td>511.00</td>
+              <td>Scattered</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Wave Function Chart -->
+    <section class="section" id="wavefunction" aria-labelledby="wave-title">
+      <h2 class="section-title" id="wave-title">Wave Function Amplitude</h2>
+      <div class="chart-container" role="img" aria-label="Bar chart showing wave function amplitude over 12 time steps. Values range from 12 to 48.">
+        <div class="chart-bars">
+          <div class="chart-bar-group">
+            <span class="chart-value">32</span>
+            <div class="chart-bar" style="height: 67%"></div>
+            <span class="chart-label">t₁</span>
+          </div>
+          <div class="chart-bar-group">
+            <span class="chart-value">48</span>
+            <div class="chart-bar" style="height: 100%"></div>
+            <span class="chart-label">t₂</span>
+          </div>
+          <div class="chart-bar-group">
+            <span class="chart-value">28</span>
+            <div class="chart-bar" style="height: 58%"></div>
+            <span class="chart-label">t₃</span>
+          </div>
+          <div class="chart-bar-group">
+            <span class="chart-value">44</span>
+            <div class="chart-bar" style="height: 92%"></div>
+            <span class="chart-label">t₄</span>
+          </div>
+          <div class="chart-bar-group">
+            <span class="chart-value">18</span>
+            <div class="chart-bar" style="height: 38%"></div>
+            <span class="chart-label">t₅</span>
+          </div>
+          <div class="chart-bar-group">
+            <span class="chart-value">36</span>
+            <div class="chart-bar" style="height: 75%"></div>
+            <span class="chart-label">t₆</span>
+          </div>
+          <div class="chart-bar-group">
+            <span class="chart-value">42</span>
+            <div class="chart-bar" style="height: 88%"></div>
+            <span class="chart-label">t₇</span>
+          </div>
+          <div class="chart-bar-group">
+            <span class="chart-value">12</span>
+            <div class="chart-bar" style="height: 25%"></div>
+            <span class="chart-label">t₈</span>
+          </div>
+          <div class="chart-bar-group">
+            <span class="chart-value">38</span>
+            <div class="chart-bar" style="height: 79%"></div>
+            <span class="chart-label">t₉</span>
+          </div>
+          <div class="chart-bar-group">
+            <span class="chart-value">30</span>
+            <div class="chart-bar" style="height: 63%"></div>
+            <span class="chart-label">t₁₀</span>
+          </div>
+          <div class="chart-bar-group">
+            <span class="chart-value">22</span>
+            <div class="chart-bar" style="height: 46%"></div>
+            <span class="chart-label">t₁₁</span>
+          </div>
+          <div class="chart-bar-group">
+            <span class="chart-value">40</span>
+            <div class="chart-bar" style="height: 83%"></div>
+            <span class="chart-label">t₁₂</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Equipment Status -->
+    <section class="section" id="equipment" aria-labelledby="equip-title">
+      <h2 class="section-title" id="equip-title">Lab Equipment</h2>
+      <div class="equip-grid">
+        <div class="equip-card">
+          <div class="equip-icon" aria-hidden="true">🔬</div>
+          <div>
+            <div class="equip-name">Dilution Refrigerator</div>
+            <div class="equip-status">
+              <span class="equip-status-dot dot-online" aria-hidden="true"></span>
+              Online — 15mK base temp
+            </div>
+          </div>
+        </div>
+        <div class="equip-card">
+          <div class="equip-icon" aria-hidden="true">⚡</div>
+          <div>
+            <div class="equip-name">Microwave Control</div>
+            <div class="equip-status">
+              <span class="equip-status-dot dot-online" aria-hidden="true"></span>
+              Online — 4.8 GHz center
+            </div>
+          </div>
+        </div>
+        <div class="equip-card">
+          <div class="equip-icon" aria-hidden="true">🧲</div>
+          <div>
+            <div class="equip-name">Magnetic Shield</div>
+            <div class="equip-status">
+              <span class="equip-status-dot dot-maintenance" aria-hidden="true"></span>
+              Maintenance — Degaussing
+            </div>
+          </div>
+        </div>
+        <div class="equip-card">
+          <div class="equip-icon" aria-hidden="true">📊</div>
+          <div>
+            <div class="equip-name">DAQ System</div>
+            <div class="equip-status">
+              <span class="equip-status-dot dot-online" aria-hidden="true"></span>
+              Online — 1.2 GS/s
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Research Results -->
+    <section class="section" id="results" aria-labelledby="results-title">
+      <h2 class="section-title" id="results-title">Recent Results</h2>
+      <div class="cards-grid">
+        <article class="card">
+          <div class="card-header">
+            <h3 class="card-title">Bell Inequality Violation</h3>
+            <span class="badge badge-complete">Verified</span>
+          </div>
+          <div class="card-meta">
+            <strong>S = 2.73 ± 0.04</strong><br>
+            Exceeds classical bound of 2.0<br>
+            Confidence: 5σ
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-header">
+            <h3 class="card-title">Gate Fidelity Benchmark</h3>
+            <span class="badge badge-complete">Verified</span>
+          </div>
+          <div class="card-meta">
+            <strong>Single-qubit: 99.94%</strong><br>
+            Two-qubit: 99.21%<br>
+            Above threshold for QEC
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-header">
+            <h3 class="card-title">Coherence Time Extension</h3>
+            <span class="badge badge-running">In Review</span>
+          </div>
+          <div class="card-meta">
+            <strong>T₂* = 180μs</strong><br>
+            15% improvement over baseline<br>
+            New dynamical decoupling sequence
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- Recent Activity -->
+    <section class="section" id="activity" aria-labelledby="activity-title">
+      <h2 class="section-title" id="activity-title">Recent Activity</h2>
+      <div class="card">
+        <ul class="activity-list" aria-label="Recent lab activity">
+          <li class="activity-item">
+            <span class="activity-dot" style="background: var(--lime)" aria-hidden="true"></span>
+            <div>
+              <div class="activity-text">Entanglement Verification experiment reached 98.7% fidelity milestone</div>
+              <div class="activity-time">12 minutes ago</div>
+            </div>
+          </li>
+          <li class="activity-item">
+            <span class="activity-dot" style="background: var(--coral)" aria-hidden="true"></span>
+            <div>
+              <div class="activity-text">Noise Characterization run failed — calibration drift detected on qubits 14-20</div>
+              <div class="activity-time">34 minutes ago</div>
+            </div>
+          </li>
+          <li class="activity-item">
+            <span class="activity-dot" style="background: var(--indigo)" aria-hidden="true"></span>
+            <div>
+              <div class="activity-text">New experiment queued: Superposition Decay Study (high priority)</div>
+              <div class="activity-time">1 hour ago</div>
+            </div>
+          </li>
+          <li class="activity-item">
+            <span class="activity-dot" style="background: var(--cyan)" aria-hidden="true"></span>
+            <div>
+              <div class="activity-text">Dilution refrigerator reached stable 15mK base temperature</div>
+              <div class="activity-time">2 hours ago</div>
+            </div>
+          </li>
+          <li class="activity-item">
+            <span class="activity-dot" style="background: var(--lime)" aria-hidden="true"></span>
+            <div>
+              <div class="activity-text">Grover Search Benchmark completed — 3.4× speedup over classical</div>
+              <div class="activity-time">3 hours ago</div>
+            </div>
+          </li>
+          <li class="activity-item">
+            <span class="activity-dot" style="background: var(--ink-42)" aria-hidden="true"></span>
+            <div>
+              <div class="activity-text">Magnetic shield entered maintenance mode — scheduled degaussing cycle</div>
+              <div class="activity-time">4 hours ago</div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer" role="contentinfo">
+    Quantum Physics Sim — designed by Studio · Standalone prototype · Not affiliated with any research institution
+  </footer>
+
+  <script>
+    (function() {
+      var drawerOpen = document.getElementById('drawerOpen');
+      var drawerClose = document.getElementById('drawerClose');
+      var drawer = document.getElementById('drawer');
+      var overlay = document.getElementById('drawerOverlay');
+
+      function openDrawer() {
+        drawer.classList.add('open');
+        overlay.classList.add('open');
+        drawer.setAttribute('aria-hidden', 'false');
+        drawerOpen.setAttribute('aria-expanded', 'true');
+        drawerClose.focus();
+      }
+
+      function closeDrawer() {
+        drawer.classList.remove('open');
+        overlay.classList.remove('open');
+        drawer.setAttribute('aria-hidden', 'true');
+        drawerOpen.setAttribute('aria-expanded', 'false');
+        drawerOpen.focus();
+      }
+
+      drawerOpen.addEventListener('click', openDrawer);
+      drawerClose.addEventListener('click', closeDrawer);
+      overlay.addEventListener('click', closeDrawer);
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && drawer.classList.contains('open')) {
+          closeDrawer();
+        }
+      });
+
+      var drawerLinks = drawer.querySelectorAll('a');
+      drawerLinks.forEach(function(link) {
+        link.addEventListener('click', closeDrawer);
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Summit Conference Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cloud: #F6F8FC;
+      --cloud-90: rgba(246, 248, 252, 0.9);
+      --cloud-78: rgba(246, 248, 252, 0.78);
+      --cloud-58: rgba(246, 248, 252, 0.58);
+      --ink: #19212B;
+      --ink-92: rgba(25, 33, 43, 0.92);
+      --ink-72: rgba(25, 33, 43, 0.72);
+      --ink-58: rgba(25, 33, 43, 0.58);
+      --ink-42: rgba(25, 33, 43, 0.42);
+      --ink-16: rgba(25, 33, 43, 0.16);
+      --ink-10: rgba(25, 33, 43, 0.1);
+      --indigo: #4F46E5;
+      --indigo-82: rgba(79, 70, 229, 0.82);
+      --indigo-26: rgba(79, 70, 229, 0.26);
+      --indigo-14: rgba(79, 70, 229, 0.14);
+      --cyan: #06B6D4;
+      --cyan-78: rgba(6, 182, 212, 0.78);
+      --cyan-22: rgba(6, 182, 212, 0.22);
+      --lime: #A3E635;
+      --lime-72: rgba(163, 230, 53, 0.72);
+      --lime-22: rgba(163, 230, 53, 0.22);
+      --coral: #FB7185;
+      --coral-82: rgba(251, 113, 133, 0.82);
+      --coral-24: rgba(251, 113, 133, 0.24);
+      --shadow: 0 24px 80px rgba(25, 33, 43, 0.12);
+      --card: rgba(246, 248, 252, 0.78);
+      --radius: 8px;
+      --radius-lg: 12px;
+      --max: 1240px;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    }
+    body { margin: 0; min-height: 100vh; color: var(--ink); background: radial-gradient(circle at 10% 5%, var(--indigo-14), transparent 26rem), radial-gradient(circle at 85% 8%, var(--coral-24), transparent 28rem), linear-gradient(180deg, var(--cloud), var(--cloud)); font-family: "Inter", system-ui, sans-serif; line-height: 1.5; }
+    a { color: inherit; text-decoration: none; }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    :focus-visible { outline: 3px solid var(--cyan); outline-offset: 3px; }
+    .skip-link { position: absolute; top: -100px; left: 16px; background: var(--indigo); color: var(--cloud); padding: 8px 16px; border-radius: var(--radius); z-index: 1000; font-weight: 600; }
+    .skip-link:focus { top: 16px; }
+    .nav { position: sticky; top: 0; z-index: 100; background: var(--cloud-90); backdrop-filter: blur(12px); border-bottom: 1px solid var(--ink-10); padding: 0 24px; }
+    .nav-inner { max-width: var(--max); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: 56px; }
+    .nav-brand { font-family: "Manrope", sans-serif; font-weight: 800; font-size: 1.125rem; display: flex; align-items: center; gap: 8px; }
+    .nav-brand-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--coral); display: inline-block; }
+    .nav-links { display: flex; gap: 24px; list-style: none; margin: 0; padding: 0; }
+    .nav-links a { font-size: 0.875rem; font-weight: 500; color: var(--ink-72); transition: color 0.15s; }
+    .nav-links a:hover, .nav-links a[aria-current="page"] { color: var(--ink); }
+    .nav-drawer-btn { display: none; background: none; border: 1px solid var(--ink-16); border-radius: var(--radius); padding: 6px 10px; color: var(--ink); }
+    .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(25, 33, 43, 0.4); z-index: 200; }
+    .drawer-overlay.open { display: block; }
+    .drawer { position: fixed; top: 0; right: -300px; width: 280px; height: 100%; background: var(--cloud); z-index: 201; padding: 24px; transition: right 0.25s ease; overflow-y: auto; }
+    .drawer.open { right: 0; }
+    .drawer-close { background: none; border: none; font-size: 1.5rem; color: var(--ink); float: right; }
+    .drawer nav { clear: both; padding-top: 24px; }
+    .drawer nav a { display: block; padding: 12px 0; font-size: 1rem; font-weight: 500; color: var(--ink); border-bottom: 1px solid var(--ink-10); }
+    .kpi-strip { background: var(--ink); color: var(--cloud); padding: 16px 24px; }
+    .kpi-inner { max-width: var(--max); margin: 0 auto; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+    .kpi-item { text-align: center; }
+    .kpi-value { font-family: "Manrope", sans-serif; font-weight: 800; font-size: 1.5rem; line-height: 1.2; }
+    .kpi-label { font-size: 0.75rem; color: var(--cloud-58); margin-top: 2px; }
+    .hero { max-width: var(--max); margin: 0 auto; padding: 64px 24px 48px; text-align: center; }
+    .hero-title { font-family: "Manrope", sans-serif; font-weight: 800; font-size: 2.5rem; line-height: 1.15; margin: 0 0 16px; }
+    .hero-sub { font-size: 1.125rem; color: var(--ink-58); max-width: 540px; margin: 0 auto 32px; }
+    .hero-cta { display: inline-block; background: var(--indigo); color: var(--cloud); padding: 12px 32px; border-radius: var(--radius); font-weight: 600; font-size: 1rem; border: none; transition: background 0.15s; }
+    .hero-cta:hover { background: var(--indigo-82); }
+    .section { max-width: var(--max); margin: 0 auto; padding: 48px 24px; }
+    .section-title { font-family: "Manrope", sans-serif; font-weight: 700; font-size: 1.25rem; margin: 0 0 24px; }
+    .speaker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .speaker-card { background: var(--card); border: 1px solid var(--ink-10); border-radius: var(--radius-lg); padding: 24px; backdrop-filter: blur(8px); text-align: center; }
+    .speaker-avatar { width: 72px; height: 72px; border-radius: 50%; background: var(--indigo-14); margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; font-family: "Manrope", sans-serif; font-weight: 800; color: var(--indigo); }
+    .speaker-name { font-family: "Manrope", sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 4px; }
+    .speaker-role { font-size: 0.8125rem; color: var(--ink-58); }
+    .speaker-topic { font-size: 0.8125rem; color: var(--ink-72); margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--ink-10); }
+    .speaker-topic strong { color: var(--indigo); }
+    .table-wrap { overflow-x: auto; border: 1px solid var(--ink-10); border-radius: var(--radius-lg); background: var(--card); backdrop-filter: blur(8px); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8125rem; }
+    th { text-align: left; padding: 12px 16px; font-family: "Manrope", sans-serif; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-58); background: var(--cloud); border-bottom: 1px solid var(--ink-10); }
+    td { padding: 10px 16px; border-bottom: 1px solid var(--ink-10); color: var(--ink-72); }
+    tr:last-child td { border-bottom: none; }
+    td strong { color: var(--ink); font-weight: 600; }
+    .badge { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.6875rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; }
+    .badge-keynote { background: var(--coral-24); color: #be123c; }
+    .badge-workshop { background: var(--indigo-14); color: var(--indigo); }
+    .badge-talk { background: var(--cyan-22); color: #0e7490; }
+    .badge-panel { background: var(--lime-22); color: #3f6212; }
+    .form-card { background: var(--card); border: 1px solid var(--ink-10); border-radius: var(--radius-lg); padding: 32px; backdrop-filter: blur(8px); max-width: 520px; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 0.8125rem; font-weight: 600; color: var(--ink); margin-bottom: 6px; }
+    .form-input { width: 100%; padding: 10px 14px; border: 1px solid var(--ink-16); border-radius: var(--radius); font-size: 0.875rem; color: var(--ink); background: var(--cloud); transition: border-color 0.15s; }
+    .form-input:focus { border-color: var(--indigo); outline: none; box-shadow: 0 0 0 3px var(--indigo-14); }
+    .form-select { width: 100%; padding: 10px 14px; border: 1px solid var(--ink-16); border-radius: var(--radius); font-size: 0.875rem; color: var(--ink); background: var(--cloud); }
+    .form-submit { background: var(--indigo); color: var(--cloud); padding: 12px 32px; border: none; border-radius: var(--radius); font-weight: 600; font-size: 0.9375rem; width: 100%; transition: background 0.15s; }
+    .form-submit:hover { background: var(--indigo-82); }
+    .venue-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; }
+    .venue-card { background: var(--card); border: 1px solid var(--ink-10); border-radius: var(--radius-lg); padding: 20px; backdrop-filter: blur(8px); }
+    .venue-name { font-family: "Manrope", sans-serif; font-weight: 700; font-size: 0.9375rem; margin-bottom: 8px; }
+    .venue-meta { font-size: 0.8125rem; color: var(--ink-58); line-height: 1.6; }
+    .sponsor-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
+    .sponsor-card { background: var(--card); border: 1px solid var(--ink-10); border-radius: var(--radius-lg); padding: 24px; text-align: center; backdrop-filter: blur(8px); font-family: "Manrope", sans-serif; font-weight: 700; font-size: 0.875rem; color: var(--ink-58); }
+    .announce-list { list-style: none; margin: 0; padding: 0; }
+    .announce-item { display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--ink-10); }
+    .announce-item:last-child { border-bottom: none; }
+    .announce-dot { width: 8px; height: 8px; border-radius: 50%; margin-top: 6px; flex-shrink: 0; }
+    .announce-text { font-size: 0.8125rem; color: var(--ink-72); line-height: 1.5; }
+    .announce-time { font-size: 0.75rem; color: var(--ink-42); margin-top: 2px; }
+    .footer { border-top: 1px solid var(--ink-10); padding: 24px; text-align: center; font-size: 0.75rem; color: var(--ink-42); }
+    .footer a { color: var(--indigo); }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .nav-drawer-btn { display: block; }
+      .kpi-inner { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+      .kpi-value { font-size: 1.25rem; }
+      .hero-title { font-size: 1.75rem; }
+      .hero { padding: 40px 16px 32px; }
+      .speaker-grid, .venue-grid { grid-template-columns: 1fr; }
+      .sponsor-grid { grid-template-columns: repeat(2, 1fr); }
+      .section { padding: 32px 16px; }
+      .form-card { padding: 24px; }
+    }
+    @media (max-width: 480px) {
+      .kpi-inner { grid-template-columns: 1fr 1fr; }
+      .sponsor-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-label="Navigation" aria-hidden="true">
+    <button class="drawer-close" id="drawerClose" aria-label="Close menu">&times;</button>
+    <nav aria-label="Mobile navigation">
+      <a href="#speakers">Speakers</a>
+      <a href="#schedule">Schedule</a>
+      <a href="#register">Register</a>
+      <a href="#venue">Venue</a>
+      <a href="#sponsors">Sponsors</a>
+    </nav>
+  </aside>
+  <header class="nav" role="banner">
+    <div class="nav-inner">
+      <a href="#" class="nav-brand" aria-label="Summit home"><span class="nav-brand-dot" aria-hidden="true"></span>Summit 2026</a>
+      <ul class="nav-links" role="list">
+        <li><a href="#speakers" aria-current="page">Speakers</a></li>
+        <li><a href="#schedule">Schedule</a></li>
+        <li><a href="#register">Register</a></li>
+        <li><a href="#venue">Venue</a></li>
+        <li><a href="#sponsors">Sponsors</a></li>
+      </ul>
+      <button class="nav-drawer-btn" id="drawerOpen" aria-label="Open menu" aria-expanded="false">&#9776;</button>
+    </div>
+  </header>
+  <div class="kpi-strip" role="region" aria-label="Event stats">
+    <div class="kpi-inner">
+      <div class="kpi-item"><div class="kpi-value">2,400</div><div class="kpi-label">Attendees</div></div>
+      <div class="kpi-item"><div class="kpi-value">48</div><div class="kpi-label">Speakers</div></div>
+      <div class="kpi-item"><div class="kpi-value">36</div><div class="kpi-label">Sessions</div></div>
+      <div class="kpi-item"><div class="kpi-value">24</div><div class="kpi-label">Sponsors</div></div>
+    </div>
+  </div>
+  <main id="main">
+    <section class="hero">
+      <h1 class="hero-title">The Future of Software, Together</h1>
+      <p class="hero-sub">Three days of keynotes, workshops, and deep-dives with the engineers shaping what comes next. September 15-17, 2026 in San Francisco.</p>
+      <a href="#register" class="hero-cta">Register Now &mdash; Early Bird $399</a>
+    </section>
+    <section class="section" id="speakers" aria-labelledby="speakers-title">
+      <h2 class="section-title" id="speakers-title">Featured Speakers</h2>
+      <div class="speaker-grid">
+        <article class="speaker-card"><div class="speaker-avatar" aria-hidden="true">AK</div><div class="speaker-name">Dr. Amara Keita</div><div class="speaker-role">VP Engineering, CloudScale</div><div class="speaker-topic"><strong>Keynote:</strong> Scaling to 1 Billion Users Without Losing Your Mind</div></article>
+        <article class="speaker-card"><div class="speaker-avatar" aria-hidden="true">JC</div><div class="speaker-name">James Chen</div><div class="speaker-role">CTO, DataPipe</div><div class="speaker-topic"><strong>Talk:</strong> Real-Time ML Inference at the Edge</div></article>
+        <article class="speaker-card"><div class="speaker-avatar" aria-hidden="true">SR</div><div class="speaker-name">Sofia Reyes</div><div class="speaker-role">Staff Engineer, Vercel</div><div class="speaker-topic"><strong>Workshop:</strong> Server Components in Production</div></article>
+        <article class="speaker-card"><div class="speaker-avatar" aria-hidden="true">MN</div><div class="speaker-name">Marcus Nguyen</div><div class="speaker-role">Principal Architect, Stripe</div><div class="speaker-topic"><strong>Talk:</strong> Payment Systems That Never Sleep</div></article>
+        <article class="speaker-card"><div class="speaker-avatar" aria-hidden="true">EP</div><div class="speaker-name">Elena Petrova</div><div class="speaker-role">Head of AI, DeepMind</div><div class="speaker-topic"><strong>Keynote:</strong> Responsible AI in Production Systems</div></article>
+        <article class="speaker-card"><div class="speaker-avatar" aria-hidden="true">TO</div><div class="speaker-name">Takeshi Ogawa</div><div class="speaker-role">Lead SRE, Toyota Connected</div><div class="speaker-topic"><strong>Panel:</strong> DevOps at Scale &mdash; Lessons from Automotive</div></article>
+      </div>
+    </section>
+    <section class="section" id="schedule" aria-labelledby="schedule-title">
+      <h2 class="section-title" id="schedule-title">Session Schedule</h2>
+      <div class="table-wrap">
+        <table aria-label="Conference schedule">
+          <thead><tr><th scope="col">Time</th><th scope="col">Session</th><th scope="col">Speaker</th><th scope="col">Room</th><th scope="col">Type</th></tr></thead>
+          <tbody>
+            <tr><td><strong>09:00</strong></td><td><strong>Scaling to 1 Billion Users</strong></td><td>Dr. Amara Keita</td><td>Main Hall</td><td><span class="badge badge-keynote">Keynote</span></td></tr>
+            <tr><td><strong>10:30</strong></td><td><strong>Real-Time ML at the Edge</strong></td><td>James Chen</td><td>Room A</td><td><span class="badge badge-talk">Talk</span></td></tr>
+            <tr><td><strong>10:30</strong></td><td><strong>Server Components Workshop</strong></td><td>Sofia Reyes</td><td>Workshop Lab</td><td><span class="badge badge-workshop">Workshop</span></td></tr>
+            <tr><td><strong>13:00</strong></td><td><strong>Payment Systems That Never Sleep</strong></td><td>Marcus Nguyen</td><td>Room B</td><td><span class="badge badge-talk">Talk</span></td></tr>
+            <tr><td><strong>14:30</strong></td><td><strong>Responsible AI in Production</strong></td><td>Elena Petrova</td><td>Main Hall</td><td><span class="badge badge-keynote">Keynote</span></td></tr>
+            <tr><td><strong>16:00</strong></td><td><strong>DevOps at Scale</strong></td><td>Takeshi Ogawa + Panel</td><td>Room A</td><td><span class="badge badge-panel">Panel</span></td></tr>
+            <tr><td><strong>16:00</strong></td><td><strong>Building Design Systems</strong></td><td>Lila Moreau</td><td>Room C</td><td><span class="badge badge-talk">Talk</span></td></tr>
+            <tr><td><strong>17:30</strong></td><td><strong>Networking Reception</strong></td><td>All attendees</td><td>Terrace</td><td><span class="badge badge-panel">Social</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class="section" id="register" aria-labelledby="register-title">
+      <h2 class="section-title" id="register-title">Register</h2>
+      <div class="form-card">
+        <form aria-label="Conference registration" onsubmit="return false;">
+          <div class="form-group"><label class="form-label" for="reg-name">Full Name</label><input class="form-input" type="text" id="reg-name" placeholder="Your name" required></div>
+          <div class="form-group"><label class="form-label" for="reg-email">Email Address</label><input class="form-input" type="email" id="reg-email" placeholder="you@company.com" required></div>
+          <div class="form-group"><label class="form-label" for="reg-ticket">Ticket Type</label><select class="form-select" id="reg-ticket"><option>Early Bird &mdash; $399</option><option>Standard &mdash; $549</option><option>VIP &mdash; $899</option><option>Student &mdash; $149</option></select></div>
+          <div class="form-group"><label class="form-label" for="reg-company">Company</label><input class="form-input" type="text" id="reg-company" placeholder="Company name"></div>
+          <button type="submit" class="form-submit">Complete Registration</button>
+        </form>
+      </div>
+    </section>
+    <section class="section" id="venue" aria-labelledby="venue-title">
+      <h2 class="section-title" id="venue-title">Venue &amp; Rooms</h2>
+      <div class="venue-grid">
+        <div class="venue-card"><div class="venue-name">Main Hall</div><div class="venue-meta">Capacity: 1,200 &middot; Ground floor<br>Keynotes, opening &amp; closing ceremonies</div></div>
+        <div class="venue-card"><div class="venue-name">Room A &mdash; Deep Dives</div><div class="venue-meta">Capacity: 200 &middot; Level 2<br>Technical talks, live demos</div></div>
+        <div class="venue-card"><div class="venue-name">Room B &mdash; Business</div><div class="venue-meta">Capacity: 150 &middot; Level 2<br>Product, leadership, case studies</div></div>
+        <div class="venue-card"><div class="venue-name">Workshop Lab</div><div class="venue-meta">Capacity: 60 &middot; Level 3<br>Hands-on sessions, bring your laptop</div></div>
+      </div>
+    </section>
+    <section class="section" id="sponsors" aria-labelledby="sponsors-title">
+      <h2 class="section-title" id="sponsors-title">Our Sponsors</h2>
+      <div class="sponsor-grid">
+        <div class="sponsor-card">CloudScale</div><div class="sponsor-card">DataPipe</div><div class="sponsor-card">Vercel</div>
+        <div class="sponsor-card">Stripe</div><div class="sponsor-card">DeepMind</div><div class="sponsor-card">Toyota Connected</div>
+      </div>
+    </section>
+    <section class="section" aria-labelledby="announce-title">
+      <h2 class="section-title" id="announce-title">Recent Announcements</h2>
+      <div style="background:var(--card);border:1px solid var(--ink-10);border-radius:var(--radius-lg);padding:24px;backdrop-filter:blur(8px);">
+        <ul class="announce-list" aria-label="Recent announcements">
+          <li class="announce-item"><span class="announce-dot" style="background:var(--coral)" aria-hidden="true"></span><div><div class="announce-text">Early bird pricing ends June 30 &mdash; save $150 on your ticket</div><div class="announce-time">2 hours ago</div></div></li>
+          <li class="announce-item"><span class="announce-dot" style="background:var(--lime)" aria-hidden="true"></span><div><div class="announce-text">Elena Petrova confirmed as Day 2 keynote speaker</div><div class="announce-time">1 day ago</div></div></li>
+          <li class="announce-item"><span class="announce-dot" style="background:var(--indigo)" aria-hidden="true"></span><div><div class="announce-text">Workshop lab now has 60 seats &mdash; up from 40 last year</div><div class="announce-time">2 days ago</div></div></li>
+          <li class="announce-item"><span class="announce-dot" style="background:var(--cyan)" aria-hidden="true"></span><div><div class="announce-text">Hotel block opened &mdash; book at the venue hotel for a discounted rate</div><div class="announce-time">3 days ago</div></div></li>
+          <li class="announce-item"><span class="announce-dot" style="background:var(--lime)" aria-hidden="true"></span><div><div class="announce-text">New session added: Building Design Systems at Scale by Lila Moreau</div><div class="announce-time">5 days ago</div></div></li>
+          <li class="announce-item"><span class="announce-dot" style="background:var(--indigo)" aria-hidden="true"></span><div><div class="announce-text">Call for proposals closed &mdash; 312 submissions received across all tracks</div><div class="announce-time">1 week ago</div></div></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+  <footer class="footer" role="contentinfo">Summit Conference Platform &mdash; designed by Studio &middot; Standalone prototype &middot; Not affiliated with any event organizer</footer>
+  <script>
+    (function() {
+      var o=document.getElementById('drawerOpen'),c=document.getElementById('drawerClose'),d=document.getElementById('drawer'),v=document.getElementById('drawerOverlay');
+      function open(){d.classList.add('open');v.classList.add('open');d.setAttribute('aria-hidden','false');o.setAttribute('aria-expanded','true');c.focus();}
+      function close(){d.classList.remove('open');v.classList.remove('open');d.setAttribute('aria-hidden','true');o.setAttribute('aria-expanded','false');o.focus();}
+      o.addEventListener('click',open);c.addEventListener('click',close);v.addEventListener('click',close);
+      document.addEventListener('keydown',function(e){if(e.key==='Escape'&&d.classList.contains('open'))close();});
+      d.querySelectorAll('a').forEach(function(l){l.addEventListener('click',close);});
+    })();
+  </script>
+</body>
+</html>
