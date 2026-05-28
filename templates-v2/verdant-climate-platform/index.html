@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verdant Climate Platform</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --deep: #073B2C;
+      --mist: #E8F5E9;
+      --leaf: #4ADE80;
+      --cyan: #67E8F9;
+      --earth: #A16207;
+      --ink: #10231D;
+      --white: #FFFFFF;
+      --deep-soft: rgba(7, 59, 44, 0.12);
+      --leaf-soft: rgba(74, 222, 128, 0.16);
+      --cyan-soft: rgba(103, 232, 249, 0.18);
+      --earth-soft: rgba(161, 98, 7, 0.16);
+      --ink-muted: rgba(16, 35, 29, 0.68);
+      --ink-faint: rgba(16, 35, 29, 0.12);
+      --shadow: 0 24px 70px rgba(7, 59, 44, 0.16);
+      --radius: 8px;
+      --max: 1240px;
+    }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background: var(--mist);
+      font-family: "Inter", system-ui, sans-serif;
+      line-height: 1.5;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+    button {
+      cursor: pointer;
+    }
+    :focus-visible {
+      outline: 3px solid var(--cyan);
+      outline-offset: 3px;
+    }
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 16px;
+      z-index: 1000;
+      padding: 10px 18px;
+      color: var(--mist);
+      background: var(--deep);
+      border-radius: 6px;
+      font-weight: 800;
+    }
+    .skip-link:focus {
+      top: 16px;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      background: rgba(232, 245, 233, 0.92);
+      border-bottom: 1px solid var(--ink-faint);
+      backdrop-filter: blur(18px);
+    }
+    .nav {
+      max-width: var(--max);
+      height: 68px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      font-size: 1.24rem;
+      font-weight: 700;
+    }
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      color: var(--deep);
+      background: var(--leaf);
+      font-weight: 900;
+    }
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .nav-links a {
+      color: var(--ink-muted);
+      font-size: 0.84rem;
+      font-weight: 800;
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .nav-ghost,
+    .nav-cta {
+      min-height: 42px;
+      padding: 0 16px;
+      border-radius: 999px;
+      font-weight: 900;
+    }
+    .nav-ghost {
+      border: 1px solid var(--ink-faint);
+      color: var(--ink);
+      background: var(--white);
+    }
+    .nav-cta {
+      border: 0;
+      color: var(--mist);
+      background: var(--deep);
+    }
+    .menu-button {
+      display: none;
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--ink-faint);
+      border-radius: 999px;
+      background: var(--white);
+      font-weight: 900;
+    }
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 110;
+      display: none;
+      background: rgba(7, 59, 44, 0.34);
+    }
+    .drawer-overlay.open {
+      display: block;
+    }
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: -320px;
+      z-index: 120;
+      width: min(320px, 84vw);
+      height: 100%;
+      padding: 24px;
+      background: var(--mist);
+      transition: right 180ms ease;
+      pointer-events: none;
+    }
+    .drawer.open {
+      right: 0;
+      pointer-events: auto;
+    }
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .drawer-close {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--ink-faint);
+      border-radius: 999px;
+      background: var(--white);
+      font-weight: 900;
+    }
+    .drawer nav {
+      display: grid;
+    }
+    .drawer a {
+      padding: 13px 0;
+      border-bottom: 1px solid var(--ink-faint);
+      font-weight: 800;
+    }
+    .hero {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 46px 24px 34px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.92fr) minmax(440px, 1.08fr);
+      gap: 28px;
+      align-items: stretch;
+    }
+    .hero-copy {
+      padding: 34px 0;
+    }
+    .kicker {
+      display: inline-flex;
+      margin-bottom: 16px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      color: var(--deep);
+      background: var(--leaf-soft);
+      font-size: 0.76rem;
+      font-weight: 900;
+    }
+    .hero-title {
+      max-width: 680px;
+      margin: 0 0 18px;
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      font-size: clamp(3rem, 6vw, 5.8rem);
+      line-height: 0.94;
+      letter-spacing: 0;
+    }
+    .hero-text {
+      max-width: 560px;
+      margin: 0 0 24px;
+      color: var(--ink-muted);
+      font-size: 1.05rem;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .button-primary,
+    .button-secondary {
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 22px;
+      border-radius: 999px;
+      font-weight: 900;
+    }
+    .button-primary {
+      color: var(--mist);
+      background: var(--deep);
+    }
+    .button-secondary {
+      border: 1px solid var(--ink-faint);
+      color: var(--ink);
+      background: var(--white);
+    }
+    .dashboard-preview {
+      padding: 20px;
+      border-radius: 28px;
+      color: var(--mist);
+      background: var(--deep);
+      box-shadow: var(--shadow);
+    }
+    .dash-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .dash-head strong {
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      font-size: 1.1rem;
+    }
+    .dash-chip {
+      padding: 6px 10px;
+      border-radius: 999px;
+      color: var(--deep);
+      background: var(--leaf);
+      font-size: 0.72rem;
+      font-weight: 900;
+    }
+    .metric-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .metric-card {
+      min-height: 148px;
+      padding: 16px;
+      border: 1px solid rgba(232, 245, 233, 0.16);
+      border-radius: 18px;
+      background: rgba(232, 245, 233, 0.08);
+    }
+    .metric-label {
+      color: rgba(232, 245, 233, 0.72);
+      font-size: 0.76rem;
+      font-weight: 800;
+    }
+    .metric-value {
+      margin-top: 18px;
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+    .metric-note {
+      margin-top: 6px;
+      color: var(--cyan);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+    .emissions-chart {
+      height: 210px;
+      display: flex;
+      align-items: end;
+      gap: 10px;
+      margin-top: 14px;
+      padding: 18px;
+      border-radius: 18px;
+      background: rgba(232, 245, 233, 0.08);
+    }
+    .bar {
+      flex: 1;
+      min-height: 22px;
+      border-radius: 8px 8px 0 0;
+      background: var(--leaf);
+    }
+    .bar:nth-child(2) {
+      height: 58%;
+    }
+    .bar:nth-child(3) {
+      height: 42%;
+      background: var(--cyan);
+    }
+    .bar:nth-child(4) {
+      height: 72%;
+      background: var(--earth);
+    }
+    .bar:nth-child(5) {
+      height: 36%;
+    }
+    .bar:nth-child(6) {
+      height: 48%;
+      background: var(--cyan);
+    }
+    .section {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 64px 24px;
+    }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 26px;
+      margin-bottom: 28px;
+    }
+    .eyebrow {
+      margin-bottom: 8px;
+      color: var(--earth);
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .section-title {
+      max-width: 720px;
+      margin: 0;
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      font-size: clamp(2.1rem, 4.4vw, 3.7rem);
+      line-height: 1;
+    }
+    .section-copy {
+      max-width: 470px;
+      margin: 0;
+      color: var(--ink-muted);
+    }
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .deadline-card {
+      min-height: 230px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid var(--ink-faint);
+      border-radius: 18px;
+      background: var(--white);
+    }
+    .deadline-date {
+      font-family: "IBM Plex Mono", monospace;
+      color: var(--earth);
+      font-weight: 800;
+    }
+    .deadline-card h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+    .deadline-card p {
+      margin: 0;
+      color: var(--ink-muted);
+      font-size: 0.9rem;
+    }
+    .supplier-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .supplier-card {
+      padding: 20px;
+      border: 1px solid var(--ink-faint);
+      border-radius: 20px;
+      background: var(--white);
+      box-shadow: 0 12px 32px rgba(7, 59, 44, 0.08);
+    }
+    .supplier-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+    .supplier-card h3 {
+      margin: 0;
+      font-size: 1rem;
+    }
+    .confidence {
+      padding: 4px 9px;
+      border-radius: 999px;
+      color: var(--deep);
+      background: var(--leaf-soft);
+      font-size: 0.72rem;
+      font-weight: 900;
+    }
+    .supplier-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 9px 0;
+      border-top: 1px solid var(--ink-faint);
+      color: var(--ink-muted);
+      font-size: 0.86rem;
+    }
+    .supplier-row strong {
+      color: var(--ink);
+      font-family: "IBM Plex Mono", monospace;
+    }
+    .audit-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+    .audit-card {
+      padding: 26px;
+      border-radius: 24px;
+      color: var(--mist);
+      background: var(--deep);
+    }
+    .audit-card h2 {
+      margin: 0 0 12px;
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      font-size: 2.6rem;
+      line-height: 1;
+    }
+    .audit-card p {
+      color: rgba(232, 245, 233, 0.78);
+    }
+    .audit-log {
+      display: grid;
+      gap: 10px;
+    }
+    .log-row {
+      display: grid;
+      grid-template-columns: 150px minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: center;
+      padding: 14px;
+      border: 1px solid var(--ink-faint);
+      border-radius: 14px;
+      background: var(--white);
+    }
+    .log-row time {
+      font-family: "IBM Plex Mono", monospace;
+      color: var(--earth);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+    .log-row span {
+      color: var(--ink-muted);
+      font-size: 0.9rem;
+    }
+    .log-status {
+      color: var(--deep);
+      font-weight: 900;
+    }
+    .roi-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 320px;
+      gap: 22px;
+      align-items: center;
+      padding: 28px;
+      border-radius: 26px;
+      color: var(--mist);
+      background: var(--ink);
+    }
+    .roi-card h2 {
+      margin: 0 0 12px;
+      font-family: "Space Grotesk", system-ui, sans-serif;
+      font-size: clamp(2rem, 4vw, 3.8rem);
+      line-height: 1;
+    }
+    .roi-card p {
+      max-width: 600px;
+      color: rgba(232, 245, 233, 0.75);
+    }
+    .roi-panel {
+      padding: 20px;
+      border-radius: 20px;
+      color: var(--ink);
+      background: var(--mist);
+    }
+    .roi-number {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: 2.4rem;
+      font-weight: 800;
+    }
+    .roi-panel p {
+      color: var(--ink-muted);
+    }
+    .mobile-summary {
+      position: fixed;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      z-index: 80;
+      min-height: 56px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 18px;
+      color: var(--mist);
+      background: var(--deep);
+      box-shadow: var(--shadow);
+      font-weight: 900;
+    }
+    .footer {
+      border-top: 1px solid var(--ink-faint);
+      background: rgba(255, 255, 255, 0.42);
+    }
+    .footer-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 34px 24px;
+      display: grid;
+      grid-template-columns: 1.4fr repeat(3, 1fr);
+      gap: 26px;
+    }
+    .footer p {
+      max-width: 330px;
+      margin: 10px 0 0;
+      color: var(--ink-muted);
+    }
+    .footer h3 {
+      margin: 0 0 10px;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+    }
+    .footer a {
+      display: block;
+      padding: 4px 0;
+      color: var(--ink-muted);
+    }
+    .footer-bottom {
+      padding: 14px 24px 24px;
+      text-align: center;
+      color: var(--ink-muted);
+      font-size: 0.74rem;
+    }
+    @media (max-width: 1024px) {
+      .nav-links,
+      .nav-ghost,
+      .nav-cta {
+        display: none;
+      }
+      .menu-button {
+        display: inline-grid;
+        place-items: center;
+      }
+      .hero-grid,
+      .audit-layout,
+      .roi-card {
+        grid-template-columns: 1fr;
+      }
+      .timeline,
+      .supplier-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .footer-inner {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    @media (max-width: 720px) {
+      body {
+        padding-bottom: 82px;
+      }
+      .nav,
+      .hero,
+      .section {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+      .hero-copy {
+        padding: 18px 0 0;
+      }
+      .metric-grid,
+      .timeline,
+      .supplier-grid,
+      .footer-inner {
+        grid-template-columns: 1fr;
+      }
+      .section-head {
+        display: block;
+      }
+      .section-copy {
+        margin-top: 12px;
+      }
+      .log-row {
+        grid-template-columns: 1fr;
+      }
+      .mobile-summary {
+        display: flex;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="drawer-head"><a class="brand" href="#"><span class="brand-mark">V</span>Verdant</a><button class="drawer-close" id="drawerClose" aria-label="Close menu">x</button></div>
+    <nav aria-label="Mobile sections"><a href="#timeline">Compliance</a><a href="#suppliers">Suppliers</a><a href="#audit">Audit trail</a><a href="#roi">ROI</a></nav>
+  </aside>
+  <header class="topbar">
+    <nav class="nav" aria-label="Primary navigation">
+      <a class="brand" href="#"><span class="brand-mark">V</span>Verdant</a>
+      <ul class="nav-links" role="list"><li><a href="#timeline">Compliance</a></li><li><a href="#suppliers">Suppliers</a></li><li><a href="#audit">Audit trail</a></li><li><a href="#roi">ROI</a></li></ul>
+      <div class="nav-actions"><button class="nav-ghost">View evidence</button><button class="nav-cta">Book demo</button><button class="menu-button" id="drawerOpen" aria-label="Open menu" aria-expanded="false">M</button></div>
+    </nav>
+  </header>
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <div class="kicker">Climate data converted into operating decisions</div>
+          <h1 class="hero-title" id="hero-title">Know what changed, why it matters, and what to do next.</h1>
+          <p class="hero-text">Verdant turns emissions, supplier evidence, and regulatory deadlines into auditable actions for finance, procurement, and operations teams.</p>
+          <div class="hero-actions"><a class="button-primary" href="#roi">Calculate ROI</a><a class="button-secondary" href="#audit">Inspect audit trail</a></div>
+        </div>
+        <div class="dashboard-preview" aria-label="Emissions dashboard preview">
+          <div class="dash-head"><strong>Emissions control room</strong><span class="dash-chip">CSRD ready</span></div>
+          <div class="metric-grid">
+            <article class="metric-card"><div class="metric-label">Scope 1 and 2</div><div class="metric-value">12.8k</div><div class="metric-note">tCO2e, -8.4% YoY</div></article>
+            <article class="metric-card"><div class="metric-label">Supplier coverage</div><div class="metric-value">74%</div><div class="metric-note">verified evidence</div></article>
+            <article class="metric-card"><div class="metric-label">Open actions</div><div class="metric-value">28</div><div class="metric-note">9 due this month</div></article>
+            <article class="metric-card"><div class="metric-label">Estimated savings</div><div class="metric-value">$1.2m</div><div class="metric-note">energy and freight</div></article>
+          </div>
+          <div class="emissions-chart" aria-label="Monthly emissions bars"><span class="bar" style="height:78%"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="timeline" aria-labelledby="timeline-title">
+      <div class="section-head"><div><div class="eyebrow">Regulatory timeline</div><h2 class="section-title" id="timeline-title">Deadlines tied to evidence, owners, and next actions.</h2></div><p class="section-copy">No vague green claims. Each compliance milestone shows the business owner, missing proof, and operational decision.</p></div>
+      <div class="timeline">
+        <article class="deadline-card"><div class="deadline-date">2026 Q2</div><div><h3>CSRD double materiality</h3><p>Confirm financial impact scores and board approval trail.</p></div></article>
+        <article class="deadline-card"><div class="deadline-date">2026 Q3</div><div><h3>Supplier factor refresh</h3><p>Replace spend estimates with activity data for top 80 suppliers.</p></div></article>
+        <article class="deadline-card"><div class="deadline-date">2026 Q4</div><div><h3>Assurance package</h3><p>Export evidence chain for auditor review with source timestamps.</p></div></article>
+        <article class="deadline-card"><div class="deadline-date">2027 Q1</div><div><h3>Reduction plan review</h3><p>Translate reported variance into procurement and energy actions.</p></div></article>
+      </div>
+    </section>
+    <section class="section" id="suppliers" aria-labelledby="suppliers-title">
+      <div class="section-head"><div><div class="eyebrow">Supplier data</div><h2 class="section-title" id="suppliers-title">Supplier cards separate facts from assumptions.</h2></div><p class="section-copy">Procurement can see confidence, data source, emissions impact, and the request that should go out next.</p></div>
+      <div class="supplier-grid">
+        <article class="supplier-card"><div class="supplier-top"><h3>Northern Freight Co.</h3><span class="confidence">82%</span></div><div class="supplier-row"><span>Impact</span><strong>3.2k</strong></div><div class="supplier-row"><span>Source</span><strong>Fuel</strong></div><div class="supplier-row"><span>Next ask</span><strong>Lane data</strong></div></article>
+        <article class="supplier-card"><div class="supplier-top"><h3>Atlas Packaging</h3><span class="confidence">91%</span></div><div class="supplier-row"><span>Impact</span><strong>1.7k</strong></div><div class="supplier-row"><span>Source</span><strong>LCA</strong></div><div class="supplier-row"><span>Next ask</span><strong>Recycled %</strong></div></article>
+        <article class="supplier-card"><div class="supplier-top"><h3>Helio Components</h3><span class="confidence">64%</span></div><div class="supplier-row"><span>Impact</span><strong>4.8k</strong></div><div class="supplier-row"><span>Source</span><strong>Spend</strong></div><div class="supplier-row"><span>Next ask</span><strong>Activity</strong></div></article>
+      </div>
+    </section>
+    <section class="section" id="audit" aria-labelledby="audit-title">
+      <div class="audit-layout">
+        <article class="audit-card"><div class="eyebrow">Audit trail</div><h2 id="audit-title">Every number keeps its receipts.</h2><p>Verdant records who changed a factor, which file supported it, and whether it affected a disclosed number. The goal is less panic before assurance.</p></article>
+        <div class="audit-log"><div class="log-row"><time>08:42</time><span>Freight factor updated from primary carrier file.</span><strong class="log-status">Verified</strong></div><div class="log-row"><time>10:15</time><span>Electricity evidence attached for Warsaw facility.</span><strong class="log-status">Linked</strong></div><div class="log-row"><time>13:05</time><span>Supplier estimate replaced with activity data.</span><strong class="log-status">Changed</strong></div><div class="log-row"><time>15:22</time><span>Disclosure export generated for finance review.</span><strong class="log-status">Ready</strong></div></div>
+      </div>
+    </section>
+    <section class="section" id="roi" aria-labelledby="roi-title">
+      <div class="roi-card"><div><div class="eyebrow">ROI calculator</div><h2 id="roi-title">Climate work has to survive the CFO meeting.</h2><p>Estimate savings from supplier requests, facility energy actions, avoided manual assurance work, and better freight choices.</p></div><aside class="roi-panel"><div class="roi-number">$1.2m</div><p>Estimated annual value from the current action queue, with assumptions ready for finance review.</p></aside></div>
+    </section>
+  </main>
+  <button class="mobile-summary" aria-label="Open emissions summary"><span>12.8k tCO2e</span><span>9 deadlines</span></button>
+  <footer class="footer"><div class="footer-inner"><div><a class="brand" href="#"><span class="brand-mark">V</span>Verdant</a><p>Climate SaaS skeleton with emissions dashboard, compliance timeline, supplier evidence, audit trail, and ROI calculator.</p></div><div><h3>Platform</h3><a href="#timeline">Compliance</a><a href="#suppliers">Suppliers</a><a href="#audit">Audit</a></div><div><h3>Teams</h3><a href="#">Finance</a><a href="#">Procurement</a><a href="#">Operations</a></div><div><h3>Start</h3><a href="#roi">ROI calculator</a><a href="#">Security</a><a href="#">Demo</a></div></div><div class="footer-bottom">Built by Paweł Łukasik</div></footer>
+  <script>
+    const drawer = document.getElementById("drawer");
+    const overlay = document.getElementById("drawerOverlay");
+    const openButton = document.getElementById("drawerOpen");
+    const closeButton = document.getElementById("drawerClose");
+    function setDrawer(open) {
+      drawer.classList.toggle("open", open);
+      overlay.classList.toggle("open", open);
+      drawer.setAttribute("aria-hidden", String(!open));
+      overlay.setAttribute("aria-hidden", String(!open));
+      openButton.setAttribute("aria-expanded", String(open));
+    }
+    openButton.addEventListener("click", () => setDrawer(true));
+    closeButton.addEventListener("click", () => setDrawer(false));
+    overlay.addEventListener("click", () => setDrawer(false));
+    drawer.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setDrawer(false)));
+  </script>
+</body>
+</html>
