@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tempo — Productivity Suite</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --oat: #F8F1E7;
+      --espresso: #2A1E17;
+      --espresso-mid: rgba(42,30,23,0.6);
+      --espresso-dim: rgba(42,30,23,0.1);
+      --cobalt: #2563EB;
+      --cobalt-dim: rgba(37,99,235,0.1);
+      --apricot: #FDBA74;
+      --apricot-dim: rgba(253,186,116,0.2);
+      --mint: #A7F3D0;
+      --mint-dim: rgba(167,243,208,0.2);
+      --clay: #C08457;
+      --clay-dim: rgba(192,132,87,0.12);
+      --white: #FFFFFF;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --max: 1200px;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+    body{margin:0;min-height:100vh;color:var(--espresso);background:var(--oat);font-family:"DM Sans",system-ui,sans-serif;line-height:1.6}
+    a{color:inherit;text-decoration:none}
+    button,input{font:inherit}
+    button{cursor:pointer}
+    :focus-visible{outline:3px solid var(--cobalt);outline-offset:2px}
+    .skip-link{position:absolute;top:-100px;left:16px;background:var(--cobalt);color:var(--white);padding:10px 20px;border-radius:var(--radius-sm);z-index:1000;font-weight:700}
+    .skip-link:focus{top:16px}
+    .nav{position:sticky;top:0;z-index:100;background:rgba(248,241,231,0.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--espresso-dim);padding:0 24px}
+    .nav-inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+    .nav-brand{font-family:"Fraunces",serif;font-weight:800;font-size:1.25rem;display:flex;align-items:center;gap:8px}
+    .nav-brand-icon{width:28px;height:28px;background:var(--espresso);border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--apricot);font-size:0.75rem;font-weight:800}
+    .nav-links{display:flex;gap:20px;list-style:none;margin:0;padding:0}
+    .nav-links a{font-size:0.875rem;font-weight:500;color:var(--espresso-mid);transition:color 0.15s}
+    .nav-links a:hover{color:var(--espresso)}
+    .nav-cta{padding:8px 20px;background:var(--espresso);color:var(--apricot);border:none;border-radius:var(--radius-sm);font-weight:700;font-size:0.875rem}
+    .nav-drawer-btn{display:none;background:none;border:1px solid var(--espresso-dim);border-radius:var(--radius-sm);padding:6px 10px;color:var(--espresso)}
+    .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(42,30,23,0.3);z-index:200}
+    .drawer-overlay.open{display:block}
+    .drawer{position:fixed;top:0;right:-300px;width:280px;height:100%;background:var(--oat);z-index:201;padding:24px;transition:right 0.2s ease;overflow-y:auto}
+    .drawer.open{right:0}
+    .drawer-close{background:none;border:none;font-size:1.5rem;color:var(--espresso);float:right}
+    .drawer nav{clear:both;padding-top:24px}
+    .drawer nav a{display:block;padding:12px 0;font-size:1rem;font-weight:500;color:var(--espresso);border-bottom:1px solid var(--espresso-dim)}
+    .hero{max-width:var(--max);margin:0 auto;padding:60px 24px 48px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+    .hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--mint-dim);color:#065F46;padding:4px 12px;border-radius:999px;font-size:0.75rem;font-weight:600;margin-bottom:16px}
+    .hero-title{font-family:"Fraunces",serif;font-weight:800;font-size:2.5rem;line-height:1.15;margin:0 0 16px}
+    .hero-sub{font-size:1.0625rem;color:var(--espresso-mid);margin:0 0 28px;max-width:440px}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+    .btn-primary{padding:12px 28px;background:var(--espresso);color:var(--apricot);border:none;border-radius:var(--radius-sm);font-weight:700;font-size:0.9375rem}
+    .btn-secondary{padding:12px 28px;background:var(--white);color:var(--espresso);border:1px solid var(--espresso-dim);border-radius:var(--radius-sm);font-weight:600;font-size:0.9375rem}
+    .preview-card{background:var(--white);border:1px solid var(--espresso-dim);border-radius:var(--radius);padding:24px}
+    .preview-title{font-family:"Fraunces",serif;font-weight:700;font-size:1rem;margin:0 0 16px}
+    .timeline-list{list-style:none;margin:0;padding:0}
+    .timeline-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--espresso-dim)}
+    .timeline-item:last-child{border-bottom:none}
+    .timeline-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+    .timeline-dot.done{background:var(--mint)}.timeline-dot.current{background:var(--cobalt)}.timeline-dot.upcoming{background:var(--espresso-dim)}
+    .timeline-text{flex:1;font-size:0.8125rem;font-weight:500}
+    .timeline-time{font-size:0.6875rem;color:var(--espresso-mid)}
+    .streak-card{background:var(--apricot-dim);border:1px solid rgba(253,186,116,0.3);border-radius:var(--radius);padding:20px;margin-top:16px}
+    .streak-title{font-weight:700;font-size:0.8125rem;margin-bottom:8px}
+    .streak-value{font-family:"Fraunces",serif;font-weight:800;font-size:2rem;color:var(--clay)}
+    .streak-label{font-size:0.75rem;color:var(--espresso-mid)}
+    .streak-dots{display:flex;gap:4px;margin-top:8px}
+    .streak-dot{width:20px;height:20px;border-radius:4px}
+    .streak-dot.active{background:var(--apricot)}.streak-dot.inactive{background:var(--espresso-dim)}
+    .section{max-width:var(--max);margin:0 auto;padding:64px 24px}
+    .section-label{font-size:0.6875rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--cobalt);font-weight:700;margin-bottom:8px}
+    .section-title{font-family:"Fraunces",serif;font-weight:700;font-size:1.75rem;margin:0 0 16px}
+    .section-sub{color:var(--espresso-mid);max-width:520px;margin:0 0 32px}
+    .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .feature-card{background:var(--white);border:1px solid var(--espresso-dim);border-radius:var(--radius);padding:24px}
+    .feature-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:1.25rem;margin-bottom:14px}
+    .feature-title{font-family:"Fraunces",serif;font-weight:600;font-size:1rem;margin-bottom:6px}
+    .feature-desc{font-size:0.8125rem;color:var(--espresso-mid);line-height:1.5}
+    .focus-card{background:var(--espresso);border-radius:var(--radius);padding:32px;margin-top:32px;display:grid;grid-template-columns:1fr 1fr;gap:24px}
+    .focus-left{color:var(--white)}
+    .focus-title{font-family:"Fraunces",serif;font-weight:700;font-size:1.25rem;margin:0 0 8px}
+    .focus-sub{color:rgba(255,255,255,0.7);font-size:0.875rem}
+    .focus-timer{font-family:"Fraunces",serif;font-weight:800;font-size:3rem;color:var(--apricot);margin-top:16px}
+    .focus-label{font-size:0.75rem;color:rgba(255,255,255,0.5)}
+    .focus-right{display:flex;flex-direction:column;gap:10px}
+    .focus-task{display:flex;align-items:center;gap:10px;padding:10px;background:rgba(255,255,255,0.06);border-radius:var(--radius-sm);font-size:0.8125rem;color:rgba(255,255,255,0.8)}
+    .focus-task-check{width:18px;height:18px;border-radius:50%;border:2px solid var(--apricot);flex-shrink:0}
+    .focus-task.done .focus-task-check{background:var(--apricot)}
+    .integrations-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+    .integration-card{background:var(--white);border:1px solid var(--espresso-dim);border-radius:var(--radius-sm);padding:16px;text-align:center}
+    .integration-icon{width:32px;height:32px;background:var(--cobalt-dim);border-radius:6px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:0.875rem}
+    .integration-name{font-size:0.6875rem;font-weight:600}
+    .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .pricing-card{background:var(--white);border:1px solid var(--espresso-dim);border-radius:var(--radius);padding:24px;text-align:center}
+    .pricing-card.featured{border-color:var(--espresso);box-shadow:0 0 0 1px var(--espresso)}
+    .pricing-name{font-family:"Fraunces",serif;font-weight:700;font-size:1rem;margin-bottom:4px}
+    .pricing-price{font-family:"Fraunces",serif;font-weight:800;font-size:2rem;margin:12px 0}
+    .pricing-price span{font-size:0.875rem;font-weight:400;color:var(--espresso-mid)}
+    .pricing-features{list-style:none;margin:12px 0;padding:0;text-align:left}
+    .pricing-features li{padding:5px 0;font-size:0.8125rem;color:var(--espresso-mid);border-bottom:1px solid var(--espresso-dim)}
+    .pricing-btn{display:block;width:100%;padding:10px;border-radius:var(--radius-sm);font-weight:700;font-size:0.875rem;border:none;margin-top:12px}
+    .pricing-btn.primary{background:var(--espresso);color:var(--apricot)}
+    .pricing-btn.secondary{background:var(--oat);color:var(--espresso);border:1px solid var(--espresso-dim)}
+    .footer{border-top:1px solid var(--espresso-dim);padding:24px;text-align:center;font-size:0.75rem;color:var(--espresso-mid)}
+    @media(max-width:1024px){
+      .hero{grid-template-columns:1fr}
+      .features-grid,.pricing-grid{grid-template-columns:1fr}
+      .integrations-grid{grid-template-columns:repeat(3,1fr)}
+      .focus-card{grid-template-columns:1fr}
+      .nav-links{display:none}.nav-drawer-btn{display:block}
+    }
+    @media(max-width:768px){
+      .hero-title{font-size:1.75rem}
+      .hero-actions{flex-direction:column}
+      .integrations-grid{grid-template-columns:repeat(2,1fr)}
+      .section{padding:40px 16px}
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+  <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-label="Navigation" aria-hidden="true">
+    <button class="drawer-close" id="drawerClose" aria-label="Close menu">&times;</button>
+    <nav aria-label="Mobile navigation">
+      <a href="#features">Features</a><a href="#focus">Focus Mode</a><a href="#integrations">Integrations</a><a href="#pricing">Pricing</a>
+    </nav>
+  </aside>
+  <header class="nav" role="banner">
+    <div class="nav-inner">
+      <a href="#" class="nav-brand" aria-label="Tempo home"><span class="nav-brand-icon" aria-hidden="true">T</span>Tempo</a>
+      <ul class="nav-links" role="list">
+        <li><a href="#features">Features</a></li><li><a href="#focus">Focus</a></li><li><a href="#integrations">Integrations</a></li><li><a href="#pricing">Pricing</a></li>
+      </ul>
+      <button class="nav-cta">Start Planning</button>
+      <button class="nav-drawer-btn" id="drawerOpen" aria-label="Open menu" aria-expanded="false">&#9776;</button>
+    </div>
+  </header>
+  <main id="main">
+    <section class="hero">
+      <div>
+        <div class="hero-badge">&#10003; Less noise, more momentum</div>
+        <h1 class="hero-title">Productivity that feels calmer, not busier</h1>
+        <p class="hero-sub">Tempo organizes your tasks, habits, and focus time into a rhythm that works — without the overwhelm.</p>
+        <div class="hero-actions">
+          <button class="btn-primary">Start Planning</button>
+          <button class="btn-secondary">See How It Works</button>
+        </div>
+      </div>
+      <div>
+        <div class="preview-card">
+          <div class="preview-title">Today's Timeline</div>
+          <ul class="timeline-list" aria-label="Task timeline">
+            <li class="timeline-item"><span class="timeline-dot done" aria-hidden="true"></span><span class="timeline-text">Morning review — Plan the day</span><span class="timeline-time">8:00 AM</span></li>
+            <li class="timeline-item"><span class="timeline-dot done" aria-hidden="true"></span><span class="timeline-text">Deep work — API integration</span><span class="timeline-time">9:00 AM</span></li>
+            <li class="timeline-item"><span class="timeline-dot current" aria-hidden="true"></span><span class="timeline-text">Team sync — Weekly standup</span><span class="timeline-time">11:00 AM</span></li>
+            <li class="timeline-item"><span class="timeline-dot upcoming" aria-hidden="true"></span><span class="timeline-text">Focus block — Design review</span><span class="timeline-time">1:00 PM</span></li>
+            <li class="timeline-item"><span class="timeline-dot upcoming" aria-hidden="true"></span><span class="timeline-text">Wrap up — Daily reflection</span><span class="timeline-time">5:00 PM</span></li>
+          </ul>
+        </div>
+        <div class="streak-card">
+          <div class="streak-title">Habit Streak</div>
+          <div class="streak-value">14 days</div>
+          <div class="streak-label">Current streak — keep it going!</div>
+          <div class="streak-dots" aria-label="14-day streak"><span class="streak-dot active"></span><span class="streak-dot active"></span><span class="streak-dot active"></span><span class="streak-dot active"></span><span class="streak-dot active"></span><span class="streak-dot active"></span><span class="streak-dot active"></span><span class="streak-dot active"></span><span class="streak-dot active"></span><span class="streak-dot active"></span><span class="streak-dot active"></span><span class="streak-dot active"></span><span class="streak-dot active"></span><span class="streak-dot active"></span></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="features" aria-labelledby="features-title">
+      <div class="section-label">Features</div>
+      <h2 class="section-title" id="features-title">Everything you need, nothing you don't</h2>
+      <p class="section-sub">Designed to help you focus on what matters — not manage your tools.</p>
+      <div class="features-grid">
+        <div class="feature-card"><div class="feature-icon" style="background:var(--cobalt-dim)" aria-hidden="true">&#128197;</div><div class="feature-title">Smart Timeline</div><div class="feature-desc">Your day organized into a calm, visual flow. Tasks, meetings, and focus blocks in one view.</div></div>
+        <div class="feature-card"><div class="feature-icon" style="background:var(--apricot-dim)" aria-hidden="true">&#128293;</div><div class="feature-title">Habit Tracking</div><div class="feature-desc">Build streaks, not guilt. Simple check-ins that keep you consistent without pressure.</div></div>
+        <div class="feature-card"><div class="feature-icon" style="background:var(--mint-dim)" aria-hidden="true">&#127919;</div><div class="feature-title">Focus Mode</div><div class="feature-desc">Block distractions, set a timer, and see only what you're working on. Nothing else.</div></div>
+        <div class="feature-card"><div class="feature-icon" style="background:var(--clay-dim)" aria-hidden="true">&#128101;</div><div class="feature-title">Team Sync</div><div class="feature-desc">See your team's availability without micromanaging. Coordinate without meetings.</div></div>
+        <div class="feature-card"><div class="feature-icon" style="background:var(--cobalt-dim)" aria-hidden="true">&#128221;</div><div class="feature-title">Quick Notes</div><div class="feature-desc">Capture thoughts without leaving your flow. Notes attach to tasks automatically.</div></div>
+        <div class="feature-card"><div class="feature-icon" style="background:var(--apricot-dim)" aria-hidden="true">&#128200;</div><div class="feature-title">Weekly Review</div><div class="feature-desc">Reflect on what worked. Tempo generates insights from your completed tasks and habits.</div></div>
+      </div>
+      <div class="focus-card" id="focus">
+        <div class="focus-left">
+          <h3 class="focus-title">Focus Mode</h3>
+          <p class="focus-sub">When you need to go heads-down, Tempo hides everything except your current task.</p>
+          <div class="focus-timer">25:00</div>
+          <div class="focus-label">Pomodoro timer</div>
+        </div>
+        <div class="focus-right">
+          <div class="focus-task done"><span class="focus-task-check" aria-hidden="true"></span>Write API documentation</div>
+          <div class="focus-task"><span class="focus-task-check" aria-hidden="true"></span>Review pull request #247</div>
+          <div class="focus-task"><span class="focus-task-check" aria-hidden="true"></span>Update design tokens</div>
+          <div class="focus-task"><span class="focus-task-check" aria-hidden="true"></span>Send weekly summary</div>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="integrations" aria-labelledby="integrations-title">
+      <div class="section-label">Integrations</div>
+      <h2 class="section-title" id="integrations-title">Works with your tools</h2>
+      <p class="section-sub">Connect Tempo to the apps you already use.</p>
+      <div class="integrations-grid">
+        <div class="integration-card"><div class="integration-icon" aria-hidden="true">G</div><div class="integration-name">Google Calendar</div></div>
+        <div class="integration-card"><div class="integration-icon" aria-hidden="true">S</div><div class="integration-name">Slack</div></div>
+        <div class="integration-card"><div class="integration-icon" aria-hidden="true">N</div><div class="integration-name">Notion</div></div>
+        <div class="integration-card"><div class="integration-icon" aria-hidden="true">L</div><div class="integration-name">Linear</div></div>
+        <div class="integration-card"><div class="integration-icon" aria-hidden="true">F</div><div class="integration-name">Figma</div></div>
+        <div class="integration-card"><div class="integration-icon" aria-hidden="true">G</div><div class="integration-name">GitHub</div></div>
+      </div>
+    </section>
+    <section class="section" id="pricing" aria-labelledby="pricing-title">
+      <div class="section-label">Pricing</div>
+      <h2 class="section-title" id="pricing-title">Simple, honest pricing</h2>
+      <div class="pricing-grid">
+        <div class="pricing-card"><div class="pricing-name">Free</div><div class="pricing-price">$0</div><ul class="pricing-features"><li>Task timeline</li><li>3 habits</li><li>Basic focus mode</li></ul><button class="pricing-btn secondary">Get Started</button></div>
+        <div class="pricing-card featured"><div class="pricing-name">Pro</div><div class="pricing-price">$8<span>/mo</span></div><ul class="pricing-features"><li>Unlimited habits</li><li>Team sync</li><li>Integrations</li><li>Weekly insights</li></ul><button class="pricing-btn primary">Start Free Trial</button></div>
+        <div class="pricing-card"><div class="pricing-name">Team</div><div class="pricing-price">$12<span>/user/mo</span></div><ul class="pricing-features"><li>Everything in Pro</li><li>Shared timelines</li><li>Admin dashboard</li><li>Priority support</li></ul><button class="pricing-btn secondary">Contact Sales</button></div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer" role="contentinfo">Tempo Productivity &mdash; designed by Studio &middot; Standalone prototype</footer>
+  <script>
+    (function(){
+      var o=document.getElementById('drawerOpen'),c=document.getElementById('drawerClose'),d=document.getElementById('drawer'),v=document.getElementById('drawerOverlay');
+      function open(){d.classList.add('open');v.classList.add('open');d.setAttribute('aria-hidden','false');o.setAttribute('aria-expanded','true');c.focus()}
+      function close(){d.classList.remove('open');v.classList.remove('open');d.setAttribute('aria-hidden','true');o.setAttribute('aria-expanded','false');o.focus()}
+      o.addEventListener('click',open);c.addEventListener('click',close);v.addEventListener('click',close);
+      document.addEventListener('keydown',function(e){if(e.key==='Escape'&&d.classList.contains('open'))close()});
+      d.querySelectorAll('a').forEach(function(l){l.addEventListener('click',close)});
+    })();
+  </script>
+</body>
+</html>
