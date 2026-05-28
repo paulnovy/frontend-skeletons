@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Blaze Fire Response</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --cloud: #F6F8FC;
+    --ink: #19212B;
+    --indigo: #4F46E5;
+    --cyan: #06B6D4;
+    --lime: #A3E635;
+    --coral: #FB7185;
+    --card: #FFFFFF;
+    --border: #E5E7EB;
+    --green: #10B981;
+    --orange: #F59E0B;
+    --red: #EF4444;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cloud);
+    color: #111827;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+  }
+
+  a {
+    color: var(--indigo);
+    text-decoration: none;
+  }
+
+  button {
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--coral);
+    color: #fff;
+    padding: 8px 16px;
+    z-index: 100;
+    font-size: 0.875rem;
+  }
+
+  .skip-link:focus {
+    top: 0;
+  }
+
+  .top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 24px;
+    height: 60px;
+    background: var(--ink);
+    color: #fff;
+  }
+
+  .nav-brand {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--coral);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 4px;
+    margin-left: 24px;
+  }
+
+  .nav-links a {
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .nav-links a:hover,
+  .nav-links a[aria-current="page"] {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+
+  .nav-search {
+    margin-left: auto;
+    position: relative;
+  }
+
+  .nav-search input {
+    width: 200px;
+    padding: 8px 12px 8px 36px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+
+  .nav-search svg {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .nav-cta {
+    margin-left: 12px;
+    padding: 8px 18px;
+    background: var(--coral);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .hamburger {
+    display: none;
+    background: none;
+    border: none;
+    padding: 8px;
+    color: #fff;
+  }
+
+  .hamburger svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .drawer-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 60;
+  }
+
+  .drawer-overlay.open {
+    display: block;
+  }
+
+  .drawer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 280px;
+    height: 100%;
+    background: #fff;
+    z-index: 70;
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    padding: 24px;
+    overflow-y: auto;
+  }
+
+  .drawer.open {
+    transform: translateX(0);
+  }
+
+  .drawer-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    color: #111827;
+  }
+
+  .drawer nav {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 24px;
+  }
+
+  .drawer nav a {
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.9375rem;
+    color: #111827;
+  }
+
+  .drawer nav a:hover {
+    background: var(--cloud);
+  }
+
+  @media (max-width: 768px) {
+    .nav-links,
+    .nav-search,
+    .nav-cta {
+      display: none;
+    }
+
+    .hamburger {
+      display: block;
+    }
+
+    .top-nav {
+      padding: 0 16px;
+    }
+  }
+
+  .kpi-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    padding: 24px;
+  }
+
+  .kpi-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .kpi-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+  }
+
+  .kpi-label {
+    font-size: 0.8125rem;
+    color: #6B7280;
+    margin-bottom: 2px;
+  }
+
+  .kpi-value {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+  }
+
+  .kpi-trend {
+    font-size: 0.75rem;
+    margin-top: 2px;
+  }
+
+  .main-content {
+    padding: 0 24px 48px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+  }
+
+  .section-header h2 {
+    font-size: 1.25rem;
+  }
+
+  .badge {
+    background: var(--cloud);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #6B7280;
+  }
+
+  .incident-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .incident-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-left: 4px solid;
+  }
+
+  .incident-card h4 {
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+
+  .incident-card .desc {
+    font-size: 0.8125rem;
+    color: #6B7280;
+    margin-bottom: 8px;
+  }
+
+  .incident-meta {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #9CA3AF;
+  }
+
+  .severity {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+  }
+
+  .sev-critical {
+    background: #FEE2E2;
+    color: #991B1B;
+  }
+
+  .sev-high {
+    background: #FEF3C7;
+    color: #92400E;
+  }
+
+  .sev-medium {
+    background: #DBEAFE;
+    color: #1E40AF;
+  }
+
+  .sev-low {
+    background: #D1FAE5;
+    color: #065F46;
+  }
+
+  .data-tbl {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+
+  .data-tbl th {
+    text-align: left;
+    padding: 12px 16px;
+    font-size: 0.8125rem;
+    color: #6B7280;
+    font-weight: 600;
+    border-bottom: 1px solid var(--border);
+    background: var(--cloud);
+  }
+
+  .data-tbl td {
+    padding: 12px 16px;
+    font-size: 0.875rem;
+    border-bottom: 1px solid #F3F4F6;
+  }
+
+  .data-tbl tr:last-child td {
+    border-bottom: none;
+  }
+
+  .data-tbl tr:hover {
+    background: var(--cloud);
+  }
+
+  .badge-status {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .st-dispatched {
+    background: #FEF3C7;
+    color: #92400E;
+  }
+
+  .st-onscene {
+    background: #FEE2E2;
+    color: #991B1B;
+  }
+
+  .st-returning {
+    background: #DBEAFE;
+    color: #1E40AF;
+  }
+
+  .st-available {
+    background: #D1FAE5;
+    color: #065F46;
+  }
+
+  .unit-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .unit-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    border: 1px solid var(--border);
+  }
+
+  .unit-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+
+  .unit-header h4 {
+    font-size: 1rem;
+  }
+
+  .status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+  }
+
+  .unit-card .detail {
+    font-size: 0.8125rem;
+    color: #6B7280;
+    margin-bottom: 4px;
+  }
+
+  .chart-box {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 24px;
+    border: 1px solid var(--border);
+    margin-bottom: 32px;
+  }
+
+  .chart-title {
+    font-size: 1rem;
+    margin-bottom: 4px;
+  }
+
+  .chart-sub {
+    font-size: 0.8125rem;
+    color: #6B7280;
+    margin-bottom: 20px;
+  }
+
+  .bar-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    height: 200px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .bar-group {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+    justify-content: flex-end;
+  }
+
+  .bar-rect {
+    width: 100%;
+    max-width: 48px;
+    border-radius: 4px 4px 0 0;
+    min-height: 4px;
+  }
+
+  .bar-lbl {
+    font-size: 0.6875rem;
+    color: #9CA3AF;
+    margin-top: 8px;
+  }
+
+  .bar-val {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    font-size: 0.75rem;
+    margin-bottom: 4px;
+  }
+
+  .activity-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 32px;
+  }
+
+  .activity-item {
+    background: var(--card);
+    border-radius: 8px;
+    padding: 12px 16px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.875rem;
+  }
+
+  .activity-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .activity-time {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: #9CA3AF;
+  }
+
+  .site-footer {
+    padding: 32px 24px;
+    text-align: center;
+    font-size: 0.8125rem;
+    color: #9CA3AF;
+    border-top: 1px solid var(--border);
+    margin-top: 48px;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--coral);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      transition: none !important;
+      animation: none !important;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .kpi-strip {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .incident-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .data-tbl {
+      display: block;
+      overflow-x: auto;
+    }
+
+    .unit-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header class="top-nav">
+  <button class="hamburger" aria-label="Open menu" aria-expanded="false"
+    onclick="document.getElementById('drawer').classList.toggle('open');document.getElementById('overlay').classList.toggle('open');this.setAttribute('aria-expanded',document.getElementById('drawer').classList.contains('open'))">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+  </button>
+  <a href="#" class="nav-brand">🔥 Blaze Fire Response</a>
+  <nav class="nav-links" aria-label="Main">
+    <a href="#" aria-current="page">Dashboard</a>
+    <a href="#incidents">Incidents</a>
+    <a href="#units">Units</a>
+    <a href="#response">Response Times</a>
+    <a href="#activity">Activity</a>
+  </nav>
+  <div class="nav-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" aria-label="Search incidents">
+  </div>
+  <button class="nav-cta">+ Report Incident</button>
+</header>
+
+<div class="drawer-overlay" id="overlay" onclick="document.getElementById('drawer').classList.remove('open');this.classList.remove('open')"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-label="Navigation">
+  <button class="drawer-close" aria-label="Close menu"
+    onclick="document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open')">&times;</button>
+  <nav>
+    <a href="#">Dashboard</a>
+    <a href="#incidents">Incidents</a>
+    <a href="#units">Units</a>
+    <a href="#response">Response Times</a>
+    <a href="#activity">Activity</a>
+  </nav>
+</aside>
+
+<main id="main">
+  <div class="kpi-strip" role="region" aria-label="Response metrics">
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#FEE2E2">🚒</div>
+      <div>
+        <div class="kpi-label">Active Incidents</div>
+        <div class="kpi-value" style="color:#EF4444">7</div>
+        <div class="kpi-trend" style="color:#EF4444">2 structure fires, 5 medical</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#D1FAE5">⏱️</div>
+      <div>
+        <div class="kpi-label">Avg Response Time</div>
+        <div class="kpi-value" style="color:#10B981">4.2 min</div>
+        <div class="kpi-trend" style="color:#10B981">Below 5 min target</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#DBEAFE">👥</div>
+      <div>
+        <div class="kpi-label">Personnel On Duty</div>
+        <div class="kpi-value" style="color:#4F46E5">48</div>
+        <div class="kpi-trend" style="color:#10B981">4 stations staffed</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#FEF3C7">📊</div>
+      <div>
+        <div class="kpi-label">Incidents This Month</div>
+        <div class="kpi-value" style="color:#F59E0B">186</div>
+        <div class="kpi-trend" style="color:#10B981">Down 8% from last month</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <section id="incidents">
+      <div class="section-header">
+        <h2>Active Incidents</h2>
+        <span class="badge">7 active</span>
+      </div>
+      <div class="incident-grid">
+        <div class="incident-card" style="border-left-color:#EF4444">
+          <h4>🔥 Structure Fire — 142 Oak Street</h4>
+          <div class="desc">Two-story residential structure. Engine 1, Ladder 3, Rescue 1 dispatched. All occupants accounted for.</div>
+          <div class="incident-meta">
+            <span class="severity sev-critical">Critical</span>
+            <span>Dispatched 12 min ago</span>
+          </div>
+        </div>
+        <div class="incident-card" style="border-left-color:#EF4444">
+          <h4>🔥 Warehouse Fire — Industrial Park Rd</h4>
+          <div class="desc">Commercial warehouse with hazardous materials. Engine 2, Engine 4, HazMat unit on scene.</div>
+          <div class="incident-meta">
+            <span class="severity sev-critical">Critical</span>
+            <span>Dispatched 28 min ago</span>
+          </div>
+        </div>
+        <div class="incident-card" style="border-left-color:#F59E0B">
+          <h4>🚑 Medical — 88 Elm Avenue</h4>
+          <div class="desc">Elderly patient with chest pains. Medic 2 dispatched. ETA 3 minutes.</div>
+          <div class="incident-meta">
+            <span class="severity sev-high">High</span>
+            <span>Dispatched 5 min ago</span>
+          </div>
+        </div>
+        <div class="incident-card" style="border-left-color:#F59E0B">
+          <h4>🚑 Medical — Park &amp; Main</h4>
+          <div class="desc">Motor vehicle accident with injuries. Medic 1 and Rescue 2 dispatched.</div>
+          <div class="incident-meta">
+            <span class="severity sev-high">High</span>
+            <span>Dispatched 8 min ago</span>
+          </div>
+        </div>
+        <div class="incident-card" style="border-left-color:#4F46E5">
+          <h4>🚨 Alarm — 55 Cedar Lane</h4>
+          <div class="desc">Residential fire alarm activation. Engine 3 dispatched for investigation.</div>
+          <div class="incident-meta">
+            <span class="severity sev-medium">Medium</span>
+            <span>Dispatched 3 min ago</span>
+          </div>
+        </div>
+        <div class="incident-card" style="border-left-color:#A3E635">
+          <h4>🌲 Brush Fire — Route 9 North</h4>
+          <div class="desc">Small brush fire near highway. Brush truck 1 responding. Wind conditions favorable.</div>
+          <div class="incident-meta">
+            <span class="severity sev-low">Low</span>
+            <span>Dispatched 15 min ago</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="units">
+      <div class="section-header">
+        <h2>Unit Status</h2>
+        <span class="badge">16 units</span>
+      </div>
+      <table class="data-tbl" aria-label="Unit status">
+        <thead>
+          <tr>
+            <th>Unit</th>
+            <th>Type</th>
+            <th>Station</th>
+            <th>Status</th>
+            <th>Current Assignment</th>
+            <th>Crew</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Engine 1</strong></td>
+            <td>Pumper</td>
+            <td>Station 1</td>
+            <td><span class="badge-status st-onscene">On Scene</span></td>
+            <td>142 Oak Street</td>
+            <td>4</td>
+          </tr>
+          <tr>
+            <td><strong>Engine 2</strong></td>
+            <td>Pumper</td>
+            <td>Station 2</td>
+            <td><span class="badge-status st-onscene">On Scene</span></td>
+            <td>Industrial Park Rd</td>
+            <td>4</td>
+          </tr>
+          <tr>
+            <td><strong>Engine 3</strong></td>
+            <td>Pumper</td>
+            <td>Station 1</td>
+            <td><span class="badge-status st-dispatched">Dispatched</span></td>
+            <td>55 Cedar Lane</td>
+            <td>4</td>
+          </tr>
+          <tr>
+            <td><strong>Ladder 3</strong></td>
+            <td>Aerial</td>
+            <td>Station 3</td>
+            <td><span class="badge-status st-onscene">On Scene</span></td>
+            <td>142 Oak Street</td>
+            <td>3</td>
+          </tr>
+          <tr>
+            <td><strong>Medic 1</strong></td>
+            <td>Ambulance</td>
+            <td>Station 1</td>
+            <td><span class="badge-status st-dispatched">Dispatched</span></td>
+            <td>Park &amp; Main</td>
+            <td>2</td>
+          </tr>
+          <tr>
+            <td><strong>Medic 2</strong></td>
+            <td>Ambulance</td>
+            <td>Station 2</td>
+            <td><span class="badge-status st-dispatched">Dispatched</span></td>
+            <td>88 Elm Avenue</td>
+            <td>2</td>
+          </tr>
+          <tr>
+            <td><strong>Rescue 1</strong></td>
+            <td>Heavy Rescue</td>
+            <td>Station 1</td>
+            <td><span class="badge-status st-onscene">On Scene</span></td>
+            <td>142 Oak Street</td>
+            <td>4</td>
+          </tr>
+          <tr>
+            <td><strong>Engine 4</strong></td>
+            <td>Pumper</td>
+            <td>Station 4</td>
+            <td><span class="badge-status st-available">Available</span></td>
+            <td>Station 4</td>
+            <td>4</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <div class="chart-box">
+      <h3 class="chart-title">Monthly Incidents by Type</h3>
+      <div class="chart-sub">Last 6 months breakdown</div>
+      <div class="bar-chart" role="img" aria-label="Incidents by type chart">
+        <div class="bar-group">
+          <div class="bar-val">78</div>
+          <div class="bar-rect" style="height:156px;background:#EF4444"></div>
+          <span class="bar-lbl">Medical</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">34</div>
+          <div class="bar-rect" style="height:68px;background:#F59E0B"></div>
+          <span class="bar-lbl">Fire</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">28</div>
+          <div class="bar-rect" style="height:56px;background:#4F46E5"></div>
+          <span class="bar-lbl">Alarm</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">22</div>
+          <div class="bar-rect" style="height:44px;background:#06B6D4"></div>
+          <span class="bar-lbl">Rescue</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">15</div>
+          <div class="bar-rect" style="height:30px;background:#A3E635"></div>
+          <span class="bar-lbl">HazMat</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">9</div>
+          <div class="bar-rect" style="height:18px;background:#FB7185"></div>
+          <span class="bar-lbl">Other</span>
+        </div>
+      </div>
+    </div>
+
+    <section>
+      <div class="section-header">
+        <h2>Recent Activity</h2>
+        <span class="badge">Last 2 hours</span>
+      </div>
+      <div class="activity-list" role="list">
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:#EF4444"></div>
+          <span>Engine 1 and Ladder 3 dispatched to structure fire at 142 Oak Street</span>
+          <span class="activity-time">12 min ago</span>
+        </div>
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:#F59E0B"></div>
+          <span>Engine 2 and HazMat unit dispatched to Industrial Park warehouse fire</span>
+          <span class="activity-time">28 min ago</span>
+        </div>
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:#10B981"></div>
+          <span>Medic 3 cleared from transport to General Hospital — patient stable</span>
+          <span class="activity-time">45 min ago</span>
+        </div>
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:#4F46E5"></div>
+          <span>Shift change completed at Station 1 — B-shift now on duty</span>
+          <span class="activity-time">1 hour ago</span>
+        </div>
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:#06B6D4"></div>
+          <span>Engine 4 returned to Station 4 after brush fire on Route 9</span>
+          <span class="activity-time">1.5 hours ago</span>
+        </div>
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:#A3E635"></div>
+          <span>Weekly apparatus inspection completed — all units passed</span>
+          <span class="activity-time">2 hours ago</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p>Blaze Fire Response — designed by Studio · Standalone prototype · Not affiliated with any fire department</p>
+</footer>
+
+<script>
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.getElementById('drawer').classList.remove('open');
+      document.getElementById('overlay').classList.remove('open');
+    }
+  });
+</script>
+</body>
+</html>
