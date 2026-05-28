@@ -1,38 +1,78 @@
-# Lumen Finance Dashboard Design Book
+# Lumen Finance Dashboard — Design Book
 
-## Concept
+## 1. Project Name
+Lumen Finance Dashboard
 
-Lumen Finance Dashboard is a premium personal finance workspace for consumer fintech users who want spending, budgets, investments, and savings goals in one scanning surface. The page behaves like an active dashboard rather than a marketing landing page, with the first viewport immediately showing account health and net worth context.
+## 2. Product Type
+Personal finance and wealth management dashboard.
 
-## Palette
+## 3. Intended Audience
+Individuals managing personal finances, savings goals, investments, and monthly budgets.
 
-- Cloud `#F6F8FC` is the page base, card surface, chart interior, and drawer background.
-- Ink `#19212B` anchors text, the dark hero finance card, footer, and the final donut segment.
-- Indigo `#4F46E5` marks primary action, brand identity, high-value chart segments, and allocation bars.
-- Cyan `#06B6D4` marks live sync, positive movement emphasis, secondary chart data, and focus states.
-- Lime `#A3E635` marks healthy cashflow, savings progress, and income bars.
-- Coral `#FB7185` marks expense bars, credit-card caution, and budget pressure.
+## 4. User Problem
+People find money management intimidating and opaque. They need a calm, clear view of their financial health that makes complex numbers feel manageable and non-threatening.
 
-Only these six colors are used, with opacity variants for borders, muted text, and layered surfaces.
+## 5. UX Concept
+Make money feel understandable and non-threatening. Use plain-language financial explanations. The dashboard opens with a health score, then shows where money is going and where it's headed.
 
-## Typography
+## 6. Layout Structure
+- **Left panel**: Financial health score (ring chart), account summary, monthly budget breakdown
+- **Center**: Cashflow chart (income vs expenses over time), recent transactions list
+- **Right panel**: Savings goals with progress bars, spending insights with actionable suggestions, upcoming bills
 
-Headings use Manrope for large financial totals and confident dashboard hierarchy. Inter handles navigation, labels, transaction metadata, and dense UI text because the numerals remain clear across compact cards. Both fonts load from the Google Fonts CDN.
+## 7. Typography System
+- **Interface**: IBM Plex Sans (400-700) — clean, professional, trustworthy
+- **Editorial insights**: Fraunces (500-800) — warm serif for money insights and large numbers
+- **Numbers**: IBM Plex Mono (400-600) — stable numeric alignment for financial figures
 
-## Layout
+## 8. Color System
+| Token | Hex | Usage |
+|-------|-----|-------|
+| Warm ivory | #FBF7EE | Page background, warm neutral |
+| Forest | #12372A | Primary accent, positive values, headings |
+| Mint | #B8F2D0 | Positive indicators, chart fills, highlights |
+| Gold | #D6A84F | Warnings, budget categories |
+| Ink | #17201B | Primary text |
+| Clay | #C9704A | Negative values, expenses, alerts |
 
-The skeleton follows the required structure:
+## 9. Component System
+- **Health score ring**: SVG circle with percentage overlay
+- **Account rows**: Label + value with positive/negative coloring
+- **Cashflow chart**: SVG area chart with income line + expense dashed line
+- **Transaction list**: Icon + name + category + amount
+- **Goal progress**: Name + percentage bar + current/target amounts
+- **Insight cards**: Mint background with plain-language explanation + action button
+- **Budget mini**: Color-coded dot + category + amount
 
-- Sticky top nav with brand, section links, search, profile avatar, and mobile hamburger.
-- Hero section with a dark live wallet panel and clear consumer finance positioning.
-- Account summary strip for total balance, checking, savings, and credit-card movement.
-- Dashboard grid for spending insights, budget progress, and six-month cashflow.
-- Recent transactions beside investment portfolio holdings.
-- Savings goal cards with target, current amount, and visual progress.
-- Footer with visible Lumen Finance Dashboard studio credit.
+## 10. Interaction Rules
+- Time period toggle (1W, 1M, 3M, 1Y) for cashflow chart
+- Hover states on all interactive elements
+- Focus-visible with forest outline
+- Drawer navigation on mobile
+- Insight action buttons for quick transfers
 
-Cards use restrained borders, 8px radius, stable chart dimensions, and dense but breathable spacing so the dashboard feels operational and premium.
+## 11. Responsive Behavior
+- **Desktop (1320px+)**: Full 3-column layout
+- **Tablet (1024px)**: 2-column grid for side panels, stacked layout
+- **Mobile (768px)**: Single column, "Today's money snapshot" first, then goals, then charts
 
-## Accessibility
+## 12. Accessibility Notes
+- Semantic landmarks (header, main, aside, footer)
+- Skip link to main content
+- ARIA labels on chart, goals, transactions
+- Chart has text summary for screen readers
+- prefers-reduced-motion support
+- Color is not the only indicator (text labels accompany positive/negative)
 
-The page uses semantic landmarks, descriptive section labels, accessible chart summaries, `focus-visible` styles, keyboard-operable drawer controls, Escape-to-close behavior, and `prefers-reduced-motion` support. The mobile drawer updates `aria-expanded` and `aria-hidden` state as it opens and closes.
+## 13. Performance Notes
+- Single HTML file, no external dependencies beyond Google Fonts
+- SVG charts rendered inline (no JS charting library)
+- CSS-only visual elements
+- Minimal JS for drawer and period toggle
+
+## 14. Commercial Use Cases
+- Personal finance apps (Mint alternatives)
+- Wealth management dashboards
+- Banking UI concepts
+- Financial planning tools
+- Budgeting app interfaces
