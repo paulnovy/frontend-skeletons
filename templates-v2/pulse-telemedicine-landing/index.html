@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pulse — Telemedicine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --warm-white: #FFFDF8;
+      --blue: #2563EB;
+      --blue-dim: rgba(37,99,235,0.08);
+      --aqua: #41D6C3;
+      --aqua-dim: rgba(65,214,195,0.12);
+      --leaf: #7BC67E;
+      --leaf-dim: rgba(123,198,126,0.12);
+      --graphite: #1E293B;
+      --graphite-mid: rgba(30,41,59,0.6);
+      --graphite-dim: rgba(30,41,59,0.1);
+      --blush: #FFE1E1;
+      --blush-dim: rgba(255,225,225,0.4);
+      --white: #FFFFFF;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --max: 1200px;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+    body{margin:0;min-height:100vh;color:var(--graphite);background:var(--warm-white);font-family:"DM Sans",system-ui,sans-serif;line-height:1.6}
+    a{color:inherit;text-decoration:none}
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    :focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+    .skip-link{position:absolute;top:-100px;left:16px;background:var(--blue);color:var(--white);padding:10px 20px;border-radius:var(--radius-sm);z-index:1000;font-weight:700}
+    .skip-link:focus{top:16px}
+    .topbar{position:sticky;top:0;z-index:100;background:rgba(255,253,248,0.95);backdrop-filter:blur(10px);border-bottom:1px solid var(--graphite-dim);padding:0 24px}
+    .topbar-inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}
+    .topbar-brand{font-family:"Plus Jakarta Sans",sans-serif;font-weight:800;font-size:1.25rem;display:flex;align-items:center;gap:8px}
+    .topbar-brand-icon{width:32px;height:32px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center}
+    .topbar-brand-icon svg{width:18px;height:18px}
+    .topbar-links{display:flex;gap:24px;list-style:none;margin:0;padding:0}
+    .topbar-links a{font-size:0.875rem;font-weight:500;color:var(--graphite-mid);transition:color 0.15s}
+    .topbar-links a:hover{color:var(--graphite)}
+    .topbar-actions{display:flex;align-items:center;gap:12px}
+    .btn-outline{padding:8px 18px;border:1px solid var(--graphite-dim);border-radius:var(--radius-sm);font-weight:600;font-size:0.8125rem;background:var(--white);color:var(--graphite);transition:border-color 0.15s}
+    .btn-outline:hover{border-color:var(--blue)}
+    .btn-primary{padding:10px 22px;background:var(--blue);color:var(--white);border:none;border-radius:var(--radius-sm);font-weight:700;font-size:0.875rem;transition:opacity 0.15s}
+    .btn-primary:hover{opacity:0.9}
+    .topbar-drawer-btn{display:none;background:none;border:1px solid var(--graphite-dim);border-radius:var(--radius-sm);padding:8px 12px;color:var(--graphite)}
+    .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(30,41,59,0.3);z-index:200}
+    .drawer-overlay.open{display:block}
+    .drawer{position:fixed;top:0;right:-320px;width:300px;height:100%;background:var(--warm-white);z-index:201;padding:24px;transition:right 0.2s ease;overflow-y:auto}
+    .drawer.open{right:0}
+    .drawer-close{background:none;border:none;font-size:1.5rem;color:var(--graphite);float:right}
+    .drawer nav{clear:both;padding-top:24px}
+    .drawer nav a{display:block;padding:14px 0;font-size:1rem;font-weight:500;color:var(--graphite);border-bottom:1px solid var(--graphite-dim)}
+    .hero{max-width:var(--max);margin:0 auto;padding:48px 24px 60px;display:grid;grid-template-columns:1fr 420px;gap:48px;align-items:start}
+    .hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--leaf-dim);color:#2D7D30;padding:4px 12px;border-radius:999px;font-size:0.75rem;font-weight:600;margin-bottom:16px}
+    .hero-title{font-family:"Plus Jakarta Sans",sans-serif;font-weight:800;font-size:2.5rem;line-height:1.15;margin:0 0 16px}
+    .hero-sub{font-size:1.0625rem;color:var(--graphite-mid);margin:0 0 28px;max-width:480px}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px}
+    .hero-trust{display:flex;gap:16px;flex-wrap:wrap;align-items:center}
+    .trust-badge{display:flex;align-items:center;gap:6px;font-size:0.75rem;color:var(--graphite-mid);font-weight:500}
+    .trust-badge-icon{width:20px;height:20px;background:var(--blue-dim);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:0.625rem;color:var(--blue)}
+    .booking-widget{background:var(--white);border:1px solid var(--graphite-dim);border-radius:var(--radius);padding:28px;box-shadow:0 4px 24px rgba(30,41,59,0.06)}
+    .booking-title{font-family:"Plus Jakarta Sans",sans-serif;font-weight:700;font-size:1.125rem;margin:0 0 20px}
+    .booking-step{margin-bottom:16px}
+    .booking-label{font-weight:600;font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--graphite-mid);margin-bottom:6px}
+    .booking-input{width:100%;padding:10px 14px;border:1px solid var(--graphite-dim);border-radius:var(--radius-sm);font-size:0.875rem;background:var(--warm-white);color:var(--graphite)}
+    .booking-input:focus{outline:2px solid var(--blue);outline-offset:1px;border-color:var(--blue)}
+    .booking-select{width:100%;padding:10px 14px;border:1px solid var(--graphite-dim);border-radius:var(--radius-sm);font-size:0.875rem;background:var(--warm-white);color:var(--graphite);appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' fill='none' stroke='%231E293B' stroke-width='1.5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center}
+    .booking-btn{width:100%;padding:12px;background:var(--blue);color:var(--white);border:none;border-radius:var(--radius-sm);font-weight:700;font-size:0.9375rem;margin-top:8px;transition:opacity 0.15s}
+    .booking-btn:hover{opacity:0.9}
+    .booking-note{font-size:0.6875rem;color:var(--graphite-mid);margin-top:10px;text-align:center}
+    .trust-strip{background:var(--white);border-top:1px solid var(--graphite-dim);border-bottom:1px solid var(--graphite-dim);padding:20px 24px}
+    .trust-inner{max-width:var(--max);margin:0 auto;display:flex;justify-content:space-around;align-items:center;gap:24px;flex-wrap:wrap}
+    .trust-logo{font-family:"Plus Jakarta Sans",sans-serif;font-weight:700;font-size:0.8125rem;color:var(--graphite-mid);opacity:0.5}
+    .section{max-width:var(--max);margin:0 auto;padding:64px 24px}
+    .section-label{font-size:0.6875rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);font-weight:700;margin-bottom:8px}
+    .section-title{font-family:"Plus Jakarta Sans",sans-serif;font-weight:700;font-size:1.75rem;margin:0 0 16px}
+    .section-sub{color:var(--graphite-mid);max-width:560px;margin:0 0 40px}
+    .services-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+    .service-card{background:var(--white);border:1px solid var(--graphite-dim);border-radius:var(--radius);padding:24px;text-align:center;transition:border-color 0.15s}
+    .service-card:hover{border-color:var(--blue)}
+    .service-icon{width:48px;height:48px;margin:0 auto 14px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:1.5rem}
+    .service-name{font-weight:700;font-size:0.9375rem;margin-bottom:4px}
+    .service-desc{font-size:0.75rem;color:var(--graphite-mid)}
+    .split-cards{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:40px}
+    .split-card{background:var(--white);border:1px solid var(--graphite-dim);border-radius:var(--radius);padding:28px}
+    .split-card-label{font-size:0.6875rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--blue);font-weight:700;margin-bottom:8px}
+    .split-card-title{font-family:"Plus Jakarta Sans",sans-serif;font-weight:700;font-size:1.125rem;margin:0 0 8px}
+    .split-card-text{font-size:0.8125rem;color:var(--graphite-mid);line-height:1.6}
+    .doctor-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .doctor-card{background:var(--white);border:1px solid var(--graphite-dim);border-radius:var(--radius);padding:20px;text-align:center}
+    .doctor-avatar{width:64px;height:64px;background:var(--aqua-dim);border-radius:50%;margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:1.5rem}
+    .doctor-name{font-weight:700;font-size:0.9375rem}
+    .doctor-specialty{font-size:0.75rem;color:var(--blue);font-weight:600;margin-top:2px}
+    .doctor-rating{font-size:0.6875rem;color:var(--graphite-mid);margin-top:6px}
+    .testimonial-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .testimonial-card{background:var(--white);border:1px solid var(--graphite-dim);border-radius:var(--radius);padding:20px}
+    .testimonial-text{font-size:0.8125rem;color:var(--graphite-mid);line-height:1.6;font-style:italic;margin:0 0 12px}
+    .testimonial-author{font-weight:700;font-size:0.8125rem}
+    .testimonial-meta{font-size:0.6875rem;color:var(--graphite-mid)}
+    .pricing-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .pricing-card{background:var(--white);border:1px solid var(--graphite-dim);border-radius:var(--radius);padding:28px;text-align:center}
+    .pricing-card.featured{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
+    .pricing-name{font-family:"Plus Jakarta Sans",sans-serif;font-weight:700;font-size:1rem;margin-bottom:4px}
+    .pricing-price{font-family:"Plus Jakarta Sans",sans-serif;font-weight:800;font-size:2rem;margin:12px 0}
+    .pricing-price span{font-size:0.875rem;font-weight:400;color:var(--graphite-mid)}
+    .pricing-features{list-style:none;margin:16px 0;padding:0;text-align:left}
+    .pricing-features li{padding:6px 0;font-size:0.8125rem;color:var(--graphite-mid);border-bottom:1px solid var(--graphite-dim)}
+    .pricing-btn{display:block;width:100%;padding:10px;border-radius:var(--radius-sm);font-weight:700;font-size:0.875rem;border:none;margin-top:16px;transition:opacity 0.15s}
+    .pricing-btn.primary{background:var(--blue);color:var(--white)}
+    .pricing-btn.secondary{background:var(--warm-white);color:var(--graphite);border:1px solid var(--graphite-dim)}
+    .disclaimer{background:var(--blush);border:1px solid var(--blush-dim);border-radius:var(--radius);padding:20px;margin-top:40px}
+    .disclaimer-title{font-weight:700;font-size:0.875rem;margin:0 0 6px;color:#B33A2A}
+    .disclaimer-text{font-size:0.8125rem;color:var(--graphite-mid);line-height:1.6}
+    .footer{border-top:1px solid var(--graphite-dim);padding:24px;text-align:center;font-size:0.75rem;color:var(--graphite-mid)}
+    @media(max-width:1024px){
+      .hero{grid-template-columns:1fr}.booking-widget{margin-top:24px}
+      .services-grid{grid-template-columns:repeat(2,1fr)}
+      .doctor-grid,.testimonial-grid,.pricing-grid{grid-template-columns:1fr}
+      .split-cards{grid-template-columns:1fr}
+      .topbar-links{display:none}.topbar-drawer-btn{display:block}
+    }
+    @media(max-width:768px){
+      .hero-title{font-size:1.75rem}
+      .hero-actions{flex-direction:column}
+      .services-grid{grid-template-columns:1fr}
+      .section{padding:40px 16px}
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-label="Navigation" aria-hidden="true">
+    <button class="drawer-close" id="drawerClose" aria-label="Close menu">&times;</button>
+    <nav aria-label="Mobile navigation">
+      <a href="#services">Services</a><a href="#doctors">Doctors</a><a href="#pricing">Pricing</a>
+    </nav>
+  </aside>
+  <header class="topbar" role="banner">
+    <div class="topbar-inner">
+      <a href="#" class="topbar-brand" aria-label="Pulse home"><span class="topbar-brand-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg></span>Pulse</a>
+      <ul class="topbar-links" role="list">
+        <li><a href="#services">Services</a></li><li><a href="#doctors">Doctors</a></li><li><a href="#pricing">Pricing</a></li>
+      </ul>
+      <div class="topbar-actions">
+        <button class="btn-outline">Check Coverage</button>
+        <button class="btn-primary">Book a Visit</button>
+      </div>
+      <button class="topbar-drawer-btn" id="drawerOpen" aria-label="Open menu" aria-expanded="false">&#9776;</button>
+    </div>
+  </header>
+  <main id="main">
+    <section class="hero">
+      <div>
+        <div class="hero-badge">&#10003; Accepting new patients</div>
+        <h1 class="hero-title">See a doctor in minutes, not days</h1>
+        <p class="hero-sub">Board-certified doctors available 24/7. No waiting rooms, no commute. Get care from home with most major insurance accepted.</p>
+        <div class="hero-actions">
+          <button class="btn-primary" style="padding:14px 32px;font-size:1rem">Book a Visit</button>
+          <button class="btn-outline" style="padding:14px 32px;font-size:1rem">Check Coverage</button>
+        </div>
+        <div class="hero-trust">
+          <span class="trust-badge"><span class="trust-badge-icon" aria-hidden="true">&#10003;</span>HIPAA Compliant</span>
+          <span class="trust-badge"><span class="trust-badge-icon" aria-hidden="true">&#10003;</span>Board Certified</span>
+          <span class="trust-badge"><span class="trust-badge-icon" aria-hidden="true">&#10003;</span>Avg Wait: 8min</span>
+        </div>
+      </div>
+      <div class="booking-widget" aria-label="Book an appointment">
+        <div class="booking-title">Book a Visit</div>
+        <div class="booking-step"><div class="booking-label">What's bothering you?</div><input class="booking-input" type="text" placeholder="e.g., sore throat, rash, anxiety" aria-label="Symptoms"></div>
+        <div class="booking-step"><div class="booking-label">Preferred time</div><select class="booking-select" aria-label="Preferred time"><option>As soon as possible</option><option>Today</option><option>Tomorrow</option><option>This week</option></select></div>
+        <div class="booking-step"><div class="booking-label">Insurance</div><select class="booking-select" aria-label="Insurance provider"><option>Aetna</option><option>Blue Cross</option><option>Cigna</option><option>UnitedHealth</option><option>Self-pay ($75)</option></select></div>
+        <button class="booking-btn">Find Available Doctors</button>
+        <div class="booking-note">Most visits covered by insurance. Self-pay from $75.</div>
+      </div>
+    </section>
+    <div class="trust-strip" role="region" aria-label="Insurance partners">
+      <div class="trust-inner">
+        <span class="trust-logo">Aetna</span><span class="trust-logo">Blue Cross</span><span class="trust-logo">Cigna</span><span class="trust-logo">UnitedHealth</span><span class="trust-logo">Humana</span><span class="trust-logo">Kaiser</span>
+      </div>
+    </div>
+    <section class="section" id="services" aria-labelledby="services-title">
+      <div class="section-label">Services</div>
+      <h2 class="section-title" id="services-title">Care for body and mind</h2>
+      <p class="section-sub">From urgent care to mental health, get the right care at the right time.</p>
+      <div class="services-grid">
+        <div class="service-card"><div class="service-icon" style="background:var(--blue-dim)" aria-hidden="true">&#9764;</div><div class="service-name">Urgent Care</div><div class="service-desc">Cold, flu, infections, injuries</div></div>
+        <div class="service-card"><div class="service-icon" style="background:var(--aqua-dim)" aria-hidden="true">&#9825;</div><div class="service-name">Mental Health</div><div class="service-desc">Anxiety, depression, therapy</div></div>
+        <div class="service-card"><div class="service-icon" style="background:var(--leaf-dim)" aria-hidden="true">&#9738;</div><div class="service-name">Primary Care</div><div class="service-desc">Checkups, chronic conditions</div></div>
+        <div class="service-card"><div class="service-icon" style="background:var(--blush-dim)" aria-hidden="true">&#9829;</div><div class="service-name">Dermatology</div><div class="service-desc">Skin, hair, nail concerns</div></div>
+      </div>
+      <div class="split-cards">
+        <div class="split-card"><div class="split-card-label">For Patients</div><div class="split-card-title">Your health, your schedule</div><div class="split-card-text">Book same-day appointments, get prescriptions sent to your pharmacy, and follow up — all without leaving home.</div></div>
+        <div class="split-card"><div class="split-card-label">For Employers</div><div class="split-card-title">Keep your team healthy</div><div class="split-card-text">Reduce sick days with on-demand care. Group plans available for teams of 5+.</div></div>
+      </div>
+    </section>
+    <section class="section" id="doctors" aria-labelledby="doctors-title">
+      <div class="section-label">Our Doctors</div>
+      <h2 class="section-title" id="doctors-title">Trusted, board-certified physicians</h2>
+      <p class="section-sub">Every doctor is verified, experienced, and rated by real patients.</p>
+      <div class="doctor-grid">
+        <div class="doctor-card"><div class="doctor-avatar" aria-hidden="true">SK</div><div class="doctor-name">Dr. Sarah Kim</div><div class="doctor-specialty">Internal Medicine</div><div class="doctor-rating">4.9 ★ · 1,240 visits</div></div>
+        <div class="doctor-card"><div class="doctor-avatar" aria-hidden="true">MR</div><div class="doctor-name">Dr. Marco Reyes</div><div class="doctor-specialty">Psychiatry</div><div class="doctor-rating">4.8 ★ · 890 visits</div></div>
+        <div class="doctor-card"><div class="doctor-avatar" aria-hidden="true">AJ</div><div class="doctor-name">Dr. Amira Johal</div><div class="doctor-specialty">Dermatology</div><div class="doctor-rating">4.9 ★ · 2,100 visits</div></div>
+      </div>
+    </section>
+    <section class="section" aria-labelledby="testimonials-title">
+      <div class="section-label">Testimonials</div>
+      <h2 class="section-title" id="testimonials-title">What patients say</h2>
+      <div class="testimonial-grid">
+        <div class="testimonial-card"><p class="testimonial-text">"I had a doctor's note within 15 minutes. No waiting room, no commute. This is how healthcare should work."</p><div class="testimonial-author">Jamie L.</div><div class="testimonial-meta">Urgent Care · May 2026</div></div>
+        <div class="testimonial-card"><p class="testimonial-text">"My therapist is amazing. Video sessions feel just as personal as in-person. I look forward to every appointment."</p><div class="testimonial-author">Priya S.</div><div class="testimonial-meta">Mental Health · Apr 2026</div></div>
+        <div class="testimonial-card"><p class="testimonial-text">"They caught my skin condition early. The dermatologist was thorough and prescribed treatment right away."</p><div class="testimonial-author">Carlos M.</div><div class="testimonial-meta">Dermatology · Mar 2026</div></div>
+      </div>
+    </section>
+    <section class="section" id="pricing" aria-labelledby="pricing-title">
+      <div class="section-label">Pricing</div>
+      <h2 class="section-title" id="pricing-title">Simple, transparent pricing</h2>
+      <p class="section-sub">Most visits are covered by insurance. Self-pay options available.</p>
+      <div class="pricing-grid">
+        <div class="pricing-card"><div class="pricing-name">Single Visit</div><div class="pricing-price">$75<span>/visit</span></div><ul class="pricing-features"><li>One-time visit</li><li>Prescription included</li><li>Follow-up within 7 days</li></ul><button class="pricing-btn secondary">Book Now</button></div>
+        <div class="pricing-card featured"><div class="pricing-name">Care Plan</div><div class="pricing-price">$29<span>/mo</span></div><ul class="pricing-features"><li>Unlimited urgent care</li><li>1 mental health session/mo</li><li>Priority scheduling</li><li>Family add-on: +$15/mo</li></ul><button class="pricing-btn primary">Start Free Trial</button></div>
+        <div class="pricing-card"><div class="pricing-name">Employer</div><div class="pricing-price">Custom</div><ul class="pricing-features"><li>Team coverage</li><li>On-demand care</li><li>Analytics dashboard</li><li>Dedicated support</li></ul><button class="pricing-btn secondary">Contact Sales</button></div>
+      </div>
+      <div class="disclaimer">
+        <div class="disclaimer-title">Emergency Disclaimer</div>
+        <div class="disclaimer-text">Pulse is not for emergencies. If you're experiencing chest pain, difficulty breathing, or thoughts of self-harm, call 911 or go to your nearest emergency room immediately.</div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer" role="contentinfo">Pulse Telemedicine &mdash; designed by Studio &middot; Standalone prototype &middot; Not affiliated with any healthcare provider</footer>
+  <script>
+    (function(){
+      var o=document.getElementById('drawerOpen'),c=document.getElementById('drawerClose'),d=document.getElementById('drawer'),v=document.getElementById('drawerOverlay');
+      function open(){d.classList.add('open');v.classList.add('open');d.setAttribute('aria-hidden','false');o.setAttribute('aria-expanded','true');c.focus()}
+      function close(){d.classList.remove('open');v.classList.remove('open');d.setAttribute('aria-hidden','true');o.setAttribute('aria-expanded','false');o.focus()}
+      o.addEventListener('click',open);c.addEventListener('click',close);v.addEventListener('click',close);
+      document.addEventListener('keydown',function(e){if(e.key==='Escape'&&d.classList.contains('open'))close()});
+      d.querySelectorAll('a').forEach(function(l){l.addEventListener('click',close)});
+    })();
+  </script>
+</body>
+</html>
