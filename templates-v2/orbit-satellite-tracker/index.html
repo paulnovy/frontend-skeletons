@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orbit Satellite Tracker — Space Debris & Collision Monitoring</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --color-bg: #F6F8FC;
+            --color-dark: #19212B;
+            --color-primary: #4F46E5;
+            --color-cyan: #06B6D4;
+            --color-lime: #A3E635;
+            --color-rose: #FB7185;
+            --font-heading: 'Manrope', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --shadow-sm: 0 1px 3px rgba(25, 33, 43, 0.08);
+            --shadow-md: 0 4px 12px rgba(25, 33, 43, 0.1);
+            --shadow-lg: 0 8px 32px rgba(25, 33, 43, 0.12);
+            --radius: 12px;
+            --transition: 0.2s ease;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background-color: var(--color-bg);
+            color: var(--color-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .skip-link {
+            position: absolute;
+            top: -100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--color-primary);
+            color: #ffffff;
+            padding: 8px 24px;
+            border-radius: 0 0 8px 8px;
+            z-index: 9999;
+            font-weight: 600;
+            text-decoration: none;
+            transition: top 0.2s ease;
+        }
+
+        .skip-link:focus {
+            top: 0;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--color-cyan);
+            outline-offset: 2px;
+        }
+
+        .nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            background: rgba(246, 248, 252, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(25, 33, 43, 0.06);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .nav-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 64px;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--color-dark);
+        }
+
+        .nav-logo svg {
+            width: 32px;
+            height: 32px;
+            color: var(--color-primary);
+        }
+
+        .nav-logo-text {
+            font-family: var(--font-heading);
+            font-weight: 800;
+            font-size: 1.25rem;
+            letter-spacing: -0.02em;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--color-dark);
+            font-weight: 500;
+            font-size: 0.9rem;
+            opacity: 0.7;
+            transition: opacity var(--transition), color var(--transition);
+        }
+
+        .nav-link:hover,
+        .nav-link[aria-current="page"] {
+            opacity: 1;
+            color: var(--color-primary);
+        }
+
+        .nav-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #4d7c0f;
+            background: rgba(163, 230, 53, 0.15);
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .nav-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--color-lime);
+            animation: pulse-dot 2s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+
+        .nav-hamburger {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            color: var(--color-dark);
+        }
+
+        .nav-hamburger svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .mobile-drawer {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2000;
+        }
+
+        .mobile-drawer.open {
+            display: flex;
+        }
+
+        .mobile-drawer-backdrop {
+            position: absolute;
+            inset: 0;
+            background: rgba(25, 33, 43, 0.5);
+            backdrop-filter: blur(4px);
+        }
+
+        .mobile-drawer-panel {
+            position: relative;
+            width: 280px;
+            height: 100%;
+            background: var(--color-bg);
+            padding: 24px;
+            box-shadow: var(--shadow-lg);
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+
+        .mobile-drawer.open .mobile-drawer-panel {
+            transform: translateX(0);
+        }
+
+        .mobile-drawer-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mobile-drawer-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--color-dark);
+            padding: 4px;
+        }
+
+        .mobile-drawer-close svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .mobile-drawer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .mobile-drawer-link {
+            text-decoration: none;
+            color: var(--color-dark);
+            font-weight: 600;
+            font-size: 1.1rem;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(25, 33, 43, 0.06);
+        }
+
+        .main {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 32px 24px 64px;
+        }
+
+        .section {
+            margin-bottom: 48px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.5rem;
+            letter-spacing: -0.02em;
+            color: var(--color-dark);
+        }
+
+        .section-badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 6px;
+            background: rgba(79, 70, 229, 0.08);
+            color: var(--color-primary);
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .kpi-card {
+            background: #ffffff;
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(25, 33, 43, 0.04);
+            transition: box-shadow var(--transition), transform var(--transition);
+        }
+
+        .kpi-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .kpi-label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: rgba(25, 33, 43, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .kpi-value {
+            font-family: var(--font-heading);
+            font-weight: 800;
+            font-size: 2rem;
+            color: var(--color-dark);
+            line-height: 1.1;
+        }
+
+        .kpi-sub {
+            font-size: 0.8rem;
+            color: rgba(25, 33, 43, 0.5);
+            margin-top: 8px;
+        }
+
+        .kpi-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
+
+        .kpi-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+
+        .kpi-icon--primary {
+            background: rgba(79, 70, 229, 0.1);
+            color: var(--color-primary);
+        }
+
+        .kpi-icon--cyan {
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--color-cyan);
+        }
+
+        .kpi-icon--lime {
+            background: rgba(163, 230, 53, 0.15);
+            color: #65a30d;
+        }
+
+        .kpi-icon--rose {
+            background: rgba(251, 113, 133, 0.12);
+            color: var(--color-rose);
+        }
+
+        .table-wrapper {
+            background: #ffffff;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(25, 33, 43, 0.04);
+            overflow: hidden;
+        }
+
+        .table-scroll {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        .table thead {
+            background: rgba(246, 248, 252, 0.8);
+        }
+
+        .table th {
+            font-family: var(--font-heading);
+            font-weight: 600;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: rgba(25, 33, 43, 0.5);
+            padding: 14px 20px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        .table td {
+            padding: 16px 20px;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(25, 33, 43, 0.04);
+            white-space: nowrap;
+        }
+
+        .table tbody tr {
+            transition: background var(--transition);
+        }
+
+        .table tbody tr:hover {
+            background: rgba(246, 248, 252, 0.6);
+        }
+
+        .sat-name {
+            font-weight: 600;
+            color: var(--color-dark);
+        }
+
+        .sat-id {
+            font-size: 0.8rem;
+            color: rgba(25, 33, 43, 0.4);
+            margin-left: 8px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            padding: 4px 12px;
+            border-radius: 20px;
+        }
+
+        .status-badge--active {
+            background: rgba(163, 230, 53, 0.15);
+            color: #4d7c0f;
+        }
+
+        .status-badge--warning {
+            background: rgba(251, 113, 133, 0.12);
+            color: var(--color-rose);
+        }
+
+        .status-badge--degraded {
+            background: rgba(251, 113, 133, 0.15);
+            color: #e11d48;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+        }
+
+        .status-dot--active {
+            background: var(--color-lime);
+        }
+
+        .status-dot--warning {
+            background: var(--color-rose);
+        }
+
+        .status-dot--degraded {
+            background: #e11d48;
+        }
+
+        .orbit-badge {
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 3px 10px;
+            border-radius: 6px;
+            background: rgba(79, 70, 229, 0.06);
+            color: var(--color-primary);
+        }
+
+        .health-bar-track {
+            width: 80px;
+            height: 6px;
+            background: rgba(25, 33, 43, 0.06);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .health-bar-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.6s ease;
+        }
+
+        .health-bar-fill--good {
+            background: var(--color-lime);
+        }
+
+        .health-bar-fill--warn {
+            background: #facc15;
+        }
+
+        .health-bar-fill--critical {
+            background: var(--color-rose);
+        }
+
+        .alerts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .alert-card {
+            background: #ffffff;
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(25, 33, 43, 0.04);
+            border-left: 4px solid var(--color-rose);
+            transition: box-shadow var(--transition);
+        }
+
+        .alert-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .alert-card--high {
+            border-left-color: var(--color-rose);
+        }
+
+        .alert-card--medium {
+            border-left-color: #facc15;
+        }
+
+        .alert-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .alert-severity {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            padding: 3px 8px;
+            border-radius: 4px;
+        }
+
+        .alert-severity--high {
+            background: rgba(251, 113, 133, 0.15);
+            color: var(--color-rose);
+        }
+
+        .alert-severity--medium {
+            background: rgba(250, 204, 21, 0.15);
+            color: #a16207;
+        }
+
+        .alert-time {
+            font-size: 0.75rem;
+            color: rgba(25, 33, 43, 0.4);
+        }
+
+        .alert-title {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 6px;
+        }
+
+        .alert-desc {
+            font-size: 0.85rem;
+            color: rgba(25, 33, 43, 0.6);
+            margin-bottom: 14px;
+            line-height: 1.5;
+        }
+
+        .alert-metrics {
+            display: flex;
+            gap: 24px;
+        }
+
+        .alert-metric-label {
+            font-size: 0.7rem;
+            color: rgba(25, 33, 43, 0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .alert-metric-value {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: var(--color-dark);
+        }
+
+        .orbital-chart-wrapper {
+            background: #ffffff;
+            border-radius: var(--radius);
+            padding: 32px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(25, 33, 43, 0.04);
+        }
+
+        .orbital-chart-title {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+
+        .orbital-chart-subtitle {
+            font-size: 0.85rem;
+            color: rgba(25, 33, 43, 0.5);
+            margin-bottom: 28px;
+        }
+
+        .orbital-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .orbital-bar-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .orbital-bar-label {
+            width: 160px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--color-dark);
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .orbital-bar-track {
+            flex: 1;
+            height: 28px;
+            background: rgba(25, 33, 43, 0.04);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .orbital-bar-fill {
+            height: 100%;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            padding-left: 12px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: #ffffff;
+            transition: width 1s ease;
+        }
+
+        .orbital-bar-fill--leo {
+            background: linear-gradient(90deg, var(--color-primary), #6366f1);
+        }
+
+        .orbital-bar-fill--meo {
+            background: linear-gradient(90deg, var(--color-cyan), #22d3ee);
+        }
+
+        .orbital-bar-fill--geo {
+            background: linear-gradient(90deg, var(--color-lime), #84cc16);
+        }
+
+        .orbital-bar-fill--heo {
+            background: linear-gradient(90deg, var(--color-rose), #f43f5e);
+        }
+
+        .orbital-bar-fill--debris {
+            background: linear-gradient(90deg, var(--color-dark), #374151);
+        }
+
+        .orbital-bar-value {
+            width: 60px;
+            text-align: right;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--color-dark);
+            flex-shrink: 0;
+        }
+
+        .orbital-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(25, 33, 43, 0.06);
+        }
+
+        .orbital-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.8rem;
+            color: rgba(25, 33, 43, 0.6);
+        }
+
+        .orbital-legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+        }
+
+        .launch-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 16px;
+        }
+
+        .launch-card {
+            background: #ffffff;
+            border-radius: var(--radius);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(25, 33, 43, 0.04);
+            transition: box-shadow var(--transition), transform var(--transition);
+        }
+
+        .launch-card:hover {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-2px);
+        }
+
+        .launch-date {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            margin-bottom: 10px;
+        }
+
+        .launch-date svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .launch-name {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .launch-provider {
+            font-size: 0.8rem;
+            color: rgba(25, 33, 43, 0.5);
+            margin-bottom: 12px;
+        }
+
+        .launch-payload {
+            font-size: 0.78rem;
+            color: rgba(25, 33, 43, 0.6);
+            padding-top: 10px;
+            border-top: 1px solid rgba(25, 33, 43, 0.06);
+        }
+
+        .launch-orbit {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--color-cyan);
+            margin-top: 6px;
+        }
+
+        .events-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .event-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 18px 24px;
+            background: #ffffff;
+            border: 1px solid rgba(25, 33, 43, 0.04);
+            border-bottom: none;
+            transition: background var(--transition);
+        }
+
+        .event-item:first-child {
+            border-radius: var(--radius) var(--radius) 0 0;
+        }
+
+        .event-item:last-child {
+            border-bottom: 1px solid rgba(25, 33, 43, 0.04);
+            border-radius: 0 0 var(--radius) var(--radius);
+        }
+
+        .event-item:hover {
+            background: rgba(246, 248, 252, 0.6);
+        }
+
+        .event-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .event-icon svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .event-icon--cyan {
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--color-cyan);
+        }
+
+        .event-icon--primary {
+            background: rgba(79, 70, 229, 0.1);
+            color: var(--color-primary);
+        }
+
+        .event-icon--rose {
+            background: rgba(251, 113, 133, 0.1);
+            color: var(--color-rose);
+        }
+
+        .event-icon--lime {
+            background: rgba(163, 230, 53, 0.12);
+            color: #65a30d;
+        }
+
+        .event-content {
+            flex: 1;
+        }
+
+        .event-title {
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 2px;
+        }
+
+        .event-desc {
+            font-size: 0.8rem;
+            color: rgba(25, 33, 43, 0.5);
+        }
+
+        .event-time {
+            font-size: 0.75rem;
+            color: rgba(25, 33, 43, 0.35);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .footer {
+            background: var(--color-dark);
+            color: rgba(246, 248, 252, 0.7);
+            padding: 40px 24px;
+            text-align: center;
+        }
+
+        .footer-inner {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .footer-brand {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #ffffff;
+        }
+
+        .footer-text {
+            font-size: 0.8rem;
+            line-height: 1.6;
+        }
+
+        .footer-divider {
+            width: 48px;
+            height: 2px;
+            background: rgba(246, 248, 252, 0.15);
+            border-radius: 1px;
+            margin: 4px 0;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .nav-status {
+                display: none;
+            }
+
+            .nav-hamburger {
+                display: flex;
+            }
+
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .kpi-value {
+                font-size: 1.5rem;
+            }
+
+            .alerts-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .orbital-bar-label {
+                width: 90px;
+                font-size: 0.75rem;
+            }
+
+            .launch-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .section-title {
+                font-size: 1.25rem;
+            }
+
+            .event-item {
+                padding: 14px 16px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .launch-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .orbital-bar-row {
+                flex-wrap: wrap;
+            }
+
+            .orbital-bar-label {
+                width: 100%;
+                text-align: left;
+            }
+
+            .orbital-bar-track {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+
+    <nav class="nav" role="navigation" aria-label="Main navigation">
+        <div class="nav-inner">
+            <a href="#" class="nav-logo" aria-label="Orbit Satellite Tracker home">
+                <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+                    <circle cx="16" cy="16" r="14" stroke="currentColor" stroke-width="2" stroke-dasharray="4 3"/>
+                    <circle cx="16" cy="16" r="4" fill="currentColor"/>
+                    <ellipse cx="16" cy="16" rx="14" ry="6" stroke="currentColor" stroke-width="1.5" transform="rotate(-30 16 16)" stroke-dasharray="3 4"/>
+                </svg>
+                <span class="nav-logo-text">Orbit Tracker</span>
+            </a>
+            <ul class="nav-links" role="list">
+                <li><a href="#dashboard" class="nav-link" aria-current="page">Dashboard</a></li>
+                <li><a href="#satellites" class="nav-link">Satellites</a></li>
+                <li><a href="#alerts" class="nav-link">Alerts</a></li>
+                <li><a href="#orbital" class="nav-link">Orbital View</a></li>
+                <li><a href="#launches" class="nav-link">Launches</a></li>
+            </ul>
+            <div class="nav-status" aria-label="System status: all systems operational">
+                <span class="nav-status-dot" aria-hidden="true"></span>
+                All Systems Operational
+            </div>
+            <button class="nav-hamburger" aria-label="Open menu" aria-expanded="false" id="menu-open">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <line x1="3" y1="12" x2="21" y2="12"/>
+                    <line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <div class="mobile-drawer" id="mobile-drawer" role="dialog" aria-label="Mobile navigation" aria-hidden="true">
+        <div class="mobile-drawer-backdrop" id="drawer-backdrop"></div>
+        <div class="mobile-drawer-panel">
+            <div class="mobile-drawer-header">
+                <span class="nav-logo-text">Orbit Tracker</span>
+                <button class="mobile-drawer-close" id="menu-close" aria-label="Close menu">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
+            </div>
+            <ul class="mobile-drawer-links" role="list">
+                <li><a href="#dashboard" class="mobile-drawer-link">Dashboard</a></li>
+                <li><a href="#satellites" class="mobile-drawer-link">Satellites</a></li>
+                <li><a href="#alerts" class="mobile-drawer-link">Alerts</a></li>
+                <li><a href="#orbital" class="mobile-drawer-link">Orbital View</a></li>
+                <li><a href="#launches" class="mobile-drawer-link">Launches</a></li>
+                <li><a href="#events" class="mobile-drawer-link">Recent Events</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <main class="main" id="main-content">
+        <section class="section" id="dashboard" aria-label="Key performance indicators">
+            <div class="section-header">
+                <h1 class="section-title">Mission Control Overview</h1>
+                <span class="section-badge">Live — Updated 14s ago</span>
+            </div>
+            <div class="kpi-grid">
+                <div class="kpi-card" role="group" aria-label="Tracked Objects">
+                    <div class="kpi-icon kpi-icon--primary" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <circle cx="12" cy="12" r="10"/>
+                            <circle cx="12" cy="12" r="3"/>
+                            <line x1="12" y1="2" x2="12" y2="6"/>
+                            <line x1="12" y1="18" x2="12" y2="22"/>
+                        </svg>
+                    </div>
+                    <div class="kpi-label">Tracked Objects</div>
+                    <div class="kpi-value" aria-live="polite">15,847</div>
+                    <div class="kpi-sub">+347 new this week</div>
+                </div>
+                <div class="kpi-card" role="group" aria-label="Collision Warnings">
+                    <div class="kpi-icon kpi-icon--rose" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+                            <line x1="12" y1="9" x2="12" y2="13"/>
+                            <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                    </div>
+                    <div class="kpi-label">Collision Warnings</div>
+                    <div class="kpi-value" aria-live="polite" style="color: var(--color-rose);">3</div>
+                    <div class="kpi-sub">2 high, 1 medium severity</div>
