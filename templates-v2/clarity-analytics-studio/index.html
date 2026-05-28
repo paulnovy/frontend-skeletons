@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clarity — Analytics Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #FAFAF5;
+      --ink: #18181B;
+      --ink-mid: rgba(24,24,27,0.6);
+      --ink-dim: rgba(24,24,27,0.1);
+      --blue: #2563EB;
+      --blue-dim: rgba(37,99,235,0.08);
+      --violet: #A855F7;
+      --violet-dim: rgba(168,85,247,0.08);
+      --emerald: #10B981;
+      --emerald-dim: rgba(16,185,129,0.08);
+      --warm: #D6D3D1;
+      --white: #FFFFFF;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --max: 1200px;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+    body{margin:0;min-height:100vh;color:var(--ink);background:var(--paper);font-family:"IBM Plex Sans",system-ui,sans-serif;line-height:1.6}
+    a{color:inherit;text-decoration:none}
+    button,input{font:inherit}
+    button{cursor:pointer}
+    :focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+    .skip-link{position:absolute;top:-100px;left:16px;background:var(--blue);color:var(--white);padding:10px 20px;border-radius:var(--radius-sm);z-index:1000;font-weight:700}
+    .skip-link:focus{top:16px}
+    .nav{position:sticky;top:0;z-index:100;background:rgba(250,250,245,0.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--ink-dim);padding:0 24px}
+    .nav-inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+    .nav-brand{font-weight:700;font-size:1.125rem;display:flex;align-items:center;gap:8px}
+    .nav-brand-icon{width:28px;height:28px;background:var(--blue);border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--white);font-size:0.75rem;font-weight:700}
+    .nav-links{display:flex;gap:20px;list-style:none;margin:0;padding:0}
+    .nav-links a{font-size:0.875rem;font-weight:500;color:var(--ink-mid);transition:color 0.15s}
+    .nav-links a:hover{color:var(--ink)}
+    .nav-cta{padding:8px 20px;background:var(--blue);color:var(--white);border:none;border-radius:var(--radius-sm);font-weight:700;font-size:0.875rem}
+    .nav-drawer-btn{display:none;background:none;border:1px solid var(--ink-dim);border-radius:var(--radius-sm);padding:6px 10px;color:var(--ink)}
+    .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(24,24,27,0.3);z-index:200}
+    .drawer-overlay.open{display:block}
+    .drawer{position:fixed;top:0;right:-300px;width:280px;height:100%;background:var(--paper);z-index:201;padding:24px;transition:right 0.2s ease;overflow-y:auto}
+    .drawer.open{right:0}
+    .drawer-close{background:none;border:none;font-size:1.5rem;color:var(--ink);float:right}
+    .drawer nav{clear:both;padding-top:24px}
+    .drawer nav a{display:block;padding:12px 0;font-size:1rem;font-weight:500;color:var(--ink);border-bottom:1px solid var(--ink-dim)}
+    .hero{max-width:var(--max);margin:0 auto;padding:60px 24px 48px;text-align:center}
+    .hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--emerald-dim);color:#065F46;padding:4px 14px;border-radius:999px;font-size:0.75rem;font-weight:600;margin-bottom:16px}
+    .hero-title{font-family:"Source Serif 4",serif;font-weight:700;font-size:2.5rem;line-height:1.15;margin:0 0 16px}
+    .hero-sub{font-size:1.0625rem;color:var(--ink-mid);max-width:520px;margin:0 auto 28px}
+    .hero-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+    .btn-primary{padding:12px 28px;background:var(--blue);color:var(--white);border:none;border-radius:var(--radius-sm);font-weight:700;font-size:0.9375rem}
+    .btn-secondary{padding:12px 28px;background:var(--white);color:var(--ink);border:1px solid var(--ink-dim);border-radius:var(--radius-sm);font-weight:600;font-size:0.9375rem}
+    .kpi-strip{max-width:var(--max);margin:0 auto;padding:0 24px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .kpi-card{background:var(--white);border:1px solid var(--ink-dim);border-radius:var(--radius);padding:18px}
+    .kpi-label{font-size:0.6875rem;color:var(--ink-mid);font-weight:600;text-transform:uppercase;letter-spacing:0.06em}
+    .kpi-value{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:1.5rem;margin-top:4px}
+    .kpi-change{font-size:0.6875rem;font-weight:600;margin-top:4px}
+    .kpi-change.up{color:var(--emerald)}.kpi-change.down{color:#EF4444}
+    .section{max-width:var(--max);margin:0 auto;padding:64px 24px}
+    .section-label{font-size:0.6875rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--blue);font-weight:700;margin-bottom:8px}
+    .section-title{font-family:"Source Serif 4",serif;font-weight:700;font-size:1.75rem;margin:0 0 16px}
+    .section-sub{color:var(--ink-mid);max-width:520px;margin:0 0 32px}
+    .dashboard-preview{background:var(--white);border:1px solid var(--ink-dim);border-radius:var(--radius);padding:24px}
+    .dashboard-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+    .dashboard-title{font-weight:700;font-size:0.9375rem}
+    .dashboard-period{font-family:"IBM Plex Mono",monospace;font-size:0.6875rem;color:var(--ink-mid)}
+    .dashboard-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    .dash-card{background:var(--paper);border:1px solid var(--ink-dim);border-radius:var(--radius-sm);padding:16px}
+    .dash-card-title{font-size:0.6875rem;color:var(--ink-mid);margin-bottom:8px;font-weight:600}
+    .dash-card-value{font-family:"IBM Plex Mono",monospace;font-weight:600;font-size:1.25rem}
+    .dash-card-chart{height:60px;margin-top:10px;position:relative}
+    .dash-card-chart svg{width:100%;height:100%}
+    .chart-line{fill:none;stroke:var(--blue);stroke-width:1.5}
+    .chart-line-violet{fill:none;stroke:var(--violet);stroke-width:1.5}
+    .chart-line-emerald{fill:none;stroke:var(--emerald);stroke-width:1.5}
+    .chart-area{fill:var(--blue-dim)}
+    .insight-card{background:var(--blue-dim);border:1px solid rgba(37,99,235,0.15);border-radius:var(--radius-sm);padding:14px;margin-top:10px}
+    .insight-label{font-size:0.5625rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--blue);font-weight:700;margin-bottom:4px}
+    .insight-text{font-family:"Source Serif 4",serif;font-size:0.8125rem;color:var(--ink-mid);line-height:1.5}
+    .chart-gallery{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .chart-card{background:var(--white);border:1px solid var(--ink-dim);border-radius:var(--radius);padding:20px}
+    .chart-card-title{font-weight:700;font-size:0.8125rem;margin-bottom:4px}
+    .chart-card-type{font-size:0.625rem;color:var(--ink-mid);margin-bottom:12px}
+    .chart-card-area{height:120px;position:relative}
+    .chart-card-area svg{width:100%;height:100%}
+    .ai-panel{background:var(--ink);border-radius:var(--radius);padding:32px;display:grid;grid-template-columns:1fr 1fr;gap:32px}
+    .ai-left{color:var(--white)}
+    .ai-title{font-family:"Source Serif 4",serif;font-weight:700;font-size:1.25rem;margin:0 0 8px}
+    .ai-sub{color:rgba(255,255,255,0.7);font-size:0.875rem}
+    .ai-input-wrap{margin-top:20px;display:flex;gap:8px}
+    .ai-input{flex:1;padding:12px 16px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:var(--radius-sm);color:var(--white);font-size:0.875rem}
+    .ai-input::placeholder{color:rgba(255,255,255,0.4)}
+    .ai-input:focus{outline:2px solid var(--blue);border-color:var(--blue)}
+    .ai-btn{padding:12px 20px;background:var(--blue);color:var(--white);border:none;border-radius:var(--radius-sm);font-weight:700;font-size:0.875rem}
+    .ai-right{display:flex;flex-direction:column;gap:10px}
+    .ai-example{padding:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:var(--radius-sm);font-size:0.8125rem;color:rgba(255,255,255,0.8)}
+    .ai-example-label{font-size:0.5625rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--blue);font-weight:700;margin-bottom:4px}
+    .governance-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .governance-card{background:var(--white);border:1px solid var(--ink-dim);border-radius:var(--radius);padding:20px}
+    .governance-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:1.25rem;margin-bottom:12px}
+    .governance-title{font-weight:700;font-size:0.875rem;margin-bottom:4px}
+    .governance-desc{font-size:0.75rem;color:var(--ink-mid);line-height:1.5}
+    .footer{border-top:1px solid var(--ink-dim);padding:24px;text-align:center;font-size:0.75rem;color:var(--ink-mid)}
+    @media(max-width:1024px){
+      .kpi-strip{grid-template-columns:repeat(2,1fr)}
+      .dashboard-grid,.chart-gallery,.governance-grid{grid-template-columns:1fr}
+      .ai-panel{grid-template-columns:1fr}
+      .nav-links{display:none}.nav-drawer-btn{display:block}
+    }
+    @media(max-width:768px){
+      .hero-title{font-size:1.75rem}
+      .hero-actions{flex-direction:column;align-items:center}
+      .kpi-strip{grid-template-columns:1fr 1fr;gap:8px}
+      .section{padding:40px 16px}
+    }
+  </style>
+</head>
+<body>
+  <a href="#dashboard" class="skip-link">Skip to dashboard</a>
+  <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-label="Navigation" aria-hidden="true">
+    <button class="drawer-close" id="drawerClose" aria-label="Close menu">&times;</button>
+    <nav aria-label="Mobile navigation">
+      <a href="#dashboard">Dashboard</a><a href="#charts">Charts</a><a href="#ai">AI</a><a href="#governance">Governance</a>
+    </nav>
+  </aside>
+  <header class="nav" role="banner">
+    <div class="nav-inner">
+      <a href="#" class="nav-brand" aria-label="Clarity home"><span class="nav-brand-icon" aria-hidden="true">C</span>Clarity</a>
+      <ul class="nav-links" role="list">
+        <li><a href="#dashboard">Dashboard</a></li><li><a href="#charts">Charts</a></li><li><a href="#ai">AI</a></li><li><a href="#governance">Governance</a></li>
+      </ul>
+      <button class="nav-cta">Start Free</button>
+      <button class="nav-drawer-btn" id="drawerOpen" aria-label="Open menu" aria-expanded="false">&#9776;</button>
+    </div>
+  </header>
+  <main>
+    <section class="hero">
+      <div class="hero-badge">&#128202; Analytics for everyone</div>
+      <h1 class="hero-title">Ask your data questions,<br>get answers instantly</h1>
+      <p class="hero-sub">Clarity turns complex data into plain-English insights. Every chart has a story. Every metric has context.</p>
+      <div class="hero-actions">
+        <button class="btn-primary">Start Free</button>
+        <button class="btn-secondary">See Demo</button>
+      </div>
+    </section>
+    <div class="kpi-strip" role="region" aria-label="Key metrics">
+      <div class="kpi-card"><div class="kpi-label">Revenue</div><div class="kpi-value" style="font-family:'IBM Plex Mono',monospace">$2.4M</div><div class="kpi-change up">+18% vs last quarter</div></div>
+      <div class="kpi-card"><div class="kpi-label">Active Users</div><div class="kpi-value" style="font-family:'IBM Plex Mono',monospace">48,200</div><div class="kpi-change up">+12% this month</div></div>
+      <div class="kpi-card"><div class="kpi-label">Conversion</div><div class="kpi-value" style="font-family:'IBM Plex Mono',monospace">3.8%</div><div class="kpi-change up">+0.4% vs target</div></div>
+      <div class="kpi-card"><div class="kpi-label">Churn</div><div class="kpi-value" style="font-family:'IBM Plex Mono',monospace">2.1%</div><div class="kpi-change down">+0.3% this month</div></div>
+    </div>
+    <section class="section" id="dashboard" aria-labelledby="dashboard-title">
+      <div class="section-label">Dashboard</div>
+      <h2 class="section-title" id="dashboard-title">Modular dashboard preview</h2>
+      <p class="section-sub">Drag, drop, and customize. Every widget has a plain-English insight summary.</p>
+      <div class="dashboard-preview">
+        <div class="dashboard-header"><span class="dashboard-title">Revenue Overview</span><span class="dashboard-period">Last 30 days</span></div>
+        <div class="dashboard-grid">
+          <div class="dash-card"><div class="dash-card-title">Monthly Revenue</div><div class="dash-card-value" style="font-family:'IBM Plex Mono',monospace">$240,800</div><div class="dash-card-chart"><svg viewBox="0 0 200 60" preserveAspectRatio="none"><path class="chart-area" d="M0,50 L30,40 L60,45 L90,30 L120,35 L150,20 L180,25 L200,15 L200,60 L0,60 Z"/><path class="chart-line" d="M0,50 L30,40 L60,45 L90,30 L120,35 L150,20 L180,25 L200,15"/></svg></div><div class="insight-card"><div class="insight-label">Insight</div><div class="insight-text">Revenue grew 18% this quarter, driven by enterprise upsells. Growth is accelerating — 3% faster than last quarter.</div></div></div>
+          <div class="dash-card"><div class="dash-card-title">User Growth</div><div class="dash-card-value" style="font-family:'IBM Plex Mono',monospace">+4,200</div><div class="dash-card-chart"><svg viewBox="0 0 200 60" preserveAspectRatio="none"><path class="chart-area" d="M0,55 L30,48 L60,42 L90,38 L120,30 L150,28 L180,20 L200,18 L200,60 L0,60 Z" style="fill:var(--violet-dim)"/><path class="chart-line-violet" d="M0,55 L30,48 L60,42 L90,38 L120,30 L150,28 L180,20 L200,18"/></svg></div><div class="insight-card"><div class="insight-label">Insight</div><div class="insight-text">User acquisition is outpacing churn by 3x. Organic signups increased 24% after the referral program launch.</div></div></div>
+          <div class="dash-card"><div class="dash-card-title">Retention</div><div class="dash-card-value" style="font-family:'IBM Plex Mono',monospace">94.2%</div><div class="dash-card-chart"><svg viewBox="0 0 200 60" preserveAspectRatio="none"><path class="chart-area" d="M0,20 L30,18 L60,22 L90,16 L120,14 L150,18 L180,12 L200,10 L200,60 L0,60 Z" style="fill:var(--emerald-dim)"/><path class="chart-line-emerald" d="M0,20 L30,18 L60,22 L90,16 L120,14 L150,18 L180,12 L200,10"/></svg></div><div class="insight-card"><div class="insight-label">Insight</div><div class="insight-text">Retention is strong at 94.2%. Users who complete onboarding within 48h have 2x higher retention.</div></div></div>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="charts" aria-labelledby="charts-title">
+      <div class="section-label">Chart Gallery</div>
+      <h2 class="section-title" id="charts-title">Every chart tells a story</h2>
+      <p class="section-sub">Choose from 20+ chart types, each with automatic insight generation.</p>
+      <div class="chart-gallery">
+        <div class="chart-card"><div class="chart-card-title">Revenue by Channel</div><div class="chart-card-type">Stacked Bar</div><div class="chart-card-area"><svg viewBox="0 0 200 120" preserveAspectRatio="none"><rect x="10" y="20" width="30" height="100" fill="var(--blue)" opacity="0.7" rx="3"/><rect x="10" y="60" width="30" height="60" fill="var(--violet)" opacity="0.7" rx="3"/><rect x="55" y="10" width="30" height="110" fill="var(--blue)" opacity="0.7" rx="3"/><rect x="55" y="50" width="30" height="70" fill="var(--violet)" opacity="0.7" rx="3"/><rect x="100" y="30" width="30" height="90" fill="var(--blue)" opacity="0.7" rx="3"/><rect x="100" y="70" width="30" height="50" fill="var(--violet)" opacity="0.7" rx="3"/><rect x="145" y="15" width="30" height="105" fill="var(--blue)" opacity="0.7" rx="3"/><rect x="145" y="55" width="30" height="65" fill="var(--violet)" opacity="0.7" rx="3"/></svg></div></div>
+        <div class="chart-card"><div class="chart-card-title">User Cohort Retention</div><div class="chart-card-type">Heatmap</div><div class="chart-card-area"><svg viewBox="0 0 200 120" preserveAspectRatio="none"><rect x="5" y="5" width="28" height="25" fill="var(--blue)" opacity="0.9" rx="2"/><rect x="38" y="5" width="28" height="25" fill="var(--blue)" opacity="0.7" rx="2"/><rect x="71" y="5" width="28" height="25" fill="var(--blue)" opacity="0.5" rx="2"/><rect x="104" y="5" width="28" height="25" fill="var(--blue)" opacity="0.3" rx="2"/><rect x="5" y="35" width="28" height="25" fill="var(--emerald)" opacity="0.9" rx="2"/><rect x="38" y="35" width="28" height="25" fill="var(--emerald)" opacity="0.7" rx="2"/><rect x="71" y="35" width="28" height="25" fill="var(--emerald)" opacity="0.5" rx="2"/><rect x="5" y="65" width="28" height="25" fill="var(--violet)" opacity="0.9" rx="2"/><rect x="38" y="65" width="28" height="25" fill="var(--violet)" opacity="0.7" rx="2"/><rect x="5" y="95" width="28" height="25" fill="var(--warm)" opacity="0.9" rx="2"/></svg></div></div>
+        <div class="chart-card"><div class="chart-card-title">Conversion Funnel</div><div class="chart-card-type">Funnel</div><div class="chart-card-area"><svg viewBox="0 0 200 120" preserveAspectRatio="none"><rect x="10" y="5" width="180" height="20" fill="var(--blue)" opacity="0.8" rx="3"/><rect x="30" y="30" width="140" height="20" fill="var(--blue)" opacity="0.65" rx="3"/><rect x="50" y="55" width="100" height="20" fill="var(--blue)" opacity="0.5" rx="3"/><rect x="70" y="80" width="60" height="20" fill="var(--blue)" opacity="0.35" rx="3"/><rect x="85" y="105" width="30" height="15" fill="var(--blue)" opacity="0.2" rx="3"/></svg></div></div>
+      </div>
+    </section>
+    <section class="section" id="ai" aria-labelledby="ai-title">
+      <div class="ai-panel">
+        <div class="ai-left">
+          <h2 class="ai-title" id="ai-title">Ask your data</h2>
+          <p class="ai-sub">Type a question in plain English. Clarity finds the answer and explains it.</p>
+          <div class="ai-input-wrap">
+            <input class="ai-input" type="text" placeholder="e.g., Why did churn increase last month?" aria-label="Ask a question">
+            <button class="ai-btn">Ask</button>
+          </div>
+        </div>
+        <div class="ai-right">
+          <div class="ai-example"><div class="ai-example-label">Example</div>"What's driving revenue growth this quarter?"</div>
+          <div class="ai-example"><div class="ai-example-label">Example</div>"Which user segment has the highest churn?"</div>
+          <div class="ai-example"><div class="ai-example-label">Example</div>"Compare conversion rates across channels"</div>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="governance" aria-labelledby="gov-title">
+      <div class="section-label">Governance</div>
+      <h2 class="section-title" id="gov-title">Data you can trust</h2>
+      <p class="section-sub">Role-based access, audit trails, and data lineage. Built for compliance.</p>
+      <div class="governance-grid">
+        <div class="governance-card"><div class="governance-icon" style="background:var(--blue-dim)" aria-hidden="true">&#128274;</div><div class="governance-title">Role-Based Access</div><div class="governance-desc">Control who sees what. Row-level and column-level security built in.</div></div>
+        <div class="governance-card"><div class="governance-icon" style="background:var(--violet-dim)" aria-hidden="true">&#128209;</div><div class="governance-title">Audit Trail</div><div class="governance-desc">Every query, every export, every change — logged and searchable.</div></div>
+        <div class="governance-card"><div class="governance-icon" style="background:var(--emerald-dim)" aria-hidden="true">&#128279;</div><div class="governance-title">Data Lineage</div><div class="governance-desc">Trace every metric back to its source. Know exactly where data comes from.</div></div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer" role="contentinfo">Clarity Analytics &mdash; designed by Studio &middot; Standalone prototype</footer>
+  <script>
+    (function(){
+      var o=document.getElementById('drawerOpen'),c=document.getElementById('drawerClose'),d=document.getElementById('drawer'),v=document.getElementById('drawerOverlay');
+      function open(){d.classList.add('open');v.classList.add('open');d.setAttribute('aria-hidden','false');o.setAttribute('aria-expanded','true');c.focus()}
+      function close(){d.classList.remove('open');v.classList.remove('open');d.setAttribute('aria-hidden','true');o.setAttribute('aria-expanded','false');o.focus()}
+      o.addEventListener('click',open);c.addEventListener('click',close);v.addEventListener('click',close);
+      document.addEventListener('keydown',function(e){if(e.key==='Escape'&&d.classList.contains('open'))close()});
+      d.querySelectorAll('a').forEach(function(l){l.addEventListener('click',close)});
+    })();
+  </script>
+</body>
+</html>
