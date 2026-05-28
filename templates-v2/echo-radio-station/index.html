@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Echo Radio Station</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --cloud: #F6F8FC;
+    --ink: #19212B;
+    --indigo: #4F46E5;
+    --cyan: #06B6D4;
+    --lime: #A3E635;
+    --coral: #FB7185;
+    --card: #FFFFFF;
+    --border: #E5E7EB;
+    --green: #10B981;
+    --orange: #F59E0B;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--ink);
+    color: #E5E7EB;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+    color: #fff;
+  }
+
+  a { color: var(--cyan); text-decoration: none; }
+  button { cursor: pointer; font-family: inherit; }
+
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--indigo);
+    color: #fff;
+    padding: 8px 16px;
+    z-index: 100;
+    font-size: 0.875rem;
+  }
+  .skip-link:focus { top: 0; }
+
+  .top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 24px;
+    height: 60px;
+    background: #111827;
+    border-bottom: 1px solid #1F2937;
+  }
+  .nav-brand {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--coral);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-links { display: flex; gap: 4px; margin-left: 24px; }
+  .nav-links a {
+    padding: 8px 14px; border-radius: 8px; font-size: 0.875rem; font-weight: 500;
+    color: rgba(255,255,255,0.6);
+  }
+  .nav-links a:hover,
+  .nav-links a[aria-current="page"] {
+    background: rgba(255,255,255,0.08); color: #fff;
+  }
+  .nav-search { margin-left: auto; position: relative; }
+  .nav-search input {
+    width: 200px; padding: 8px 12px 8px 36px;
+    border: 1px solid #374151; border-radius: 8px;
+    font-size: 0.875rem; background: #1F2937; color: #fff;
+  }
+  .nav-search svg {
+    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    width: 16px; height: 16px; color: #6B7280;
+  }
+  .nav-cta {
+    margin-left: 12px; padding: 8px 18px;
+    background: var(--coral); color: #fff; border: none; border-radius: 8px;
+    font-size: 0.875rem; font-weight: 600;
+  }
+  .hamburger { display: none; background: none; border: none; padding: 8px; color: #fff; }
+  .hamburger svg { width: 24px; height: 24px; }
+
+  .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 60; }
+  .drawer-overlay.open { display: block; }
+  .drawer {
+    position: fixed; top: 0; left: 0; width: 280px; height: 100%;
+    background: #1F2937; z-index: 70; transform: translateX(-100%);
+    transition: transform 0.25s ease; padding: 24px; overflow-y: auto;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-close { background: none; border: none; font-size: 1.5rem; position: absolute; top: 16px; right: 16px; color: #fff; }
+  .drawer nav { display: flex; flex-direction: column; gap: 4px; margin-top: 24px; }
+  .drawer nav a { padding: 10px 14px; border-radius: 8px; font-size: 0.9375rem; color: #E5E7EB; }
+  .drawer nav a:hover { background: rgba(255,255,255,0.08); }
+
+  @media (max-width: 768px) {
+    .nav-links, .nav-search, .nav-cta { display: none; }
+    .hamburger { display: block; }
+    .top-nav { padding: 0 16px; }
+  }
+
+  .kpi-strip {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px; padding: 24px;
+  }
+  .kpi-card {
+    background: #1F2937; border-radius: 12px; padding: 20px;
+    border: 1px solid #374151; display: flex; align-items: center; gap: 14px;
+  }
+  .kpi-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0;
+  }
+  .kpi-label { font-size: 0.8125rem; color: #9CA3AF; margin-bottom: 2px; }
+  .kpi-value { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 1.5rem; }
+  .kpi-trend { font-size: 0.75rem; margin-top: 2px; }
+
+  .main-content { padding: 0 24px 48px; }
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
+  }
+  .section-header h2 { font-size: 1.25rem; }
+  .badge {
+    background: #1F2937; padding: 4px 12px; border-radius: 20px;
+    font-size: 0.8125rem; font-weight: 600; color: #9CA3AF;
+  }
+
+  .show-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px; margin-bottom: 32px;
+  }
+  .show-card {
+    background: #1F2937; border-radius: 12px; padding: 20px;
+    border: 1px solid #374151; border-top: 4px solid;
+  }
+  .show-card h4 { font-size: 1rem; margin-bottom: 8px; color: #fff; }
+  .show-card .desc { font-size: 0.8125rem; color: #9CA3AF; margin-bottom: 8px; }
+  .show-meta {
+    display: flex; justify-content: space-between; font-size: 0.75rem; color: #6B7280;
+  }
+  .show-tag {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 0.6875rem; font-weight: 600;
+  }
+  .tag-live { background: #FEE2E2; color: #991B1B; }
+  .tag-prerecorded { background: #DBEAFE; color: #1E40AF; }
+  .tag-syndicated { background: #FEF3C7; color: #92400E; }
+  .tag-new { background: #D1FAE5; color: #065F46; }
+
+  .schedule-tbl {
+    width: 100%; border-collapse: collapse; background: #1F2937;
+    border-radius: 12px; overflow: hidden; border: 1px solid #374151; margin-bottom: 32px;
+  }
+  .schedule-tbl th {
+    text-align: left; padding: 12px 16px; font-size: 0.8125rem;
+    color: #9CA3AF; font-weight: 600; border-bottom: 1px solid #374151; background: #111827;
+  }
+  .schedule-tbl td { padding: 12px 16px; font-size: 0.875rem; border-bottom: 1px solid #1F2937; color: #E5E7EB; }
+  .schedule-tbl tr:last-child td { border-bottom: none; }
+  .schedule-tbl tr:hover { background: rgba(255,255,255,0.03); }
+
+  .chart-box {
+    background: #1F2937; border-radius: 12px; padding: 24px;
+    border: 1px solid #374151; margin-bottom: 32px;
+  }
+  .chart-title { font-size: 1rem; margin-bottom: 4px; color: #fff; }
+  .chart-sub { font-size: 0.8125rem; color: #9CA3AF; margin-bottom: 20px; }
+  .bar-chart {
+    display: flex; align-items: flex-end; gap: 16px;
+    height: 200px; padding-bottom: 28px; border-bottom: 1px solid #374151;
+  }
+  .bar-group {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; height: 100%; justify-content: flex-end;
+  }
+  .bar-rect { width: 100%; max-width: 48px; border-radius: 4px 4px 0 0; min-height: 4px; }
+  .bar-lbl { font-size: 0.6875rem; color: #6B7280; margin-top: 8px; }
+  .bar-val { font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 0.75rem; color: #fff; margin-bottom: 4px; }
+
+  .host-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px; margin-bottom: 32px;
+  }
+  .host-card {
+    background: #1F2937; border-radius: 12px; padding: 20px;
+    border: 1px solid #374151; text-align: center;
+  }
+  .host-avatar {
+    width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+  }
+  .host-card h4 { font-size: 1rem; margin-bottom: 4px; color: #fff; }
+  .host-card .role { font-size: 0.8125rem; color: #9CA3AF; margin-bottom: 4px; }
+  .host-card .show { font-size: 0.75rem; color: #6B7280; }
+
+  .activity-list {
+    display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px;
+  }
+  .activity-item {
+    background: #1F2937; border-radius: 8px; padding: 12px 16px;
+    border: 1px solid #374151; display: flex; align-items: center; gap: 12px;
+    font-size: 0.875rem; color: #E5E7EB;
+  }
+  .activity-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .activity-time { margin-left: auto; font-size: 0.75rem; color: #6B7280; }
+
+  .site-footer {
+    padding: 32px 24px; text-align: center; font-size: 0.8125rem;
+    color: #6B7280; border-top: 1px solid #1F2937; margin-top: 48px;
+  }
+
+  :focus-visible { outline: 2px solid var(--cyan); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  @media (max-width: 768px) {
+    .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    .show-grid { grid-template-columns: 1fr; }
+    .schedule-tbl { display: block; overflow-x: auto; }
+    .host-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header class="top-nav">
+  <button class="hamburger" aria-label="Open menu" aria-expanded="false"
+    onclick="document.getElementById('drawer').classList.toggle('open');document.getElementById('overlay').classList.toggle('open');this.setAttribute('aria-expanded',document.getElementById('drawer').classList.contains('open'))">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+  </button>
+  <a href="#" class="nav-brand">📻 Echo Radio Station</a>
+  <nav class="nav-links" aria-label="Main">
+    <a href="#" aria-current="page">Schedule</a>
+    <a href="#shows">Shows</a>
+    <a href="#hosts">Hosts</a>
+    <a href="#listeners">Listeners</a>
+    <a href="#activity">Activity</a>
+  </nav>
+  <div class="nav-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" aria-label="Search shows">
+  </div>
+  <button class="nav-cta">+ New Show</button>
+</header>
+
+<div class="drawer-overlay" id="overlay" onclick="document.getElementById('drawer').classList.remove('open');this.classList.remove('open')"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-label="Navigation">
+  <button class="drawer-close" aria-label="Close menu"
+    onclick="document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open')">&times;</button>
+  <nav>
+    <a href="#">Schedule</a>
+    <a href="#shows">Shows</a>
+    <a href="#hosts">Hosts</a>
+    <a href="#listeners">Listeners</a>
+    <a href="#activity">Activity</a>
+  </nav>
+</aside>
+
+<main id="main">
+  <div class="kpi-strip" role="region" aria-label="Station metrics">
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#FEE2E2">🔴</div>
+      <div>
+        <div class="kpi-label">On Air Now</div>
+        <div class="kpi-value" style="color:var(--coral)">LIVE</div>
+        <div class="kpi-trend" style="color:#9CA3AF">Morning Drive with Alex</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#EEF2FF">🎙️</div>
+      <div>
+        <div class="kpi-label">Active Shows</div>
+        <div class="kpi-value" style="color:var(--indigo)">24</div>
+        <div class="kpi-trend" style="color:var(--green)">3 new this quarter</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#ECFEFF">👥</div>
+      <div>
+        <div class="kpi-label">Live Listeners</div>
+        <div class="kpi-value" style="color:var(--cyan)">8,472</div>
+        <div class="kpi-trend" style="color:var(--green)">Peak: 12,340</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#D1FAE5">📊</div>
+      <div>
+        <div class="kpi-label">Weekly Reach</div>
+        <div class="kpi-value" style="color:var(--green)">142K</div>
+        <div class="kpi-trend" style="color:var(--green)">Up 8% from last week</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <section>
+      <div class="section-header">
+        <h2>Today's Schedule</h2>
+        <span class="badge">Wednesday</span>
+      </div>
+      <table class="schedule-tbl" aria-label="Broadcast schedule">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Show</th>
+            <th>Host</th>
+            <th>Type</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>06:00–09:00</strong></td>
+            <td>Morning Drive</td>
+            <td>Alex Rivera</td>
+            <td>Live</td>
+            <td><span class="show-tag tag-live">ON AIR</span></td>
+          </tr>
+          <tr>
+            <td><strong>09:00–12:00</strong></td>
+            <td>Midday Mix</td>
+            <td>Sam Chen</td>
+            <td>Live</td>
+            <td><span class="show-tag tag-prerecorded">Upcoming</span></td>
+          </tr>
+          <tr>
+            <td><strong>12:00–14:00</strong></td>
+            <td>Lunch Break Lounge</td>
+            <td>Pre-recorded</td>
+            <td>Syndicated</td>
+            <td><span class="show-tag tag-syndicated">Syndicated</span></td>
+          </tr>
+          <tr>
+            <td><strong>14:00–17:00</strong></td>
+            <td>Afternoon Acoustic</td>
+            <td>Maya Johnson</td>
+            <td>Live</td>
+            <td><span class="show-tag tag-prerecorded">Scheduled</span></td>
+          </tr>
+          <tr>
+            <td><strong>17:00–19:00</strong></td>
+            <td>Evening News Hour</td>
+            <td>David Park</td>
+            <td>Live</td>
+            <td><span class="show-tag tag-prerecorded">Scheduled</span></td>
+          </tr>
+          <tr>
+            <td><strong>19:00–22:00</strong></td>
+            <td>Night Beats</td>
+            <td>Luna Torres</td>
+            <td>Live</td>
+            <td><span class="show-tag tag-new">New Show</span></td>
+          </tr>
+          <tr>
+            <td><strong>22:00–00:00</strong></td>
+            <td>Late Night Jazz</td>
+            <td>Pre-recorded</td>
+            <td>Syndicated</td>
+            <td><span class="show-tag tag-syndicated">Syndicated</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="shows">
+      <div class="section-header">
+        <h2>Featured Shows</h2>
+        <span class="badge">24 shows</span>
+      </div>
+      <div class="show-grid">
+        <div class="show-card" style="border-top-color:var(--coral)">
+          <h4>🎙️ Morning Drive with Alex</h4>
+          <div class="desc">Wake up with the best mix of news, traffic, and hits. Weekdays 6–9 AM.</div>
+          <div class="show-meta"><span class="show-tag tag-live">Live</span><span>Mon–Fri</span></div>
+        </div>
+        <div class="show-card" style="border-top-color:var(--indigo)">
+          <h4>🎵 Afternoon Acoustic</h4>
+          <div class="desc">Unplugged sessions and singer-songwriter spotlights. Requests welcome.</div>
+          <div class="show-meta"><span class="show-tag tag-live">Live</span><span>Mon–Fri</span></div>
+        </div>
+        <div class="show-card" style="border-top-color:var(--cyan)">
+          <h4>📰 Evening News Hour</h4>
+          <div class="desc">Local and national news roundup with expert analysis and interviews.</div>
+          <div class="show-meta"><span class="show-tag tag-live">Live</span><span>Mon–Fri</span></div>
+        </div>
+        <div class="show-card" style="border-top-color:var(--lime)">
+          <h4>🌙 Night Beats</h4>
+          <div class="desc">Electronic, R&B, and indie deep cuts for night owls. New this quarter.</div>
+          <div class="show-meta"><span class="show-tag tag-new">New</span><span>Mon–Thu</span></div>
+        </div>
+        <div class="show-card" style="border-top-color:var(--orange)">
+          <h4>🎷 Late Night Jazz</h4>
+          <div class="desc">Smooth jazz and classic recordings. Perfect wind-down programming.</div>
+          <div class="show-meta"><span class="show-tag tag-syndicated">Syndicated</span><span>Daily</span></div>
+        </div>
+        <div class="show-card" style="border-top-color:var(--indigo)">
+          <h4>🎧 Weekend Electronic</h4>
+          <div class="desc">DJ mixes and electronic music showcase. Saturdays 8 PM–midnight.</div>
+          <div class="show-meta"><span class="show-tag tag-prerecorded">Pre-recorded</span><span>Saturday</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="chart-box">
+      <h3 class="chart-title">Listeners by Daypart — This Week</h3>
+      <div class="chart-sub">Average concurrent listeners</div>
+      <div class="bar-chart" role="img" aria-label="Listeners by daypart">
+        <div class="bar-group">
+          <div class="bar-val">6.2K</div>
+          <div class="bar-rect" style="height:100px;background:var(--coral)"></div>
+          <span class="bar-lbl">6–9 AM</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">4.8K</div>
+          <div class="bar-rect" style="height:77px;background:var(--indigo)"></div>
+          <span class="bar-lbl">9–12</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">3.1K</div>
+          <div class="bar-rect" style="height:50px;background:var(--cyan)"></div>
+          <span class="bar-lbl">12–2</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">5.4K</div>
+          <div class="bar-rect" style="height:87px;background:var(--lime)"></div>
+          <span class="bar-lbl">2–5 PM</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">8.5K</div>
+          <div class="bar-rect" style="height:137px;background:var(--coral)"></div>
+          <span class="bar-lbl">5–7</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">7.2K</div>
+          <div class="bar-rect" style="height:116px;background:var(--indigo)"></div>
+          <span class="bar-lbl">7–10</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">4.1K</div>
+          <div class="bar-rect" style="height:66px;background:var(--cyan)"></div>
+          <span class="bar-lbl">10–12</span>
+        </div>
+      </div>
+    </div>
+
+    <section id="hosts">
+      <div class="section-header">
+        <h2>On-Air Team</h2>
+        <span class="badge">6 hosts</span>
+      </div>
+      <div class="host-grid">
+        <div class="host-card">
+          <div class="host-avatar" style="background:#FEE2E2">🎙️</div>
+          <h4>Alex Rivera</h4>
+          <div class="role">Morning Show Host</div>
+          <div class="show">Morning Drive · 12 years</div>
+        </div>
+        <div class="host-card">
+          <div class="host-avatar" style="background:#EEF2FF">🎤</div>
+          <h4>Sam Chen</h4>
+          <div class="role">Midday Host</div>
+          <div class="show">Midday Mix · 5 years</div>
+        </div>
+        <div class="host-card">
+          <div class="host-avatar" style="background:#D1FAE5">🎸</div>
+          <h4>Maya Johnson</h4>
+          <div class="role">Music Director</div>
+          <div class="show">Afternoon Acoustic · 8 years</div>
+        </div>
+        <div class="host-card">
+          <div class="host-avatar" style="background:#ECFEFF">📰</div>
+          <h4>David Park</h4>
+          <div class="role">News Director</div>
+          <div class="show">Evening News · 15 years</div>
+        </div>
+        <div class="host-card">
+          <div class="host-avatar" style="background:#FEF3C7">🌙</div>
+          <h4>Luna Torres</h4>
+          <div class="role">Night Host</div>
+          <div class="show">Night Beats · 1 year</div>
+        </div>
+        <div class="host-card">
+          <div class="host-avatar" style="background:#EEF2FF">🎧</div>
+          <h4>DJ Marcus</h4>
+          <div class="role">Weekend Host</div>
+          <div class="show">Weekend Electronic · 3 years</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-header">
+        <h2>Recent Activity</h2>
+        <span class="badge">Today</span>
+      </div>
+      <div class="activity-list" role="list">
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:var(--coral)"></div>
+          <span>Morning Drive went live — 6,200 listeners tuned in at peak</span>
+          <span class="activity-time">3 hours ago</span>
+        </div>
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:var(--cyan)"></div>
+          <span>New playlist loaded for Night Beats — 47 tracks curated by Luna</span>
+          <span class="activity-time">5 hours ago</span>
+        </div>
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:var(--lime)"></div>
+          <span>Listener survey results: 92% satisfaction rate for Q1 programming</span>
+          <span class="activity-time">8 hours ago</span>
+        </div>
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:var(--indigo)"></div>
+          <span>Equipment upgrade: New Shure SM7B microphones installed in Studio B</span>
+          <span class="activity-time">Yesterday</span>
+        </div>
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:var(--coral)"></div>
+          <span>Emergency broadcast drill completed — all systems nominal</span>
+          <span class="activity-time">Yesterday</span>
+        </div>
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:var(--lime)"></div>
+          <span>Sponsorship deal signed with local coffee chain — 6-month contract</span>
+          <span class="activity-time">2 days ago</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p>Echo Radio Station — designed by Studio · Standalone prototype · Not affiliated with any broadcasting company</p>
+</footer>
+
+<script>
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.getElementById('drawer').classList.remove('open');
+      document.getElementById('overlay').classList.remove('open');
+    }
+  });
+</script>
+</body>
+</html>
+<!-- Listener Demographics -->
+<section id="listeners">
+  <div class="section-header">
+    <h2>Listener Demographics</h2>
+    <span class="badge">This month</span>
+  </div>
+  <table class="schedule-tbl" aria-label="Listener demographics">
+    <thead>
+      <tr>
+        <th>Age Group</th>
+        <th>Share</th>
+        <th>Avg Listen Time</th>
+        <th>Top Show</th>
+        <th>Trend</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>18–24</td>
+        <td>18%</td>
+        <td>42 min</td>
+        <td>Night Beats</td>
+        <td style="color:var(--green)">↑ 3%</td>
+      </tr>
+      <tr>
+        <td>25–34</td>
+        <td>28%</td>
+        <td>55 min</td>
+        <td>Morning Drive</td>
+        <td style="color:var(--green)">↑ 1%</td>
+      </tr>
+      <tr>
+        <td>35–44</td>
+        <td>24%</td>
+        <td>68 min</td>
+        <td>Afternoon Acoustic</td>
+        <td style="color:#9CA3AF">→ 0%</td>
+      </tr>
+      <tr>
+        <td>45–54</td>
+        <td>16%</td>
+        <td>72 min</td>
+        <td>Evening News</td>
+        <td style="color:var(--coral)">↓ 2%</td>
+      </tr>
+      <tr>
+        <td>55+</td>
+        <td>14%</td>
+        <td>85 min</td>
+        <td>Late Night Jazz</td>
+        <td style="color:var(--green)">↑ 1%</td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- Top Episodes -->
+<section>
+  <div class="section-header">
+    <h2>Top Episodes This Month</h2>
+    <span class="badge">Most played</span>
+  </div>
+  <div class="activity-list" role="list">
+    <div class="activity-item" role="listitem">
+      <div class="activity-dot" style="background:var(--coral)"></div>
+      <span><strong>#1</strong> Morning Drive — City Council Interview Special (14,200 listeners)</span>
+      <span class="activity-time">May 15</span>
+    </div>
+    <div class="activity-item" role="listitem">
+      <div class="activity-dot" style="background:var(--indigo)"></div>
+      <span><strong>#2</strong> Afternoon Acoustic — Live Session with The Wanderers (11,800 listeners)</span>
+      <span class="activity-time">May 22</span>
+    </div>
+    <div class="activity-item" role="listitem">
+      <div class="activity-dot" style="background:var(--cyan)"></div>
+      <span><strong>#3</strong> Evening News — Election Night Coverage (10,500 listeners)</span>
+      <span class="activity-time">May 8</span>
+    </div>
+    <div class="activity-item" role="listitem">
+      <div class="activity-dot" style="background:var(--lime)"></div>
+      <span><strong>#4</strong> Night Beats — Debut Episode with Luna Torres (9,200 listeners)</span>
+      <span class="activity-time">May 1</span>
+    </div>
+    <div class="activity-item" role="listitem">
+      <div class="activity-dot" style="background:var(--orange)"></div>
+      <span><strong>#5</strong> Weekend Electronic — Festival Preview Mix (8,400 listeners)</span>
+      <span class="activity-time">May 18</span>
+    </div>
+  </div>
+</section>
