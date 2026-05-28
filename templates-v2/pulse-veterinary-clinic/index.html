@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pulse Veterinary Clinic</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --cloud: #F6F8FC;
+    --ink: #19212B;
+    --indigo: #4F46E5;
+    --cyan: #06B6D4;
+    --lime: #A3E635;
+    --coral: #FB7185;
+    --card: #FFFFFF;
+    --border: #E5E7EB;
+    --green: #10B981;
+    --orange: #F59E0B;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cloud);
+    color: #111827;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+  }
+
+  a { color: var(--indigo); text-decoration: none; }
+  button { cursor: pointer; font-family: inherit; }
+
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--indigo);
+    color: #fff;
+    padding: 8px 16px;
+    z-index: 100;
+    font-size: 0.875rem;
+  }
+
+  .skip-link:focus {
+    top: 0;
+  }
+
+  .top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 24px;
+    height: 60px;
+    background: var(--ink);
+    color: #fff;
+  }
+
+  .nav-brand {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--lime);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-links { display: flex; gap: 4px; margin-left: 24px; }
+
+  .nav-links a {
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: rgba(255,255,255,0.7);
+  }
+
+  .nav-links a:hover,
+  .nav-links a[aria-current="page"] {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+
+  .nav-search { margin-left: auto; position: relative; }
+
+  .nav-search input {
+    width: 200px;
+    padding: 8px 12px 8px 36px;
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 8px;
+    font-size: 0.875rem;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+  }
+
+  .nav-search svg {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 16px;
+    height: 16px;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .nav-cta {
+    margin-left: 12px;
+    padding: 8px 18px;
+    background: var(--lime);
+    color: var(--ink);
+    border: none;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 700;
+  }
+
+  .hamburger { display: none; background: none; border: none; padding: 8px; color: #fff; }
+  .hamburger svg { width: 24px; height: 24px; }
+
+  .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 60; }
+  .drawer-overlay.open { display: block; }
+  .drawer {
+    position: fixed; top: 0; left: 0; width: 280px; height: 100%;
+    background: #fff; z-index: 70; transform: translateX(-100%);
+    transition: transform 0.25s ease; padding: 24px; overflow-y: auto;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-close { background: none; border: none; font-size: 1.5rem; position: absolute; top: 16px; right: 16px; color: #111827; }
+  .drawer nav { display: flex; flex-direction: column; gap: 4px; margin-top: 24px; }
+  .drawer nav a { padding: 10px 14px; border-radius: 8px; font-size: 0.9375rem; color: #111827; }
+  .drawer nav a:hover { background: var(--cloud); }
+
+  @media (max-width: 768px) {
+    .nav-links, .nav-search, .nav-cta { display: none; }
+    .hamburger { display: block; }
+    .top-nav { padding: 0 16px; }
+  }
+
+  .kpi-strip {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px; padding: 24px;
+  }
+  .kpi-card {
+    background: var(--card); border-radius: 12px; padding: 20px;
+    border: 1px solid var(--border); display: flex; align-items: center; gap: 14px;
+  }
+  .kpi-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0;
+  }
+  .kpi-label { font-size: 0.8125rem; color: #6B7280; margin-bottom: 2px; }
+  .kpi-value { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 1.5rem; }
+  .kpi-trend { font-size: 0.75rem; margin-top: 2px; }
+
+  .main-content { padding: 0 24px 48px; }
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
+  }
+  .section-header h2 { font-size: 1.25rem; }
+  .badge {
+    background: var(--cloud); padding: 4px 12px; border-radius: 20px;
+    font-size: 0.8125rem; font-weight: 600; color: #6B7280;
+  }
+
+  .pet-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px; margin-bottom: 32px;
+  }
+  .pet-card {
+    background: var(--card); border-radius: 12px; padding: 20px;
+    border: 1px solid var(--border);
+  }
+  .pet-header {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+  }
+  .pet-avatar {
+    width: 48px; height: 48px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0;
+  }
+  .pet-header h4 { font-size: 1rem; margin-bottom: 2px; }
+  .pet-header .breed { font-size: 0.8125rem; color: #6B7280; }
+  .pet-card .detail { font-size: 0.8125rem; color: #6B7280; margin-bottom: 4px; }
+  .pet-badge {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 0.6875rem; font-weight: 600; margin-top: 8px;
+  }
+
+  .data-tbl {
+    width: 100%; border-collapse: collapse; background: var(--card);
+    border-radius: 12px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 32px;
+  }
+  .data-tbl th {
+    text-align: left; padding: 12px 16px; font-size: 0.8125rem;
+    color: #6B7280; font-weight: 600; border-bottom: 1px solid var(--border); background: var(--cloud);
+  }
+  .data-tbl td { padding: 12px 16px; font-size: 0.875rem; border-bottom: 1px solid #F3F4F6; }
+  .data-tbl tr:last-child td { border-bottom: none; }
+  .data-tbl tr:hover { background: var(--cloud); }
+  .badge-status {
+    display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
+  }
+  .st-confirmed { background: #D1FAE5; color: #065F46; }
+  .st-pending { background: #FEF3C7; color: #92400E; }
+  .st-completed { background: #DBEAFE; color: #1E40AF; }
+  .st-urgent { background: #FEE2E2; color: #991B1B; }
+
+  .chart-box {
+    background: var(--card); border-radius: 12px; padding: 24px;
+    border: 1px solid var(--border); margin-bottom: 32px;
+  }
+  .chart-title { font-size: 1rem; margin-bottom: 4px; }
+  .chart-sub { font-size: 0.8125rem; color: #6B7280; margin-bottom: 20px; }
+  .bar-chart {
+    display: flex; align-items: flex-end; gap: 16px;
+    height: 200px; padding-bottom: 28px; border-bottom: 1px solid var(--border);
+  }
+  .bar-group {
+    flex: 1; display: flex; flex-direction: column;
+    align-items: center; height: 100%; justify-content: flex-end;
+  }
+  .bar-rect { width: 100%; max-width: 48px; border-radius: 4px 4px 0 0; min-height: 4px; }
+  .bar-lbl { font-size: 0.6875rem; color: #9CA3AF; margin-top: 8px; }
+  .bar-val { font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 0.75rem; margin-bottom: 4px; }
+
+  .vet-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px; margin-bottom: 32px;
+  }
+  .vet-card {
+    background: var(--card); border-radius: 12px; padding: 20px;
+    border: 1px solid var(--border); text-align: center;
+  }
+  .vet-avatar {
+    width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+  }
+  .vet-card h4 { font-size: 1rem; margin-bottom: 4px; }
+  .vet-card .specialty { font-size: 0.8125rem; color: #6B7280; margin-bottom: 4px; }
+  .vet-card .schedule { font-size: 0.75rem; color: #9CA3AF; }
+
+  .activity-list {
+    display: flex; flex-direction: column; gap: 8px; margin-bottom: 32px;
+  }
+  .activity-item {
+    background: var(--card); border-radius: 8px; padding: 12px 16px;
+    border: 1px solid var(--border); display: flex; align-items: center; gap: 12px; font-size: 0.875rem;
+  }
+  .activity-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .activity-time { margin-left: auto; font-size: 0.75rem; color: #9CA3AF; }
+
+  .site-footer {
+    padding: 32px 24px; text-align: center; font-size: 0.8125rem;
+    color: #9CA3AF; border-top: 1px solid var(--border); margin-top: 48px;
+  }
+
+  :focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  @media (max-width: 768px) {
+    .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    .pet-grid { grid-template-columns: 1fr; }
+    .data-tbl { display: block; overflow-x: auto; }
+    .vet-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header class="top-nav">
+  <button class="hamburger" aria-label="Open menu" aria-expanded="false"
+    onclick="document.getElementById('drawer').classList.toggle('open');document.getElementById('overlay').classList.toggle('open');this.setAttribute('aria-expanded',document.getElementById('drawer').classList.contains('open'))">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+  </button>
+  <a href="#" class="nav-brand">🐾 Pulse Veterinary Clinic</a>
+  <nav class="nav-links" aria-label="Main">
+    <a href="#" aria-current="page">Dashboard</a>
+    <a href="#patients">Patients</a>
+    <a href="#appointments">Appointments</a>
+    <a href="#vaccinations">Vaccinations</a>
+    <a href="#team">Team</a>
+  </nav>
+  <div class="nav-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" aria-label="Search patients">
+  </div>
+  <button class="nav-cta">+ New Patient</button>
+</header>
+
+<div class="drawer-overlay" id="overlay" onclick="document.getElementById('drawer').classList.remove('open');this.classList.remove('open')"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-label="Navigation">
+  <button class="drawer-close" aria-label="Close menu"
+    onclick="document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open')">&times;</button>
+  <nav>
+    <a href="#">Dashboard</a>
+    <a href="#patients">Patients</a>
+    <a href="#appointments">Appointments</a>
+    <a href="#vaccinations">Vaccinations</a>
+    <a href="#team">Team</a>
+  </nav>
+</aside>
+
+<main id="main">
+  <div class="kpi-strip" role="region" aria-label="Clinic overview">
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#D1FAE5">🐾</div>
+      <div>
+        <div class="kpi-label">Active Patients</div>
+        <div class="kpi-value" style="color:var(--green)">1,247</div>
+        <div class="kpi-trend" style="color:var(--green)">38 new this month</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#ECFEFF">📅</div>
+      <div>
+        <div class="kpi-label">Appointments Today</div>
+        <div class="kpi-value" style="color:var(--cyan)">24</div>
+        <div class="kpi-trend" style="color:var(--green)">6 remaining</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#EEF2FF">💉</div>
+      <div>
+        <div class="kpi-label">Vaccinations Due</div>
+        <div class="kpi-value" style="color:var(--indigo)">18</div>
+        <div class="kpi-trend" style="color:var(--orange)">This week</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#FEE2E2">🚨</div>
+      <div>
+        <div class="kpi-label">Emergency Cases</div>
+        <div class="kpi-value" style="color:var(--coral)">2</div>
+        <div class="kpi-trend" style="color:var(--coral)">In treatment now</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <section id="patients">
+      <div class="section-header">
+        <h2>Recent Patients</h2>
+        <span class="badge">1,247 total</span>
+      </div>
+      <div class="pet-grid">
+        <div class="pet-card">
+          <div class="pet-header">
+            <div class="pet-avatar" style="background:#FEF3C7">🐕</div>
+            <div>
+              <h4>Buddy</h4>
+              <div class="breed">Golden Retriever · 5 years</div>
+            </div>
+          </div>
+          <div class="detail">Owner: Sarah Johnson · Last visit: May 20</div>
+          <div class="detail">Next: Annual checkup Jun 15</div>
+          <span class="pet-badge" style="background:#D1FAE5;color:#065F46">Healthy</span>
+        </div>
+        <div class="pet-card">
+          <div class="pet-header">
+            <div class="pet-avatar" style="background:#ECFEFF">🐱</div>
+            <div>
+              <h4>Luna</h4>
+              <div class="breed">Siamese · 3 years</div>
+            </div>
+          </div>
+          <div class="detail">Owner: Mike Chen · Last visit: May 28</div>
+          <div class="detail">Next: Dental cleaning Jun 10</div>
+          <span class="pet-badge" style="background:#FEF3C7;color:#92400E">Follow-up</span>
+        </div>
+        <div class="pet-card">
+          <div class="pet-header">
+            <div class="pet-avatar" style="background:#FEE2E2">🐕</div>
+            <div>
+              <h4>Rex</h4>
+              <div class="breed">German Shepherd · 8 years</div>
+            </div>
+          </div>
+          <div class="detail">Owner: Tom Wilson · Last visit: Today</div>
+          <div class="detail">Emergency: Limping — X-ray ordered</div>
+          <span class="pet-badge" style="background:#FEE2E2;color:#991B1B">In Treatment</span>
+        </div>
+        <div class="pet-card">
+          <div class="pet-header">
+            <div class="pet-avatar" style="background:#D1FAE5">🐰</div>
+            <div>
+              <h4>Cinnamon</h4>
+              <div class="breed">Holland Lop · 2 years</div>
+            </div>
+          </div>
+          <div class="detail">Owner: Emma Davis · Last visit: Apr 15</div>
+          <div class="detail">Next: Nail trim Jun 5</div>
+          <span class="pet-badge" style="background:#D1FAE5;color:#065F46">Healthy</span>
+        </div>
+        <div class="pet-card">
+          <div class="pet-header">
+            <div class="pet-avatar" style="background:#ECFEFF">🐱</div>
+            <div>
+              <h4>Mochi</h4>
+              <div class="breed">Maine Coon · 6 years</div>
+            </div>
+          </div>
+          <div class="detail">Owner: Lisa Park · Last visit: May 25</div>
+          <div class="detail">Next: Vaccination booster Jun 22</div>
+          <span class="pet-badge" style="background:#DBEAFE;color:#1E40AF">Vaccine Due</span>
+        </div>
+        <div class="pet-card">
+          <div class="pet-header">
+            <div class="pet-avatar" style="background:#FEF3C7">🐕</div>
+            <div>
+              <h4>Charlie</h4>
+              <div class="breed">Beagle · 4 years</div>
+            </div>
+          </div>
+          <div class="detail">Owner: James Brown · Last visit: May 18</div>
+          <div class="detail">Next: Weight check Jun 8</div>
+          <span class="pet-badge" style="background:#FEF3C7;color:#92400E">Diet Plan</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="appointments">
+      <div class="section-header">
+        <h2>Today's Appointments</h2>
+        <span class="badge">24 scheduled</span>
+      </div>
+      <table class="data-tbl" aria-label="Appointments">
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Patient</th>
+            <th>Owner</th>
+            <th>Type</th>
+            <th>Veterinarian</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>09:00</strong></td>
+            <td>🐕 Buddy</td>
+            <td>Sarah Johnson</td>
+            <td>Annual Checkup</td>
+            <td>Dr. Martinez</td>
+            <td><span class="badge-status st-completed">Completed</span></td>
+          </tr>
+          <tr>
+            <td><strong>09:30</strong></td>
+            <td>🐱 Luna</td>
+            <td>Mike Chen</td>
+            <td>Dental Exam</td>
+            <td>Dr. Patel</td>
+            <td><span class="badge-status st-completed">Completed</span></td>
+          </tr>
+          <tr>
+            <td><strong>10:00</strong></td>
+            <td>🐕 Rex</td>
+            <td>Tom Wilson</td>
+            <td>Emergency</td>
+            <td>Dr. Martinez</td>
+            <td><span class="badge-status st-urgent">In Progress</span></td>
+          </tr>
+          <tr>
+            <td><strong>10:30</strong></td>
+            <td>🐰 Cinnamon</td>
+            <td>Emma Davis</td>
+            <td>Nail Trim</td>
+            <td>Dr. Kim</td>
+            <td><span class="badge-status st-confirmed">Confirmed</span></td>
+          </tr>
+          <tr>
+            <td><strong>11:00</strong></td>
+            <td>🐱 Mochi</td>
+            <td>Lisa Park</td>
+            <td>Vaccination</td>
+            <td>Dr. Patel</td>
+            <td><span class="badge-status st-confirmed">Confirmed</span></td>
+          </tr>
+          <tr>
+            <td><strong>11:30</strong></td>
+            <td>🐕 Charlie</td>
+            <td>James Brown</td>
+            <td>Weight Check</td>
+            <td>Dr. Kim</td>
+            <td><span class="badge-status st-pending">Pending</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <div class="chart-box">
+      <h3 class="chart-title">Visits by Animal Type — This Month</h3>
+      <div class="chart-sub">Patient distribution across species</div>
+      <div class="bar-chart" role="img" aria-label="Visits by animal type">
+        <div class="bar-group">
+          <div class="bar-val">58%</div>
+          <div class="bar-rect" style="height:174px;background:var(--indigo)"></div>
+          <span class="bar-lbl">Dogs</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">28%</div>
+          <div class="bar-rect" style="height:84px;background:var(--cyan)"></div>
+          <span class="bar-lbl">Cats</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">6%</div>
+          <div class="bar-rect" style="height:18px;background:var(--lime)"></div>
+          <span class="bar-lbl">Rabbits</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">4%</div>
+          <div class="bar-rect" style="height:12px;background:var(--coral)"></div>
+          <span class="bar-lbl">Birds</span>
+        </div>
+        <div class="bar-group">
+          <div class="bar-val">4%</div>
+          <div class="bar-rect" style="height:12px;background:var(--orange)"></div>
+          <span class="bar-lbl">Other</span>
+        </div>
+      </div>
+    </div>
+
+    <section id="team">
+      <div class="section-header">
+        <h2>Veterinary Team</h2>
+        <span class="badge">4 doctors</span>
+      </div>
+      <div class="vet-grid">
+        <div class="vet-card">
+          <div class="vet-avatar" style="background:#D1FAE5">👩‍⚕️</div>
+          <h4>Dr. Ana Martinez</h4>
+          <div class="specialty">General Practice &amp; Surgery</div>
+          <div class="schedule">Mon–Fri 8:00–17:00</div>
+        </div>
+        <div class="vet-card">
+          <div class="vet-avatar" style="background:#ECFEFF">👨‍⚕️</div>
+          <h4>Dr. Raj Patel</h4>
+          <div class="specialty">Dentistry &amp; Internal Medicine</div>
+          <div class="schedule">Mon–Thu 9:00–18:00</div>
+        </div>
+        <div class="vet-card">
+          <div class="vet-avatar" style="background:#FEF3C7">👩‍⚕️</div>
+          <h4>Dr. Soo-Jin Kim</h4>
+          <div class="specialty">Exotic Animals &amp; Wellness</div>
+          <div class="schedule">Tue–Sat 8:00–16:00</div>
+        </div>
+        <div class="vet-card">
+          <div class="vet-avatar" style="background:#EEF2FF">👨‍⚕️</div>
+          <h4>Dr. Erik Johansson</h4>
+          <div class="specialty">Emergency &amp; Critical Care</div>
+          <div class="schedule">Wed–Sun 10:00–20:00</div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="section-header">
+        <h2>Recent Activity</h2>
+        <span class="badge">Today</span>
+      </div>
+      <div class="activity-list" role="list">
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:var(--coral)"></div>
+          <span>Rex (German Shepherd) admitted for emergency lameness evaluation — X-ray in progress</span>
+          <span class="activity-time">15 min ago</span>
+        </div>
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:var(--green)"></div>
+          <span>Buddy completed annual checkup — all vitals normal, vaccines up to date</span>
+          <span class="activity-time">1 hour ago</span>
+        </div>
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:var(--cyan)"></div>
+          <span>Luna's dental exam complete — minor tartar buildup, cleaning scheduled for Jun 10</span>
+          <span class="activity-time">1.5 hours ago</span>
+        </div>
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:var(--indigo)"></div>
+          <span>Lab results received for 5 patients — all bloodwork within normal ranges</span>
+          <span class="activity-time">2 hours ago</span>
+        </div>
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:var(--lime)"></div>
+          <span>Pharmacy restocked — 120 doses of flea/tick prevention received</span>
+          <span class="activity-time">3 hours ago</span>
+        </div>
+        <div class="activity-item" role="listitem">
+          <div class="activity-dot" style="background:var(--orange)"></div>
+          <span>Vaccination reminders sent to 18 owners — boosters due this week</span>
+          <span class="activity-time">4 hours ago</span>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p>Pulse Veterinary Clinic — designed by Studio · Standalone prototype · Not affiliated with any veterinary service</p>
+</footer>
+
+<script>
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.getElementById('drawer').classList.remove('open');
+      document.getElementById('overlay').classList.remove('open');
+    }
+  });
+</script>
+</body>
+</html>
