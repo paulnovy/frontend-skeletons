@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Atlas AI Command Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --graphite: #070A0F;
+      --slate: #1B2333;
+      --slate-light: #243044;
+      --cyan: #4DE3FF;
+      --cyan-dim: rgba(77,227,255,0.15);
+      --lime: #C7FF6B;
+      --lime-dim: rgba(199,255,107,0.15);
+      --amber: #FFB84D;
+      --amber-dim: rgba(255,184,77,0.15);
+      --white: #F4F7FB;
+      --white-dim: rgba(244,247,251,0.08);
+      --white-mid: rgba(244,247,251,0.55);
+      --red: #FF6B6B;
+      --red-dim: rgba(255,107,107,0.15);
+      --radius: 10px;
+      --radius-sm: 6px;
+      --max: 1400px;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+    body{margin:0;min-height:100vh;color:var(--white);background:var(--graphite);font-family:"Inter",system-ui,sans-serif;line-height:1.5;font-size:14px}
+    a{color:inherit;text-decoration:none}
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    :focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+    .skip-link{position:absolute;top:-100px;left:16px;background:var(--cyan);color:var(--graphite);padding:8px 16px;border-radius:var(--radius-sm);z-index:1000;font-weight:600;font-size:0.875rem}
+    .skip-link:focus{top:16px}
+    .topnav{position:sticky;top:0;z-index:100;background:var(--graphite);border-bottom:1px solid var(--white-dim);padding:0 24px}
+    .topnav-inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:52px}
+    .topnav-brand{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:1rem;display:flex;align-items:center;gap:10px}
+    .topnav-brand-icon{width:28px;height:28px;background:var(--cyan);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:0.75rem;font-weight:700;color:var(--graphite)}
+    .topnav-links{display:flex;gap:8px;list-style:none;margin:0;padding:0}
+    .topnav-links a{display:block;padding:6px 14px;font-size:0.8125rem;font-weight:500;color:var(--white-mid);border-radius:var(--radius-sm);transition:background 0.15s,color 0.15s}
+    .topnav-links a:hover,.topnav-links a[aria-current="page"]{color:var(--white);background:var(--white-dim)}
+    .topnav-actions{display:flex;align-items:center;gap:12px}
+    .topnav-status{display:flex;align-items:center;gap:6px;font-size:0.75rem;color:var(--lime);font-weight:500}
+    .topnav-status-dot{width:6px;height:6px;border-radius:50%;background:var(--lime)}
+    .topnav-drawer-btn{display:none;background:none;border:1px solid var(--white-dim);border-radius:var(--radius-sm);padding:6px 10px;color:var(--white);font-size:1rem}
+    .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(7,10,15,0.7);z-index:200}
+    .drawer-overlay.open{display:block}
+    .drawer{position:fixed;top:0;left:-300px;width:280px;height:100%;background:var(--slate);z-index:201;padding:20px;transition:left 0.2s ease;overflow-y:auto}
+    .drawer.open{left:0}
+    .drawer-close{background:none;border:none;color:var(--white);font-size:1.25rem;float:right}
+    .drawer nav{clear:both;padding-top:16px}
+    .drawer nav a{display:block;padding:12px 0;font-size:0.9375rem;font-weight:500;color:var(--white);border-bottom:1px solid var(--white-dim)}
+    .app-shell{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:220px 1fr 300px;gap:1px;min-height:calc(100vh - 52px);background:var(--white-dim)}
+    .sidebar{background:var(--graphite);padding:20px 16px;border-right:1px solid var(--white-dim)}
+    .sidebar-section{margin-bottom:24px}
+    .sidebar-label{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:0.6875rem;text-transform:uppercase;letter-spacing:0.08em;color:var(--white-mid);margin-bottom:10px}
+    .sidebar-link{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-sm);font-size:0.8125rem;color:var(--white-mid);transition:background 0.15s,color 0.15s}
+    .sidebar-link:hover,.sidebar-link.active{background:var(--white-dim);color:var(--white)}
+    .sidebar-link-icon{width:18px;height:18px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:0.625rem;flex-shrink:0}
+    .sidebar-link-badge{margin-left:auto;background:var(--red-dim);color:var(--red);padding:1px 6px;border-radius:999px;font-size:0.625rem;font-weight:600}
+    .main-area{background:var(--graphite);padding:20px;overflow-y:auto}
+    .rail{background:var(--slate);padding:20px 16px;border-left:1px solid var(--white-dim);overflow-y:auto}
+    .kpi-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+    .kpi-card{background:var(--slate);border:1px solid var(--white-dim);border-radius:var(--radius);padding:16px}
+    .kpi-label{font-size:0.6875rem;color:var(--white-mid);margin-bottom:4px}
+    .kpi-value{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:1.5rem;line-height:1.2}
+    .kpi-change{font-family:"IBM Plex Mono",monospace;font-size:0.6875rem;margin-top:4px}
+    .kpi-change.up{color:var(--lime)}.kpi-change.down{color:var(--red)}.kpi-change.neutral{color:var(--white-mid)}
+    .bento{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+    .bento-card{background:var(--slate);border:1px solid var(--white-dim);border-radius:var(--radius);padding:18px}
+    .bento-card.span-2{grid-column:span 2}
+    .bento-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+    .bento-card-title{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:0.875rem;margin:0}
+    .status-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:0.6875rem;font-weight:600}
+    .status-chip.healthy{background:var(--lime-dim);color:var(--lime)}
+    .status-chip.warning{background:var(--amber-dim);color:var(--amber)}
+    .status-chip.critical{background:var(--red-dim);color:var(--red)}
+    .status-chip.pending{background:var(--cyan-dim);color:var(--cyan)}
+    .mission-list{list-style:none;margin:0;padding:0}
+    .mission-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--white-dim)}
+    .mission-item:last-child{border-bottom:none}
+    .mission-name{font-size:0.8125rem;font-weight:500;flex:1}
+    .mission-risk{font-family:"IBM Plex Mono",monospace;font-size:0.75rem;color:var(--white-mid)}
+    .risk-bar{height:8px;background:var(--white-dim);border-radius:4px;overflow:hidden;margin-top:6px}
+    .risk-bar-fill{height:100%;border-radius:4px}
+    .agent-table{width:100%;border-collapse:collapse;font-size:0.75rem}
+    .agent-table th{text-align:left;padding:8px 10px;font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:0.6875rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--white-mid);border-bottom:1px solid var(--white-dim)}
+    .agent-table td{padding:8px 10px;border-bottom:1px solid var(--white-dim);color:var(--white-mid)}
+    .agent-table td strong{color:var(--white);font-weight:600}
+    .rail-section{margin-bottom:24px}
+    .rail-title{font-family:"Space Grotesk",sans-serif;font-weight:600;font-size:0.8125rem;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+    .rail-title-dot{width:6px;height:6px;border-radius:50%;background:var(--cyan)}
+    .reco-list,.action-list{list-style:none;margin:0;padding:0}
+    .reco-item,.action-item{padding:10px 0;border-bottom:1px solid var(--white-dim)}
+    .reco-item:last-child,.action-item:last-child{border-bottom:none}
+    .reco-title{font-size:0.8125rem;font-weight:600;margin-bottom:4px}
+    .reco-desc{font-size:0.75rem;color:var(--white-mid);line-height:1.5}
+    .reco-confidence{font-family:"IBM Plex Mono",monospace;font-size:0.6875rem;color:var(--cyan);margin-top:4px}
+    .action-priority{display:inline-block;padding:1px 6px;border-radius:3px;font-size:0.5625rem;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px}
+    .action-priority.high{background:var(--red-dim);color:var(--red)}
+    .action-priority.medium{background:var(--amber-dim);color:var(--amber)}
+    .action-priority.low{background:var(--cyan-dim);color:var(--cyan)}
+    .action-text{font-size:0.75rem;color:var(--white);font-weight:500}
+    .health-score{text-align:center;padding:16px;background:var(--white-dim);border-radius:var(--radius);margin-bottom:16px}
+    .health-score-value{font-family:"Space Grotesk",sans-serif;font-weight:700;font-size:2.5rem;color:var(--lime)}
+    .health-score-label{font-size:0.75rem;color:var(--white-mid);margin-top:4px}
+    .footer{background:var(--graphite);border-top:1px solid var(--white-dim);padding:16px 24px;text-align:center;font-size:0.6875rem;color:rgba(244,247,251,0.35)}
+    @media(max-width:1024px){
+      .app-shell{grid-template-columns:1fr}
+      .sidebar{display:none}
+      .rail{border-left:none;border-top:1px solid var(--white-dim)}
+      .topnav-links{display:none}
+      .topnav-drawer-btn{display:block}
+    }
+    @media(max-width:768px){
+      .kpi-strip{grid-template-columns:repeat(2,1fr)}
+      .bento{grid-template-columns:1fr}
+      .bento-card.span-2{grid-column:span 1}
+      .main-area,.rail{padding:16px}
+    }
+    @media(max-width:480px){
+      .kpi-strip{grid-template-columns:1fr 1fr;gap:8px}
+      .kpi-card{padding:12px}
+      .kpi-value{font-size:1.25rem}
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to main content</a>
+  <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-label="Navigation" aria-hidden="true">
+    <button class="drawer-close" id="drawerClose" aria-label="Close menu">&times;</button>
+    <nav aria-label="Mobile navigation">
+      <a href="#dashboard">Dashboard</a>
+      <a href="#missions">Missions</a>
+      <a href="#agents">Agents</a>
+      <a href="#alerts">Alerts</a>
+    </nav>
+  </aside>
+  <header class="topnav" role="banner">
+    <div class="topnav-inner">
+      <a href="#" class="topnav-brand" aria-label="Atlas AI home"><span class="topnav-brand-icon" aria-hidden="true">A</span>Atlas AI</a>
+      <ul class="topnav-links" role="list">
+        <li><a href="#dashboard" aria-current="page">Dashboard</a></li>
+        <li><a href="#missions">Missions</a></li>
+        <li><a href="#agents">Agents</a></li>
+        <li><a href="#alerts">Alerts</a></li>
+      </ul>
+      <div class="topnav-actions">
+        <span class="topnav-status"><span class="topnav-status-dot" aria-hidden="true"></span>All systems operational</span>
+        <button class="topnav-drawer-btn" id="drawerOpen" aria-label="Open menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <div class="app-shell" id="dashboard">
+    <aside class="sidebar" role="navigation" aria-label="Command navigation">
+      <div class="sidebar-section">
+        <div class="sidebar-label">Operations</div>
+        <a href="#" class="sidebar-link active"><span class="sidebar-link-icon" style="background:var(--cyan-dim);color:var(--cyan);" aria-hidden="true">&#9632;</span> Command Center</a>
+        <a href="#" class="sidebar-link"><span class="sidebar-link-icon" style="background:var(--lime-dim);color:var(--lime);" aria-hidden="true">&#9650;</span> Mission Control</a>
+        <a href="#" class="sidebar-link"><span class="sidebar-link-icon" style="background:var(--amber-dim);color:var(--amber);" aria-hidden="true">&#9679;</span> Fleet Status <span class="sidebar-link-badge">3</span></a>
+        <a href="#" class="sidebar-link"><span class="sidebar-link-icon" style="background:var(--red-dim);color:var(--red);" aria-hidden="true">&#9632;</span> Risk Monitor</a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Intelligence</div>
+        <a href="#" class="sidebar-link"><span class="sidebar-link-icon" style="background:var(--white-dim);color:var(--white-mid);" aria-hidden="true">&#9670;</span> AI Recommendations</a>
+        <a href="#" class="sidebar-link"><span class="sidebar-link-icon" style="background:var(--white-dim);color:var(--white-mid);" aria-hidden="true">&#9670;</span> Predictions</a>
+        <a href="#" class="sidebar-link"><span class="sidebar-link-icon" style="background:var(--white-dim);color:var(--white-mid);" aria-hidden="true">&#9670;</span> Audit Trail</a>
+      </div>
+      <div class="sidebar-section">
+        <div class="sidebar-label">Settings</div>
+        <a href="#" class="sidebar-link"><span class="sidebar-link-icon" style="background:var(--white-dim);color:var(--white-mid);" aria-hidden="true">&#9881;</span> Configuration</a>
+        <a href="#" class="sidebar-link"><span class="sidebar-link-icon" style="background:var(--white-dim);color:var(--white-mid);" aria-hidden="true">&#9881;</span> Team Access</a>
+      </div>
+    </aside>
+    <main class="main-area" id="main" role="main">
+      <div class="kpi-strip" role="region" aria-label="Key metrics">
+        <div class="kpi-card"><div class="kpi-label">Active Missions</div><div class="kpi-value">24</div><div class="kpi-change up">+3 from yesterday</div></div>
+        <div class="kpi-card"><div class="kpi-label">Risk Score</div><div class="kpi-value" style="color:var(--amber)">67</div><div class="kpi-change down">+12 this week</div></div>
+        <div class="kpi-card"><div class="kpi-label">AI Confidence</div><div class="kpi-value" style="color:var(--lime)">94%</div><div class="kpi-change up">+2% from last run</div></div>
+        <div class="kpi-card"><div class="kpi-label">Pending Actions</div><div class="kpi-value">8</div><div class="kpi-change neutral">4 critical</div></div>
+      </div>
+      <div class="bento">
+        <div class="bento-card span-2">
+          <div class="bento-card-header"><h2 class="bento-card-title">Mission Status</h2><span class="status-chip healthy">Healthy</span></div>
+          <ul class="mission-list" aria-label="Active missions">
+            <li class="mission-item"><span class="status-chip healthy">Healthy</span><span class="mission-name">Customer Churn Prediction Pipeline</span><span class="mission-risk">Risk: 12</span></li>
+            <li class="mission-item"><span class="status-chip warning">Warning</span><span class="mission-name">Revenue Forecast Q3 Model</span><span class="mission-risk">Risk: 58</span></li>
+            <li class="mission-item"><span class="status-chip critical">Critical</span><span class="mission-name">Fraud Detection Real-Time Feed</span><span class="mission-risk">Risk: 87</span></li>
+            <li class="mission-item"><span class="status-chip healthy">Healthy</span><span class="mission-name">Inventory Optimization Agent</span><span class="mission-risk">Risk: 8</span></li>
+            <li class="mission-item"><span class="status-chip pending">Pending</span><span class="mission-name">Support Ticket Routing v3</span><span class="mission-risk">Risk: --</span></li>
+          </ul>
+        </div>
+        <div class="bento-card">
+          <div class="bento-card-header"><h2 class="bento-card-title">Risk Overview</h2></div>
+          <div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:0.75rem;margin-bottom:4px"><span style="color:var(--white-mid)">Infrastructure</span><span style="color:var(--lime)">Low</span></div><div class="risk-bar"><div class="risk-bar-fill" style="width:22%;background:var(--lime)"></div></div></div>
+          <div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:0.75rem;margin-bottom:4px"><span style="color:var(--white-mid)">Model Drift</span><span style="color:var(--amber)">Medium</span></div><div class="risk-bar"><div class="risk-bar-fill" style="width:58%;background:var(--amber)"></div></div></div>
+          <div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:0.75rem;margin-bottom:4px"><span style="color:var(--white-mid)">Data Quality</span><span style="color:var(--red)">High</span></div><div class="risk-bar"><div class="risk-bar-fill" style="width:82%;background:var(--red)"></div></div></div>
+          <div><div style="display:flex;justify-content:space-between;font-size:0.75rem;margin-bottom:4px"><span style="color:var(--white-mid)">Compliance</span><span style="color:var(--lime)">Low</span></div><div class="risk-bar"><div class="risk-bar-fill" style="width:15%;background:var(--lime)"></div></div></div>
+        </div>
+        <div class="bento-card span-2">
+          <div class="bento-card-header"><h2 class="bento-card-title">Agent Fleet</h2><span class="status-chip healthy">12 Active</span></div>
+          <table class="agent-table" aria-label="Agent fleet status">
+            <thead><tr><th scope="col">Agent</th><th scope="col">Status</th><th scope="col">Tasks/hr</th><th scope="col">Accuracy</th><th scope="col">Uptime</th></tr></thead>
+            <tbody>
+              <tr><td><strong>Predictor-Alpha</strong></td><td><span class="status-chip healthy">Active</span></td><td>1,240</td><td>98.2%</td><td>99.97%</td></tr>
+              <tr><td><strong>Scout-Bravo</strong></td><td><span class="status-chip warning">Degraded</span></td><td>340</td><td>91.4%</td><td>97.2%</td></tr>
+              <tr><td><strong>Analyst-Charlie</strong></td><td><span class="status-chip healthy">Active</span></td><td>890</td><td>96.8%</td><td>99.9%</td></tr>
+              <tr><td><strong>Guardian-Delta</strong></td><td><span class="status-chip critical">Offline</span></td><td>0</td><td>--</td><td>0%</td></tr>
+              <tr><td><strong>Optimizer-Echo</strong></td><td><span class="status-chip healthy">Active</span></td><td>2,100</td><td>99.1%</td><td>99.99%</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="bento-card">
+          <div class="bento-card-header"><h2 class="bento-card-title">Cost Allocation</h2></div>
+          <div style="font-family:'IBM Plex Mono',monospace;font-size:0.75rem;line-height:2">
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--white-mid)">Compute</span><span>$12,400</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--white-mid)">Storage</span><span>$3,200</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--white-mid)">API Calls</span><span>$8,700</span></div>
+            <div style="display:flex;justify-content:space-between"><span style="color:var(--white-mid)">Training</span><span>$5,100</span></div>
+            <div style="display:flex;justify-content:space-between;border-top:1px solid var(--white-dim);padding-top:8px;margin-top:4px;font-weight:600"><span>Total</span><span style="color:var(--cyan)">$29,400</span></div>
+          </div>
+        </div>
+      </div>
+    </main>
+    <aside class="rail" role="complementary" aria-label="Activity and recommendations">
+      <div class="rail-section">
+        <div class="health-score"><div class="health-score-value">87</div><div class="health-score-label">System Health Score</div></div>
+      </div>
+      <div class="rail-section">
+        <div class="rail-title"><span class="rail-title-dot" aria-hidden="true"></span>AI Recommendations</div>
+        <ul class="reco-list" aria-label="AI recommendations">
+          <li class="reco-item"><div class="reco-title">Scale Predictor-Alpha</div><div class="reco-desc">Traffic forecast shows 3x spike in 48h. Pre-emptive scaling recommended.</div><div class="reco-confidence">Confidence: 94%</div></li>
+          <li class="reco-item"><div class="reco-title">Retrain Fraud Model</div><div class="reco-desc">Drift detected on feature F-12. Retrain with last 30 days of data.</div><div class="reco-confidence">Confidence: 87%</div></li>
+          <li class="reco-item"><div class="reco-title">Investigate Guardian-Delta</div><div class="reco-desc">Agent offline for 14min. Last error: OOM on batch 8847.</div><div class="reco-confidence">Confidence: 99%</div></li>
+        </ul>
+      </div>
+      <div class="rail-section">
+        <div class="rail-title"><span class="rail-title-dot" aria-hidden="true"></span>Next Best Actions</div>
+        <ul class="action-list" aria-label="Next best actions">
+          <li class="action-item"><div class="action-priority high">Critical</div><div class="action-text">Restart Guardian-Delta agent</div></li>
+          <li class="action-item"><div class="action-priority high">Critical</div><div class="action-text">Review fraud detection false positives</div></li>
+          <li class="action-item"><div class="action-priority medium">Medium</div><div class="action-text">Approve revenue model retrain schedule</div></li>
+          <li class="action-item"><div class="action-priority low">Low</div><div class="action-text">Update compliance audit documentation</div></li>
+        </ul>
+      </div>
+      <div class="rail-section">
+        <div class="rail-title"><span class="rail-title-dot" aria-hidden="true"></span>Recent Activity</div>
+        <ul class="reco-list" aria-label="Recent activity">
+          <li class="reco-item"><div class="reco-desc">Predictor-Alpha completed batch 9,847 with 98.2% accuracy</div><div class="reco-confidence" style="color:var(--lime)">2 min ago</div></li>
+          <li class="reco-item"><div class="reco-desc">Fraud detection model flagged 12 suspicious transactions</div><div class="reco-confidence" style="color:var(--amber)">8 min ago</div></li>
+          <li class="reco-item"><div class="reco-desc">Guardian-Delta agent went offline unexpectedly</div><div class="reco-confidence" style="color:var(--red)">14 min ago</div></li>
+          <li class="reco-item"><div class="reco-desc">New mission queued: Support Ticket Routing v3</div><div class="reco-confidence">22 min ago</div></li>
+          <li class="reco-item"><div class="reco-desc">Optimizer-Echo achieved 99.1% accuracy milestone</div><div class="reco-confidence">1 hour ago</div></li>
+          <li class="reco-item"><div class="reco-desc">System health score updated: 87 (was 91)</div><div class="reco-confidence">1 hour ago</div></li>
+        </ul>
+      </div>
+    </aside>
+  </div>
+  <footer class="footer" role="contentinfo">Atlas AI Command Center &mdash; designed by Studio &middot; Standalone prototype &middot; Not affiliated with any AI vendor</footer>
+  <script>
+    (function(){
+      var o=document.getElementById('drawerOpen'),c=document.getElementById('drawerClose'),d=document.getElementById('drawer'),v=document.getElementById('drawerOverlay');
+      function open(){d.classList.add('open');v.classList.add('open');d.setAttribute('aria-hidden','false');o.setAttribute('aria-expanded','true');c.focus()}
+      function close(){d.classList.remove('open');v.classList.remove('open');d.setAttribute('aria-hidden','true');o.setAttribute('aria-expanded','false');o.focus()}
+      o.addEventListener('click',open);c.addEventListener('click',close);v.addEventListener('click',close);
+      document.addEventListener('keydown',function(e){if(e.key==='Escape'&&d.classList.contains('open'))close()});
+      d.querySelectorAll('a').forEach(function(l){l.addEventListener('click',close)});
+    })();
+  </script>
+</body>
+</html>
