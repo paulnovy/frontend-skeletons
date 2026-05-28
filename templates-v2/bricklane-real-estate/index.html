@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bricklane Real Estate</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Libre+Baskerville:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --stone: #F4F1EA;
+      --ink: #1F2937;
+      --brick: #B4533C;
+      --moss: #6B8E23;
+      --sky: #93C5FD;
+      --cream: #FFF7ED;
+      --ink-muted: rgba(31, 41, 55, 0.68);
+      --ink-faint: rgba(31, 41, 55, 0.12);
+      --brick-soft: rgba(180, 83, 60, 0.14);
+      --moss-soft: rgba(107, 142, 35, 0.14);
+      --sky-soft: rgba(147, 197, 253, 0.35);
+      --shadow: 0 24px 70px rgba(31, 41, 55, 0.13);
+      --radius: 8px;
+      --max: 1240px;
+    }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--ink);
+      background: var(--stone);
+      font-family: "Inter", system-ui, sans-serif;
+      line-height: 1.5;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+    button {
+      cursor: pointer;
+    }
+    :focus-visible {
+      outline: 3px solid var(--brick);
+      outline-offset: 3px;
+    }
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 16px;
+      z-index: 1000;
+      padding: 10px 18px;
+      color: var(--cream);
+      background: var(--brick);
+      border-radius: 6px;
+      font-weight: 800;
+    }
+    .skip-link:focus {
+      top: 16px;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      background: rgba(244, 241, 234, 0.92);
+      border-bottom: 1px solid var(--ink-faint);
+      backdrop-filter: blur(18px);
+    }
+    .nav {
+      max-width: var(--max);
+      height: 68px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 900;
+      font-size: 1.25rem;
+    }
+    .brand-mark {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      color: var(--cream);
+      background: var(--brick);
+    }
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .nav-links a {
+      color: var(--ink-muted);
+      font-size: 0.84rem;
+      font-weight: 800;
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .saved-button,
+    .nav-cta {
+      min-height: 42px;
+      padding: 0 16px;
+      border-radius: 999px;
+      font-weight: 900;
+    }
+    .saved-button {
+      border: 1px solid var(--ink-faint);
+      color: var(--ink);
+      background: var(--cream);
+    }
+    .nav-cta {
+      border: 0;
+      color: var(--cream);
+      background: var(--ink);
+    }
+    .menu-button {
+      display: none;
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--ink-faint);
+      border-radius: 999px;
+      background: var(--cream);
+      font-weight: 900;
+    }
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 110;
+      display: none;
+      background: rgba(31, 41, 55, 0.34);
+    }
+    .drawer-overlay.open {
+      display: block;
+    }
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: -320px;
+      z-index: 120;
+      width: min(320px, 84vw);
+      height: 100%;
+      padding: 24px;
+      background: var(--stone);
+      transition: right 180ms ease;
+      pointer-events: none;
+    }
+    .drawer.open {
+      right: 0;
+      pointer-events: auto;
+    }
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .drawer-close {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--ink-faint);
+      border-radius: 999px;
+      background: var(--cream);
+      font-weight: 900;
+    }
+    .drawer nav {
+      display: grid;
+    }
+    .drawer a {
+      padding: 13px 0;
+      border-bottom: 1px solid var(--ink-faint);
+      font-weight: 800;
+    }
+    .hero {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 42px 24px 28px;
+    }
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+      gap: 26px;
+      align-items: stretch;
+    }
+    .hero-copy {
+      padding: 36px 0;
+    }
+    .kicker {
+      display: inline-flex;
+      margin-bottom: 14px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      color: var(--brick);
+      background: var(--brick-soft);
+      font-size: 0.76rem;
+      font-weight: 900;
+    }
+    .hero-title {
+      max-width: 640px;
+      margin: 0 0 18px;
+      font-family: "Libre Baskerville", Georgia, serif;
+      font-size: clamp(3rem, 6vw, 5.4rem);
+      line-height: 1;
+    }
+    .hero-text {
+      max-width: 520px;
+      margin: 0 0 24px;
+      color: var(--ink-muted);
+      font-size: 1.05rem;
+    }
+    .search-card {
+      padding: 14px;
+      display: grid;
+      grid-template-columns: 1.4fr 0.8fr auto;
+      gap: 10px;
+      border: 1px solid var(--ink-faint);
+      border-radius: 20px;
+      background: var(--cream);
+      box-shadow: var(--shadow);
+    }
+    .field {
+      min-height: 54px;
+      display: grid;
+      align-content: center;
+      padding: 0 14px;
+      border-radius: 14px;
+      background: var(--stone);
+    }
+    .field label {
+      color: var(--ink-muted);
+      font-size: 0.72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    .field input,
+    .field select {
+      width: 100%;
+      border: 0;
+      color: var(--ink);
+      background: transparent;
+      font-weight: 900;
+    }
+    .search-submit {
+      min-width: 118px;
+      border: 0;
+      border-radius: 14px;
+      color: var(--cream);
+      background: var(--brick);
+      font-weight: 900;
+    }
+    .map-preview {
+      min-height: 520px;
+      position: relative;
+      border-radius: 28px;
+      background: radial-gradient(circle at 34% 28%, var(--sky), transparent 19%), radial-gradient(circle at 72% 72%, var(--moss), transparent 19%), linear-gradient(135deg, var(--cream), var(--sky-soft));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .map-gridline {
+      position: absolute;
+      inset: 40px;
+      border: 2px dashed rgba(31,41,55,0.22);
+      border-radius: 38% 62% 48% 52%;
+    }
+    .map-label {
+      position: absolute;
+      padding: 10px 12px;
+      border-radius: 999px;
+      color: var(--ink);
+      background: var(--cream);
+      box-shadow: 0 12px 28px rgba(31,41,55,0.12);
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+    .map-label.one {
+      left: 42px;
+      top: 64px;
+    }
+    .map-label.two {
+      right: 40px;
+      top: 210px;
+    }
+    .map-label.three {
+      left: 88px;
+      bottom: 76px;
+    }
+    .section {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 64px 24px;
+    }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 26px;
+      margin-bottom: 28px;
+    }
+    .eyebrow {
+      margin-bottom: 8px;
+      color: var(--brick);
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .section-title {
+      max-width: 700px;
+      margin: 0;
+      font-family: "Libre Baskerville", Georgia, serif;
+      font-size: clamp(2.1rem, 4vw, 3.4rem);
+      line-height: 1.08;
+    }
+    .section-copy {
+      max-width: 470px;
+      margin: 0;
+      color: var(--ink-muted);
+    }
+    .hybrid-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 350px;
+      gap: 18px;
+    }
+    .property-list {
+      display: grid;
+      gap: 14px;
+    }
+    .property-card {
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      padding: 14px;
+      border: 1px solid var(--ink-faint);
+      border-radius: 22px;
+      background: var(--cream);
+      box-shadow: 0 12px 32px rgba(31,41,55,0.08);
+    }
+    .property-image {
+      min-height: 150px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, var(--brick-soft), var(--sky-soft));
+    }
+    .property-card h3 {
+      margin: 0 0 7px;
+      font-size: 1.08rem;
+    }
+    .property-card p {
+      margin: 0 0 12px;
+      color: var(--ink-muted);
+    }
+    .property-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+    .tag {
+      padding: 5px 9px;
+      border-radius: 999px;
+      color: var(--ink-muted);
+      background: var(--stone);
+      font-size: 0.74rem;
+      font-weight: 800;
+    }
+    .tag.deal {
+      color: #365314;
+      background: var(--moss-soft);
+    }
+    .price-box {
+      min-width: 134px;
+      text-align: right;
+    }
+    .price-box strong {
+      display: block;
+      font-size: 1.3rem;
+    }
+    .price-box span {
+      color: var(--ink-muted);
+      font-size: 0.76rem;
+    }
+    .price-box button {
+      min-height: 38px;
+      margin-top: 10px;
+      padding: 0 12px;
+      border: 0;
+      border-radius: 999px;
+      color: var(--cream);
+      background: var(--ink);
+      font-weight: 900;
+    }
+    .side-panel {
+      position: sticky;
+      top: 86px;
+      display: grid;
+      gap: 14px;
+      align-self: start;
+    }
+    .mortgage-card,
+    .agent-card {
+      padding: 20px;
+      border-radius: 22px;
+      background: var(--cream);
+      border: 1px solid var(--ink-faint);
+      box-shadow: 0 12px 32px rgba(31,41,55,0.08);
+    }
+    .mortgage-card h3,
+    .agent-card h3 {
+      margin: 0 0 10px;
+      font-size: 1rem;
+    }
+    .metric-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--ink-faint);
+      color: var(--ink-muted);
+    }
+    .metric-row strong {
+      color: var(--ink);
+    }
+    .agent-card button {
+      width: 100%;
+      min-height: 44px;
+      margin-top: 12px;
+      border: 0;
+      border-radius: 999px;
+      color: var(--cream);
+      background: var(--brick);
+      font-weight: 900;
+    }
+    .neighborhood {
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      gap: 22px;
+      align-items: center;
+    }
+    .editorial-card {
+      padding: 28px;
+      border-radius: 24px;
+      color: var(--cream);
+      background: var(--ink);
+    }
+    .editorial-card h3 {
+      margin: 0 0 12px;
+      font-family: "Libre Baskerville", Georgia, serif;
+      font-size: 2.4rem;
+      line-height: 1.08;
+    }
+    .editorial-card p {
+      color: rgba(255,247,237,0.76);
+    }
+    .insight-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .insight-card {
+      min-height: 150px;
+      padding: 18px;
+      border-radius: 18px;
+      background: var(--cream);
+      border: 1px solid var(--ink-faint);
+    }
+    .insight-value {
+      font-size: 1.7rem;
+      font-weight: 900;
+      color: var(--brick);
+    }
+    .insight-card p {
+      margin: 6px 0 0;
+      color: var(--ink-muted);
+    }
+    .mobile-filter {
+      position: fixed;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      z-index: 80;
+      min-height: 56px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 18px;
+      color: var(--cream);
+      background: var(--ink);
+      box-shadow: var(--shadow);
+      font-weight: 900;
+    }
+    .footer {
+      border-top: 1px solid var(--ink-faint);
+      background: rgba(255,247,237,0.42);
+    }
+    .footer-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 34px 24px;
+      display: grid;
+      grid-template-columns: 1.4fr repeat(3, 1fr);
+      gap: 26px;
+    }
+    .footer p {
+      max-width: 330px;
+      margin: 10px 0 0;
+      color: var(--ink-muted);
+    }
+    .footer h3 {
+      margin: 0 0 10px;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+    }
+    .footer a {
+      display: block;
+      padding: 4px 0;
+      color: var(--ink-muted);
+    }
+    .footer-bottom {
+      padding: 14px 24px 24px;
+      text-align: center;
+      color: var(--ink-muted);
+      font-size: 0.74rem;
+    }
+    @media (max-width: 1024px) {
+      .nav-links,
+      .saved-button,
+      .nav-cta {
+        display: none;
+      }
+      .menu-button {
+        display: inline-grid;
+        place-items: center;
+      }
+      .hero-grid,
+      .hybrid-layout,
+      .neighborhood {
+        grid-template-columns: 1fr;
+      }
+      .side-panel {
+        position: static;
+        grid-template-columns: 1fr 1fr;
+      }
+      .footer-inner {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    @media (max-width: 720px) {
+      body {
+        padding-bottom: 82px;
+      }
+      .nav,
+      .hero,
+      .section {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+      .hero-copy {
+        padding: 20px 0 0;
+      }
+      .search-card,
+      .property-card,
+      .side-panel,
+      .insight-grid,
+      .footer-inner {
+        grid-template-columns: 1fr;
+      }
+      .map-preview {
+        min-height: 330px;
+      }
+      .section-head {
+        display: block;
+      }
+      .section-copy {
+        margin-top: 12px;
+      }
+      .price-box {
+        text-align: left;
+      }
+      .mobile-filter {
+        display: flex;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+</style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-label="Mobile navigation" aria-hidden="true"><div class="drawer-head"><a class="brand" href="#"><span class="brand-mark">B</span>Bricklane</a><button class="drawer-close" id="drawerClose" aria-label="Close menu">x</button></div><nav aria-label="Mobile sections"><a href="#properties">Properties</a><a href="#mortgage">Mortgage</a><a href="#neighborhoods">Neighborhoods</a><a href="#agent">Agent</a></nav></aside>
+  <header class="topbar"><nav class="nav" aria-label="Primary navigation"><a class="brand" href="#"><span class="brand-mark">B</span>Bricklane</a><ul class="nav-links" role="list"><li><a href="#properties">Properties</a></li><li><a href="#mortgage">Mortgage</a></li><li><a href="#neighborhoods">Neighborhoods</a></li><li><a href="#agent">Agent</a></li></ul><div class="nav-actions"><button class="saved-button">Saved search</button><button class="nav-cta">List property</button><button class="menu-button" id="drawerOpen" aria-label="Open menu" aria-expanded="false">M</button></div></nav></header>
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title"><div class="hero-grid"><div class="hero-copy"><div class="kicker">Map/list home search with deal signals</div><h1 class="hero-title" id="hero-title">Compare homes without opening twenty tabs.</h1><p class="hero-text">Bricklane helps buyers move quickly with price, commute, monthly estimate, neighborhood fit, and deal signals visible in every result.</p><form class="search-card"><div class="field"><label for="where">Search area</label><input id="where" value="East London, E2"></div><div class="field"><label for="budget">Budget</label><select id="budget"><option>Up to £850k</option><option>Up to £650k</option><option>Any price</option></select></div><button class="search-submit" type="button">Search</button></form></div><div class="map-preview" aria-label="Property map preview"><div class="map-gridline"></div><span class="map-label one">£725k - 18 min</span><span class="map-label two">£810k - under ask</span><span class="map-label three">£690k - new listing</span></div></div></section>
+    <section class="section" id="properties" aria-labelledby="properties-title"><div class="section-head"><div><div class="eyebrow">Property comparison</div><h2 class="section-title" id="properties-title">Cards built for actual buying decisions.</h2></div><p class="section-copy">Each result shows price, commute, monthly estimate, and a deal signal before the viewing request.</p></div><div class="hybrid-layout"><div class="property-list">
+      <article class="property-card"><div class="property-image"></div><div><h3>Warehouse loft near Columbia Road</h3><p>Two beds, exposed brick, private balcony, 18 minute commute to Liverpool Street.</p><div class="property-tags"><span class="tag deal">£34k under local median</span><span class="tag">£3,420/mo estimate</span><span class="tag">18 min commute</span></div></div><div class="price-box"><strong>£725k</strong><span>guide price</span><button>Compare</button></div></article>
+      <article class="property-card"><div class="property-image"></div><div><h3>Garden maisonette in De Beauvoir</h3><p>Three beds, south garden, renovated kitchen, close to canal and primary schools.</p><div class="property-tags"><span class="tag deal">Strong family fit</span><span class="tag">£3,820/mo estimate</span><span class="tag">24 min commute</span></div></div><div class="price-box"><strong>£810k</strong><span>fixed price</span><button>Compare</button></div></article>
+      <article class="property-card"><div class="property-image"></div><div><h3>Top-floor flat by Victoria Park</h3><p>Two beds, shared roof terrace, bright living room, cycle storage included.</p><div class="property-tags"><span class="tag">New listing</span><span class="tag">£3,190/mo estimate</span><span class="tag">31 min commute</span></div></div><div class="price-box"><strong>£690k</strong><span>offers over</span><button>Compare</button></div></article>
+      <article class="property-card"><div class="property-image"></div><div><h3>Canal-side conversion in Haggerston</h3><p>One plus study, concierge, lift access, high rental resilience score.</p><div class="property-tags"><span class="tag deal">Low service charge</span><span class="tag">£2,780/mo estimate</span><span class="tag">15 min commute</span></div></div><div class="price-box"><strong>£615k</strong><span>guide price</span><button>Compare</button></div></article>
+    </div><aside class="side-panel"><div class="mortgage-card" id="mortgage"><h3>Mortgage estimate</h3><div class="metric-row"><span>Selected home</span><strong>£725k</strong></div><div class="metric-row"><span>Deposit</span><strong>20%</strong></div><div class="metric-row"><span>Rate</span><strong>4.62%</strong></div><div class="metric-row"><span>Monthly</span><strong>£3,420</strong></div></div><div class="agent-card" id="agent"><h3>Agent CTA</h3><p>Ask Mina for off-market context, viewing windows, and offer strategy before Saturday.</p><button>Message Mina</button></div></aside></div></section>
+    <section class="section" id="neighborhoods" aria-labelledby="neighborhood-title"><div class="neighborhood"><article class="editorial-card"><div class="eyebrow">Neighborhood editorial</div><h2 class="section-title" id="neighborhood-title">Bethnal Green is no longer a compromise zone.</h2><p>Buyers are choosing it for park access, independent food, predictable commutes, and better space-per-pound than Shoreditch.</p></article><div class="insight-grid"><article class="insight-card"><div class="insight-value">18 min</div><p>Median commute to Liverpool Street from saved properties.</p></article><article class="insight-card"><div class="insight-value">+6.4%</div><p>Three-year local resale trend for two-bed flats.</p></article><article class="insight-card"><div class="insight-value">42</div><p>Cafes, markets, schools, parks, and transit points nearby.</p></article><article class="insight-card"><div class="insight-value">£721k</div><p>Median matched-property price across the current search.</p></article></div></div></section>
+  </main>
+  <button class="mobile-filter" aria-label="Open filters"><span>East London - £850k</span><span>Map / filters</span></button>
+  <footer class="footer"><div class="footer-inner"><div><a class="brand" href="#"><span class="brand-mark">B</span>Bricklane</a><p>Real estate marketplace skeleton with map/list search, mortgage estimates, deal signals, neighborhood insight, and agent CTA.</p></div><div><h3>Search</h3><a href="#properties">Properties</a><a href="#mortgage">Mortgage</a><a href="#neighborhoods">Neighborhoods</a></div><div><h3>Buy</h3><a href="#agent">Agent CTA</a><a href="#">Saved search</a><a href="#">Viewing planner</a></div><div><h3>Company</h3><a href="#">Agents</a><a href="#">Valuations</a><a href="#">Support</a></div></div><div class="footer-bottom">Built by Paweł Łukasik</div></footer>
+  <script>
+    const drawer = document.getElementById("drawer");
+    const overlay = document.getElementById("drawerOverlay");
+    const openButton = document.getElementById("drawerOpen");
+    const closeButton = document.getElementById("drawerClose");
+    function setDrawer(open) {
+      drawer.classList.toggle("open", open);
+      overlay.classList.toggle("open", open);
+      drawer.setAttribute("aria-hidden", String(!open));
+      overlay.setAttribute("aria-hidden", String(!open));
+      openButton.setAttribute("aria-expanded", String(open));
+    }
+    openButton.addEventListener("click", () => setDrawer(true));
+    closeButton.addEventListener("click", () => setDrawer(false));
+    overlay.addEventListener("click", () => setDrawer(false));
+    drawer.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setDrawer(false)));
+  </script>
+</body>
+</html>
