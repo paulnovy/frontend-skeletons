@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Forge — Developer Docs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Source+Serif+4:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black: #0B0F14;
+      --panel: #111827;
+      --panel-light: #1A2332;
+      --green: #6EE7B7;
+      --green-dim: rgba(110,231,183,0.1);
+      --blue: #60A5FA;
+      --blue-dim: rgba(96,165,250,0.1);
+      --zinc: #D4D4D8;
+      --zinc-dim: rgba(212,212,216,0.15);
+      --white: #F8FAFC;
+      --white-mid: rgba(248,250,252,0.6);
+      --white-dim: rgba(248,250,252,0.08);
+      --radius: 8px;
+      --radius-sm: 6px;
+      --max: 1400px;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+    body{margin:0;min-height:100vh;color:var(--zinc);background:var(--black);font-family:"Geist Sans","Inter",system-ui,sans-serif;line-height:1.6;font-size:14px}
+    a{color:inherit;text-decoration:none}
+    button,input{font:inherit}
+    button{cursor:pointer}
+    code,pre{font-family:"JetBrains Mono",monospace}
+    :focus-visible{outline:2px solid var(--green);outline-offset:2px}
+    .skip-link{position:absolute;top:-100px;left:16px;background:var(--green);color:var(--black);padding:8px 16px;border-radius:var(--radius-sm);z-index:1000;font-weight:600;font-size:0.8125rem}
+    .skip-link:focus{top:16px}
+    .topnav{position:sticky;top:0;z-index:100;background:var(--black);border-bottom:1px solid var(--white-dim);padding:0 20px}
+    .topnav-inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:48px}
+    .topnav-brand{font-weight:700;font-size:0.9375rem;display:flex;align-items:center;gap:8px}
+    .topnav-brand-icon{width:24px;height:24px;background:var(--green);border-radius:5px;display:flex;align-items:center;justify-content:center;color:var(--black);font-size:0.625rem;font-weight:700}
+    .topnav-links{display:flex;gap:16px;list-style:none;margin:0;padding:0}
+    .topnav-links a{font-size:0.8125rem;color:var(--white-mid);transition:color 0.15s}
+    .topnav-links a:hover{color:var(--white)}
+    .topnav-right{display:flex;align-items:center;gap:10px}
+    .topnav-version{font-family:"JetBrains Mono",monospace;font-size:0.625rem;background:var(--green-dim);color:var(--green);padding:2px 8px;border-radius:999px}
+    .topnav-search{padding:6px 12px;background:var(--panel);border:1px solid var(--white-dim);border-radius:var(--radius-sm);color:var(--zinc);font-size:0.75rem;width:200px}
+    .topnav-search::placeholder{color:var(--white-mid)}
+    .topnav-drawer-btn{display:none;background:none;border:1px solid var(--white-dim);border-radius:var(--radius-sm);padding:6px 10px;color:var(--white);font-size:1rem}
+    .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(11,15,20,0.7);z-index:200}
+    .drawer-overlay.open{display:block}
+    .drawer{position:fixed;top:0;left:-300px;width:280px;height:100%;background:var(--panel);z-index:201;padding:20px;transition:left 0.2s ease;overflow-y:auto}
+    .drawer.open{left:0}
+    .drawer-close{background:none;border:none;color:var(--white);font-size:1.25rem;float:right}
+    .drawer nav{clear:both;padding-top:16px}
+    .drawer nav a{display:block;padding:10px 0;font-size:0.875rem;color:var(--zinc);border-bottom:1px solid var(--white-dim)}
+    .hero{max-width:var(--max);margin:0 auto;padding:48px 20px 40px;text-align:center}
+    .hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--green-dim);color:var(--green);padding:4px 12px;border-radius:999px;font-family:"JetBrains Mono",monospace;font-size:0.6875rem;margin-bottom:16px}
+    .hero-title{font-family:"Source Serif 4",serif;font-weight:700;font-size:2.25rem;line-height:1.2;margin:0 0 12px;color:var(--white)}
+    .hero-sub{font-size:1rem;color:var(--white-mid);max-width:520px;margin:0 auto 24px}
+    .hero-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+    .btn-green{padding:10px 22px;background:var(--green);color:var(--black);border:none;border-radius:var(--radius-sm);font-weight:700;font-size:0.875rem}
+    .btn-ghost{padding:10px 22px;background:transparent;color:var(--zinc);border:1px solid var(--white-dim);border-radius:var(--radius-sm);font-weight:600;font-size:0.875rem}
+    .terminal{background:var(--panel);border:1px solid var(--white-dim);border-radius:var(--radius);max-width:600px;margin:28px auto 0;text-align:left;overflow:hidden}
+    .terminal-bar{display:flex;align-items:center;gap:6px;padding:8px 12px;background:var(--panel-light);border-bottom:1px solid var(--white-dim)}
+    .terminal-dot{width:8px;height:8px;border-radius:50%}
+    .terminal-cmd{padding:14px 16px;font-family:"JetBrains Mono",monospace;font-size:0.8125rem;color:var(--green);display:flex;align-items:center;justify-content:space-between}
+    .terminal-cmd code{flex:1}
+    .copy-btn{background:var(--white-dim);border:1px solid var(--white-dim);color:var(--zinc);padding:4px 10px;border-radius:4px;font-size:0.625rem;font-family:"JetBrains Mono",monospace;cursor:pointer}
+    .copy-btn:hover{background:var(--zinc-dim)}
+    .shell{max-width:var(--max);margin:0 auto;display:grid;grid-template-columns:220px 1fr 200px;gap:1px;padding:0 20px;background:var(--white-dim)}
+    .docs-nav{background:var(--black);padding:20px 16px;border-right:1px solid var(--white-dim)}
+    .nav-group{margin-bottom:20px}
+    .nav-group-title{font-size:0.625rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--white-mid);margin-bottom:8px;font-weight:600}
+    .nav-link{display:block;padding:5px 0;font-size:0.8125rem;color:var(--white-mid);transition:color 0.15s}
+    .nav-link:hover,.nav-link.active{color:var(--green)}
+    .article{background:var(--black);padding:28px 32px;min-height:60vh}
+    .article h1{font-family:"Source Serif 4",serif;font-weight:700;font-size:1.5rem;color:var(--white);margin:0 0 12px}
+    .article h2{font-family:"Source Serif 4",serif;font-weight:600;font-size:1.125rem;color:var(--white);margin:28px 0 10px}
+    .article p{font-size:0.875rem;line-height:1.7;margin:0 0 14px}
+    .article pre{background:var(--panel);border:1px solid var(--white-dim);border-radius:var(--radius);padding:16px;overflow-x:auto;margin:14px 0;font-size:0.8125rem;line-height:1.6}
+    .article pre code{color:var(--green)}
+    .article-inline{background:var(--panel);padding:2px 6px;border-radius:3px;font-size:0.8125rem;color:var(--green)}
+    .article-note{background:var(--blue-dim);border-left:3px solid var(--blue);padding:12px 16px;border-radius:0 var(--radius-sm) var(--radius-sm) 0;margin:14px 0;font-size:0.8125rem}
+    .article-note strong{color:var(--blue)}
+    .toc{background:var(--black);padding:20px 16px;border-left:1px solid var(--white-dim)}
+    .toc-title{font-size:0.625rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--white-mid);margin-bottom:10px;font-weight:600}
+    .toc-link{display:block;padding:4px 0;font-size:0.75rem;color:var(--white-mid);transition:color 0.15s}
+    .toc-link:hover,.toc-link.active{color:var(--green)}
+    .section-break{max-width:var(--max);margin:0 auto;padding:40px 20px;border-top:1px solid var(--white-dim)}
+    .section-title{font-family:"Source Serif 4",serif;font-weight:700;font-size:1.25rem;color:var(--white);margin:0 0 20px;text-align:center}
+    .sdk-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .sdk-card{background:var(--panel);border:1px solid var(--white-dim);border-radius:var(--radius);padding:18px;text-align:center}
+    .sdk-icon{width:36px;height:36px;background:var(--green-dim);border-radius:var(--radius-sm);margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:1rem}
+    .sdk-name{font-weight:600;font-size:0.875rem;color:var(--white);margin-bottom:4px}
+    .sdk-version{font-family:"JetBrains Mono",monospace;font-size:0.625rem;color:var(--green)}
+    .changelog-list{max-width:720px;margin:0 auto;list-style:none;padding:0}
+    .changelog-item{padding:14px 0;border-bottom:1px solid var(--white-dim)}
+    .changelog-item:last-child{border-bottom:none}
+    .changelog-ver{font-family:"JetBrains Mono",monospace;font-size:0.75rem;color:var(--green);margin-bottom:4px}
+    .changelog-text{font-size:0.8125rem;color:var(--white-mid)}
+    .changelog-date{font-size:0.625rem;color:var(--white-mid);opacity:0.5;margin-top:4px}
+    .community-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;max-width:720px;margin:0 auto}
+    .community-card{background:var(--panel);border:1px solid var(--white-dim);border-radius:var(--radius);padding:18px;text-align:center}
+    .community-name{font-weight:600;font-size:0.875rem;color:var(--white);margin-bottom:4px}
+    .community-desc{font-size:0.75rem;color:var(--white-mid)}
+    .footer{border-top:1px solid var(--white-dim);padding:16px 20px;text-align:center;font-size:0.625rem;color:var(--white-mid);opacity:0.5}
+    @media(max-width:1024px){
+      .shell{grid-template-columns:1fr}
+      .docs-nav,.toc{display:none}
+      .topnav-links{display:none}.topnav-drawer-btn{display:block}
+    }
+    @media(max-width:768px){
+      .hero-title{font-size:1.5rem}
+      .hero-actions{flex-direction:column;align-items:center}
+      .sdk-grid,.community-grid{grid-template-columns:1fr}
+      .article{padding:20px 16px}
+    }
+  </style>
+</head>
+<body>
+  <a href="#article" class="skip-link">Skip to content</a>
+  <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-label="Navigation" aria-hidden="true">
+    <button class="drawer-close" id="drawerClose" aria-label="Close menu">&times;</button>
+    <nav aria-label="Mobile navigation">
+      <a href="#quickstart">Quickstart</a><a href="#sdks">SDKs</a><a href="#changelog">Changelog</a><a href="#community">Community</a>
+    </nav>
+  </aside>
+  <header class="topnav" role="banner">
+    <div class="topnav-inner">
+      <a href="#" class="topnav-brand" aria-label="Forge home"><span class="topnav-brand-icon" aria-hidden="true">F</span>Forge</a>
+      <ul class="topnav-links" role="list">
+        <li><a href="#quickstart">Docs</a></li><li><a href="#sdks">SDKs</a></li><li><a href="#changelog">Changelog</a></li><li><a href="#community">Community</a></li>
+      </ul>
+      <div class="topnav-right">
+        <span class="topnav-version">v3.2.1</span>
+        <input class="topnav-search" type="search" placeholder="Search docs..." aria-label="Search documentation">
+        <button class="topnav-drawer-btn" id="drawerOpen" aria-label="Open menu" aria-expanded="false">&#9776;</button>
+      </div>
+    </div>
+  </header>
+  <section class="hero">
+    <div class="hero-badge">v3.2.1 — Latest stable</div>
+    <h1 class="hero-title">Build faster with Forge</h1>
+    <p class="hero-sub">Developer-first APIs and tools. Ship in minutes, not days.</p>
+    <div class="hero-actions">
+      <button class="btn-green">Get Started</button>
+      <button class="btn-ghost">View on GitHub</button>
+    </div>
+    <div class="terminal" id="quickstart">
+      <div class="terminal-bar"><span class="terminal-dot" style="background:#FF5F57"></span><span class="terminal-dot" style="background:#FEBC2E"></span><span class="terminal-dot" style="background:#28C840"></span></div>
+      <div class="terminal-cmd"><code>npm install @forge/sdk@latest</code><button class="copy-btn" aria-label="Copy command">Copy</button></div>
+      <div class="terminal-cmd" style="border-top:1px solid var(--white-dim)"><code>forge init my-app && forge deploy</code><button class="copy-btn" aria-label="Copy command">Copy</button></div>
+    </div>
+  </section>
+  <div class="shell">
+    <nav class="docs-nav" role="navigation" aria-label="Documentation">
+      <div class="nav-group"><div class="nav-group-title">Getting Started</div><a href="#" class="nav-link active">Quickstart</a><a href="#" class="nav-link">Installation</a><a href="#" class="nav-link">Configuration</a></div>
+      <div class="nav-group"><div class="nav-group-title">Core Concepts</div><a href="#" class="nav-link">Authentication</a><a href="#" class="nav-link">Routing</a><a href="#" class="nav-link">Middleware</a><a href="#" class="nav-link">Error Handling</a></div>
+      <div class="nav-group"><div class="nav-group-title">API Reference</div><a href="#" class="nav-link">Client</a><a href="#" class="nav-link">Server</a><a href="#" class="nav-link">Database</a><a href="#" class="nav-link">Storage</a></div>
+      <div class="nav-group"><div class="nav-group-title">Guides</div><a href="#" class="nav-link">Deployment</a><a href="#" class="nav-link">Testing</a><a href="#" class="nav-link">Migration from v2</a></div>
+    </nav>
+    <article class="article" id="article">
+      <h1>Quickstart</h1>
+      <p>Get up and running with Forge in under 30 seconds. This guide walks you through installation, project setup, and your first deployment.</p>
+      <h2>Prerequisites</h2>
+      <p>Make sure you have <code class="article-inline">Node.js 18+</code> and <code class="article-inline">npm 9+</code> installed. You'll also need a Forge account — <a href="#" style="color:var(--blue)">sign up free</a>.</p>
+      <h2>Install the CLI</h2>
+      <pre><code>npm install -g @forge/cli
+forge login</code></pre>
+      <div class="article-note"><strong>Note:</strong> If you're using macOS, you may need to add <code class="article-inline">sudo</code> for global installs. Or use <code class="article-inline">npx</code> instead.</div>
+      <h2>Create a project</h2>
+      <pre><code>forge init my-app
+cd my-app
+forge dev</code></pre>
+      <p>This starts a local development server at <code class="article-inline">http://localhost:3000</code> with hot reload enabled.</p>
+      <h2>Deploy to production</h2>
+      <pre><code>forge deploy --prod</code></pre>
+      <p>Your app is now live. Forge handles SSL, CDN, and scaling automatically.</p>
+      <h2>Next steps</h2>
+      <p>Explore the <a href="#" style="color:var(--blue)">API Reference</a> to learn about available methods, or check out the <a href="#" style="color:var(--blue)">guides</a> for common patterns.</p>
+    </article>
+    <aside class="toc" role="complementary" aria-label="Table of contents">
+      <div class="toc-title">On this page</div>
+      <a href="#" class="toc-link active">Prerequisites</a>
+      <a href="#" class="toc-link">Install the CLI</a>
+      <a href="#" class="toc-link">Create a project</a>
+      <a href="#" class="toc-link">Deploy to production</a>
+      <a href="#" class="toc-link">Next steps</a>
+    </aside>
+  </div>
+  <section class="section-break" id="sdks">
+    <div class="section-title">SDKs & Libraries</div>
+    <div class="sdk-grid">
+      <div class="sdk-card"><div class="sdk-icon" aria-hidden="true">JS</div><div class="sdk-name">JavaScript</div><div class="sdk-version">v3.2.1</div></div>
+      <div class="sdk-card"><div class="sdk-icon" aria-hidden="true">PY</div><div class="sdk-name">Python</div><div class="sdk-version">v3.1.0</div></div>
+      <div class="sdk-card"><div class="sdk-icon" aria-hidden="true">GO</div><div class="sdk-name">Go</div><div class="sdk-version">v2.8.0</div></div>
+      <div class="sdk-card"><div class="sdk-icon" aria-hidden="true">RS</div><div class="sdk-name">Rust</div><div class="sdk-version">v1.4.0</div></div>
+    </div>
+  </section>
+  <section class="section-break" id="changelog">
+    <div class="section-title">Changelog</div>
+    <ul class="changelog-list" aria-label="Recent changes">
+      <li class="changelog-item"><div class="changelog-ver">v3.2.1</div><div class="changelog-text">Fixed edge case in middleware pipeline. Improved error messages for config validation.</div><div class="changelog-date">May 26, 2026</div></li>
+      <li class="changelog-item"><div class="changelog-ver">v3.2.0</div><div class="changelog-text">Added streaming response support. New <code class="article-inline">forge.stream()</code> API for real-time data.</div><div class="changelog-date">May 20, 2026</div></li>
+      <li class="changelog-item"><div class="changelog-ver">v3.1.2</div><div class="changelog-text">Performance improvements for large payloads. Reduced cold start by 40%.</div><div class="changelog-date">May 15, 2026</div></li>
+    </ul>
+  </section>
+  <section class="section-break" id="community">
+    <div class="section-title">Community</div>
+    <div class="community-grid">
+      <div class="community-card"><div class="community-name">Discord</div><div class="community-desc">Join 12,000+ developers</div></div>
+      <div class="community-card"><div class="community-name">GitHub</div><div class="community-desc">Star the repo, open issues</div></div>
+      <div class="community-card"><div class="community-name">Forum</div><div class="community-desc">Ask questions, share tips</div></div>
+    </div>
+  </section>
+  <footer class="footer" role="contentinfo">Forge DevTools &mdash; designed by Studio &middot; Standalone prototype</footer>
+  <script>
+    (function(){
+      var o=document.getElementById('drawerOpen'),c=document.getElementById('drawerClose'),d=document.getElementById('drawer'),v=document.getElementById('drawerOverlay');
+      function open(){d.classList.add('open');v.classList.add('open');d.setAttribute('aria-hidden','false');o.setAttribute('aria-expanded','true');c.focus()}
+      function close(){d.classList.remove('open');v.classList.remove('open');d.setAttribute('aria-hidden','true');o.setAttribute('aria-expanded','false');o.focus()}
+      o.addEventListener('click',open);c.addEventListener('click',close);v.addEventListener('click',close);
+      document.addEventListener('keydown',function(e){if(e.key==='Escape'&&d.classList.contains('open'))close()});
+      d.querySelectorAll('a').forEach(function(l){l.addEventListener('click',close)});
+      document.querySelectorAll('.copy-btn').forEach(function(b){b.addEventListener('click',function(){var code=b.parentElement.querySelector('code').textContent;navigator.clipboard.writeText(code).then(function(){b.textContent='Copied!';setTimeout(function(){b.textContent='Copy'},1500)})})});
+    })();
+  </script>
+</body>
+</html>
