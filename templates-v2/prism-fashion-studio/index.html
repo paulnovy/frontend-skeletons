@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prism Fashion Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  :root {
+    --cloud: #F6F8FC;
+    --ink: #19212B;
+    --indigo: #4F46E5;
+    --cyan: #06B6D4;
+    --lime: #A3E635;
+    --coral: #FB7185;
+    --card: #FFFFFF;
+    --border: #E5E7EB;
+    --green: #10B981;
+    --orange: #F59E0B;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--cloud);
+    color: #111827;
+    line-height: 1.5;
+  }
+
+  h1, h2, h3, h4, h5 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 700;
+  }
+
+  a { color: var(--indigo); text-decoration: none; }
+  button { cursor: pointer; font-family: inherit; }
+
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--indigo);
+    color: #fff;
+    padding: 8px 16px;
+    z-index: 100;
+    font-size: 0.875rem;
+  }
+  .skip-link:focus { top: 0; }
+
+  .top-nav {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 24px;
+    height: 60px;
+    background: var(--ink);
+    color: #fff;
+  }
+  .nav-brand {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 800;
+    font-size: 1.25rem;
+    color: var(--coral);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-links { display: flex; gap: 4px; margin-left: 24px; }
+  .nav-links a {
+    padding: 8px 14px; border-radius: 8px; font-size: 0.875rem; font-weight: 500;
+    color: rgba(255,255,255,0.7);
+  }
+  .nav-links a:hover,
+  .nav-links a[aria-current="page"] {
+    background: rgba(255,255,255,0.1); color: #fff;
+  }
+  .nav-search { margin-left: auto; position: relative; }
+  .nav-search input {
+    width: 200px; padding: 8px 12px 8px 36px;
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;
+    font-size: 0.875rem; background: rgba(255,255,255,0.1); color: #fff;
+  }
+  .nav-search svg {
+    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    width: 16px; height: 16px; color: rgba(255,255,255,0.5);
+  }
+  .nav-cta {
+    margin-left: 12px; padding: 8px 18px;
+    background: var(--coral); color: #fff; border: none; border-radius: 8px;
+    font-size: 0.875rem; font-weight: 600;
+  }
+  .hamburger { display: none; background: none; border: none; padding: 8px; color: #fff; }
+  .hamburger svg { width: 24px; height: 24px; }
+
+  .drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 60; }
+  .drawer-overlay.open { display: block; }
+  .drawer {
+    position: fixed; top: 0; left: 0; width: 280px; height: 100%;
+    background: #fff; z-index: 70; transform: translateX(-100%);
+    transition: transform 0.25s ease; padding: 24px; overflow-y: auto;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-close { background: none; border: none; font-size: 1.5rem; position: absolute; top: 16px; right: 16px; color: #111827; }
+  .drawer nav { display: flex; flex-direction: column; gap: 4px; margin-top: 24px; }
+  .drawer nav a { padding: 10px 14px; border-radius: 8px; font-size: 0.9375rem; color: #111827; }
+  .drawer nav a:hover { background: var(--cloud); }
+
+  @media (max-width: 768px) {
+    .nav-links, .nav-search, .nav-cta { display: none; }
+    .hamburger { display: block; }
+    .top-nav { padding: 0 16px; }
+  }
+
+  .kpi-strip {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px; padding: 24px;
+  }
+  .kpi-card {
+    background: var(--card); border-radius: 12px; padding: 20px;
+    border: 1px solid var(--border); display: flex; align-items: center; gap: 14px;
+  }
+  .kpi-icon {
+    width: 48px; height: 48px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.25rem; flex-shrink: 0;
+  }
+  .kpi-label { font-size: 0.8125rem; color: #6B7280; margin-bottom: 2px; }
+  .kpi-value { font-family: 'Manrope', sans-serif; font-weight: 800; font-size: 1.5rem; }
+  .kpi-trend { font-size: 0.75rem; margin-top: 2px; color: var(--green); }
+
+  .main-content { padding: 0 24px 48px; }
+  .section-header {
+    display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
+  }
+  .section-header h2 { font-size: 1.25rem; }
+  .badge {
+    background: var(--cloud); padding: 4px 12px; border-radius: 20px;
+    font-size: 0.8125rem; font-weight: 600; color: #6B7280;
+  }
+
+  /* Collection Grid */
+  .collection-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+  .collection-card {
+    background: var(--card);
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    transition: transform 0.2s;
+  }
+  .collection-card:hover { transform: translateY(-2px); }
+  .collection-img {
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+  }
+  .collection-body { padding: 16px; }
+  .collection-body h4 { font-size: 1rem; margin-bottom: 4px; }
+  .collection-body .desc { font-size: 0.8125rem; color: #6B7280; margin-bottom: 8px; }
+  .collection-body .meta-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: #9CA3AF;
+  }
+  .season-tag {
+    display: inline-block; padding: 2px 8px; border-radius: 4px;
+    font-size: 0.6875rem; font-weight: 600;
+  }
+  .tag-ss { background: #D1FAE5; color: #065F46; }
+  .tag-fw { background: #EEF2FF; color: #4F46E5; }
+  .tag-resort { background: #ECFEFF; color: #155E75; }
+  .tag-couture { background: #FEE2E2; color: #991B1B; }
+
+  /* Lookbook */
+  .lookbook-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 32px;
+  }
+  .lookbook-item {
+    background: var(--card);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .lookbook-img {
+    height: 240px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+  }
+  .lookbook-body { padding: 12px; }
+  .lookbook-body h4 { font-size: 0.875rem; margin-bottom: 2px; }
+  .lookbook-body .price { font-size: 0.8125rem; color: var(--indigo); font-weight: 600; }
+
+  /* Inventory Table */
+  .data-tbl {
+    width: 100%; border-collapse: collapse; background: var(--card);
+    border-radius: 12px; overflow: hidden; border: 1px solid var(--border); margin-bottom: 32px;
+  }
+  .data-tbl th {
+    text-align: left; padding: 12px 16px; font-size: 0.8125rem;
+    color: #6B7280; font-weight: 600; border-bottom: 1px solid var(--border); background: var(--cloud);
+  }
+  .data-tbl td { padding: 12px 16px; font-size: 0.875rem; border-bottom: 1px solid #F3F4F6; }
+  .data-tbl tr:last-child td { border-bottom: none; }
+  .data-tbl tr:hover { background: var(--cloud); }
+  .badge-status {
+    display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
+  }
+  .st-instock { background: #D1FAE5; color: #065F46; }
+  .st-low { background: #FEF3C7; color: #92400E; }
+  .st-out { background: #FEE2E2; color: #991B1B; }
+  .st-preorder { background: #DBEAFE; color: #1E40AF; }
+
+  /* Designers */
+  .designer-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px; margin-bottom: 32px;
+  }
+  .designer-card {
+    background: var(--card); border-radius: 12px; padding: 20px;
+    border: 1px solid var(--border); text-align: center;
+  }
+  .designer-avatar {
+    width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+  }
+  .designer-card h4 { font-size: 1rem; margin-bottom: 4px; }
+  .designer-card .role { font-size: 0.8125rem; color: #6B7280; margin-bottom: 6px; }
+  .designer-card .specialty { font-size: 0.75rem; color: #9CA3AF; }
+
+  /* Trend Forecast */
+  .trend-list {
+    display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px;
+  }
+  .trend-item {
+    background: var(--card); border-radius: 10px; padding: 14px 18px;
+    border: 1px solid var(--border); display: flex; align-items: center; gap: 14px;
+  }
+  .trend-icon {
+    width: 40px; height: 40px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;
+  }
+  .trend-info { flex: 1; }
+  .trend-info h4 { font-size: 0.9375rem; margin-bottom: 2px; }
+  .trend-info .meta { font-size: 0.8125rem; color: #6B7280; }
+  .trend-score {
+    font-family: 'Manrope', sans-serif; font-weight: 700; font-size: 1rem;
+  }
+
+  .site-footer {
+    padding: 32px 24px; text-align: center; font-size: 0.8125rem;
+    color: #9CA3AF; border-top: 1px solid var(--border); margin-top: 48px;
+  }
+
+  :focus-visible { outline: 2px solid var(--indigo); outline-offset: 2px; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+  @media (max-width: 768px) {
+    .kpi-strip { grid-template-columns: repeat(2, 1fr); }
+    .collection-grid { grid-template-columns: 1fr; }
+    .lookbook-grid { grid-template-columns: repeat(2, 1fr); }
+    .data-tbl { display: block; overflow-x: auto; }
+    .designer-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+<header class="top-nav">
+  <button class="hamburger" aria-label="Open menu" aria-expanded="false"
+    onclick="document.getElementById('drawer').classList.toggle('open');document.getElementById('overlay').classList.toggle('open');this.setAttribute('aria-expanded',document.getElementById('drawer').classList.contains('open'))">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12h18M3 6h18M3 18h18"/></svg>
+  </button>
+  <a href="#" class="nav-brand">👗 Prism Fashion Studio</a>
+  <nav class="nav-links" aria-label="Main">
+    <a href="#" aria-current="page">Collections</a>
+    <a href="#lookbook">Lookbook</a>
+    <a href="#inventory">Inventory</a>
+    <a href="#designers">Designers</a>
+    <a href="#trends">Trends</a>
+  </nav>
+  <div class="nav-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" aria-label="Search collections">
+  </div>
+  <button class="nav-cta">+ New Design</button>
+</header>
+
+<div class="drawer-overlay" id="overlay" onclick="document.getElementById('drawer').classList.remove('open');this.classList.remove('open')"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-label="Navigation">
+  <button class="drawer-close" aria-label="Close menu"
+    onclick="document.getElementById('drawer').classList.remove('open');document.getElementById('overlay').classList.remove('open')">&times;</button>
+  <nav>
+    <a href="#">Collections</a>
+    <a href="#lookbook">Lookbook</a>
+    <a href="#inventory">Inventory</a>
+    <a href="#designers">Designers</a>
+    <a href="#trends">Trends</a>
+  </nav>
+</aside>
+
+<main id="main">
+  <div class="kpi-strip" role="region" aria-label="Studio overview">
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#FEE2E2">👗</div>
+      <div>
+        <div class="kpi-label">Active Collections</div>
+        <div class="kpi-value" style="color:var(--coral)">8</div>
+        <div class="kpi-trend">3 new this season</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#EEF2FF">✂️</div>
+      <div>
+        <div class="kpi-label">Designs in Pipeline</div>
+        <div class="kpi-value" style="color:var(--indigo)">47</div>
+        <div class="kpi-trend">12 in production</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#D1FAE5">📦</div>
+      <div>
+        <div class="kpi-label">Units Shipped</div>
+        <div class="kpi-value" style="color:var(--green)">12,480</div>
+        <div class="kpi-trend">This quarter</div>
+      </div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-icon" style="background:#ECFEFF">⭐</div>
+      <div>
+        <div class="kpi-label">Sell-Through Rate</div>
+        <div class="kpi-value" style="color:var(--cyan)">78%</div>
+        <div class="kpi-trend">Above industry avg</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-content">
+    <!-- Collections -->
+    <section>
+      <div class="section-header">
+        <h2>Collections</h2>
+        <span class="badge">8 active</span>
+      </div>
+      <div class="collection-grid">
+        <div class="collection-card">
+          <div class="collection-img" style="background:linear-gradient(135deg,#FB7185,#4F46E5)">🌸</div>
+          <div class="collection-body">
+            <h4>Ethereal Bloom — SS26</h4>
+            <div class="desc">Flowing silhouettes inspired by spring gardens. Organic cotton and silk blends.</div>
+            <div class="meta-row"><span class="season-tag tag-ss">Spring/Summer</span><span>24 pieces</span></div>
+          </div>
+        </div>
+        <div class="collection-card">
+          <div class="collection-img" style="background:linear-gradient(135deg,#19212B,#4F46E5)">🖤</div>
+          <div class="collection-body">
+            <h4>Noir Architecture — FW26</h4>
+            <div class="desc">Structured tailoring with geometric lines. Monochrome palettes with metallic accents.</div>
+            <div class="meta-row"><span class="season-tag tag-fw">Fall/Winter</span><span>18 pieces</span></div>
+          </div>
+        </div>
+        <div class="collection-card">
+          <div class="collection-img" style="background:linear-gradient(135deg,#06B6D4,#A3E635)">🌊</div>
+          <div class="collection-body">
+            <h4>Coastal Drift — Resort 26</h4>
+            <div class="desc">Relaxed resort wear with ocean-inspired prints. Recycled ocean plastics woven in.</div>
+            <div class="meta-row"><span class="season-tag tag-resort">Resort</span><span>30 pieces</span></div>
+          </div>
+        </div>
+        <div class="collection-card">
+          <div class="collection-img" style="background:linear-gradient(135deg,#FB7185,#A3E635)">✨</div>
+          <div class="collection-body">
+            <h4>Atelier Privé — Couture</h4>
+            <div class="desc">Hand-crafted evening wear. Bespoke embroidery and beadwork by master artisans.</div>
+            <div class="meta-row"><span class="season-tag tag-couture">Couture</span><span>8 pieces</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lookbook -->
+    <section id="lookbook">
+      <div class="section-header">
+        <h2>Lookbook — Ethereal Bloom</h2>
+        <span class="badge">Featured items</span>
+      </div>
+      <div class="lookbook-grid">
+        <div class="lookbook-item">
+          <div class="lookbook-img" style="background:#F3E8FF">👚</div>
+          <div class="lookbook-body">
+            <h4>Draped Midi Dress</h4>
+            <div class="price">$285</div>
+          </div>
+        </div>
+        <div class="lookbook-item">
+          <div class="lookbook-img" style="background:#DBEAFE">👔</div>
+          <div class="lookbook-body">
+            <h4>Linen Oversized Blazer</h4>
+            <div class="price">$340</div>
+          </div>
+        </div>
+        <div class="lookbook-item">
+          <div class="lookbook-img" style="background:#D1FAE5">👖</div>
+          <div class="lookbook-body">
+            <h4>Wide-Leg Palazzo</h4>
+            <div class="price">$195</div>
+          </div>
+        </div>
+        <div class="lookbook-item">
+          <div class="lookbook-img" style="background:#FEF3C7">🧥</div>
+          <div class="lookbook-body">
+            <h4>Wrap Coat — Silk Blend</h4>
+            <div class="price">$520</div>
+          </div>
+        </div>
+        <div class="lookbook-item">
+          <div class="lookbook-img" style="background:#FEE2E2">👗</div>
+          <div class="lookbook-body">
+            <h4>Petal Slip Dress</h4>
+            <div class="price">$225</div>
+          </div>
+        </div>
+        <div class="lookbook-item">
+          <div class="lookbook-img" style="background:#ECFEFF">🧣</div>
+          <div class="lookbook-body">
+            <h4>Infinity Scarf — Cashmere</h4>
+            <div class="price">$145</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Inventory -->
+    <section id="inventory">
+      <div class="section-header">
+        <h2>Inventory Status</h2>
+        <span class="badge">824 SKUs</span>
+      </div>
+      <table class="data-tbl" aria-label="Inventory">
+        <thead>
+          <tr>
+            <th>SKU</th>
+            <th>Item</th>
+            <th>Collection</th>
+            <th>Size Run</th>
+            <th>Stock</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>EB-DRS-001</strong></td>
+            <td>Draped Midi Dress</td>
+            <td>Ethereal Bloom</td>
+            <td>XS–XL</td>
+            <td>142</td>
+            <td><span class="badge-status st-instock">In Stock</span></td>
+          </tr>
+          <tr>
+            <td><strong>EB-BLZ-003</strong></td>
+            <td>Linen Oversized Blazer</td>
+            <td>Ethereal Bloom</td>
+            <td>S–XXL</td>
+            <td>28</td>
+            <td><span class="badge-status st-low">Low Stock</span></td>
+          </tr>
+          <tr>
+            <td><strong>NA-CTN-001</strong></td>
+            <td>Structured Coat</td>
+            <td>Noir Architecture</td>
+            <td>XS–L</td>
+            <td>0</td>
+            <td><span class="badge-status st-out">Sold Out</span></td>
+          </tr>
+          <tr>
+            <td><strong>CD-SWM-005</strong></td>
+            <td>Printed Swimsuit</td>
+            <td>Coastal Drift</td>
+            <td>XS–XL</td>
+            <td>89</td>
+            <td><span class="badge-status st-instock">In Stock</span></td>
+          </tr>
+          <tr>
+            <td><strong>AP-EVG-002</strong></td>
+            <td>Beaded Evening Gown</td>
+            <td>Atelier Privé</td>
+            <td>Made-to-measure</td>
+            <td>3</td>
+            <td><span class="badge-status st-preorder">Pre-Order</span></td>
+          </tr>
+          <tr>
+            <td><strong>EB-PLZ-004</strong></td>
+            <td>Wide-Leg Palazzo</td>
+            <td>Ethereal Bloom</td>
+            <td>S–XL</td>
+            <td>67</td>
+            <td><span class="badge-status st-instock">In Stock</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- Designers -->
+    <section id="designers">
+      <div class="section-header">
+        <h2>Design Team</h2>
+        <span class="badge">6 designers</span>
+      </div>
+      <div class="designer-grid">
+        <div class="designer-card">
+          <div class="designer-avatar" style="background:#FEE2E2">👩‍🎨</div>
+          <h4>Isabelle Moreau</h4>
+          <div class="role">Creative Director</div>
+          <div class="specialty">Couture & Evening Wear</div>
+        </div>
+        <div class="designer-card">
+          <div class="designer-avatar" style="background:#EEF2FF">👨‍🎨</div>
+          <h4>Kai Nakamura</h4>
+          <div class="role">Senior Designer</div>
+          <div class="specialty">Minimalist Tailoring</div>
+        </div>
+        <div class="designer-card">
+          <div class="designer-avatar" style="background:#D1FAE5">👩‍🎨</div>
+          <h4>Amara Osei</h4>
+          <div class="role">Textile Designer</div>
+          <div class="specialty">Print & Pattern</div>
+        </div>
+        <div class="designer-card">
+          <div class="designer-avatar" style="background:#ECFEFF">👨‍🎨</div>
+          <h4>Luca Bianchi</h4>
+          <div class="role">Accessories Lead</div>
+          <div class="specialty">Leather Goods & Scarves</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trend Forecast -->
+    <section id="trends">
+      <div class="section-header">
+        <h2>Trend Forecast — FW26</h2>
+        <span class="badge">6 emerging</span>
+      </div>
+      <div class="trend-list" role="list">
+        <div class="trend-item" role="listitem">
+          <div class="trend-icon" style="background:#EEF2FF">🟣</div>
+          <div class="trend-info">
+            <h4>Quiet Luxury Fabrics</h4>
+            <div class="meta">Cashmere, silk, and fine wool dominate — logo-free elegance</div>
+          </div>
+          <div class="trend-score" style="color:var(--indigo)">92</div>
+        </div>
+        <div class="trend-item" role="listitem">
+          <div class="trend-icon" style="background:#D1FAE5">🟢</div>
+          <div class="trend-info">
+            <h4>Circular Fashion</h4>
+            <div class="meta">Upcycled materials and take-back programs gaining traction</div>
+          </div>
+          <div class="trend-score" style="color:var(--green)">88</div>
+        </div>
+        <div class="trend-item" role="listitem">
+          <div class="trend-icon" style="background:#FEF3C7">🟡</div>
+          <div class="trend-info">
+            <h4>Oversized Outerwear</h4>
+            <div class="meta">Volume continues — cocoon coats and blanket wraps</div>
+          </div>
+          <div class="trend-score" style="color:var(--orange)">85</div>
+        </div>
+        <div class="trend-item" role="listitem">
+          <div class="trend-icon" style="background:#FEE2E2">🔴</div>
+          <div class="trend-info">
+            <h4>Digital Fashion Integration</h4>
+            <div class="meta">AR try-ons and NFT-linked garments entering mainstream</div>
+          </div>
+          <div class="trend-score" style="color:var(--coral)">76</div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <p>Prism Fashion Studio — designed by Studio · Standalone prototype · Not affiliated with any fashion brand</p>
+</footer>
+
+<script>
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      document.getElementById('drawer').classList.remove('open');
+      document.getElementById('overlay').classList.remove('open');
+    }
+  });
+</script>
+</body>
+</html>
