@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Haven Interior Studio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --magnolia: #F4EBDD;
+      --walnut: #5B3A29;
+      --olive: #727B52;
+      --plaster: #D8D1C4;
+      --bronze: #2B2520;
+      --clay: #B86B4B;
+      --walnut-muted: rgba(91, 58, 41, 0.68);
+      --walnut-faint: rgba(91, 58, 41, 0.14);
+      --clay-soft: rgba(184, 107, 75, 0.16);
+      --olive-soft: rgba(114, 123, 82, 0.18);
+      --shadow: 0 24px 70px rgba(43, 37, 32, 0.16);
+      --radius: 8px;
+      --max: 1240px;
+    }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--walnut);
+      background: var(--magnolia);
+      font-family: "Inter", system-ui, sans-serif;
+      line-height: 1.55;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+    button {
+      cursor: pointer;
+    }
+    :focus-visible {
+      outline: 2px solid var(--clay);
+      outline-offset: 3px;
+    }
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 16px;
+      z-index: 1000;
+      padding: 10px 18px;
+      color: var(--magnolia);
+      background: var(--bronze);
+      border-radius: 6px;
+      font-weight: 800;
+    }
+    .skip-link:focus {
+      top: 16px;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      background: rgba(244, 235, 221, 0.9);
+      border-bottom: 1px solid var(--walnut-faint);
+      backdrop-filter: blur(18px);
+    }
+    .nav {
+      max-width: var(--max);
+      height: 70px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+    .brand {
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: 1.7rem;
+      font-weight: 400;
+    }
+    .nav-links {
+      display: flex;
+      gap: 26px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .nav-links a {
+      color: var(--walnut-muted);
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .nav-cta {
+      min-height: 42px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 999px;
+      color: var(--magnolia);
+      background: var(--bronze);
+      font-weight: 900;
+    }
+    .menu-button {
+      display: none;
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--walnut-faint);
+      border-radius: 999px;
+      background: transparent;
+      font-weight: 900;
+    }
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 110;
+      display: none;
+      background: rgba(43, 37, 32, 0.36);
+    }
+    .drawer-overlay.open {
+      display: block;
+    }
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: -320px;
+      z-index: 120;
+      width: min(320px, 84vw);
+      height: 100%;
+      padding: 24px;
+      background: var(--magnolia);
+      transition: right 180ms ease;
+      pointer-events: none;
+    }
+    .drawer.open {
+      right: 0;
+      pointer-events: auto;
+    }
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .drawer-close {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--walnut-faint);
+      border-radius: 999px;
+      background: var(--magnolia);
+      font-weight: 900;
+    }
+    .drawer nav {
+      display: grid;
+    }
+    .drawer a {
+      padding: 13px 0;
+      border-bottom: 1px solid var(--walnut-faint);
+      font-weight: 800;
+    }
+    .hero {
+      min-height: 780px;
+      display: grid;
+      align-items: end;
+      background: linear-gradient(135deg, rgba(43,37,32,0.72), rgba(91,58,41,0.12)), radial-gradient(circle at 74% 22%, rgba(184,107,75,0.72), transparent 26%), linear-gradient(145deg, var(--plaster), var(--olive));
+    }
+    .hero-inner {
+      width: 100%;
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 74px 24px 94px;
+      color: var(--magnolia);
+    }
+    .eyebrow {
+      margin-bottom: 10px;
+      color: var(--clay);
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+    .hero-title {
+      max-width: 850px;
+      margin: 0 0 18px;
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: clamp(4rem, 8vw, 7.6rem);
+      line-height: 0.92;
+      font-weight: 400;
+    }
+    .hero-copy {
+      max-width: 560px;
+      margin: 0 0 28px;
+      color: rgba(244,235,221,0.82);
+      font-size: 1.08rem;
+    }
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .button-primary,
+    .button-secondary {
+      min-height: 48px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 22px;
+      border-radius: 999px;
+      font-weight: 900;
+    }
+    .button-primary {
+      color: var(--magnolia);
+      background: var(--clay);
+    }
+    .button-secondary {
+      border: 1px solid rgba(244,235,221,0.38);
+      color: var(--magnolia);
+      background: rgba(244,235,221,0.08);
+    }
+    .section {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 72px 24px;
+    }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 28px;
+      margin-bottom: 30px;
+    }
+    .section-title {
+      max-width: 720px;
+      margin: 0;
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: clamp(2.7rem, 5vw, 4.6rem);
+      line-height: 0.96;
+      font-weight: 400;
+    }
+    .section-copy {
+      max-width: 470px;
+      margin: 0;
+      color: var(--walnut-muted);
+    }
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .service-card {
+      min-height: 280px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid var(--walnut-faint);
+      border-radius: 20px;
+      background: rgba(255,255,255,0.32);
+      box-shadow: 0 12px 32px rgba(43,37,32,0.08);
+    }
+    .service-card span {
+      color: var(--clay);
+      font-weight: 900;
+    }
+    .service-card h3 {
+      margin: 0 0 10px;
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: 2rem;
+      font-weight: 400;
+    }
+    .service-card p {
+      color: var(--walnut-muted);
+    }
+    .process {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .process-card {
+      min-height: 260px;
+      padding: 22px;
+      border-radius: 20px;
+      color: var(--magnolia);
+      background: var(--bronze);
+    }
+    .process-card:nth-child(2) {
+      background: var(--olive);
+    }
+    .process-card:nth-child(3) {
+      background: var(--walnut);
+    }
+    .process-card strong {
+      display: block;
+      margin-bottom: 80px;
+      color: var(--clay);
+    }
+    .process-card h3 {
+      margin: 0 0 8px;
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: 2rem;
+      font-weight: 400;
+    }
+    .process-card p {
+      color: rgba(244,235,221,0.78);
+    }
+    .case-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 18px;
+    }
+    .case-card {
+      min-height: 460px;
+      display: flex;
+      align-items: end;
+      padding: 26px;
+      border-radius: 24px;
+      color: var(--magnolia);
+      background: linear-gradient(135deg, var(--walnut), var(--bronze));
+    }
+    .case-stack {
+      display: grid;
+      gap: 18px;
+    }
+    .case-mini {
+      min-height: 221px;
+      display: flex;
+      align-items: end;
+      padding: 22px;
+      border-radius: 20px;
+      color: var(--bronze);
+      background: var(--plaster);
+    }
+    .case-card h3,
+    .case-mini h3 {
+      margin: 0 0 8px;
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: 2.25rem;
+      line-height: 1;
+      font-weight: 400;
+    }
+    .case-card p,
+    .case-mini p {
+      margin: 0;
+      max-width: 520px;
+    }
+    .palette-section {
+      display: grid;
+      grid-template-columns: 0.8fr 1.2fr;
+      gap: 22px;
+      align-items: center;
+    }
+    .palette-copy {
+      padding: 26px;
+      border-radius: 24px;
+      color: var(--magnolia);
+      background: var(--walnut);
+    }
+    .palette-copy h2 {
+      margin: 0 0 12px;
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: 3.6rem;
+      line-height: 0.96;
+      font-weight: 400;
+    }
+    .swatch-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .swatch {
+      min-height: 150px;
+      display: flex;
+      align-items: end;
+      padding: 14px;
+      border-radius: 18px;
+      font-weight: 900;
+    }
+    .swatch.magnolia {
+      background: var(--magnolia);
+      border: 1px solid var(--walnut-faint);
+    }
+    .swatch.walnut {
+      color: var(--magnolia);
+      background: var(--walnut);
+    }
+    .swatch.olive {
+      color: var(--magnolia);
+      background: var(--olive);
+    }
+    .swatch.plaster {
+      background: var(--plaster);
+    }
+    .swatch.bronze {
+      color: var(--magnolia);
+      background: var(--bronze);
+    }
+    .swatch.clay {
+      color: var(--magnolia);
+      background: var(--clay);
+    }
+    .cta-card {
+      padding: 42px;
+      border-radius: 28px;
+      color: var(--magnolia);
+      background: var(--bronze);
+    }
+    .cta-card h2 {
+      max-width: 760px;
+      margin: 0 0 14px;
+      font-family: "Instrument Serif", Georgia, serif;
+      font-size: clamp(3rem, 6vw, 5.5rem);
+      line-height: 0.92;
+      font-weight: 400;
+    }
+    .cta-card p {
+      max-width: 560px;
+      color: rgba(244,235,221,0.78);
+    }
+    .cta-card button {
+      min-height: 48px;
+      margin-top: 14px;
+      padding: 0 22px;
+      border: 0;
+      border-radius: 999px;
+      color: var(--magnolia);
+      background: var(--clay);
+      font-weight: 900;
+    }
+    .fit-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .fit-card {
+      min-height: 190px;
+      padding: 18px;
+      border: 1px solid var(--walnut-faint);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.28);
+    }
+    .fit-card strong {
+      display: block;
+      margin-bottom: 32px;
+      color: var(--clay);
+      font-size: 0.78rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+    .fit-card h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+    }
+    .fit-card p {
+      margin: 0;
+      color: var(--walnut-muted);
+      font-size: 0.9rem;
+    }
+    .fit-card:nth-child(2) {
+      background: var(--plaster);
+    }
+    .fit-card:nth-child(3) {
+      background: var(--olive-soft);
+    }
+    .footer {
+      border-top: 1px solid var(--walnut-faint);
+      background: rgba(255,255,255,0.24);
+    }
+    .footer-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 34px 24px;
+      display: grid;
+      grid-template-columns: 1.4fr repeat(3, 1fr);
+      gap: 26px;
+    }
+    .footer p {
+      max-width: 330px;
+      margin: 10px 0 0;
+      color: var(--walnut-muted);
+    }
+    .footer h3 {
+      margin: 0 0 10px;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+    }
+    .footer a {
+      display: block;
+      padding: 4px 0;
+      color: var(--walnut-muted);
+    }
+    .footer-bottom {
+      padding: 14px 24px 24px;
+      text-align: center;
+      color: var(--walnut-muted);
+      font-size: 0.74rem;
+    }
+    @media (max-width: 1024px) {
+      .nav-links,
+      .nav-cta {
+        display: none;
+      }
+      .menu-button {
+        display: inline-grid;
+        place-items: center;
+      }
+      .service-grid,
+      .process,
+      .case-grid,
+      .palette-section,
+      .fit-grid {
+        grid-template-columns: 1fr;
+      }
+      .footer-inner {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    @media (max-width: 720px) {
+      .nav,
+      .hero-inner,
+      .section {
+        padding-left: 16px;
+        padding-right: 16px;
+      }
+      .hero {
+        min-height: 660px;
+      }
+      .section-head {
+        display: block;
+      }
+      .section-copy {
+        margin-top: 12px;
+      }
+      .case-card,
+      .case-mini {
+        min-height: 320px;
+      }
+      .swatch-grid,
+      .footer-inner {
+        grid-template-columns: 1fr;
+      }
+      .cta-card {
+        padding: 28px 18px;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+</style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-label="Mobile navigation" aria-hidden="true"><div class="drawer-head"><a class="brand" href="#">Haven</a><button class="drawer-close" id="drawerClose" aria-label="Close menu">x</button></div><nav aria-label="Mobile sections"><a href="#services">Services</a><a href="#process">Process</a><a href="#projects">Projects</a><a href="#materials">Materials</a><a href="#booking">Booking</a></nav></aside>
+  <header class="topbar"><nav class="nav" aria-label="Primary navigation"><a class="brand" href="#">Haven</a><ul class="nav-links" role="list"><li><a href="#services">Services</a></li><li><a href="#process">Process</a></li><li><a href="#projects">Projects</a></li><li><a href="#materials">Materials</a></li></ul><button class="nav-cta">Book consult</button><button class="menu-button" id="drawerOpen" aria-label="Open menu" aria-expanded="false">M</button></nav></header>
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title"><div class="hero-inner"><div class="eyebrow">Interior design for lived-in homes</div><h1 class="hero-title" id="hero-title">Rooms that feel collected, not decorated.</h1><p class="hero-copy">Haven guides homeowners from first consult to final install with calm decisions, material clarity, and a process that keeps the risk out of hiring a studio.</p><div class="hero-actions"><a class="button-primary" href="#booking">Book a room audit</a><a class="button-secondary" href="#projects">View projects</a></div></div></section>
+    <section class="section" id="services" aria-labelledby="services-title"><div class="section-head"><div><div class="eyebrow">Services</div><h2 class="section-title" id="services-title">Choose the right level of help before you spend a pound.</h2></div><p class="section-copy">Service cards set expectations early: advisory, full room design, or whole-home direction.</p></div><div class="service-grid"><article class="service-card"><span>01</span><div><h3>Room audit</h3><p>A ninety-minute review with layout, lighting, and purchase priorities delivered as a decision memo.</p></div></article><article class="service-card"><span>02</span><div><h3>Complete room</h3><p>Concept, sourcing, floor plan, trades brief, and styling guide for one room from blank to finished.</p></div></article><article class="service-card"><span>03</span><div><h3>Whole-home scheme</h3><p>Material language, room hierarchy, procurement map, and installation plan for larger renovations.</p></div></article></div></section>
+    <section class="section" id="process" aria-labelledby="process-title"><div class="section-head"><div><div class="eyebrow">What happens after you book</div><h2 class="section-title" id="process-title">A guided process with no mystery middle.</h2></div><p class="section-copy">Mobile simplifies this into three clear steps so the consult CTA feels low-risk.</p></div><div class="process"><article class="process-card"><strong>Week 1</strong><h3>Listen and measure</h3><p>We audit the room, document constraints, and agree the decisions that matter most.</p></article><article class="process-card"><strong>Week 2</strong><h3>Design and source</h3><p>You receive layouts, material direction, and a realistic sourcing list with alternates.</p></article><article class="process-card"><strong>Week 3</strong><h3>Install and tune</h3><p>We coordinate trades, place key pieces, and adjust styling so the room works daily.</p></article></div></section>
+    <section class="section" id="projects" aria-labelledby="projects-title"><div class="section-head"><div><div class="eyebrow">Case studies</div><h2 class="section-title" id="projects-title">Homes with a point of view.</h2></div><p class="section-copy">Stacked mobile cards keep each project readable without shrinking a magazine layout.</p></div><div class="case-grid"><article class="case-card"><div><h3>Canonbury terrace</h3><p>Warm walnut storage, plaster walls, and a dining room built around inherited chairs.</p></div></article><div class="case-stack"><article class="case-mini"><div><h3>Stoke Newington flat</h3><p>Rental-friendly lighting and textile upgrades.</p></div></article><article class="case-mini"><div><h3>Hampstead kitchen</h3><p>Clay tile, bronze hardware, and olive cabinetry.</p></div></article></div></div></section>
+    <section class="section" id="materials" aria-labelledby="materials-title"><div class="palette-section"><article class="palette-copy"><div class="eyebrow">Material palette</div><h2 id="materials-title">The palette starts with touch.</h2><p>Haven uses material boards to reduce decision fatigue: finish, weight, light response, and maintenance notes all sit beside the beauty shot.</p></article><div class="swatch-grid"><div class="swatch magnolia">Magnolia</div><div class="swatch walnut">Walnut</div><div class="swatch olive">Olive</div><div class="swatch plaster">Plaster</div><div class="swatch bronze">Bronze</div><div class="swatch clay">Clay</div></div></div></section>
+    <section class="section" id="fit" aria-labelledby="fit-title"><div class="section-head"><div><div class="eyebrow">Fit check</div><h2 class="section-title" id="fit-title">We say no when the format is wrong.</h2></div><p class="section-copy">A service business feels safer when people know who it is for, who it is not for, and what the first decision looks like.</p></div><div class="fit-grid"><article class="fit-card"><strong>Best for</strong><h3>Decision-stuck owners</h3><p>You have taste, but need structure, sequencing, and a neutral editor.</p></article><article class="fit-card"><strong>Not for</strong><h3>One-click makeovers</h3><p>We do not sell instant packages or trend rooms copied from a feed.</p></article><article class="fit-card"><strong>First output</strong><h3>Room decision memo</h3><p>You leave the first audit with layout priorities and purchase order.</p></article><article class="fit-card"><strong>Risk control</strong><h3>Budget gates</h3><p>Every sourcing list includes alternates and a stop point before spend.</p></article></div></section>
+    <section class="section" id="booking" aria-labelledby="booking-title"><div class="cta-card"><div class="eyebrow">Booking CTA</div><h2 id="booking-title">Start with the room that bothers you most.</h2><p>Send photos, rough measurements, and what feels wrong. The first audit gives you a practical route before any larger commitment.</p><button>Book the first audit</button></div></section>
+  </main>
+  <footer class="footer"><div class="footer-inner"><div><a class="brand" href="#">Haven</a><p>Interior studio skeleton with editorial rooms, services, process, project stories, material palette, and booking CTA.</p></div><div><h3>Studio</h3><a href="#services">Services</a><a href="#process">Process</a><a href="#projects">Projects</a></div><div><h3>Materials</h3><a href="#materials">Palette</a><a href="#">Suppliers</a><a href="#">Care notes</a></div><div><h3>Start</h3><a href="#booking">Book consult</a><a href="#">Pricing</a><a href="#">Contact</a></div></div><div class="footer-bottom">Built by Paweł Łukasik</div></footer>
+  <script>
+    const drawer = document.getElementById("drawer");
+    const overlay = document.getElementById("drawerOverlay");
+    const openButton = document.getElementById("drawerOpen");
+    const closeButton = document.getElementById("drawerClose");
+    function setDrawer(open) {
+      drawer.classList.toggle("open", open);
+      overlay.classList.toggle("open", open);
+      drawer.setAttribute("aria-hidden", String(!open));
+      overlay.setAttribute("aria-hidden", String(!open));
+      openButton.setAttribute("aria-expanded", String(open));
+    }
+    openButton.addEventListener("click", () => setDrawer(true));
+    closeButton.addEventListener("click", () => setDrawer(false));
+    overlay.addEventListener("click", () => setDrawer(false));
+    drawer.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setDrawer(false)));
+  </script>
+</body>
+</html>
