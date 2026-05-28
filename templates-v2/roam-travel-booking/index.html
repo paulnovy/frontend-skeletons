@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Roam Travel Booking</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Source+Serif+4:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --sand: #F5E6CC;
+      --ocean: #0E7490;
+      --ocean-soft: rgba(14, 116, 144, 0.14);
+      --sunset: #F97316;
+      --sunset-soft: rgba(249, 115, 22, 0.16);
+      --palm: #15803D;
+      --palm-soft: rgba(21, 128, 61, 0.14);
+      --night: #1E293B;
+      --night-muted: rgba(30, 41, 59, 0.68);
+      --night-faint: rgba(30, 41, 59, 0.12);
+      --cloud: #F8FAFC;
+      --white: #FFFFFF;
+      --shadow: 0 28px 80px rgba(30, 41, 59, 0.16);
+      --radius: 10px;
+      --max: 1240px;
+    }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--night);
+      background: var(--sand);
+      font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+      line-height: 1.5;
+    }
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+    button, input, select {
+      font: inherit;
+    }
+    button {
+      cursor: pointer;
+    }
+    :focus-visible {
+      outline: 3px solid var(--sunset);
+      outline-offset: 3px;
+    }
+    .skip-link {
+      position: absolute;
+      top: -100px;
+      left: 16px;
+      z-index: 1000;
+      padding: 10px 18px;
+      color: var(--white);
+      background: var(--ocean);
+      border-radius: 6px;
+      font-weight: 800;
+    }
+    .skip-link:focus {
+      top: 16px;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 90;
+      background: rgba(245, 230, 204, 0.92);
+      border-bottom: 1px solid var(--night-faint);
+      backdrop-filter: blur(18px);
+    }
+    .nav {
+      max-width: var(--max);
+      height: 68px;
+      margin: 0 auto;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 900;
+      font-size: 1.32rem;
+    }
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border-radius: 12px;
+      color: var(--cloud);
+      background: var(--ocean);
+    }
+    .nav-links {
+      display: flex;
+      gap: 24px;
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .nav-links a {
+      color: var(--night-muted);
+      font-size: 0.86rem;
+      font-weight: 800;
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .nav-link-button, .nav-cta {
+      min-height: 42px;
+      padding: 0 16px;
+      border-radius: 999px;
+      font-weight: 900;
+    }
+    .nav-link-button {
+      border: 1px solid var(--night-faint);
+      color: var(--night);
+      background: rgba(248, 250, 252, 0.7);
+    }
+    .nav-cta {
+      border: 0;
+      color: var(--cloud);
+      background: var(--night);
+    }
+    .menu-button {
+      display: none;
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--night-faint);
+      border-radius: 999px;
+      background: var(--cloud);
+      font-weight: 900;
+    }
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 110;
+      display: none;
+      background: rgba(30, 41, 59, 0.36);
+    }
+    .drawer-overlay.open {
+      display: block;
+    }
+    .drawer {
+      position: fixed;
+      top: 0;
+      right: -320px;
+      z-index: 120;
+      width: min(320px, 84vw);
+      height: 100%;
+      padding: 24px;
+      background: var(--sand);
+      transition: right 180ms ease;
+      pointer-events: none;
+    }
+    .drawer.open {
+      right: 0;
+      pointer-events: auto;
+    }
+    .drawer-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+    }
+    .drawer-close {
+      width: 40px;
+      height: 40px;
+      border: 1px solid var(--night-faint);
+      border-radius: 999px;
+      background: var(--cloud);
+      font-weight: 900;
+    }
+    .drawer nav {
+      display: grid;
+    }
+    .drawer a {
+      padding: 13px 0;
+      border-bottom: 1px solid var(--night-faint);
+      font-weight: 800;
+    }
+    .hero {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 42px 24px 60px;
+    }
+    .hero-panel {
+      min-height: 670px;
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(420px, 1.05fr);
+      gap: 32px;
+      align-items: end;
+      padding: 36px;
+      border-radius: 34px;
+      background: linear-gradient(135deg, rgba(14,116,144,0.96), rgba(21,128,61,0.7)), radial-gradient(circle at 70% 18%, rgba(249,115,22,0.72), transparent 34%);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .hero-copy {
+      position: relative;
+      z-index: 2;
+      color: var(--cloud);
+      padding-bottom: 18px;
+    }
+    .kicker {
+      display: inline-flex;
+      margin-bottom: 16px;
+      padding: 7px 12px;
+      border: 1px solid rgba(248,250,252,0.24);
+      border-radius: 999px;
+      background: rgba(248,250,252,0.12);
+      font-size: 0.78rem;
+      font-weight: 900;
+    }
+    .hero-title {
+      max-width: 650px;
+      margin: 0 0 18px;
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: clamp(3.1rem, 7vw, 6.2rem);
+      line-height: 0.92;
+      font-weight: 700;
+    }
+    .hero-text {
+      max-width: 520px;
+      margin: 0 0 26px;
+      color: rgba(248, 250, 252, 0.82);
+      font-size: 1.08rem;
+    }
+    .search-module {
+      position: relative;
+      z-index: 3;
+      padding: 16px;
+      border-radius: 24px;
+      background: rgba(248, 250, 252, 0.94);
+      box-shadow: var(--shadow);
+    }
+    .search-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr 0.8fr auto;
+      gap: 10px;
+    }
+    .field {
+      min-height: 58px;
+      display: grid;
+      align-content: center;
+      padding: 0 14px;
+      border-radius: 16px;
+      background: var(--cloud);
+      border: 1px solid rgba(30,41,59,0.08);
+    }
+    .field label {
+      color: var(--night-muted);
+      font-size: 0.72rem;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+    .field input, .field select {
+      width: 100%;
+      border: 0;
+      color: var(--night);
+      background: transparent;
+      font-weight: 900;
+    }
+    .search-button {
+      min-width: 130px;
+      border: 0;
+      border-radius: 16px;
+      color: var(--cloud);
+      background: var(--sunset);
+      font-weight: 900;
+    }
+    .flex-cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .flex-card {
+      padding: 13px;
+      border-radius: 16px;
+      background: var(--sand);
+    }
+    .flex-card strong {
+      display: block;
+      margin-bottom: 3px;
+    }
+    .flex-card span {
+      color: var(--night-muted);
+      font-size: 0.82rem;
+    }
+    .destination-art {
+      position: relative;
+      min-height: 560px;
+    }
+    .sun {
+      position: absolute;
+      right: 52px;
+      top: 34px;
+      width: 130px;
+      height: 130px;
+      border-radius: 999px;
+      background: var(--sunset);
+      box-shadow: 0 0 80px rgba(249,115,22,0.5);
+    }
+    .island {
+      position: absolute;
+      left: 28px;
+      right: 16px;
+      bottom: 34px;
+      height: 240px;
+      border-radius: 55% 45% 18px 18px;
+      background: var(--sand);
+    }
+    .mountain {
+      position: absolute;
+      left: 54px;
+      bottom: 134px;
+      width: 280px;
+      height: 230px;
+      clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      background: rgba(248,250,252,0.72);
+    }
+    .palm-tree {
+      position: absolute;
+      right: 90px;
+      bottom: 130px;
+      width: 18px;
+      height: 150px;
+      border-radius: 999px;
+      background: var(--night);
+      transform: rotate(7deg);
+    }
+    .palm-tree::before {
+      content: "";
+      position: absolute;
+      top: -48px;
+      left: -54px;
+      width: 126px;
+      height: 76px;
+      border-radius: 50%;
+      background: var(--palm);
+    }
+    .floating-price {
+      position: absolute;
+      right: 12px;
+      bottom: 38px;
+      width: 220px;
+      padding: 18px;
+      border-radius: 20px;
+      background: var(--cloud);
+      box-shadow: 0 14px 34px rgba(30, 41, 59, 0.09);
+    }
+    .floating-price span {
+      color: var(--night-muted);
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+    .floating-price strong {
+      display: block;
+      font-size: 1.45rem;
+    }
+    .section {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 64px 24px;
+    }
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 26px;
+      margin-bottom: 28px;
+    }
+    .eyebrow {
+      margin-bottom: 8px;
+      color: var(--ocean);
+      font-size: 0.76rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+    .section-title {
+      max-width: 720px;
+      margin: 0;
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: clamp(2.1rem, 4.4vw, 3.7rem);
+      line-height: 1;
+    }
+    .section-copy {
+      max-width: 470px;
+      margin: 0;
+      color: var(--night-muted);
+    }
+    .hybrid-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 380px;
+      gap: 18px;
+    }
+    .trip-list {
+      display: grid;
+      gap: 14px;
+    }
+    .trip-card {
+      display: grid;
+      grid-template-columns: 190px minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      padding: 14px;
+      border: 1px solid var(--night-faint);
+      border-radius: 22px;
+      background: var(--cloud);
+      box-shadow: 0 14px 34px rgba(30, 41, 59, 0.09);
+    }
+    .trip-image {
+      min-height: 150px;
+      border-radius: 18px;
+      background: linear-gradient(135deg, var(--ocean-soft), var(--sunset-soft));
+    }
+    .trip-card h3 {
+      margin: 0 0 8px;
+      font-size: 1.15rem;
+    }
+    .trip-card p {
+      margin: 0 0 12px;
+      color: var(--night-muted);
+    }
+    .trip-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+    .tag {
+      padding: 5px 9px;
+      border-radius: 999px;
+      background: var(--sand);
+      color: var(--night-muted);
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+    .tag.good {
+      color: #166534;
+      background: var(--palm-soft);
+    }
+    .price-box {
+      min-width: 132px;
+      text-align: right;
+    }
+    .price-box strong {
+      display: block;
+      font-size: 1.35rem;
+    }
+    .price-box span {
+      color: var(--night-muted);
+      font-size: 0.78rem;
+    }
+    .price-box button {
+      min-height: 40px;
+      margin-top: 10px;
+      padding: 0 14px;
+      border: 0;
+      border-radius: 999px;
+      color: var(--cloud);
+      background: var(--ocean);
+      font-weight: 900;
+    }
+    .map-card {
+      position: sticky;
+      top: 86px;
+      min-height: 520px;
+      padding: 18px;
+      border-radius: 24px;
+      color: var(--cloud);
+      background: var(--night);
+    }
+    .map-line {
+      height: 100%;
+      min-height: 480px;
+      position: relative;
+      border-radius: 18px;
+      background: radial-gradient(circle at 35% 25%, rgba(14,116,144,0.8), transparent 20%), radial-gradient(circle at 70% 70%, rgba(249,115,22,0.68), transparent 22%), rgba(248,250,252,0.08);
+    }
+    .map-pin {
+      position: absolute;
+      padding: 8px 10px;
+      border-radius: 999px;
+      color: var(--night);
+      background: var(--sand);
+      font-size: 0.76rem;
+      font-weight: 900;
+    }
+    .map-pin.one {
+      left: 38px;
+      top: 60px;
+    }
+    .map-pin.two {
+      right: 34px;
+      top: 190px;
+    }
+    .map-pin.three {
+      left: 82px;
+      bottom: 80px;
+    }
+    .curated-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+    .curated-card {
+      min-height: 360px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 22px;
+      border-radius: 24px;
+      color: var(--cloud);
+      background: linear-gradient(145deg, var(--ocean), var(--night));
+    }
+    .curated-card.sunset {
+      background: linear-gradient(145deg, var(--sunset), #9a3412);
+    }
+    .curated-card.palm {
+      background: linear-gradient(145deg, var(--palm), #052e16);
+    }
+    .curated-card h3 {
+      margin: 0 0 8px;
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: 2rem;
+      line-height: 1;
+    }
+    .curated-card p {
+      margin: 0 0 16px;
+      color: rgba(248, 250, 252, 0.78);
+    }
+    .curated-card a {
+      width: fit-content;
+      padding: 10px 14px;
+      border-radius: 999px;
+      color: var(--night);
+      background: var(--cloud);
+      font-weight: 900;
+    }
+    .proof-band {
+      background: var(--cloud);
+    }
+    .proof-layout {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 62px 24px;
+      display: grid;
+      grid-template-columns: 0.85fr 1.15fr;
+      gap: 26px;
+      align-items: center;
+    }
+    .proof-score {
+      padding: 26px;
+      border-radius: 24px;
+      background: var(--sand);
+    }
+    .proof-number {
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: 5rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+    .proof-score p {
+      color: var(--night-muted);
+    }
+    .testimonials {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .quote-card {
+      padding: 20px;
+      border: 1px solid var(--night-faint);
+      border-radius: 18px;
+      background: var(--white);
+    }
+    .quote-card blockquote {
+      margin: 0 0 12px;
+      color: var(--night-muted);
+    }
+    .insurance-card {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 280px;
+      gap: 28px;
+      align-items: center;
+      padding: 34px;
+      border-radius: 28px;
+      color: var(--cloud);
+      background: var(--night);
+    }
+    .insurance-card h2 {
+      margin: 0 0 12px;
+      font-family: "Source Serif 4", Georgia, serif;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      line-height: 1;
+    }
+    .insurance-card p {
+      max-width: 620px;
+      margin: 0 0 18px;
+      color: rgba(248, 250, 252, 0.76);
+    }
+    .insurance-card button {
+      min-height: 46px;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 999px;
+      color: var(--night);
+      background: var(--sand);
+      font-weight: 900;
+    }
+    .insurance-box {
+      padding: 20px;
+      border-radius: 22px;
+      color: var(--night);
+      background: var(--cloud);
+    }
+    .insurance-box strong {
+      display: block;
+      font-size: 2rem;
+    }
+    .mobile-search-summary {
+      position: fixed;
+      left: 14px;
+      right: 14px;
+      bottom: 14px;
+      z-index: 80;
+      min-height: 56px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      border: 0;
+      border-radius: 18px;
+      color: var(--cloud);
+      background: var(--night);
+      box-shadow: var(--shadow);
+      font-weight: 900;
+    }
+    .footer {
+      border-top: 1px solid var(--night-faint);
+      background: rgba(248, 250, 252, 0.45);
+    }
+    .footer-inner {
+      max-width: var(--max);
+      margin: 0 auto;
+      padding: 34px 24px;
+      display: grid;
+      grid-template-columns: 1.4fr repeat(3, 1fr);
+      gap: 26px;
+    }
+    .footer p {
+      max-width: 330px;
+      margin: 10px 0 0;
+      color: var(--night-muted);
+    }
+    .footer h3 {
+      margin: 0 0 10px;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+    }
+    .footer a {
+      display: block;
+      padding: 4px 0;
+      color: var(--night-muted);
+    }
+    .footer-bottom {
+      padding: 14px 24px 24px;
+      text-align: center;
+      color: var(--night-muted);
+      font-size: 0.74rem;
+    }
+    @media (max-width: 1024px) {
+      .nav-links,
+      .nav-link-button,
+      .nav-cta {
+        display: none;
+      }
+      .menu-button {
+        display: inline-grid;
+        place-items: center;
+      }
+      .hero-panel,
+      .hybrid-layout,
+      .proof-layout,
+      .insurance-card {
+        grid-template-columns: 1fr;
+      }
+      .search-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      .search-button {
+        min-height: 58px;
+      }
+      .map-card {
+        position: static;
+      }
+      .curated-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .footer-inner {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    @media (max-width: 720px) {
+      body {
+        padding-bottom: 82px;
+      }
+      .nav {
+        padding: 0 16px;
+      }
+      .hero {
+        padding: 24px 16px 42px;
+      }
+      .hero-panel {
+        min-height: 0;
+        padding: 24px 18px;
+        border-radius: 24px;
+      }
+      .search-grid,
+      .flex-cards,
+      .curated-grid,
+      .testimonials,
+      .footer-inner {
+        grid-template-columns: 1fr;
+      }
+      .destination-art {
+        min-height: 360px;
+      }
+      .trip-card {
+        grid-template-columns: 1fr;
+      }
+      .price-box {
+        text-align: left;
+      }
+      .map-card {
+        display: none;
+      }
+      .mobile-search-summary {
+        display: flex;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-label="Mobile navigation" aria-hidden="true">
+    <div class="drawer-head"><a class="brand" href="#"><span class="brand-mark">R</span>Roam</a><button class="drawer-close" id="drawerClose" aria-label="Close menu">x</button></div>
+    <nav aria-label="Mobile sections"><a href="#results">Results</a><a href="#curated">Curated trips</a><a href="#proof">Reviews</a><a href="#insurance">Insurance</a></nav>
+  </aside>
+  <header class="topbar"><nav class="nav" aria-label="Primary navigation"><a class="brand" href="#"><span class="brand-mark">R</span>Roam</a><ul class="nav-links" role="list"><li><a href="#results">Results</a></li><li><a href="#curated">Curated trips</a></li><li><a href="#proof">Reviews</a></li><li><a href="#insurance">Insurance</a></li></ul><div class="nav-actions"><button class="nav-link-button">My trips</button><button class="nav-cta">Plan escape</button><button class="menu-button" id="drawerOpen" aria-label="Open menu" aria-expanded="false">M</button></div></nav></header>
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title"><div class="hero-panel"><div class="hero-copy"><div class="kicker">Flexible dates, clear total prices</div><h1 class="hero-title" id="hero-title">Find the trip that fits the way you actually travel.</h1><p class="hero-text">Roam connects destination discovery with booking confidence: flexible dates, map/list search, trip fit signals, total price clarity, and insurance before checkout gets scary.</p></div><div class="destination-art" aria-label="Coastal destination illustration"><div class="sun"></div><div class="mountain"></div><div class="island"></div><div class="palm-tree"></div><div class="floating-price"><span>Total from Warsaw</span><strong>$842</strong><span>flight + 5 nights, taxes included</span></div></div><form class="search-module"><div class="search-grid"><div class="field"><label for="where">Where to</label><input id="where" value="Madeira, Portugal"></div><div class="field"><label for="dates">Dates</label><input id="dates" value="Any week in June"></div><div class="field"><label for="travelers">Travelers</label><select id="travelers"><option>2 adults</option><option>Solo trip</option><option>Family of 4</option></select></div><button class="search-button" type="button">Search</button></div><div class="flex-cards"><div class="flex-card"><strong>Save $118</strong><span>if you leave Tuesday</span></div><div class="flex-card"><strong>92% fit</strong><span>walkable, quiet, ocean view</span></div><div class="flex-card"><strong>No surprise fees</strong><span>taxes included in total</span></div></div></form></div></section>
+    <section class="section" id="results" aria-labelledby="results-title"><div class="section-head"><div><div class="eyebrow">Map/list hybrid</div><h2 class="section-title" id="results-title">Booking results that explain the tradeoffs.</h2></div><p class="section-copy">Every result shows confidence, flexible dates, total price, and the reason it matched instead of forcing travelers to inspect twenty tabs.</p></div><div class="hybrid-layout"><div class="trip-list">
+          <article class="trip-card"><div class="trip-image"></div><div><h3>Cliffside studio in Funchal</h3><p>Ocean view, breakfast nearby, 8 min walk to old town</p><div class="trip-tags"><span class="tag good">92% match</span><span class="tag">Flexible by 2 days</span><span class="tag">Taxes included</span></div></div><div class="price-box"><strong>$842</strong><span>total trip price</span><button>View deal</button></div></article>
+          <article class="trip-card"><div class="trip-image"></div><div><h3>Garden guesthouse in Seixal</h3><p>Quiet village stay, black-sand beach, rental car recommended</p><div class="trip-tags"><span class="tag good">88% match</span><span class="tag">Best weather window</span><span class="tag">Car recommended</span></div></div><div class="price-box"><strong>$790</strong><span>total trip price</span><button>View deal</button></div></article>
+          <article class="trip-card"><div class="trip-image"></div><div><h3>Design hotel in Lisbon</h3><p>Rooftop pool, direct metro, late checkout included</p><div class="trip-tags"><span class="tag good">84% match</span><span class="tag">Free cancellation</span><span class="tag">No resort fee</span></div></div><div class="price-box"><strong>$918</strong><span>total trip price</span><button>View deal</button></div></article>
+          <article class="trip-card"><div class="trip-image"></div><div><h3>Azores hiking lodge</h3><p>Trail access, thermal pools, checked bag bundled</p><div class="trip-tags"><span class="tag good">81% match</span><span class="tag">Insurance eligible</span><span class="tag">Bag included</span></div></div><div class="price-box"><strong>$1,040</strong><span>total trip price</span><button>View deal</button></div></article>
+        </div><aside class="map-card" aria-label="Destination map preview"><div class="map-line"><span class="map-pin one">Funchal $842</span><span class="map-pin two">Seixal $790</span><span class="map-pin three">Lisbon $918</span></div></aside></div></section>
+    <section class="section" id="curated" aria-labelledby="curated-title"><div class="section-head"><div><div class="eyebrow">Curated trips</div><h2 class="section-title" id="curated-title">Discovery stays connected to booking.</h2></div><p class="section-copy">Curated cards point to concrete inventory, not vague inspiration boards.</p></div><div class="curated-grid"><article class="curated-card"><h3>Slow islands</h3><p>Seven-day coastal stays with low-transfer stress.</p><a href="#results">Browse islands</a></article><article class="curated-card sunset"><h3>Sunset cities</h3><p>Long weekends where flights arrive before dinner.</p><a href="#results">Browse cities</a></article><article class="curated-card palm"><h3>Green escapes</h3><p>Rail-friendly breaks near parks and thermal water.</p><a href="#results">Browse nature</a></article></div></section>
+    <section class="proof-band" id="proof" aria-labelledby="proof-title"><div class="proof-layout"><aside class="proof-score"><div class="eyebrow">Social proof</div><h2 class="section-title" id="proof-title">Travelers book with fewer second guesses.</h2><div class="proof-number">4.9</div><p>Average post-trip confidence score across travelers who used flexible-date recommendations and total price clarity.</p></aside><div class="testimonials"><article class="quote-card"><blockquote>The total price and date savings were visible before I clicked through. That alone saved an evening.</blockquote><strong>Marta, Lisbon trip</strong></article><article class="quote-card"><blockquote>The map toggle made it obvious which beach towns needed a car. No nasty surprise after landing.</blockquote><strong>Leo, Madeira trip</strong></article><article class="quote-card"><blockquote>I added insurance because the upsell explained what it covered in plain words.</blockquote><strong>Ana, Azores trip</strong></article><article class="quote-card"><blockquote>The confidence score matched how I travel: quiet mornings, walkable dinners, no red-eye flights.</blockquote><strong>Jon, Porto trip</strong></article></div></div></section>
+    <section class="section" id="insurance" aria-labelledby="insurance-title"><div class="insurance-card"><div><div class="eyebrow">Insurance upsell</div><h2 id="insurance-title">Protection shown before checkout panic.</h2><p>Roam explains cancellation, baggage delay, medical, and weather coverage against the trip you selected, with plain-language exclusions.</p><button>Compare coverage</button></div><aside class="insurance-box"><strong>$38</strong><span>recommended plan for this trip</span><p>Includes delayed flight meals, urgent care, and hotel cancellation support.</p></aside></div></section>
+  </main>
+  <button class="mobile-search-summary" aria-label="Open search summary"><span>Madeira, any June week</span><span>Filters</span></button>
+  <footer class="footer"><div class="footer-inner"><div><a class="brand" href="#"><span class="brand-mark">R</span>Roam</a><p>Travel booking skeleton connecting discovery, flexible dates, map/list results, total price clarity, and insurance.</p></div><div><h3>Explore</h3><a href="#results">Results</a><a href="#curated">Curated trips</a><a href="#proof">Reviews</a></div><div><h3>Book</h3><a href="#insurance">Insurance</a><a href="#">Price alerts</a><a href="#">Trip wallet</a></div><div><h3>Company</h3><a href="#">Partners</a><a href="#">Support</a><a href="#">Careers</a></div></div><div class="footer-bottom">Built by Paweł Łukasik</div></footer>
+  <script>
+    const drawer = document.getElementById("drawer");
+    const overlay = document.getElementById("drawerOverlay");
+    const openButton = document.getElementById("drawerOpen");
+    const closeButton = document.getElementById("drawerClose");
+    function setDrawer(open) {
+      drawer.classList.toggle("open", open);
+      overlay.classList.toggle("open", open);
+      drawer.setAttribute("aria-hidden", String(!open));
+      overlay.setAttribute("aria-hidden", String(!open));
+      openButton.setAttribute("aria-expanded", String(open));
+    }
+    openButton.addEventListener("click", () => setDrawer(true));
+    closeButton.addEventListener("click", () => setDrawer(false));
+    overlay.addEventListener("click", () => setDrawer(false));
+    drawer.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setDrawer(false)));
+  </script>
+</body>
+</html>
