@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kairos — Scheduling</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --snow: #F9FAFB;
+      --ink: #0F172A;
+      --ink-mid: rgba(15,23,42,0.6);
+      --ink-dim: rgba(15,23,42,0.1);
+      --purple: #7C3AED;
+      --purple-dim: rgba(124,58,237,0.08);
+      --teal: #14B8A6;
+      --teal-dim: rgba(20,184,166,0.1);
+      --yellow: #FDE047;
+      --yellow-dim: rgba(253,224,71,0.2);
+      --cool: #CBD5E1;
+      --white: #FFFFFF;
+      --radius: 12px;
+      --radius-sm: 8px;
+      --max: 1200px;
+    }
+    *,*::before,*::after{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+    body{margin:0;min-height:100vh;color:var(--ink);background:var(--snow);font-family:"Inter",system-ui,sans-serif;line-height:1.6}
+    a{color:inherit;text-decoration:none}
+    button,input,select{font:inherit}
+    button{cursor:pointer}
+    :focus-visible{outline:3px solid var(--purple);outline-offset:2px}
+    .skip-link{position:absolute;top:-100px;left:16px;background:var(--purple);color:var(--white);padding:10px 20px;border-radius:var(--radius-sm);z-index:1000;font-weight:700}
+    .skip-link:focus{top:16px}
+    .nav{position:sticky;top:0;z-index:100;background:rgba(249,250,251,0.92);backdrop-filter:blur(10px);border-bottom:1px solid var(--ink-dim);padding:0 24px}
+    .nav-inner{max-width:var(--max);margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+    .nav-brand{font-family:"Sora",sans-serif;font-weight:800;font-size:1.125rem;display:flex;align-items:center;gap:8px}
+    .nav-brand-icon{width:28px;height:28px;background:var(--purple);border-radius:7px;display:flex;align-items:center;justify-content:center;color:var(--white);font-size:0.75rem;font-weight:800}
+    .nav-links{display:flex;gap:20px;list-style:none;margin:0;padding:0}
+    .nav-links a{font-size:0.875rem;font-weight:500;color:var(--ink-mid);transition:color 0.15s}
+    .nav-links a:hover{color:var(--ink)}
+    .nav-cta{padding:8px 20px;background:var(--purple);color:var(--white);border:none;border-radius:var(--radius-sm);font-weight:700;font-size:0.875rem}
+    .nav-drawer-btn{display:none;background:none;border:1px solid var(--ink-dim);border-radius:var(--radius-sm);padding:6px 10px;color:var(--ink)}
+    .drawer-overlay{display:none;position:fixed;inset:0;background:rgba(15,23,42,0.3);z-index:200}
+    .drawer-overlay.open{display:block}
+    .drawer{position:fixed;top:0;right:-300px;width:280px;height:100%;background:var(--snow);z-index:201;padding:24px;transition:right 0.2s ease;overflow-y:auto}
+    .drawer.open{right:0}
+    .drawer-close{background:none;border:none;font-size:1.5rem;color:var(--ink);float:right}
+    .drawer nav{clear:both;padding-top:24px}
+    .drawer nav a{display:block;padding:12px 0;font-size:1rem;font-weight:500;color:var(--ink);border-bottom:1px solid var(--ink-dim)}
+    .hero{max-width:var(--max);margin:0 auto;padding:60px 24px 48px;display:grid;grid-template-columns:1fr 420px;gap:48px;align-items:center}
+    .hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--teal-dim);color:#0D9488;padding:4px 12px;border-radius:999px;font-size:0.75rem;font-weight:600;margin-bottom:16px}
+    .hero-title{font-family:"Sora",sans-serif;font-weight:800;font-size:2.5rem;line-height:1.15;margin:0 0 16px}
+    .hero-sub{font-size:1.0625rem;color:var(--ink-mid);margin:0 0 28px;max-width:440px}
+    .hero-actions{display:flex;gap:12px;flex-wrap:wrap}
+    .btn-primary{padding:12px 28px;background:var(--purple);color:var(--white);border:none;border-radius:var(--radius-sm);font-weight:700;font-size:0.9375rem}
+    .btn-secondary{padding:12px 28px;background:var(--white);color:var(--ink);border:1px solid var(--ink-dim);border-radius:var(--radius-sm);font-weight:600;font-size:0.9375rem}
+    .calendar-widget{background:var(--white);border:1px solid var(--ink-dim);border-radius:var(--radius);padding:24px}
+    .calendar-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+    .calendar-month{font-family:"Sora",sans-serif;font-weight:700;font-size:1rem}
+    .calendar-nav{display:flex;gap:4px}
+    .calendar-nav-btn{width:28px;height:28px;border:1px solid var(--ink-dim);border-radius:var(--radius-sm);background:var(--white);color:var(--ink);font-size:0.75rem;display:flex;align-items:center;justify-content:center}
+    .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center}
+    .calendar-day-name{font-size:0.5625rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--ink-mid);font-weight:700;padding:4px 0}
+    .calendar-day{padding:8px 4px;border-radius:var(--radius-sm);font-size:0.75rem;font-weight:500;cursor:pointer;transition:background 0.15s}
+    .calendar-day:hover{background:var(--purple-dim)}
+    .calendar-day.today{background:var(--purple);color:var(--white);font-weight:700}
+    .calendar-day.has-slots{position:relative}
+    .calendar-day.has-slots::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--teal)}
+    .calendar-day.other-month{color:var(--cool)}
+    .time-slots{margin-top:16px}
+    .time-slots-label{font-size:0.6875rem;color:var(--ink-mid);margin-bottom:8px;font-weight:600}
+    .time-slots-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+    .time-slot{padding:8px;border:1px solid var(--ink-dim);border-radius:var(--radius-sm);text-align:center;font-size:0.75rem;font-weight:500;background:var(--white);cursor:pointer;transition:all 0.15s}
+    .time-slot:hover{border-color:var(--purple);background:var(--purple-dim)}
+    .time-slot.selected{background:var(--purple);color:var(--white);border-color:var(--purple)}
+    .section{max-width:var(--max);margin:0 auto;padding:64px 24px}
+    .section-label{font-size:0.6875rem;text-transform:uppercase;letter-spacing:0.1em;color:var(--purple);font-weight:700;margin-bottom:8px}
+    .section-title{font-family:"Sora",sans-serif;font-weight:700;font-size:1.75rem;margin:0 0 16px}
+    .section-sub{color:var(--ink-mid);max-width:520px;margin:0 0 32px}
+    .features-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+    .feature-card{background:var(--white);border:1px solid var(--ink-dim);border-radius:var(--radius);padding:24px}
+    .feature-icon{width:40px;height:40px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:1.25rem;margin-bottom:14px}
+    .feature-title{font-family:"Sora",sans-serif;font-weight:600;font-size:1rem;margin-bottom:6px}
+    .feature-desc{font-size:0.8125rem;color:var(--ink-mid);line-height:1.5}
+    .booking-pages{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+    .booking-page{background:var(--white);border:1px solid var(--ink-dim);border-radius:var(--radius);padding:20px}
+    .booking-page-title{font-family:"Sora",sans-serif;font-weight:600;font-size:0.875rem;margin-bottom:10px}
+    .booking-page-demo{background:var(--snow);border-radius:var(--radius-sm);padding:16px}
+    .booking-page-step{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--ink-dim);font-size:0.75rem}
+    .booking-page-step:last-child{border-bottom:none}
+    .booking-page-step-num{width:24px;height:24px;background:var(--purple-dim);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.625rem;font-weight:700;color:var(--purple);flex-shrink:0}
+    .integrations-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:12px}
+    .integration-card{background:var(--white);border:1px solid var(--ink-dim);border-radius:var(--radius-sm);padding:16px;text-align:center}
+    .integration-icon{width:32px;height:32px;background:var(--purple-dim);border-radius:6px;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:0.875rem}
+    .integration-name{font-size:0.6875rem;font-weight:600}
+    .team-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+    .team-card{background:var(--white);border:1px solid var(--ink-dim);border-radius:var(--radius);padding:18px;text-align:center}
+    .team-avatar{width:48px;height:48px;background:var(--teal-dim);border-radius:50%;margin:0 auto 10px;display:flex;align-items:center;justify-content:center;font-size:1rem;font-weight:700;color:var(--teal)}
+    .team-name{font-weight:700;font-size:0.8125rem}
+    .team-role{font-size:0.6875rem;color:var(--ink-mid);margin-top:2px}
+    .team-slots{font-size:0.625rem;color:var(--purple);font-weight:600;margin-top:6px}
+    .noshow-card{background:var(--yellow-dim);border:1px solid rgba(253,224,71,0.4);border-radius:var(--radius);padding:24px;margin-top:32px}
+    .noshow-title{font-family:"Sora",sans-serif;font-weight:700;font-size:1rem;margin:0 0 8px}
+    .noshow-text{font-size:0.8125rem;color:var(--ink-mid);line-height:1.6}
+    .noshow-features{display:flex;gap:16px;margin-top:16px;flex-wrap:wrap}
+    .noshow-feature{display:flex;align-items:center;gap:6px;font-size:0.75rem;font-weight:600;color:var(--ink)}
+    .noshow-feature-dot{width:6px;height:6px;border-radius:50%;background:var(--teal)}
+    .footer{border-top:1px solid var(--ink-dim);padding:24px;text-align:center;font-size:0.75rem;color:var(--ink-mid)}
+    @media(max-width:1024px){
+      .hero{grid-template-columns:1fr}
+      .features-grid,.booking-pages{grid-template-columns:1fr}
+      .integrations-grid{grid-template-columns:repeat(3,1fr)}
+      .team-grid{grid-template-columns:repeat(2,1fr)}
+      .nav-links{display:none}.nav-drawer-btn{display:block}
+    }
+    @media(max-width:768px){
+      .hero-title{font-size:1.75rem}
+      .hero-actions{flex-direction:column}
+      .time-slots-grid{grid-template-columns:repeat(2,1fr)}
+      .integrations-grid{grid-template-columns:repeat(2,1fr)}
+      .section{padding:40px 16px}
+    }
+  </style>
+</head>
+<body>
+  <a href="#main" class="skip-link">Skip to content</a>
+  <div class="drawer-overlay" id="drawerOverlay" aria-hidden="true"></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-label="Navigation" aria-hidden="true">
+    <button class="drawer-close" id="drawerClose" aria-label="Close menu">&times;</button>
+    <nav aria-label="Mobile navigation">
+      <a href="#features">Features</a><a href="#booking">Booking</a><a href="#team">Team</a><a href="#">Pricing</a>
+    </nav>
+  </aside>
+  <header class="nav" role="banner">
+    <div class="nav-inner">
+      <a href="#" class="nav-brand" aria-label="Kairos home"><span class="nav-brand-icon" aria-hidden="true">K</span>Kairos</a>
+      <ul class="nav-links" role="list">
+        <li><a href="#features">Features</a></li><li><a href="#booking">Booking</a></li><li><a href="#team">Team</a></li><li><a href="#">Pricing</a></li>
+      </ul>
+      <button class="nav-cta">Start Scheduling</button>
+      <button class="nav-drawer-btn" id="drawerOpen" aria-label="Open menu" aria-expanded="false">&#9776;</button>
+    </div>
+  </header>
+  <main id="main">
+    <section class="hero">
+      <div>
+        <div class="hero-badge">&#9889; Scheduling that feels instant</div>
+        <h1 class="hero-title">Book meetings in seconds, not emails</h1>
+        <p class="hero-sub">Share your availability, let others pick a time, and never double-book again. Timezone-aware, buffer-ready, no-show protected.</p>
+        <div class="hero-actions">
+          <button class="btn-primary">Start Scheduling</button>
+          <button class="btn-secondary">See How It Works</button>
+        </div>
+      </div>
+      <div class="calendar-widget" aria-label="Calendar booking widget">
+        <div class="calendar-header"><span class="calendar-month">June 2026</span><div class="calendar-nav"><button class="calendar-nav-btn" aria-label="Previous month">&lt;</button><button class="calendar-nav-btn" aria-label="Next month">&gt;</button></div></div>
+        <div class="calendar-grid">
+          <div class="calendar-day-name">Mon</div><div class="calendar-day-name">Tue</div><div class="calendar-day-name">Wed</div><div class="calendar-day-name">Thu</div><div class="calendar-day-name">Fri</div><div class="calendar-day-name">Sat</div><div class="calendar-day-name">Sun</div>
+          <div class="calendar-day other-month">26</div><div class="calendar-day other-month">27</div><div class="calendar-day other-month">28</div><div class="calendar-day other-month">29</div><div class="calendar-day other-month">30</div><div class="calendar-day other-month">31</div><div class="calendar-day has-slots">1</div>
+          <div class="calendar-day has-slots">2</div><div class="calendar-day has-slots">3</div><div class="calendar-day today">4</div><div class="calendar-day has-slots">5</div><div class="calendar-day has-slots">6</div><div class="calendar-day">7</div><div class="calendar-day">8</div>
+          <div class="calendar-day has-slots">9</div><div class="calendar-day has-slots">10</div><div class="calendar-day has-slots">11</div><div class="calendar-day has-slots">12</div><div class="calendar-day has-slots">13</div><div class="calendar-day">14</div><div class="calendar-day">15</div>
+          <div class="calendar-day has-slots">16</div><div class="calendar-day has-slots">17</div><div class="calendar-day has-slots">18</div><div class="calendar-day has-slots">19</div><div class="calendar-day has-slots">20</div><div class="calendar-day">21</div><div class="calendar-day">22</div>
+          <div class="calendar-day has-slots">23</div><div class="calendar-day has-slots">24</div><div class="calendar-day has-slots">25</div><div class="calendar-day has-slots">26</div><div class="calendar-day has-slots">27</div><div class="calendar-day">28</div><div class="calendar-day">29</div>
+          <div class="calendar-day has-slots">30</div><div class="calendar-day other-month">1</div><div class="calendar-day other-month">2</div><div class="calendar-day other-month">3</div><div class="calendar-day other-month">4</div><div class="calendar-day other-month">5</div><div class="calendar-day other-month">6</div>
+        </div>
+        <div class="time-slots">
+          <div class="time-slots-label">Available times — Jun 4 (your timezone: CET)</div>
+          <div class="time-slots-grid">
+            <div class="time-slot">9:00 AM</div>
+            <div class="time-slot selected">10:00 AM</div>
+            <div class="time-slot">11:00 AM</div>
+            <div class="time-slot">1:00 PM</div>
+            <div class="time-slot">2:00 PM</div>
+            <div class="time-slot">3:30 PM</div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="section" id="features" aria-labelledby="features-title">
+      <div class="section-label">Features</div>
+      <h2 class="section-title" id="features-title">Scheduling done right</h2>
+      <p class="section-sub">Everything you need to book meetings without the back-and-forth.</p>
+      <div class="features-grid">
+        <div class="feature-card"><div class="feature-icon" style="background:var(--purple-dim)" aria-hidden="true">&#127760;</div><div class="feature-title">Timezone Aware</div><div class="feature-desc">Detects each person's timezone automatically. No more "what time works for you?" confusion.</div></div>
+        <div class="feature-card"><div class="feature-icon" style="background:var(--teal-dim)" aria-hidden="true">&#9200;</div><div class="feature-title">Meeting Buffers</div><div class="feature-desc">Add padding between meetings. 15min default, customizable per event type.</div></div>
+        <div class="feature-card"><div class="feature-icon" style="background:var(--yellow-dim)" aria-hidden="true">&#128260;</div><div class="feature-title">Easy Reschedule</div><div class="feature-desc">One-click reschedule with automatic notifications. No guilt, no friction.</div></div>
+        <div class="feature-card"><div class="feature-icon" style="background:var(--purple-dim)" aria-hidden="true">&#128172;</div><div class="feature-title">Smart Reminders</div><div class="feature-desc">SMS and email reminders that reduce no-shows by 40%. Customizable timing.</div></div>
+        <div class="feature-card"><div class="feature-icon" style="background:var(--teal-dim)" aria-hidden="true">&#127760;</div><div class="feature-title">Team Pages</div><div class="feature-desc">Round-robin, collective, or group scheduling. One link for your whole team.</div></div>
+        <div class="feature-card"><div class="feature-icon" style="background:var(--yellow-dim)" aria-hidden="true">&#128274;</div><div class="feature-title">Calendar Sync</div><div class="feature-desc">Two-way sync with Google, Outlook, and Apple Calendar. Never double-book.</div></div>
+      </div>
+    </section>
+    <section class="section" id="booking" aria-labelledby="booking-title">
+      <div class="section-label">Booking Pages</div>
+      <h2 class="section-title" id="booking-title">Beautiful booking experiences</h2>
+      <p class="section-sub">Custom booking pages that match your brand.</p>
+      <div class="booking-pages">
+        <div class="booking-page"><div class="booking-page-title">1-on-1 Meeting</div><div class="booking-page-demo"><div class="booking-page-step"><span class="booking-page-step-num">1</span>Pick a date</div><div class="booking-page-step"><span class="booking-page-step-num">2</span>Choose a time</div><div class="booking-page-step"><span class="booking-page-step-num">3</span>Enter details</div><div class="booking-page-step"><span class="booking-page-step-num">4</span>Confirm</div></div></div>
+        <div class="booking-page"><div class="booking-page-title">Group Session</div><div class="booking-page-demo"><div class="booking-page-step"><span class="booking-page-step-num">1</span>Select topic</div><div class="booking-page-step"><span class="booking-page-step-num">2</span>See available slots</div><div class="booking-page-step"><span class="booking-page-step-num">3</span>Register</div><div class="booking-page-step"><span class="booking-page-step-num">4</span>Get invite</div></div></div>
+      </div>
+      <div class="noshow-card">
+        <div class="noshow-title">No-Show Prevention</div>
+        <div class="noshow-text">Reduce no-shows by up to 40% with smart reminders, easy reschedule links, and gentle follow-ups.</div>
+        <div class="noshow-features"><span class="noshow-feature"><span class="noshow-feature-dot"></span>SMS reminders</span><span class="noshow-feature"><span class="noshow-feature-dot"></span>1-click reschedule</span><span class="noshow-feature"><span class="noshow-feature-dot"></span>Follow-up sequences</span></div>
+      </div>
+    </section>
+    <section class="section" aria-labelledby="integrations-title">
+      <div class="section-label">Integrations</div>
+      <h2 class="section-title" id="integrations-title">Connects to your tools</h2>
+      <div class="integrations-grid">
+        <div class="integration-card"><div class="integration-icon" aria-hidden="true">G</div><div class="integration-name">Google Calendar</div></div>
+        <div class="integration-card"><div class="integration-icon" aria-hidden="true">O</div><div class="integration-name">Outlook</div></div>
+        <div class="integration-card"><div class="integration-icon" aria-hidden="true">Z</div><div class="integration-name">Zoom</div></div>
+        <div class="integration-card"><div class="integration-icon" aria-hidden="true">S</div><div class="integration-name">Slack</div></div>
+        <div class="integration-card"><div class="integration-icon" aria-hidden="true">S</div><div class="integration-name">Stripe</div></div>
+        <div class="integration-card"><div class="integration-icon" aria-hidden="true">H</div><div class="integration-name">HubSpot</div></div>
+      </div>
+    </section>
+    <section class="section" id="team" aria-labelledby="team-title">
+      <div class="section-label">Team Scheduling</div>
+      <h2 class="section-title" id="team-title">Your team, one link</h2>
+      <p class="section-sub">Round-robin, collective, or group scheduling for teams of any size.</p>
+      <div class="team-grid">
+        <div class="team-card"><div class="team-avatar">SK</div><div class="team-name">Sarah Kim</div><div class="team-role">Sales</div><div class="team-slots">12 slots this week</div></div>
+        <div class="team-card"><div class="team-avatar">MR</div><div class="team-name">Marco Reyes</div><div class="team-role">Engineering</div><div class="team-slots">8 slots this week</div></div>
+        <div class="team-card"><div class="team-avatar">AJ</div><div class="team-name">Amira Johal</div><div class="team-role">Product</div><div class="team-slots">15 slots this week</div></div>
+        <div class="team-card"><div class="team-avatar">TN</div><div class="team-name">Tomás Navarro</div><div class="team-role">Design</div><div class="team-slots">10 slots this week</div></div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer" role="contentinfo">Kairos Scheduling &mdash; designed by Studio &middot; Standalone prototype</footer>
+  <script>
+    (function(){
+      var o=document.getElementById('drawerOpen'),c=document.getElementById('drawerClose'),d=document.getElementById('drawer'),v=document.getElementById('drawerOverlay');
+      function open(){d.classList.add('open');v.classList.add('open');d.setAttribute('aria-hidden','false');o.setAttribute('aria-expanded','true');c.focus()}
+      function close(){d.classList.remove('open');v.classList.remove('open');d.setAttribute('aria-hidden','true');o.setAttribute('aria-expanded','false');o.focus()}
+      o.addEventListener('click',open);c.addEventListener('click',close);v.addEventListener('click',close);
+      document.addEventListener('keydown',function(e){if(e.key==='Escape'&&d.classList.contains('open'))close()});
+      d.querySelectorAll('a').forEach(function(l){l.addEventListener('click',close)});
+      document.querySelectorAll('.time-slot').forEach(function(s){s.addEventListener('click',function(){document.querySelectorAll('.time-slot').forEach(function(x){x.classList.remove('selected')});s.classList.add('selected')})});
+    })();
+  </script>
+</body>
+</html>
